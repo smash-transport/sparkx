@@ -18,6 +18,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering",
+    "Natural Language :: English"
 ]
 
 [project.urls]
