@@ -33,6 +33,7 @@ class Particle:
         self._pdg_mother1 = None
         self._pdg_mother2 = None
         self._status = None
+        self._baryon_number = None
         
     # define functions to set the parameters
     def set_t(self,value):
@@ -123,6 +124,10 @@ class Particle:
         Set the hadron status (stores information on the module origin of 
         a JETSCAPE hadron).
         """
+        self._status = value
+        
+    def set_baryon_number(self,value):
+        """Set the baryon number of the particle."""
         self._status = value
 
     # define functions to get the parameters
@@ -278,6 +283,10 @@ class Particle:
             raise ValueError("status not set")
         else:
             return self._status
+        
+    def baryon_number(self,value):
+        """Get the baryon number of the particle."""
+        self._status = value
     
     def print_particle(self):
         """Print the whole particle information as csv string."""
@@ -331,27 +340,28 @@ class Particle:
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)==20:
-            self.set_t(line_from_file[0])
-            self.set_x(line_from_file[1])
-            self.set_y(line_from_file[2])
-            self.set_z(line_from_file[3])
-            self.set_mass(line_from_file[4])
-            self.set_E(line_from_file[5])
-            self.set_px(line_from_file[6])
-            self.set_py(line_from_file[7])
-            self.set_pz(line_from_file[8])
-            self.set_pdg(line_from_file[9])
-            self.set_ID(line_from_file[10])
-            self.set_charge(line_from_file[11])
-            self.set_ncoll(line_from_file[12])
-            self.set_form_time(line_from_file[13])
-            self.set_xsecfac(line_from_file[14])
-            self.set_proc_id_origin(line_from_file[15])
-            self.set_proc_type_origin(line_from_file[16])
-            self.set_t_last_coll(line_from_file[17])
-            self.set_pdg_mother1(line_from_file[18])
-            self.set_pdg_mother2(line_from_file[19])
+              and len(line_from_file)==21:
+            self.set_t(int(line_from_file[0]))
+            self.set_x(float(line_from_file[1]))
+            self.set_y(float(line_from_file[2]))
+            self.set_z(float(line_from_file[3]))
+            self.set_mass(float(line_from_file[4]))
+            self.set_E(float(line_from_file[5]))
+            self.set_px(float(line_from_file[6]))
+            self.set_py(float(line_from_file[7]))
+            self.set_pz(float(line_from_file[8]))
+            self.set_pdg(int(line_from_file[9]))
+            self.set_ID(int(line_from_file[10]))
+            self.set_charge(int(line_from_file[11]))
+            self.set_ncoll(int(line_from_file[12]))
+            self.set_form_time(float(line_from_file[13]))
+            self.set_xsecfac(int(line_from_file[14]))
+            self.set_proc_id_origin(int(line_from_file[15]))
+            self.set_proc_type_origin(int(line_from_file[16]))
+            self.set_t_last_coll(float(line_from_file[17]))
+            self.set_pdg_mother1(int(line_from_file[18]))
+            self.set_pdg_mother2(int(line_from_file[19]))
+            self.set_baryon_number(int(line_from_file[20]))
         else:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the OSCAR2013Extended format'
