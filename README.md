@@ -10,4 +10,4 @@ All modules in this package follow distinct formatting structure which is summar
 - The names of methods to get members have the same name as the member **without** an underscore at the end, e.g. `.mass()`
 
 ### Returning Values
-- If not otherwise explicitely stated, all methods that return multiple values return them as numpy array
+- If not otherwise explicitely stated, all methods that return multiple values return them as **numpy array**
