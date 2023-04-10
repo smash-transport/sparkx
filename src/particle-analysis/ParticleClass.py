@@ -12,292 +12,293 @@ class Particle:
     quantity.
     """
     def __init__(self):
-        self._t = None
-        self._x = None
-        self._y = None
-        self._z = None
-        self._mass = None
-        self._E = None
-        self._px = None
-        self._py = None
-        self._pz = None
-        self._pdg = None
-        self._ID = None
-        self._charge = None
-        self._ncoll = None
-        self._form_time = None
-        self._xsecfac = None
-        self._proc_id_origin = None
-        self._proc_type_origin = None
-        self._t_last_coll = None
-        self._pdg_mother1 = None
-        self._pdg_mother2 = None
-        self._status = None
-        self._baryon_number = None
+        self.t_ = None
+        self.x_ = None
+        self.y_ = None
+        self.z_ = None
+        self.mass_ = None
+        self.E_ = None
+        self.px_ = None
+        self.py_ = None
+        self.pz_ = None
+        self.pdg_ = None
+        self.ID_ = None
+        self.charge_ = None
+        self.ncoll_ = None
+        self.form_time_ = None
+        self.xsecfac_ = None
+        self.proc_id_origin_ = None
+        self.proc_type_origin_ = None
+        self.t_last_coll_ = None
+        self.pdg_mother1_ = None
+        self.pdg_mother2_ = None
+        self.status_ = None
+        self.baryon_number_ = None
         
     # define functions to set the parameters
     def set_t(self,value):
         """Set the time of the particle."""
-        self._t = value
+        self.t_ = value
 
     def set_x(self,value):
         """Set the x-position of the particle."""
-        self._x = value
+        self.x_ = value
 
     def set_y(self,value):
         """Set the y-position of the particle."""
-        self._y = value
+        self.y_ = value
     
     def set_z(self,value):
         """Set the z-position of the particle."""
-        self._z = value
+        self.z_ = value
 
     def set_mass(self,value):
         """Set the mass of the particle."""
-        self._mass = value
+        self.mass_ = value
     
     def set_E(self,value):
         """
         Set the energy of the particle (zeroth component of 
         momentum four vector).
         """
-        self._E = value
+        self.E_ = value
 
     def set_px(self,value):
         """Set the momentum x-component of the particle."""
-        self._px = value
+        self.px_ = value
 
     def set_py(self,value):
         """Set the momentum y-component of the particle."""
-        self._py = value
+        self.py_ = value
     
     def set_pz(self,value):
         """Set the momentum z-component of the particle."""
-        self._pz = value
+        self.pz_ = value
 
     def set_pdg(self,value):
         """Set the PDG code of the particle."""
-        self._pdg = value
+        self.pdg_ = value
 
     def set_ID(self,value):
         """Set the ID of the particle. This is a unique number in SMASH."""
-        self._ID = value
+        self.ID_ = value
 
     def set_charge(self,value):
         """Set the electrical charge of the particle."""
-        self._charge = value
+        self.charge_ = value
 
     def set_ncoll(self,value):
         """Set the number of collisions of the particle."""
-        self._ncoll = value
+        self.ncoll_ = value
 
     def set_form_time(self,value):
         """Set the formation time of the particle."""
-        self._form_time = value
+        self.form_time_ = value
 
     def set_xsecfac(self,value):
         """Set the crosssection scaling factor of the particle."""
-        self._xsecfac = value
+        self.xsecfac_ = value
 
     def set_proc_id_origin(self,value):
         """Set the process ID of the particle's origin."""
-        self._proc_id_origin = value
+        self.proc_id_origin_ = value
 
     def set_proc_type_origin(self,value):
         """Set the process type of the particle's origin."""
-        self._proc_type_origin = value
+        self.proc_type_origin_ = value
 
     def set_t_last_coll(self,value):
         """Set the last time of a collision of the particle."""
-        self._t_last_coll = value
+        self.t_last_coll_ = value
 
     def set_pdg_mother1(self,value):
         """Set the PDG code of the first mother particle."""
-        self._pdg_mother1 = value
+        self.pdg_mother1_ = value
 
     def set_pdg_mother2(self,value):
         """Set the PDG code of the second mother particle."""
-        self._pdg_mother2 = value
+        self.pdg_mother2_ = value
 
     def set_status(self,value):
         """
         Set the hadron status (stores information on the module origin of 
         a JETSCAPE hadron).
         """
-        self._status = value
+        self.status_ = value
         
     def set_baryon_number(self,value):
         """Set the baryon number of the particle."""
-        self._status = value
+        self.baryon_number_ = value
 
     # define functions to get the parameters
     def t(self):
         """Get the time of the particle."""
-        if self._t == None:
+        if self.t_ == None:
             raise ValueError("t not set")
         else:
-            return self._t
+            return self.t_
 
     def x(self):
         """Get the x-position of the particle."""
-        if self._x == None:
+        if self.x_ == None:
             raise ValueError("x not set")
         else:
-            return self._x
+            return self.x_
 
     def y(self):
         """Get the y-position of the particle."""
-        if self._y == None:
+        if self.y_ == None:
             raise ValueError("y not set")
         else:
-            return self._y
+            return self.y_
     
     def z(self):
         """Get the z-position of the particle."""
-        if self._z == None:
+        if self.z_ == None:
             raise ValueError("z not set")
         else:
-            return self._z
+            return self.z_
 
     def mass(self):
         """Get the mass of the particle."""
-        if self._mass == None:
+        if self.mass_ == None:
             raise ValueError("mass not set")
         else:
-            return self._mass
+            return self.mass_
     
     def E(self):
         """
         Get the energy of the particle (zeroth component of 
         momentum four vector).
         """
-        if self._E == None:
+        if self.E_ == None:
             raise ValueError("E not set")
         else:
-            return self._E
+            return self.E_
 
     def px(self):
         """Get the momentum x-component of the particle."""
-        if self._px == None:
+        if self.px_ == None:
             raise ValueError("px not set")
         else:
-            return self._px
+            return self.px_
 
     def py(self):
         """Get the momentum y-component of the particle."""
-        if self._py == None:
+        if self.py_ == None:
             raise ValueError("py not set")
         else:
-            return self._py
+            return self.py_
     
     def pz(self):
         """Get the momentum z-component of the particle."""
-        if self._pz == None:
+        if self.pz_ == None:
             raise ValueError("pz not set")
         else:
-            return self._pz
+            return self.pz_
 
     def pdg(self):
         """Get the PDG code of the particle."""
-        if self._pdg == None:
+        if self.pdg_ == None:
             raise ValueError("pdg not set")
         else:
-            return self._pdg
+            return self.pdg_
 
     def ID(self):
         """Get the ID of the particle. This is a unique number in SMASH."""
-        if self._ID == None:
+        if self.ID_ == None:
             raise ValueError("ID not set")
         else:
-            return self._ID
+            return self.ID_
 
     def charge(self):
         """Get the electrical charge of the particle."""
-        if self._charge == None:
+        if self.charge_ == None:
             raise ValueError("charge not set")
         else:
-            return self._charge
+            return self.charge_
 
     def ncoll(self):
         """Get the number of collisions of the particle."""
-        if self._ncoll == None:
+        if self.ncoll_ == None:
             raise ValueError("ncoll not set")
         else:
-            return self._ncoll
+            return self.ncoll_
 
     def form_time(self):
         """Get the formation time of the particle."""
-        if self._form_time == None:
+        if self.form_time_ == None:
             raise ValueError("form_time not set")
         else:
-            return self._form_time
+            return self.form_time_
 
     def xsecfac(self):
         """Get the crosssection scaling factor of the particle."""
-        if self._xsecfac == None:
+        if self.xsecfac_ == None:
             raise ValueError("xsecfac not set")
         else:
-            return self._xsecfac
+            return self.xsecfac_
 
     def proc_id_origin(self):
         """Get the process ID of the particle's origin."""
-        if self._proc_id_origin == None:
+        if self.proc_id_origin_ == None:
             raise ValueError("proc_id_origin not set")
         else:
-            return self._proc_id_origin
+            return self.proc_id_origin_
 
     def proc_type_origin(self):
         """Get the process type of the particle's origin."""
-        if self._proc_type_origin == None:
+        if self.proc_type_origin_ == None:
             raise ValueError("proc_type_origin not set")
         else:
-            return self._proc_type_origin
+            return self.proc_type_origin_
 
     def t_last_coll(self):
         """Get the last time of a collision of the particle."""
-        if self._t_last_coll == None:
+        if self.t_last_coll_ == None:
             raise ValueError("t_last_coll not set")
         else:
-            return self._t_last_coll
+            return self.t_last_coll_
 
     def pdg_mother1(self):
         """Get the PDG code of the first mother particle."""
-        if self._pdg_mother1 == None:
+        if self.pdg_mother1_ == None:
             raise ValueError("pdg_mother1 not set")
         else:
-            return self._pdg_mother1
+            return self.pdg_mother1_
 
     def pdg_mother2(self):
         """Get the PDG code of the second mother particle."""
-        if self._pdg_mother2 == None:
+        if self.pdg_mother2_ == None:
             raise ValueError("pdg_mother2 not set")
         else:
-            return self._pdg_mother2
+            return self.pdg_mother2_
         
     def status(self):
         """
         Get the hadron status (stores information on the module origin of 
         a JETSCAPE hadron).
         """
-        if self._status == None:
+        if self.status_ == None:
             raise ValueError("status not set")
         else:
-            return self._status
+            return self.status_
         
     def baryon_number(self,value):
         """Get the baryon number of the particle."""
-        self._status = value
+        self.baryon_number_ = value
     
     def print_particle(self):
         """Print the whole particle information as csv string."""
         print('t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
               proc_id_origin,proc_type_origin,t_last_coll,pdg_mother1,\
-              pdg_mother2,status')
-        print(f'{self._t},{self._x},{self._y},{self._z},{self._mass},{self._E},\
-              {self._px},{self._py},{self._pz},{self._pdg},{self._ID},\
-              {self._charge},{self._ncoll},{self._form_time},{self._xsecfac},\
-              {self._proc_id_origin},{self._proc_type_origin},{self._t_last_coll},\
-              {self._pdg_mother1},{self._pdg_mother2},{self._status}')
+              pdg_mother2,status,baryon_number')
+        print(f'{self.t_},{self.x_},{self.y_},{self.z_},{self.mass_},{self.E_},\
+              {self.px_},{self.py_},{self.pz_},{self.pdg_},{self.ID_},\
+              {self.charge_},{self.ncoll_},{self.form_time_},{self.xsecfac_},\
+              {self.proc_id_origin_},{self.proc_type_origin_}\
+              ,{self.t_last_coll_},{self.pdg_mother1_},{self.pdg_mother2_},\
+              {self.status_},{self.baryon_number_}')
 
 
     def set_quantities_OSCAR2013(self,line_from_file):
@@ -312,18 +313,18 @@ class Particle:
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
               and len(line_from_file)==12:
-            self.set_t(line_from_file[0])
-            self.set_x(line_from_file[1])
-            self.set_y(line_from_file[2])
-            self.set_z(line_from_file[3])
-            self.set_mass(line_from_file[4])
-            self.set_E(line_from_file[5])
-            self.set_px(line_from_file[6])
-            self.set_py(line_from_file[7])
-            self.set_pz(line_from_file[8])
-            self.set_pdg(line_from_file[9])
-            self.set_ID(line_from_file[10])
-            self.set_charge(line_from_file[11])
+            self.set_t(float(line_from_file[0]))
+            self.set_x(float(line_from_file[1]))
+            self.set_y(float(line_from_file[2]))
+            self.set_z(float(line_from_file[3]))
+            self.set_mass(float(line_from_file[4]))
+            self.set_E(float(line_from_file[5]))
+            self.set_px(float(line_from_file[6]))
+            self.set_py(float(line_from_file[7]))
+            self.set_pz(float(line_from_file[8]))
+            self.set_pdg(int(line_from_file[9]))
+            self.set_ID(int(line_from_file[10]))
+            self.set_charge(int(line_from_file[11]))
         else:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the OSCAR2013 format'
@@ -383,13 +384,13 @@ class Particle:
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
               and len(line_from_file)==7:
-            self.set_ID(line_from_file[0])
-            self.set_pdg(line_from_file[1])
-            self.set_status(line_from_file[2])
-            self.set_E(line_from_file[3])
-            self.set_px(line_from_file[4])
-            self.set_py(line_from_file[5])
-            self.set_pz(line_from_file[6])
+            self.set_ID(int(line_from_file[0]))
+            self.set_pdg(int(line_from_file[1]))
+            self.set_status(int(line_from_file[2]))
+            self.set_E(float(line_from_file[3]))
+            self.set_px(float(line_from_file[4]))
+            self.set_py(float(line_from_file[5]))
+            self.set_pz(float(line_from_file[6]))
 
             self.set_mass(self.compute_mass_from_energy_momentum())
             self.set_charge(self.compute_charge_from_pdg())
