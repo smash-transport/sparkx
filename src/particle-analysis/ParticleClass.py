@@ -408,7 +408,7 @@ class Particle:
         float
             momentum rapidity
         """
-        return 0.5 * np.log((self.E + self.pz()) / (self.E - self.pz()))
+        return 0.5 * np.log((self.E() + self.pz()) / (self.E() - self.pz()))
     
     def p_abs(self):
         """
