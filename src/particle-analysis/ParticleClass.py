@@ -284,9 +284,12 @@ class Particle:
         else:
             return self.status_
         
-    def baryon_number(self,value):
+    def baryon_number(self):
         """Get the baryon number of the particle."""
-        self.baryon_number_ = value
+        if self.baryon_number_ == None:
+            raise ValueError("baryon number not set")
+        else:
+            return self.baryon_number_
     
     def print_particle(self):
         """Print the whole particle information as csv string."""
@@ -342,7 +345,7 @@ class Particle:
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
               and len(line_from_file)==21:
-            self.set_t(int(line_from_file[0]))
+            self.set_t(float(line_from_file[0]))
             self.set_x(float(line_from_file[1]))
             self.set_y(float(line_from_file[2]))
             self.set_z(float(line_from_file[3]))
