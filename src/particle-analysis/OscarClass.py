@@ -83,8 +83,53 @@ class Oscar:
             raise TypeError('Value given as flag events is not of type int or a tuple')
             
         return cummulated_lines
-            
+    
+    
+    def __particle_as_array(self, particle):
+        if self.oscar_type_ == 'Oscar2013Extended':
+            particle_array = np.zeros(21)
+            particle_array[0]  = float(particle.t())
+            particle_array[1]  = float(particle.x())
+            particle_array[2]  = float(particle.y())
+            particle_array[3]  = float(particle.z())
+            particle_array[4]  = float(particle.mass())
+            particle_array[5]  = float(particle.E())
+            particle_array[6]  = float(particle.px())
+            particle_array[7]  = float(particle.py())
+            particle_array[8]  = float(particle.pz())
+            particle_array[9]  = int(particle.pdg())
+            particle_array[10] = int(particle.ID())
+            particle_array[11] = int(particle.charge())
+            particle_array[12] = int(particle.ncoll())
+            particle_array[13] = float(particle.form_time())
+            particle_array[14] = int(particle.xsecfac())
+            particle_array[15] = int(particle.proc_id_origin())
+            particle_array[16] = int(particle.proc_type_origin())
+            particle_array[17] = float(particle.t_last_coll())
+            particle_array[18] = int(particle.pdg_mother1())
+            particle_array[19] = int(particle.pdg_mother2())
+            particle_array[20] = int(particle.baryon_number())
         
+        elif self.oscar_type_ == 'Oscar2013':
+            particle_array = np.zeros(12)
+            particle_array[0]  = float(particle.t())
+            particle_array[1]  = float(particle.x())
+            particle_array[2]  = float(particle.y())
+            particle_array[3]  = float(particle.z())
+            particle_array[4]  = float(particle.mass())
+            particle_array[5]  = float(particle.E())
+            particle_array[6]  = float(particle.px())
+            particle_array[7]  = float(particle.py())
+            particle_array[8]  = float(particle.pz())
+            particle_array[9]  = int(particle.pdg())
+            particle_array[10] = int(particle.ID())
+            particle_array[11] = int(particle.charge())
+            
+        else:
+            raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
+            
+        return particle_array
+    
         
     # PUBLIC CLASS METHODS
         
@@ -126,13 +171,13 @@ class Oscar:
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
             self.num_output_per_event_ = update
-            self.num_events_ = 1
+            self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
             event_end = kwargs['events'][1]
             update = self.num_output_per_event_[event_start : event_end+1]
             self.num_output_per_event_ = update
-            self.num_events_ = int(event_end - event_start)+1
+            self.num_events_ = int(event_end - event_start+1)
         
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
@@ -185,12 +230,41 @@ class Oscar:
                 file.seek(-2, os.SEEK_CUR) 
             last_line = file.readline().decode().split(' ')
         if last_line[0] == '#' and 'event' in last_line:
-            self.num_events_ = int(last_line[2])+1
+            self.num_events_ = int(last_line[2]) + 1
         else:
             raise TypeError('Input file does not end with a comment line '+\
                             'including the events. File might be incomplete '+\
                             'or corrupted.')
             
+                
+    def particle_list(self):
+        if self.num_events_ == 1:
+            
+            num_particles = self.num_output_per_event_[1]
+            
+            if self.oscar_type_ == 'Oscar2013Extended':
+                particle_array = np.zeros((num_particles, 21))
+            elif self.oscar_type_ == 'Oscar2013':
+                particle_array = np.zeros((num_particles, 12))
+                
+            for i in range(0, num_particles):
+                particle_array[i] = self.__particle_as_array(self.particle_list_[i])
+                
+        elif self.num_events_ > 1:
+            num_particles = self.num_output_per_event_[:,1]
+            num_events = self.num_events_
+            
+            if self.oscar_type_ == 'Oscar2013Extended':
+                particle_array = np.zeros((num_events, num_particles, 21))
+            elif self.oscar_type_ == 'Oscar2013':
+                particle_array = np.zeros((num_events, num_particles, 12))
+            
+            for i_ev in range(0, num_events):
+                for i_part in range(0, num_particles):
+                    particle_array[i_ev, i_part] = self.__particle_as_array(self.particle_list_[i_ev, i_part])
+                    
+        return particle_array
+                
                 
     def oscar_type(self):
         return self.oscar_type_
@@ -216,6 +290,8 @@ class Oscar:
                                           if elem.charge() != 0]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
+                
+        return self
 
 
     def uncharged_particles(self):
@@ -231,6 +307,8 @@ class Oscar:
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
                 
+        return self
+                
                 
     def strange_particles(self):
         if self.num_events_ == 1:
@@ -244,6 +322,8 @@ class Oscar:
                                           if elem.is_strange()]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
+                
+        return self
                 
                 
     def particle_species(self, pdg_list):
@@ -286,6 +366,8 @@ class Oscar:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple')
+                
+        return self
                 
                 
     def rapidity_cut(self, cut_value):
@@ -331,4 +413,5 @@ class Oscar:
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
-            
+                
+        return self
