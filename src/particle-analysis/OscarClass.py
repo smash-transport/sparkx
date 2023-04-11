@@ -85,50 +85,50 @@ class Oscar:
         return cummulated_lines
     
     
-    def __particle_as_array(self, particle):
+    def __particle_as_list(self, particle):
         if self.oscar_type_ == 'Oscar2013Extended':
-            particle_array = np.zeros(21)
-            particle_array[0]  = float(particle.t())
-            particle_array[1]  = float(particle.x())
-            particle_array[2]  = float(particle.y())
-            particle_array[3]  = float(particle.z())
-            particle_array[4]  = float(particle.mass())
-            particle_array[5]  = float(particle.E())
-            particle_array[6]  = float(particle.px())
-            particle_array[7]  = float(particle.py())
-            particle_array[8]  = float(particle.pz())
-            particle_array[9]  = int(particle.pdg())
-            particle_array[10] = int(particle.ID())
-            particle_array[11] = int(particle.charge())
-            particle_array[12] = int(particle.ncoll())
-            particle_array[13] = float(particle.form_time())
-            particle_array[14] = int(particle.xsecfac())
-            particle_array[15] = int(particle.proc_id_origin())
-            particle_array[16] = int(particle.proc_type_origin())
-            particle_array[17] = float(particle.t_last_coll())
-            particle_array[18] = int(particle.pdg_mother1())
-            particle_array[19] = int(particle.pdg_mother2())
-            particle_array[20] = int(particle.baryon_number())
+            particle_list = [0.0]*21
+            particle_list[0]  = float(particle.t())
+            particle_list[1]  = float(particle.x())
+            particle_list[2]  = float(particle.y())
+            particle_list[3]  = float(particle.z())
+            particle_list[4]  = float(particle.mass())
+            particle_list[5]  = float(particle.E())
+            particle_list[6]  = float(particle.px())
+            particle_list[7]  = float(particle.py())
+            particle_list[8]  = float(particle.pz())
+            particle_list[9]  = int(particle.pdg())
+            particle_list[10] = int(particle.ID())
+            particle_list[11] = int(particle.charge())
+            particle_list[12] = int(particle.ncoll())
+            particle_list[13] = float(particle.form_time())
+            particle_list[14] = int(particle.xsecfac())
+            particle_list[15] = int(particle.proc_id_origin())
+            particle_list[16] = int(particle.proc_type_origin())
+            particle_list[17] = float(particle.t_last_coll())
+            particle_list[18] = int(particle.pdg_mother1())
+            particle_list[19] = int(particle.pdg_mother2())
+            particle_list[20] = int(particle.baryon_number())
         
         elif self.oscar_type_ == 'Oscar2013':
-            particle_array = np.zeros(12)
-            particle_array[0]  = float(particle.t())
-            particle_array[1]  = float(particle.x())
-            particle_array[2]  = float(particle.y())
-            particle_array[3]  = float(particle.z())
-            particle_array[4]  = float(particle.mass())
-            particle_array[5]  = float(particle.E())
-            particle_array[6]  = float(particle.px())
-            particle_array[7]  = float(particle.py())
-            particle_array[8]  = float(particle.pz())
-            particle_array[9]  = int(particle.pdg())
-            particle_array[10] = int(particle.ID())
-            particle_array[11] = int(particle.charge())
+            particle_list = [0.0]*12
+            particle_list[0]  = float(particle.t())
+            particle_list[1]  = float(particle.x())
+            particle_list[2]  = float(particle.y())
+            particle_list[3]  = float(particle.z())
+            particle_list[4]  = float(particle.mass())
+            particle_list[5]  = float(particle.E())
+            particle_list[6]  = float(particle.px())
+            particle_list[7]  = float(particle.py())
+            particle_list[8]  = float(particle.pz())
+            particle_list[9]  = int(particle.pdg())
+            particle_list[10] = int(particle.ID())
+            particle_list[11] = int(particle.charge())
             
         else:
             raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
             
-        return particle_array
+        return particle_list
     
         
     # PUBLIC CLASS METHODS
@@ -161,6 +161,9 @@ class Oscar:
                     particle.set_quantities_OSCAR2013(data_line)
                 elif self.oscar_type_ == 'Oscar2013Extended':
                     particle.set_quantities_OSCAR2013Extended(data_line)
+                
+                # Check for filters by method with a dictionary
+                # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
                 
                 data.append(particle) 
         fname.close()
@@ -242,27 +245,39 @@ class Oscar:
             
             num_particles = self.num_output_per_event_[1]
             
-            if self.oscar_type_ == 'Oscar2013Extended':
-                particle_array = np.zeros((num_particles, 21))
-            elif self.oscar_type_ == 'Oscar2013':
-                particle_array = np.zeros((num_particles, 12))
-                
+            #if self.oscar_type_ == 'Oscar2013Extended':
+            #    particle_array = np.zeros((num_particles, 21))
+            #elif self.oscar_type_ == 'Oscar2013':
+            #    particle_array = np.zeros((num_particles, 12))
+            #    
+            particle_array=[]
+            
             for i in range(0, num_particles):
-                particle_array[i] = self.__particle_as_array(self.particle_list_[i])
+                particle = self.__particle_as_list(self.particle_list_[i])
+                particle_array.append(particle)
                 
         elif self.num_events_ > 1:
             num_particles = self.num_output_per_event_[:,1]
             num_events = self.num_events_
             
-            if self.oscar_type_ == 'Oscar2013Extended':
-                particle_array = np.zeros((num_events, num_particles, 21))
-            elif self.oscar_type_ == 'Oscar2013':
-                particle_array = np.zeros((num_events, num_particles, 12))
+            particle_array = []
             
             for i_ev in range(0, num_events):
-                for i_part in range(0, num_particles):
-                    particle_array[i_ev, i_part] = self.__particle_as_array(self.particle_list_[i_ev, i_part])
+                #if i_ev == 0:
+                #    if self.oscar_type_ == 'Oscar2013Extended':
+                #        particle_array = np.zeros((num_particles[i_ev], 21))
+                #    elif self.oscar_type_ == 'Oscar2013':
+                #        particle_array = np.zeros((num_particles[i_ev], 12))
+                #else:
+                #    None
+                event = []
                     
+                for i_part in range(0, num_particles[i_ev]):
+                    particle = self.particle_list_[i_ev][i_part]
+                    event.append(self.__particle_as_list(particle))
+                
+                particle_array.append(event)
+                
         return particle_array
                 
                 
@@ -365,10 +380,42 @@ class Oscar:
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'of str, list of int, np.ndarray, tuple') 
+        return self
+    
+    
+    def participants(self):
+        if self.num_events_ == 1:
+            self.particle_list_ = [elem for elem in self.particle_list_ 
+                                   if elem.ncoll() != 0]
+            new_length = len(self.particle_list_)
+            self.num_output_per_event_[1] = new_length
+            
+        elif self.num_events_ > 1:
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if elem.ncoll() != 0]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                 
         return self
+    
+    
+    def spectators(self):
+        if self.num_events_ == 1:
+            self.particle_list_ = [elem for elem in self.particle_list_ 
+                                   if elem.ncoll() == 0 ]
+            new_length = len(self.particle_list_)
+            self.num_output_per_event_[1] = new_length
+        elif self.num_events_ > 1:
+            
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                          if elem.ncoll() == 0 ]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                 
+        return self
+        
                 
     def rapidity_cut(self, cut_value):
         if not isinstance(cut_value, (int, float, tuple)):
@@ -412,6 +459,6 @@ class Oscar:
             
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')
-                
+                            'with the cut limits (cut_min, cut_max)')        
         return self
+
