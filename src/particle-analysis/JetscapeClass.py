@@ -304,6 +304,49 @@ class Jetscape:
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple') 
         return self
+    
+    
+    def exclude_particle_species(self, pdg_list):
+        if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
+            raise TypeError('Input value for pgd codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple')
+                
+        elif isinstance(pdg_list, (int, str, np.integer)):
+            pdg_list = int(pdg_list)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if int(elem.pdg()) != pdg_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if int(elem.pdg()) != pdg_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length
+                    
+        elif isinstance(pdg_list, (list, np.ndarray, tuple)):
+            pdg_list = np.asarray(pdg_list, dtype=np.int64)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if not int(elem.pdg()) in pdg_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if not int(elem.pdg()) in pdg_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length     
+                    
+        else:
+            raise TypeError('Input value for pgd codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple') 
+        return self
             
               
     def pt_cut(self, cut_value):
