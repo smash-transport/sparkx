@@ -38,19 +38,19 @@ class Oscar:
             if self.optional_arguments_['events'] == 0:
                 skip_lines = 3
             else:
-                cummulate_lines = 0
+                cumulate_lines = 0
                 for i in range(0, self.optional_arguments_['events']):
-                    cummulate_lines += self.num_output_per_event_[i,1] + 2
-                skip_lines = 3 + cummulate_lines
+                    cumulate_lines += self.num_output_per_event_[i,1] + 2
+                skip_lines = 3 + cumulate_lines
         elif isinstance(self.optional_arguments_['events'], tuple):
             line_start = self.optional_arguments_['events'][0]
             if line_start == 0:
                 skip_lines = 3
             else:
-                cummulate_lines = 0
+                cumulate_lines = 0
                 for i in range(0, line_start):
-                    cummulate_lines += self.num_output_per_event_[i,1] + 2
-                skip_lines = 3 + cummulate_lines
+                    cumulate_lines += self.num_output_per_event_[i,1] + 2
+                skip_lines = 3 + cumulate_lines
         else:
             raise TypeError('Value given as flag "events" is not of type ' +\
                             'int or a tuple of two int values')
@@ -66,24 +66,24 @@ class Oscar:
             
     def __get_num_read_lines(self):
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
-            cummulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
+            cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
-            cummulated_lines += int(2 * len(self.num_output_per_event_))
+            cumulated_lines += int(2 * len(self.num_output_per_event_))
             
         elif isinstance(self.optional_arguments_['events'], int):
             read_event = self.optional_arguments_['events']
-            cummulated_lines = int(self.num_output_per_event_[read_event,1] + 2)
+            cumulated_lines = int(self.num_output_per_event_[read_event,1] + 2)
             
         elif isinstance(self.optional_arguments_['events'], tuple):
-            cummulated_lines = 0
+            cumulated_lines = 0
             event_start = self.optional_arguments_['events'][0]
             event_end = self.optional_arguments_['events'][1]
             for i in range(event_start, event_end+1):
-                cummulated_lines += int(self.num_output_per_event_[i, 1] + 2)
+                cumulated_lines += int(self.num_output_per_event_[i, 1] + 2)
         else:
             raise TypeError('Value given as flag events is not of type int or a tuple')
             
-        return cummulated_lines
+        return cumulated_lines
     
     
     def __particle_as_list(self, particle):
@@ -442,6 +442,12 @@ class Oscar:
         
         
     def rapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+            
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -488,6 +494,12 @@ class Oscar:
     
     
     def pseudorapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+            
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -534,6 +546,12 @@ class Oscar:
     
     
     def spatial_rapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+        
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -577,4 +595,3 @@ class Oscar:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')        
         return self
-    
