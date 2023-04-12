@@ -244,13 +244,7 @@ class Oscar:
     def particle_list(self):
         if self.num_events_ == 1:
             
-            num_particles = self.num_output_per_event_[1]
-            
-            #if self.oscar_type_ == 'Oscar2013Extended':
-            #    particle_array = np.zeros((num_particles, 21))
-            #elif self.oscar_type_ == 'Oscar2013':
-            #    particle_array = np.zeros((num_particles, 12))
-            #    
+            num_particles = self.num_output_per_event_[1] 
             particle_array=[]
             
             for i in range(0, num_particles):
@@ -264,13 +258,6 @@ class Oscar:
             particle_array = []
             
             for i_ev in range(0, num_events):
-                #if i_ev == 0:
-                #    if self.oscar_type_ == 'Oscar2013Extended':
-                #        particle_array = np.zeros((num_particles[i_ev], 21))
-                #    elif self.oscar_type_ == 'Oscar2013':
-                #        particle_array = np.zeros((num_particles[i_ev], 12))
-                #else:
-                #    None
                 event = []
                     
                 for i_part in range(0, num_particles[i_ev]):
@@ -375,6 +362,49 @@ class Oscar:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
                                               if int(elem.pdg()) in pdg_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length     
+                    
+        else:
+            raise TypeError('Input value for pgd codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple') 
+        return self
+    
+    
+    def exclude_particle_species(self, pdg_list):
+        if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
+            raise TypeError('Input value for pgd codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple')
+                
+        elif isinstance(pdg_list, (int, str, np.integer)):
+            pdg_list = int(pdg_list)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if int(elem.pdg()) != pdg_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if int(elem.pdg()) != pdg_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length
+                    
+        elif isinstance(pdg_list, (list, np.ndarray, tuple)):
+            pdg_list = np.asarray(pdg_list, dtype=np.int64)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if not int(elem.pdg()) in pdg_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if not int(elem.pdg()) in pdg_list]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length     
                     
