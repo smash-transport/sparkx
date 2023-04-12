@@ -423,7 +423,7 @@ class Oscar:
                             'with the cut limits (cut_min, cut_max)')
                 
         elif isinstance(cut_value, tuple) and len(cut_value) != 2:
-            raise TypeError('The tuple containing the cut limits take 2 values')
+            raise TypeError('The tuple of cut limits must contain 2 values')
                 
         elif isinstance(cut_value, (int, float)):
             # cut symmetrically around 0
@@ -461,4 +461,73 @@ class Oscar:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')        
         return self
-
+    
+    
+    def pseudorapidity_cut(self, cut_value):
+        if not isinstance(cut_value, (int, float, tuple)):
+            raise TypeError('Input value must be a number or a tuple ' +\
+                            'with the cut limits (cut_min, cut_max)')
+                
+        elif isinstance(cut_value, tuple) and len(cut_value) != 2:
+            raise TypeError('The tuple of cut limits must contain 2 values')
+                
+        elif isinstance(cut_value, (int, float)):
+            # cut symmetrically around 0
+            limit = np.abs(cut_value)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ if
+                                       -limit<=elem.pseudorapidity()<=limit]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                              -limit<=elem.pseudorapidity()<=limit]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length 
+                    
+        elif isinstance(cut_value, tuple):
+            lim_max = max(cut_value[0], cut_value[1])
+            lim_min = min(cut_value[0], cut_value[1])
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ if
+                                       lim_min<=elem.pseudorapidity()<=lim_max]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                              lim_min<=elem.pseudorapidity()<=lim_max]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length 
+            
+        else:
+            raise TypeError('Input value must be a number or a tuple ' +\
+                            'with the cut limits (cut_min, cut_max)')        
+        return self
+    
+    
+    def pt_cut(self, cut_value):
+        if not isinstance(cut_value, (int, float, np.number)) or cut_value < 0:
+            raise TypeError('Input value must be a positive number')
+                
+        elif isinstance(cut_value, (int, float, np.number)):
+            # cut symmetrically around 0
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ if
+                                       elem.pt_abs() <= cut_value]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                              elem.pt_abs() <= cut_value]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length 
+                    
+        else:
+            raise TypeError('Input value must be a positive number')        
+        return self
