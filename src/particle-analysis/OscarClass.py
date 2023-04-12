@@ -1,5 +1,6 @@
 from ParticleClass import Particle
 import numpy as np
+import warnings
 import os
 
 class Oscar:
@@ -577,12 +578,3 @@ class Oscar:
                             'with the cut limits (cut_min, cut_max)')        
         return self
     
-    
-    
-PATH = '/Users/nils/smash-devel/build/data/0/particle_lists.oscar'
-aaa = Oscar(PATH)
-
-print(aaa.num_output_per_event())
-aaa.spatial_rapidity_cut((0.1, 0.2))
-print(aaa.num_output_per_event())
-print(aaa.particle_list_[0][7].spatial_rapidity())
