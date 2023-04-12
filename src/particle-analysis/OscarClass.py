@@ -442,6 +442,12 @@ class Oscar:
         
         
     def rapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+            
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -488,6 +494,12 @@ class Oscar:
     
     
     def pseudorapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+            
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -534,6 +546,12 @@ class Oscar:
     
     
     def spatial_rapidity_cut(self, cut_value):
+        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
+            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
+                        str(cut_value[1])+'. Switched order is assumed in ' +\
+                       'the following.'
+            warnings.warn(warn_msg)
+        
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
@@ -577,4 +595,3 @@ class Oscar:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')        
         return self
-    
