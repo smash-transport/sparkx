@@ -511,10 +511,11 @@ class Particle:
         float
             mass
         """
-        if self.E()**2. > self.p_abs()**2.:
+        if np.abs(self.E()**2. - self.p_abs()**2.) > 1e-6 and\
+              self.E()**2. - self.p_abs()**2. > 0.:
             return np.sqrt(self.E()**2.-self.p_abs()**2.)
         else:
-            raise ValueError("Can not compute mass from on-shell condition")
+            return 0.
         
     def compute_charge_from_pdg(self):
         """
