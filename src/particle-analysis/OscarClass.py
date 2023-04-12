@@ -267,6 +267,10 @@ class Oscar:
                 particle_array.append(event)
                 
         return particle_array
+    
+    
+    def particleObject_list(self):
+        return self.particle_list_
                 
                 
     def oscar_type(self):
