@@ -87,46 +87,35 @@ class Oscar:
     
     
     def __particle_as_list(self, particle):
-        if self.oscar_type_ == 'Oscar2013Extended':
-            particle_list = [0.0]*21
-            particle_list[0]  = float(particle.t())
-            particle_list[1]  = float(particle.x())
-            particle_list[2]  = float(particle.y())
-            particle_list[3]  = float(particle.z())
-            particle_list[4]  = float(particle.mass())
-            particle_list[5]  = float(particle.E())
-            particle_list[6]  = float(particle.px())
-            particle_list[7]  = float(particle.py())
-            particle_list[8]  = float(particle.pz())
-            particle_list[9]  = int(particle.pdg())
-            particle_list[10] = int(particle.ID())
-            particle_list[11] = int(particle.charge())
-            particle_list[12] = int(particle.ncoll())
-            particle_list[13] = float(particle.form_time())
-            particle_list[14] = int(particle.xsecfac())
-            particle_list[15] = int(particle.proc_id_origin())
-            particle_list[16] = int(particle.proc_type_origin())
-            particle_list[17] = float(particle.t_last_coll())
-            particle_list[18] = int(particle.pdg_mother1())
-            particle_list[19] = int(particle.pdg_mother2())
-            particle_list[20] = int(particle.baryon_number())
+        particle_list = []
+        particle_list.append(float(particle.t()))
+        particle_list.append(float(particle.x()))
+        particle_list.append(float(particle.y()))
+        particle_list.append(float(particle.z()))
+        particle_list.append(float(particle.mass()))
+        particle_list.append(float(particle.E()))
+        particle_list.append(float(particle.px()))
+        particle_list.append(float(particle.py()))
+        particle_list.append(float(particle.pz()))
+        particle_list.append(int(particle.pdg()))
+        particle_list.append(int(particle.ID()))
+        particle_list.append(int(particle.charge()))
         
-        elif self.oscar_type_ == 'Oscar2013':
-            particle_list = [0.0]*12
-            particle_list[0]  = float(particle.t())
-            particle_list[1]  = float(particle.x())
-            particle_list[2]  = float(particle.y())
-            particle_list[3]  = float(particle.z())
-            particle_list[4]  = float(particle.mass())
-            particle_list[5]  = float(particle.E())
-            particle_list[6]  = float(particle.px())
-            particle_list[7]  = float(particle.py())
-            particle_list[8]  = float(particle.pz())
-            particle_list[9]  = int(particle.pdg())
-            particle_list[10] = int(particle.ID())
-            particle_list[11] = int(particle.charge())
+        if self.oscar_type_ == 'Oscar2013Extended':
+            particle_list.append(int(particle.ncoll()))
+            particle_list.append(float(particle.form_time()))
+            particle_list.append(int(particle.xsecfac()))
+            particle_list.append(int(particle.proc_id_origin()))
+            particle_list.append(int(particle.proc_type_origin()))
+            particle_list.append(float(particle.t_last_coll()))
+            particle_list.append(int(particle.pdg_mother1()))
+            particle_list.append(int(particle.pdg_mother2()))
+                                 
+            if particle.baryon_number() != None:                         
+                particle_list.append(int(particle.baryon_number()))
             
-        else:
+            
+        elif self.oscar_type_ != 'Oscar2013' and self.oscar_type_ != 'Oscar2013Extended':
             raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
             
         return particle_list
@@ -242,6 +231,19 @@ class Oscar:
             
                 
     def particle_list(self):
+        """
+        Returns a nested python list containing all quantities from 
+        the Oscar2013/Oscar2013Extended output as numerical values 
+        with the following shape:
+            
+            Single Event:    [output_line][particle_quantity]
+            Multiple Events: [event][output_line][particle_quantity]
+
+        Returns
+        -------
+        list of numerical particle quantities : list
+
+        """
         if self.num_events_ == 1:
             
             num_particles = self.num_output_per_event_[1] 
@@ -269,7 +271,20 @@ class Oscar:
         return particle_array
     
     
-    def particleObject_list(self):
+    def particle_objects_list(self):
+        """
+        Returns a nested python list containing all particles from 
+        the Oscar2013/Oscar2013Extended output as particle Objects 
+        from ParticleClass:
+            
+            Single Event:    [particle_object]
+            Multiple Events: [event][particle_object]
+
+        Returns
+        -------
+        list of particle objects : list
+
+        """
         return self.particle_list_
                 
                 
