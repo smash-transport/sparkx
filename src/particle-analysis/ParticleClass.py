@@ -344,7 +344,7 @@ class Particle:
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)<=21 and len(line_from_file)>12:
+              and len(line_from_file)<=21 and len(line_from_file)>=20:
             self.set_t(float(line_from_file[0]))
             self.set_x(float(line_from_file[1]))
             self.set_y(float(line_from_file[2]))
@@ -365,7 +365,8 @@ class Particle:
             self.set_t_last_coll(float(line_from_file[17]))
             self.set_pdg_mother1(int(line_from_file[18]))
             self.set_pdg_mother2(int(line_from_file[19]))
-            self.set_baryon_number(int(line_from_file[20]))
+            if len(line_from_file)==21:
+                self.set_baryon_number(int(line_from_file[20]))
         else:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the OSCAR2013Extended format'
