@@ -644,10 +644,3 @@ class Oscar:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')        
         return self
-
-
-  
-PATH = '/Users/nils/smash-devel/build/data/0/particle_lists.oscar'
-aaa = Oscar(PATH, events=(0,1))
-
-print(aaa.particle_list()[1][1])
