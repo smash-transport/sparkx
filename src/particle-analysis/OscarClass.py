@@ -476,13 +476,13 @@ class Oscar:
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       elem.pt_abs() <= cut_value]
+                                       elem.pt_abs() > cut_value]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              elem.pt_abs() <= cut_value]
+                                              elem.pt_abs() > cut_value]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length   
         else:
@@ -644,3 +644,10 @@ class Oscar:
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')        
         return self
+
+
+  
+PATH = '/Users/nils/smash-devel/build/data/0/particle_lists.oscar'
+aaa = Oscar(PATH, events=(0,1))
+
+print(aaa.particle_list()[1][1])
