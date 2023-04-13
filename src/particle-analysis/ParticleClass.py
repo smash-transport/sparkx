@@ -344,7 +344,7 @@ class Particle:
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)==21:
+              and len(line_from_file)<=21 and len(line_from_file)>12:
             self.set_t(float(line_from_file[0]))
             self.set_x(float(line_from_file[1]))
             self.set_y(float(line_from_file[2]))
