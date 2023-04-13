@@ -118,7 +118,10 @@ class Jetscape:
                                  'line or does not contain "weight"')
             elif 'Event' in line and 'weight' in line:
                 data_line = line.replace('\n','').replace('\t',' ').split(' ')
-                if int(data_line[2]) == int(kwargs['events'][0])+1:
+                first_event_header = 1
+                if 'events' in self.optional_arguments_.keys():
+                    first_event_header += int(kwargs['events'][0])
+                if int(data_line[2]) == first_event_header:
                     continue
                 else:
                     particle_list.append(data)
@@ -133,7 +136,6 @@ class Jetscape:
                 # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
                 
                 data.append(particle)
-        print(len(particle_list))
         fname.close()
         
         # Correct num_output_per_event and num_events
@@ -465,3 +467,4 @@ class Jetscape:
     
     def particle_objects_list(self):
         return self.particle_list_
+    

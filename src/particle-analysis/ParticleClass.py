@@ -587,3 +587,4 @@ class Particle:
             return True
         else:
             return False
+        
