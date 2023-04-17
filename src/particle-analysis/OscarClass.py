@@ -492,9 +492,7 @@ class Oscar:
         
     def rapidity_cut(self, cut_value):
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
-            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
-                        str(cut_value[1])+'. Switched order is assumed in ' +\
-                       'the following.'
+            warn_msg = warn_msg = 'Lower limit {} is greater that upper limit {}. Switched order is assumed in the following.'.format(cut_value[0], cut_value[1])
             warnings.warn(warn_msg)
             
         if not isinstance(cut_value, (int, float, tuple)):
@@ -649,5 +647,6 @@ class Oscar:
   
 PATH = '/Users/nils/smash-devel/build/data/0/particle_lists.oscar'
 aaa = Oscar(PATH, events=(0,1))
-
-print(aaa.particle_list()[1][1])
+print(aaa.num_output_per_event())
+aaa.rapidity_cut((0.1,-0.1))
+print(aaa.num_output_per_event())
