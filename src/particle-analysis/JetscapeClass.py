@@ -86,13 +86,13 @@ class Jetscape:
     
     def __particle_as_list(self, particle):
         particle_list = [0.0]*7
-        particle_list[0] = int(particle.ID())
-        particle_list[1]  = int(particle.pdg())
-        particle_list[2]  = int(particle.status())
-        particle_list[3]  = float(particle.E())
-        particle_list[4]  = float(particle.px())
-        particle_list[5]  = float(particle.py())
-        particle_list[6]  = float(particle.pz())
+        particle_list[0] = int(particle.ID)
+        particle_list[1]  = int(particle.pdg)
+        particle_list[2]  = int(particle.status)
+        particle_list[3]  = float(particle.E)
+        particle_list[4]  = float(particle.px)
+        particle_list[5]  = float(particle.py)
+        particle_list[6]  = float(particle.pz)
             
         return particle_list
     
@@ -222,13 +222,13 @@ class Jetscape:
     def charged_particles(self):
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge() != 0]
+                                   if elem.charge != 0]
             new_length = len(self.particle_list_)
             self.num_output_per_event_[1] = new_length
         else:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge() != 0]
+                                          if elem.charge != 0]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
                 
@@ -238,13 +238,13 @@ class Jetscape:
     def uncharged_particles(self):
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge() == 0]
+                                   if elem.charge == 0]
             new_length = len(self.particle_list_)
             self.num_output_per_event_[1] = new_length
         else:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge() == 0]
+                                          if elem.charge == 0]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
                 
@@ -278,13 +278,13 @@ class Jetscape:
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg()) == pdg_list]
+                                       if int(elem.pdg) == pdg_list]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg()) == pdg_list]
+                                              if int(elem.pdg) == pdg_list]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
                     
@@ -293,13 +293,13 @@ class Jetscape:
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg()) in pdg_list]
+                                       if int(elem.pdg) in pdg_list]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg()) in pdg_list]
+                                              if int(elem.pdg) in pdg_list]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length     
                     
@@ -321,13 +321,13 @@ class Jetscape:
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg()) != pdg_list]
+                                       if int(elem.pdg) != pdg_list]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg()) != pdg_list]
+                                              if int(elem.pdg) != pdg_list]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
                     
@@ -336,13 +336,13 @@ class Jetscape:
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if not int(elem.pdg()) in pdg_list]
+                                       if not int(elem.pdg) in pdg_list]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if not int(elem.pdg()) in pdg_list]
+                                              if not int(elem.pdg) in pdg_list]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length     
                     
