@@ -4,6 +4,14 @@ import numpy as np
 class Histogram:
 
     def __init__(self, bin_boundaries):
+        """
+        Defines a histogram object.
+
+        The histograms can be initialized either with a tuple
+        (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin
+        boundaries, which allows for different bin widths.
+        Multiple histograms can be added and averaged over.
+        """
     
         self.number_of_bins = None
         self.bin_edges = None
@@ -39,10 +47,26 @@ class Histogram:
         
         
     def histogram(self):
+        """
+        Get the created histogram(s).
+        
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the histogram(s).
+        """
         return self.histograms
     
     
     def number_of_histograms(self):
+        """
+        Get the number of created histograms.
+
+        Returns
+        -------
+        int
+            Number of histograms.
+        """
         return self.number_of_histograms
     
     
@@ -94,10 +118,29 @@ class Histogram:
         return self.bin_edges[1:]
     
     def bin_boundaries(self):
+        """
+        Get the bin boundaries.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the bin boundaries.
+        """
         return np.asarray(self.bin_edges)
     
     
     def add_value(self, value):
+        """
+        Add value(s) to the histogram. 
+        
+        Different cases, if there is just one number added or a whole list/
+        array of numbers.
+
+        Parameters
+        ----------
+        value: int, float, np.number, list, numpy.ndarray
+            Value(s) which ar supposed to be added to the histogram instance.
+        """
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
             
@@ -139,6 +182,12 @@ class Histogram:
 
     
     def add_histogram(self):
+        """
+        Add a new histogram to the Histogram class instance.
+
+        If new values are added to the histogram afterwards, these are added
+        to the last histogram.
+        """
         empty_histogram = np.zeros(self.number_of_bins)
         self.histograms = np.vstack((self.histograms, empty_histogram))
         
@@ -146,6 +195,19 @@ class Histogram:
                 
                     
     def average(self):
+        """
+        Average the created histograms.
+
+        When this function is called the previously generated histograms are
+        averaged with the same weigths and they are overwritten by the
+        average histogram.
+        The standard error of the histograms is computed.
+
+        Returns
+        -------
+        Histogram
+            Returns a Histogram object.
+        """
         if self.histograms.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
@@ -155,11 +217,20 @@ class Histogram:
             return self
         
     def standard_error(self):
+        """
+        Get the standard deviation of the created histograms.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the standard deviation for each bin.
+        """
         return self.error
     
     
     def scale_histogram(self,value):
-        """ Scale the histogram by a factor.
+        """ 
+        Scale the histogram by a factor.
         
         Multiplies the histogram by a number or a list/numpy array with a 
         scaling factor for each bin.
