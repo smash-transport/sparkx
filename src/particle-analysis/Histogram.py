@@ -38,6 +38,7 @@ class Histogram:
             self.histograms = np.zeros(num_bins)
             self.histograms_raw_count = np.zeros(num_bins)
             self.scaling = np.ones(num_bins)
+            self.error = np.zeros(num_bins)
 
         elif isinstance(bin_boundaries, (list, np.ndarray)):
 
@@ -46,6 +47,7 @@ class Histogram:
             self.histograms = np.zeros(self.number_of_bins)
             self.histograms_raw_count = np.zeros(self.number_of_bins)
             self.scaling = np.ones(self.number_of_bins)
+            self.error = np.zeros(self.number_of_bins)
 
         else:
             raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+\
@@ -216,6 +218,8 @@ class Histogram:
         empty_histogram = np.zeros(self.number_of_bins)
         self.histograms = np.vstack((self.histograms, empty_histogram))
         self.histograms_raw_count = np.vstack((self.histograms_raw_count, empty_histogram))
+        self.scaling = np.vstack((self.scaling, np.ones(self.number_of_bins)))
+        self.error = np.vstack((self.error, np.zeros(self.number_of_bins)))
 
         self.number_of_histograms += 1
 
@@ -282,25 +286,19 @@ class Histogram:
 
     def statistical_error(self):
         """
-        Compute the statistical error of a single histogram bin.
-
-        Only usable if the there is one histogram. Calling this function will
-        overwrite all other errors.
-
+        Compute the statistical error of all histogram bins for all histograms.
+        
         Returns
         -------
         numpy.ndarray
-            Array containing the statistical error for each bin.
+            2D Array containing the statistical error for each bin and histogram.
         """
-        if self.number_of_histograms == 1:
-            for bin in range(self.number_of_bins):
-                if self.histograms_raw_count[bin] > 0:
-                    self.error[bin] = self.scaling[bin]\
-                        * np.sqrt(self.histograms_raw_count[bin])
-                else:
-                    self.error[bin] = 0.
+        counter_histogram = 0
+        for histogram in self.histogram():
+            self.error[counter_histogram] = np.sqrt(histogram)
+            counter_histogram += 1
 
-            return self.error
+        return self.error
 
 
     def scale_histogram(self,value):
@@ -315,13 +313,23 @@ class Histogram:
         value: int, float, np.number, list, numpy.ndarray
             Scaling factor for the histogram.
         """
-        if isinstance(value, (int, float, np.number)):
-            self.histograms *= value
-            self.scaling *= value
+        if self.histograms.ndim == 1:
+            if isinstance(value, (int, float, np.number)):
+                self.histograms *= value
+                self.scaling *= value
 
-        elif isinstance(value, (list, np.ndarray)):
-            self.histograms *= np.asarray(value)
-            self.scaling *= np.asarray(value)
+            elif isinstance(value, (list, np.ndarray)):
+                self.histograms *= np.asarray(value)
+                self.scaling *= np.asarray(value)
+        else:
+            if isinstance(value, (int, float, np.number)):
+                self.histograms[-1] *= value
+                self.scaling[-1] *= value
+
+            elif isinstance(value, (list, np.ndarray)):
+                self.histograms[-1] *= np.asarray(value)
+                self.scaling[-1] *= np.asarray(value)
+        
 
 
     def set_error(self,own_error):
@@ -389,7 +397,7 @@ class Histogram:
                             " written to a file")
 
         f = open(filename, 'w')
-        writer = csv.writer(f,quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(f)
         if comment != '':
             f.write(comment)
             f.write('\n')
@@ -405,3 +413,4 @@ class Histogram:
             data = [bin_centers[i],bin_low[i],bin_high[i],distribution[i],\
                     error[i]]
             writer.writerow(data)
+            
