@@ -172,7 +172,6 @@ class Histogram:
                           'range ['+str(self.bin_edges[0])+','+str(self.bin_edges[-1])+\
                           ']. Increase histogram range!'
                 raise ValueError(err_msg)
-                #print(err_msg)
                 
             else:
                 for bin_index in range(self.number_of_bins):
@@ -216,6 +215,7 @@ class Histogram:
         """
         empty_histogram = np.zeros(self.number_of_bins)
         self.histograms = np.vstack((self.histograms, empty_histogram))
+        self.histograms_raw_count = np.vstack((self.histograms_raw_count, empty_histogram))
         
         self.number_of_histograms += 1
 
