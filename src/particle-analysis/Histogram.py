@@ -238,10 +238,11 @@ class Histogram:
         Histogram
             Returns a Histogram object.
         """
+        
         if self.histograms.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
-            self.error = np.std(self.histograms, axis=0)/np.sqrt(self.number_of_histograms)
+            self.error = np.sqrt(np.sum(self.histograms, axis=0))/self.number_of_histograms
             self.histograms = np.mean(self.histograms, axis=0)
             self.number_of_histograms = 1
 
@@ -262,6 +263,8 @@ class Histogram:
         Histogram
             Returns a Histogram object.
         """
+        #TODO: correct error as in average()
+        
         if self.histograms.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
@@ -413,4 +416,12 @@ class Histogram:
             data = [bin_centers[i],bin_low[i],bin_high[i],distribution[i],\
                     error[i]]
             writer.writerow(data)
+
+test = Histogram((0,5,6))
+test.add_value([1,3,4,4,5])
+test.add_value([1,1,4,4,5])
+print(test.histogram())
+test.average()
+print(test.histogram())
+print(test.error)
             
