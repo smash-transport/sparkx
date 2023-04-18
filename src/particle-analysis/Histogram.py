@@ -18,7 +18,7 @@ class Histogram:
         self.bin_edges = None
         self.number_of_histograms = 1
         self.histograms = None
-        self.histograms_raw_counts = None
+        self.histograms_raw_count = None
         self.error = None
         self.scaling = None
         
@@ -36,7 +36,7 @@ class Histogram:
             self.number_of_bins = num_bins
             self.bin_edges = np.linspace(hist_min, hist_max, num=num_bins+1)
             self.histograms = np.zeros(num_bins)
-            self.histograms_raw_counts = np.zeros(num_bins)
+            self.histograms_raw_count = np.zeros(num_bins)
             self.scaling = np.ones(num_bins)
             
         elif isinstance(bin_boundaries, (list, np.ndarray)):
@@ -44,7 +44,7 @@ class Histogram:
             self.number_of_bins = len(bin_boundaries)-1
             self.bin_edges = np.asarray(bin_boundaries)
             self.histograms = np.zeros(self.number_of_bins)
-            self.histograms_raw_counts = np.zeros(self.number_of_bins)
+            self.histograms_raw_count = np.zeros(self.number_of_bins)
             self.scaling = np.ones(self.number_of_bins)
             
         else:
@@ -74,7 +74,7 @@ class Histogram:
         numpy.ndarray
             Array containing the raw counts of the histogram(s)
         """
-        return self.histogram_raw_counts
+        return self.histograms_raw_count
     
     
     def number_of_histograms(self):
@@ -172,6 +172,7 @@ class Histogram:
                           'range ['+str(self.bin_edges[0])+','+str(self.bin_edges[-1])+\
                           ']. Increase histogram range!'
                 raise ValueError(err_msg)
+                #print(err_msg)
                 
             else:
                 for bin_index in range(self.number_of_bins):
@@ -179,20 +180,20 @@ class Histogram:
                     if self.number_of_histograms == 1:
                         if bin_index == 0 and value == self.bin_edges[0]:
                             self.histograms[0] += 1
-                            self.histogram_raw_counts[0] += 1
+                            self.histograms_raw_count[0] += 1
                         elif value > self.bin_edges[bin_index] and value <= self.bin_edges[bin_index+1]:
                             self.histograms[bin_index] += 1
-                            self.histogram_raw_counts[bin_index] += 1
+                            self.histograms_raw_count[bin_index] += 1
                             
                     # Case 2.2: If histogram contains multiple instances, 
                     #           always add values to the latest histogram
                     else:
                         if bin_index == 0 and value == self.bin_edges[0]:
                             self.histograms[-1,0] += 1
-                            self.histogram_raw_counts[-1,0] += 1
+                            self.histograms_raw_count[-1,0] += 1
                         elif value > self.bin_edges[bin_index] and value <= self.bin_edges[bin_index+1]:
                             self.histograms[-1,bin_index] += 1
-                            self.histogram_raw_counts[-1,bin_index] += 1
+                            self.histograms_raw_count[-1,bin_index] += 1
             
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
@@ -293,9 +294,9 @@ class Histogram:
         """
         if self.number_of_histograms == 1:
             for bin in range(self.number_of_bins):
-                if self.histograms_raw_counts[bin] > 0:
+                if self.histograms_raw_count[bin] > 0:
                     self.error[bin] = self.scaling[bin]\
-                        * np.sqrt(self.histograms_raw_counts[bin])
+                        * np.sqrt(self.histograms_raw_count[bin])
                 else:
                     self.error[bin] = 0.
             
