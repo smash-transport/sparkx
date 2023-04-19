@@ -439,8 +439,8 @@ class Particle:
             self.py = float(line_from_file[5])
             self.pz = float(line_from_file[6])
 
-            self.mass(self.compute_mass_from_energy_momentum())
-            self.charge(self.compute_charge_from_pdg())
+            self.mass = self.compute_mass_from_energy_momentum()
+            self.charge = self.compute_charge_from_pdg()
         else:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the JETSCAPE hadron output format'
