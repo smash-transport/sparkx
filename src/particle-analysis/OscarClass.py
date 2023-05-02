@@ -282,25 +282,52 @@ class Oscar:
 
         Returns
         -------
-        list of particle objects : list
-
+        List:
+            List of particle objects
         """
         return self.particle_list_
                 
                 
     def oscar_type(self):
+        """
+        Returns the Oscar type of the given Oscar file as string
+        "Oscar2013" or "Oscar2013Extended"
+        """
         return self.oscar_type_
     
     
     def num_output_per_event(self):
+        """
+        Returns a numpy array containing the event number (starting with 1) 
+        and the corresponding number of particles created in this event as
+        
+        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        
+        num_output_per_event is updated with every manipulation e.g. after 
+        applying cuts.
+        """
         return self.num_output_per_event_
     
     
     def num_events(self):
+        """
+        Returns the number of events in particle_list
+        
+        num_events is updated with every manipulation e.g. after 
+        applying cuts.
+        """
         return self.num_events_
     
     
     def charged_particles(self):
+        """
+        Keep only charged particles in particle_list
+
+        Returns
+        -------
+        Oscar oject:
+            Containing charged particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.charge != 0]
@@ -317,6 +344,14 @@ class Oscar:
 
 
     def uncharged_particles(self):
+        """
+        Keep only uncharged particles in particle_list
+
+        Returns
+        -------
+        Oscar oject:
+            Containing uncharged particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.charge == 0]
@@ -333,6 +368,14 @@ class Oscar:
                 
                 
     def strange_particles(self):
+        """
+        Keep only strange particles in particle_list
+
+        Returns
+        -------
+        Oscar oject:
+            Containing strange particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.is_strange() ]
@@ -349,6 +392,24 @@ class Oscar:
                 
                 
     def particle_species(self, pdg_list):
+        """
+        Keep only particle species given by their PDG ID in every event
+
+        Parameters
+        ----------
+        pdg_list : int
+            To keep a single particle species only, pass a single PDG ID
+            
+        pdg_list : tuple/list/array
+            To keep multiple particle species, pass a tuple or list or array
+            of PDG IDs
+
+        Returns
+        -------
+        Oscar object
+            Containing only particle species specified by pdg_list for every event
+
+        """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
@@ -391,7 +452,26 @@ class Oscar:
         return self
     
     
-    def exclude_particle_species(self, pdg_list):
+    def remove_particle_species(self, pdg_list):
+        """
+        Remove particle species from particle_list by their PDG ID in every 
+        event
+
+        Parameters
+        ----------
+        pdg_list : int
+            To remove a single particle species only, pass a single PDG ID
+            
+        pdg_list : tuple/list/array
+            To remove multiple particle species, pass a tuple or list or array
+            of PDG IDs
+
+        Returns
+        -------
+        Oscar object
+            Containing all but the specified particle species for every event
+
+        """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
@@ -435,6 +515,14 @@ class Oscar:
     
     
     def participants(self):
+        """
+        Keep only participants in particle_list
+
+        Returns
+        -------
+        Oscar oject:
+            Containing participants in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.ncoll != 0]
@@ -451,6 +539,14 @@ class Oscar:
     
     
     def spectators(self):
+        """
+        Keep only spectators in particle_list
+
+        Returns
+        -------
+        Oscar oject:
+            Containing spectators in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.ncoll == 0 ]
@@ -468,6 +564,28 @@ class Oscar:
         
               
     def pt_cut(self, cut_value):
+        """
+        Apply p_t cut to all events and remove all particles with a transverse 
+        momentum not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with p_t in 
+            [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the transverse 
+            momentum of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Oscar object
+            Containing only particles complying with the p_t cut for all events
+        """
+        
         if not isinstance(cut_value, (int, float, np.number)) or cut_value < 0:
             raise TypeError('Input value must be a positive number')
                 
@@ -491,6 +609,28 @@ class Oscar:
         
         
     def rapidity_cut(self, cut_value):
+        """
+        Apply rapidity cut to all events and remove all particles with rapidity 
+        not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with rapidity in 
+            [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the rapidity
+            of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Oscar object
+            Containing only particles complying with the rapidity cut 
+            for all events
+        """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
             warn_msg = warn_msg = 'Lower limit {} is greater that upper limit {}. Switched order is assumed in the following.'.format(cut_value[0], cut_value[1])
             warnings.warn(warn_msg)
@@ -541,6 +681,28 @@ class Oscar:
     
     
     def pseudorapidity_cut(self, cut_value):
+        """
+        Apply pseudo-rapidity cut to all events and remove all particles with 
+        pseudo-rapidity not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with pseudo-rapidity 
+            in [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the pseudo-rapidity
+            of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Oscar object
+            Containing only particles complying with the pseudo-rapidity cut 
+            for all events
+        """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
             warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
                         str(cut_value[1])+'. Switched order is assumed in ' +\
@@ -593,6 +755,28 @@ class Oscar:
     
     
     def spatial_rapidity_cut(self, cut_value):
+        """
+        Apply spatial rapidity (space-time rapidity) cut to all events and 
+        remove all particles with spatial rapidity not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with spatial rapidity 
+            in [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the spatial rapidity
+            of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Oscar object
+            Containing only particles complying with the spatial rapidity cut 
+            for all events
+        """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
             warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
                         str(cut_value[1])+'. Switched order is assumed in ' +\
@@ -643,17 +827,34 @@ class Oscar:
                             'with the cut limits (cut_min, cut_max)')        
         return self
     
-    def multiplicity_cut(self,min_multiplicity):
+    def multiplicity_cut(self, min_multiplicity):
+        """
+        Apply multiplicity cut. Remove all events with a multiplicity lower 
+        than min_multiplicity
+
+        Parameters
+        ----------
+        min_multiplicity : float
+            Lower bound for multiplicity. If the multiplicity of an event is 
+            lower than min_multiplicity, this event is discarded.
+
+        Returns
+        -------
+        Oscar object
+            Containing only events with a multiplicity > min_multiplicity
+        """
         if not isinstance(min_multiplicity, int):
             raise TypeError('Input value for multiplicity cut must be an int')
         if min_multiplicity < 0:
             raise ValueError('Minimum multiplicity must >= 0')
+            
         idx_keep_event = []
         count = 0
         for event in self.num_output_per_event_[:,1]:
             if event >= min_multiplicity:
                 idx_keep_event.append(self.num_output_per_event_[count,0]-1)
             count += 1
+            
         self.particle_list_ = [self.particle_list_[idx] for idx in idx_keep_event]
         self.num_output_per_event_ = np.asarray([self.num_output_per_event_[idx] for idx in idx_keep_event])
         number_deleted_events = self.num_events_- len(idx_keep_event)
