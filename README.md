@@ -11,3 +11,7 @@ All modules in this package follow distinct formatting structure which is summar
 
 ### Returning Values
 - If not otherwise explicitely stated, all methods that return multiple values return them as **numpy array**
+
+# Classes & Usage
+
+## Oscar Class
