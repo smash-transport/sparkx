@@ -445,6 +445,21 @@ class Particle:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the JETSCAPE hadron output format'
             raise ValueError(error_message)
+    
+    def angular_momentum(self):
+        """
+        Compute the angular momentum L=rxp of a particle
+
+        Returns
+        -------
+        angular_momentum : np.array
+            Array containing all three components of the 
+            angular momentum as [Lx, ly, Lz]
+        """
+        r = [self.x, self.y, self.z]
+        p = [self.px, self.py, self.pz]
+        
+        return np.cross(r, p)
         
     def momentum_rapidity_Y(self):
         """
