@@ -2,6 +2,8 @@ from ParticleClass import Particle
 import numpy as np
 import warnings
 import os
+import particle.data
+import csv
 
 class Oscar:
     
@@ -22,12 +24,15 @@ class Oscar:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
+        self.list_of_all_valid_pdg_ids = None
         self.optional_arguments_ = kwargs
+    
         
         self.set_oscar_type()
         self.set_num_events()
         self.set_num_output_per_event()        
         self.set_particle_list(kwargs)
+        self.set_list_of_all_valid_pdg_ids()
     
     # PRIVATE CLASS METHODS
     
@@ -119,6 +124,23 @@ class Oscar:
             raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
             
         return particle_list
+    
+    
+    def __check_if_pdg_is_valid(self, pdg_list):
+        if isinstance(pdg_list, int):
+            if not pdg_list in self.list_of_all_valid_pdg_ids:
+                raise ValueError('Invalid PDG ID given according to the following ' +\
+                                 'data base: ' + self.list_of_all_valid_pdg_ids[0] +\
+                                 '\n Enter a valid PDG ID or update database.')
+                    
+        elif isinstance(pdg_list, np.ndarray):
+            if not all(pdg in self.list_of_all_valid_pdg_ids for pdg in pdg_list):
+                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids)
+                raise ValueError('One or more invalid PDG IDs given. The IDs ' +\
+                                 str(non_valid_elements) +' are not contained in ' +\
+                                 'the data base: ' + self.list_of_all_valid_pdg_ids[0] +\
+                                 '\n Enter valid PDG IDs or update database.')
+        return True
     
         
     # PUBLIC CLASS METHODS
@@ -228,7 +250,23 @@ class Oscar:
             raise TypeError('Input file does not end with a comment line '+\
                             'including the events. File might be incomplete '+\
                             'or corrupted.')
-            
+                
+                
+    def set_list_of_all_valid_pdg_ids(self):
+        path = particle.data.basepath / "particle2022.csv"
+        valid_pdg_ids = []
+        
+        with open(path) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            counter_row = 0
+            for row in csv_reader:
+                if counter_row == 0:
+                    valid_pdg_ids.append(row[0])
+                elif 2 <= counter_row:
+                    valid_pdg_ids.append(int(row[0]))
+                counter_row += 1
+        self.list_of_all_valid_pdg_ids = valid_pdg_ids
+        
                 
     def particle_list(self):
         """
@@ -418,6 +456,8 @@ class Oscar:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
             
+            self.__check_if_pdg_is_valid(pdg_list)
+            
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
                                        if int(elem.pdg) == pdg_list]
@@ -432,6 +472,8 @@ class Oscar:
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
+            
+            self.__check_if_pdg_is_valid(pdg_list)
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
@@ -480,6 +522,8 @@ class Oscar:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
             
+            self.__check_if_pdg_is_valid(pdg_list)
+            
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
                                        if int(elem.pdg) != pdg_list]
@@ -494,6 +538,8 @@ class Oscar:
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
+            
+            self.__check_if_pdg_is_valid(pdg_list)
             
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ 
