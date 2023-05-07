@@ -212,7 +212,7 @@ class Jetscape:
                 elif 2 <= counter_row:
                     valid_pdg_ids.append(int(row[0]))
                 counter_row += 1
-        self.list_of_all_valid_pdg_ids = valid_pdg_ids
+        self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
                 
     def particle_list(self):
         print(len(self.particle_list_))

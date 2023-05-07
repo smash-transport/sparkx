@@ -265,7 +265,7 @@ class Oscar:
                 elif 2 <= counter_row:
                     valid_pdg_ids.append(int(row[0]))
                 counter_row += 1
-        self.list_of_all_valid_pdg_ids = valid_pdg_ids
+        self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
         
                 
     def particle_list(self):
@@ -907,12 +907,3 @@ class Oscar:
         self.num_events_ -= number_deleted_events
 
         return self
-    
-FILE = "/Users/nils/smash/build/data/0/particle_lists.oscar"
-test = Oscar(FILE, events=0)
-
-d = test.particle_species([211, 311, -211])
-print(d)
-
-del test
-del d
