@@ -1,9 +1,9 @@
 from ParticleClass import Particle
+import particle.data
 import numpy as np
+import csv
 import warnings
 import os
-import particle.data
-import csv
 
 class Oscar:
     
@@ -24,15 +24,15 @@ class Oscar:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.list_of_all_valid_pdg_ids = None
+        self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
     
         
         self.set_oscar_type()
         self.set_num_events()
-        self.set_num_output_per_event()        
-        self.set_particle_list(kwargs)
+        self.set_num_output_per_event()  
         self.set_list_of_all_valid_pdg_ids()
+        self.set_particle_list(kwargs)
     
     # PRIVATE CLASS METHODS
     
@@ -128,17 +128,17 @@ class Oscar:
     
     def __check_if_pdg_is_valid(self, pdg_list):
         if isinstance(pdg_list, int):
-            if not pdg_list in self.list_of_all_valid_pdg_ids:
+            if not pdg_list in self.list_of_all_valid_pdg_ids_:
                 raise ValueError('Invalid PDG ID given according to the following ' +\
-                                 'data base: ' + self.list_of_all_valid_pdg_ids[0] +\
+                                 'data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
                                  '\n Enter a valid PDG ID or update database.')
                     
         elif isinstance(pdg_list, np.ndarray):
-            if not all(pdg in self.list_of_all_valid_pdg_ids for pdg in pdg_list):
-                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids)
+            if not all(pdg in self.list_of_all_valid_pdg_ids_ for pdg in pdg_list):
+                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids_)
                 raise ValueError('One or more invalid PDG IDs given. The IDs ' +\
                                  str(non_valid_elements) +' are not contained in ' +\
-                                 'the data base: ' + self.list_of_all_valid_pdg_ids[0] +\
+                                 'the data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
                                  '\n Enter valid PDG IDs or update database.')
         return True
     
@@ -907,3 +907,12 @@ class Oscar:
         self.num_events_ -= number_deleted_events
 
         return self
+    
+FILE = "/Users/nils/smash/build/data/0/particle_lists.oscar"
+test = Oscar(FILE, events=0)
+
+d = test.particle_species([211, 311, -211])
+print(d)
+
+del test
+del d
