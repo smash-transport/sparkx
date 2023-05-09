@@ -26,11 +26,12 @@ class Oscar:
         self.particle_list_ = None
         self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
+        self.event_end_lines_ = []
     
         
         self.set_oscar_type()
         self.set_num_events()
-        self.set_num_output_per_event()  
+        self.set_num_output_per_event_and_event_footers()  
         self.set_list_of_all_valid_pdg_ids()
         self.set_particle_list(kwargs)
     
@@ -216,7 +217,7 @@ class Oscar:
                             'Oscar2013Extended format ')
                 
                 
-    def set_num_output_per_event(self):
+    def set_num_output_per_event_and_event_footers(self):
         file = open(self.PATH_OSCAR_ , 'r')
         event_output = []
         
@@ -224,6 +225,8 @@ class Oscar:
             line = file.readline()
             if not line:
                 break
+            elif '#' in line and 'end' in line:
+                self.event_end_lines_.append(line)
             elif '#' in line and 'out' in line:
                 line_str = line.replace('\n','').split(' ')
                 event = line_str[2]
@@ -908,7 +911,7 @@ class Oscar:
         count = 0
         for event in self.num_output_per_event_[:,1]:
             if event >= min_multiplicity:
-                idx_keep_event.append(self.num_output_per_event_[count,0]-1)
+                idx_keep_event.append(self.num_output_per_event_[count,0])
             count += 1
             
         self.particle_list_ = [self.particle_list_[idx] for idx in idx_keep_event]
@@ -960,19 +963,5 @@ class Oscar:
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
                 elif self.oscar_type_ == 'Oscar2013Extended':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
-                f_out.write('# event '+str(event) +' end 0 impact   '+event_footer[8]+\
-                            ' '+event_footer[9]+' '+event_footer[10]+'\n')
+                f_out.write(self.event_end_lines_[event])
         f_out.close()
-        
-        
-    
-FILE = "/Users/nils/smash/build/data/0/particle_lists.oscar"
-test = Oscar(FILE, events=(0,1))
-
-#print(test.multiplicity_cut(4500).num_output_per_event())
-
-output_path = '/Users/nils/Desktop/test.oscar'
-
-test.print_particle_lists_to_file(output_path)
-
-del test

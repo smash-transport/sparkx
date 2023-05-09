@@ -710,7 +710,7 @@ class Jetscape:
         count = 0
         for event in self.num_output_per_event_[:,1]:
             if event >= min_multiplicity:
-                idx_keep_event.append(self.num_output_per_event_[count,0]-1)
+                idx_keep_event.append(self.num_output_per_event_[count,0])
             count += 1
         self.particle_list_ = [self.particle_list_[idx] for idx in idx_keep_event]
         self.num_output_per_event_ = np.asarray([self.num_output_per_event_[idx] for idx in idx_keep_event])
