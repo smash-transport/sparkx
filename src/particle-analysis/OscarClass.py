@@ -312,7 +312,7 @@ class Oscar:
     def particle_objects_list(self):
         """
         Returns a nested python list containing all particles from 
-        the Oscar2013/Oscar2013Extended output as particle Objects 
+        the Oscar2013/Oscar2013Extended output as particle objects 
         from ParticleClass:
             
             Single Event:    [particle_object]
@@ -343,6 +343,11 @@ class Oscar:
         
         num_output_per_event is updated with every manipulation e.g. after 
         applying cuts.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the event number and the number of particles
         """
         return self.num_output_per_event_
     
@@ -353,6 +358,11 @@ class Oscar:
         
         num_events is updated with every manipulation e.g. after 
         applying cuts.
+
+        Returns
+        -------
+        int:
+            Number of events in particle_list
         """
         return self.num_events_
     
@@ -887,7 +897,7 @@ class Oscar:
         Returns
         -------
         Oscar object
-            Containing only events with a multiplicity > min_multiplicity
+            Containing only events with a multiplicity >= min_multiplicity
         """
         if not isinstance(min_multiplicity, int):
             raise TypeError('Input value for multiplicity cut must be an int')

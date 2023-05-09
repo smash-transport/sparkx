@@ -244,17 +244,63 @@ class Jetscape:
         return particle_array
     
     def particle_objects_list(self):
+        """
+        Returns a nested python list containing all particles from 
+        the Jetscape output as particle objects 
+        from ParticleClass:
+            
+            Single Event:    [particle_object]
+            Multiple Events: [event][particle_object]
+
+        Returns
+        -------
+        List:
+            List of particle objects
+        """
         return self.particle_list_
     
     def num_output_per_event(self):
+        """
+        Returns a numpy array containing the event number (starting with 1) 
+        and the corresponding number of particles created in this event as
+        
+        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        
+        num_output_per_event is updated with every manipulation e.g. after 
+        applying cuts.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the event number and the number of particles
+        """
         return self.num_output_per_event_
     
     
     def num_events(self):
+        """
+        Returns the number of events in particle_list
+        
+        num_events is updated with every manipulation e.g. after 
+        applying cuts.
+
+        Returns
+        -------
+        int:
+            Number of events in particle_list
+        """
         return self.num_events_
     
 
     def charged_particles(self):
+        """
+        Keep only charged particles in particle_list
+
+        Returns
+        -------
+        Jetscape oject:
+            Containing charged particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.charge != 0]
@@ -271,6 +317,14 @@ class Jetscape:
 
 
     def uncharged_particles(self):
+        """
+        Keep only uncharged particles in particle_list
+
+        Returns
+        -------
+        Jetscape oject:
+            Containing uncharged particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.charge == 0]
@@ -287,6 +341,14 @@ class Jetscape:
                 
                 
     def strange_particles(self):
+        """
+        Keep only strange particles in particle_list
+
+        Returns
+        -------
+        Jetscape oject:
+            Containing strange particles in every event only
+        """
         if self.num_events_ == 1:
             self.particle_list_ = [elem for elem in self.particle_list_ 
                                    if elem.is_strange() ]
@@ -303,6 +365,24 @@ class Jetscape:
                 
                 
     def particle_species(self, pdg_list):
+        """
+        Keep only particle species given by their PDG ID in every event
+
+        Parameters
+        ----------
+        pdg_list : int
+            To keep a single particle species only, pass a single PDG ID
+            
+        pdg_list : tuple/list/array
+            To keep multiple particle species, pass a tuple or list or array
+            of PDG IDs
+
+        Returns
+        -------
+        Jetscape object
+            Containing only particle species specified by pdg_list for every event
+
+        """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
@@ -349,7 +429,26 @@ class Jetscape:
         return self
     
     
-    def exclude_particle_species(self, pdg_list):
+    def remove_particle_species(self, pdg_list):
+        """
+        Remove particle species from particle_list by their PDG ID in every 
+        event
+
+        Parameters
+        ----------
+        pdg_list : int
+            To remove a single particle species only, pass a single PDG ID
+            
+        pdg_list : tuple/list/array
+            To remove multiple particle species, pass a tuple or list or array
+            of PDG IDs
+
+        Returns
+        -------
+        Jetscape object
+            Containing all but the specified particle species for every event
+
+        """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
@@ -397,6 +496,27 @@ class Jetscape:
             
               
     def pt_cut(self, cut_value):
+        """
+        Apply p_t cut to all events and remove all particles with a transverse 
+        momentum not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with p_t in 
+            [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the transverse 
+            momentum of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Jetscape object
+            Containing only particles complying with the p_t cut for all events
+        """
         if not isinstance(cut_value, (int, float, np.number)) or cut_value < 0:
             raise TypeError('Input value must be a positive number')
                 
@@ -420,6 +540,28 @@ class Jetscape:
         
         
     def rapidity_cut(self, cut_value):
+        """
+        Apply rapidity cut to all events and remove all particles with rapidity 
+        not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with rapidity in 
+            [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the rapidity
+            of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Jetscape object
+            Containing only particles complying with the rapidity cut 
+            for all events
+        """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
             warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
                         str(cut_value[1])+'. Switched order is assumed in ' +\
@@ -472,6 +614,28 @@ class Jetscape:
     
     
     def pseudorapidity_cut(self, cut_value):
+        """
+        Apply pseudo-rapidity cut to all events and remove all particles with 
+        pseudo-rapidity not complying with cut_value
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applyed symmetrically 
+            around 0.
+            For example, if cut_value = 1, only particles with pseudo-rapidity 
+            in [-1.0, 1.0] are kept.
+            
+        pdg_list : tuple
+            To specify an asymmetric acceptance range for the pseudo-rapidity
+            of particles, pass a tuple (cut_min, cut_max)
+
+        Returns
+        -------
+        Jetscape object
+            Containing only particles complying with the pseudo-rapidity cut 
+            for all events
+        """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
             warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
                         str(cut_value[1])+'. Switched order is assumed in ' +\
@@ -523,6 +687,21 @@ class Jetscape:
         return self
     
     def multiplicity_cut(self,min_multiplicity):
+        """
+        Apply multiplicity cut. Remove all events with a multiplicity lower 
+        than min_multiplicity
+
+        Parameters
+        ----------
+        min_multiplicity : float
+            Lower bound for multiplicity. If the multiplicity of an event is 
+            lower than min_multiplicity, this event is discarded.
+
+        Returns
+        -------
+        Jetscape object
+            Containing only events with a multiplicity >= min_multiplicity
+        """
         if not isinstance(min_multiplicity, int):
             raise TypeError('Input value for multiplicity cut must be an int')
         if min_multiplicity < 0:

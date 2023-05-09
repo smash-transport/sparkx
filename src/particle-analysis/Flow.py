@@ -266,7 +266,8 @@ class Flow:
 
         Return
         ------
-        integrated_flow_: complex
+        integrated_flow_: complex / real
+            Value of the integrated flow
         """
         if self.flow_type == "ReactionPlane":
             self.__integrated_flow_reaction_plane(particle_data)
