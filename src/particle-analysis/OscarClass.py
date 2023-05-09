@@ -907,3 +907,62 @@ class Oscar:
         self.num_events_ -= number_deleted_events
 
         return self
+    
+    def print_particle_lists_to_file(self, output_file):
+        header = []
+        event_footer = ''
+        format_oscar2013 = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
+        format_oscar2013_extended = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d %d'
+        
+        line_in_initial_file = open(self.PATH_OSCAR_,'r')
+        counter_line = 0
+        while True:
+            line = line_in_initial_file.readline()
+            line_splitted = line.replace('\n','').split(' ')
+
+            if counter_line < 3:
+                header.append(line)
+            elif line_splitted[0] == '#' and line_splitted[3] == 'end':
+                event_footer = line
+                break
+            elif counter_line > 1000000:
+                err_msg = 'Unable to find the end of an event in the original' +\
+                          'Oscar file within the first 1000000 lines'
+                raise RuntimeError(err_msg)
+            counter_line += 1
+        line_in_initial_file.close()
+        
+        event_footer = event_footer.replace('\n','').split(' ')
+        
+        output = open(output_file, "w")
+        for i in range(3):
+            output.write(header[i])
+        output.close()
+        
+        with open(output_file, "a") as f_out:
+            for i in range(self.num_events_):
+                event = self.num_output_per_event_[i,0]
+                num_out = self.num_output_per_event_[i,1]
+                particle_output = np.asarray(self.particle_list()[i])
+             
+                f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                if self.oscar_type_ == 'Oscar2013':
+                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
+                elif self.oscar_type_ == 'Oscar2013Extended':
+                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
+                f_out.write('# event '+str(event) +' end 0 impact   '+event_footer[8]+\
+                            ' '+event_footer[9]+' '+event_footer[10]+'\n')
+        f_out.close()
+        
+        
+    
+FILE = "/Users/nils/smash/build/data/0/particle_lists.oscar"
+test = Oscar(FILE, events=(0,1))
+
+#print(test.multiplicity_cut(4500).num_output_per_event())
+
+output_path = '/Users/nils/Desktop/test.oscar'
+
+test.print_particle_lists_to_file(output_path)
+
+del test
