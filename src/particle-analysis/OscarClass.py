@@ -909,8 +909,8 @@ class Oscar:
             
         idx_keep_event = []
         count = 0
-        for event in self.num_output_per_event_[:,1]:
-            if event >= min_multiplicity:
+        for multiplicity in self.num_output_per_event_[:,1]:
+            if multiplicity >= min_multiplicity:
                 idx_keep_event.append(self.num_output_per_event_[count,0])
             count += 1
             
@@ -953,10 +953,10 @@ class Oscar:
         output.close()
         
         with open(output_file, "a") as f_out:
-            for i in range(self.num_events_):
-                event = self.num_output_per_event_[i,0]
-                num_out = self.num_output_per_event_[i,1]
-                particle_output = np.asarray(self.particle_list()[i])
+            if self.num_events_ == 1:
+                event = self.num_output_per_event_[0]
+                num_out = self.num_output_per_event_[1]
+                particle_output = np.asarray(self.particle_list())
              
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_type_ == 'Oscar2013':
@@ -964,4 +964,16 @@ class Oscar:
                 elif self.oscar_type_ == 'Oscar2013Extended':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
+            else:
+                for i in range(self.num_events_):
+                    event = self.num_output_per_event_[i,0]
+                    num_out = self.num_output_per_event_[i,1]
+                    particle_output = np.asarray(self.particle_list()[i])
+                 
+                    f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                    if self.oscar_type_ == 'Oscar2013':
+                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
+                    elif self.oscar_type_ == 'Oscar2013Extended':
+                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
+                    f_out.write(self.event_end_lines_[event])
         f_out.close()
