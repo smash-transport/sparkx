@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import warnings
 
 
 class Histogram:
@@ -168,12 +169,12 @@ class Histogram:
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
 
-            # Throw warning and add warning counter. Cut off after first warning
-            if value < self.bin_edges[0] or value > self.bin_edges[-1]:
-                err_msg = 'Value '+str(value)+' lies outside the histogram '+\
+            counter_warnings = 0
+            if (value < self.bin_edges[0] or value > self.bin_edges[-1]) and counter_warnings == 0:
+                warn_msg = 'One or more values lie outside the histogram '+\
                           'range ['+str(self.bin_edges[0])+','+str(self.bin_edges[-1])+\
-                          ']. Increase histogram range!'
-                raise ValueError(err_msg)
+                          ']. Exceeding values are ignored. Increase histogram range!'
+                warnings.warn(warn_msg)
 
             else:
                 for bin_index in range(self.number_of_bins):
@@ -417,11 +418,4 @@ class Histogram:
                     error[i]]
             writer.writerow(data)
 
-test = Histogram((0,5,6))
-test.add_value([1,3,4,4,5])
-test.add_value([1,1,4,4,5])
-print(test.histogram())
-test.average()
-print(test.histogram())
-print(test.error)
             
