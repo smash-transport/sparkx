@@ -79,7 +79,7 @@ class Flow:
             relevant_weights_event = []
             relevant_particles_event = []
             for particle in range(len(particle_data[event])):
-                if particle_data[event][particle].pt_abs() > 0.3:
+                if particle_data[event][particle].pt_abs() > 0.0:
                     Q_vector_val += event_weights[event][particle] * np.exp(1.0j * float(self.n) * particle_data[event][particle].phi())
                     relevant_weights_event.append(event_weights[event][particle])
                     relevant_particles_event.append(particle_data[event][particle])
@@ -94,7 +94,7 @@ class Flow:
             Q_vector_A_val = 0. + 0.j
             relevant_weights_A_event = []
             for particle in range(len(particle_data[event])):
-                if particle_data[event][particle].pt_abs() > 0.3 and particle_data[event][particle].pseudorapidity() > +0.1:
+                if particle_data[event][particle].pt_abs() > 0.0 and particle_data[event][particle].pseudorapidity() > +0.01:
                     Q_vector_A_val += event_weights[event][particle] * np.exp(1.0j * float(self.n) * particle_data[event][particle].phi())
                     relevant_weights_A_event.append(event_weights[event][particle])
             Q_vector_A.append(Q_vector_A_val)
@@ -107,7 +107,7 @@ class Flow:
             Q_vector_B_val = 0. + 0.j
             relevant_weights_B_event = []
             for particle in range(len(particle_data[event])):
-                if particle_data[event][particle].pt_abs() > 0.3 and particle_data[event][particle].pseudorapidity() < -0.1:
+                if particle_data[event][particle].pt_abs() > 0.0 and particle_data[event][particle].pseudorapidity() < -0.01:
                     Q_vector_B_val += event_weights[event][particle] * np.exp(1.0j * float(self.n) * particle_data[event][particle].phi())
                     relevant_weights_B_event.append(event_weights[event][particle])
             Q_vector_B.append(Q_vector_B_val)
@@ -158,19 +158,19 @@ class Flow:
 
     def __integrated_flow_reaction_plane(self,particle_data):
         flow_event_average = 0. + 0.j
-        reduce_nevents = 0. # triggered, if there is no particle in the event
+        number_particles = 0.
         for event in range(len(particle_data)):
             flow_event = 0. + 0.j
             for particle in range(len(particle_data[event])):
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
                 flow_event += pt**self.n * np.exp(1j*self.n*phi) / pt**self.n
-            if len(particle_data[event]) != 0:
-                flow_event /= len(particle_data[event])
+                number_particles += 1.
+            if number_particles != 0.:
+                flow_event_average += flow_event
             else:
-                flow_event = 0. + 0.j
-            flow_event_average += flow_event
-        flow_event_average /= len(particle_data)-reduce_nevents
+                flow_event_average = 0. + 0.j
+        flow_event_average /= number_particles
         self.integrated_flow_ = flow_event_average
 
     def __integrated_flow_event_plane(self,particle_data):
@@ -211,10 +211,6 @@ class Flow:
                 Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
                 Q_vector_particle /= np.sqrt(sum_weights[event] - weight_particle**2.)
 
-                u_vector = u_vectors[event][particle]
-                u_vector *= weight_particle
-                u_vector /= np.sqrt(sum_weights_u)
-
                 Psi_n = (1./float(self.n)) * np.arctan2(Q_vector_particle.imag, Q_vector_particle.real)
                 numerator_of_particle = np.cos(float(self.n)* (relevant_particles[event][particle].phi() - Psi_n))
 
@@ -231,8 +227,6 @@ class Flow:
                 number_of_particles += 1
                 flowvalue += flow_values[event][particle]
                 flowvalue_squared += flow_values[event][particle]**2.
-        print("flowvalue = ",flowvalue)
-        print("flowvalue_squared = ",flowvalue_squared)
         
         vn_integrated = 0.0
         sigma = 0.0
@@ -241,17 +235,90 @@ class Flow:
             sigma = 0.0
         else:
             vn_integrated = flowvalue / number_of_particles
-            vn_squared = flowvalue_squared / number_of_particles
+            vn_squared = flowvalue_squared / number_of_particles**2.
             std_deviation = np.sqrt(vn_integrated**2. - vn_squared)
             sigma = std_deviation / np.sqrt(number_of_particles)
 
         self.integrated_flow_ = vn_integrated
         self.integrated_flow_err_ = sigma
     
-    def __integrated_flow_scalar_product(self):
-        return 0
+    def __integrated_flow_scalar_product(self,particle_data):
+        event_weights = self.__compute_particle_weights(particle_data)
+
+        Q_vector, Q_vector_A, Q_vector_B, Psi_A, Psi_B, sum_weights, sum_weights_A, sum_weights_B, relevant_weights, relevant_particles = self.__compute_flow_vectors(particle_data,event_weights)
+
+        u_vectors = [] # [event][particle]
+        for event in range(len(relevant_particles)):
+            u_vector_event = []
+            for particle in range(len(relevant_particles[event])):
+                u_vector_event.append(np.exp(1.0j*float(self.n)*relevant_particles[event][particle].phi()))
+            u_vectors.extend([u_vector_event])
+
+        sum_weights_u = [] # [event]
+        for event in range(len(relevant_weights)):
+            weight_val_u = 0.
+            for particle in range(len(relevant_weights[event])):
+                weight_val_u += relevant_weights[event][particle]**2.
+            sum_weights_u.append(weight_val_u)
+
+        # calculate resolution factor
+        event_counter = 0
+        total_radicant = 0.0
+        for i in range(len(Psi_A)):
+            event_counter += 1
+            total_radicant += abs((np.conjugate(Q_vector_A[i]) * Q_vector_B[i]).real)
+        resolution = np.sqrt(total_radicant / event_counter)
+
+        flow_values = []
+        for event in range(len(relevant_particles)):
+            flow_values_event = []
+            for particle in range(len(relevant_particles[event])):
+                weight_particle = np.abs(relevant_weights[event][particle])
+                Q_vector_particle = Q_vector[event]
+                Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
+                Q_vector_particle /= np.sqrt(sum_weights[event] - weight_particle**2.)
+
+                u_vector = u_vectors[event][particle]
+                u_vector *= weight_particle
+                u_vector /= np.sqrt(sum_weights_u[event])
+                u_vector /= abs(u_vector) # correlate with unit vector of POI
+
+                numerator_of_particle = (np.conjugate(u_vector) * Q_vector_particle).real
+                #print(numerator_of_particle)
+                flow_of_particle = numerator_of_particle / resolution
+                flow_values_event.append(flow_of_particle)
+            flow_values.extend([flow_values_event])
+
+        # compute the integrated flow
+        number_of_particles = 0
+        flowvalue = 0.0
+        flowvalue_squared = 0.0
+        for event in range(len(relevant_particles)):
+            for particle in range(len(relevant_particles[event])):
+                number_of_particles += 1
+                flowvalue += flow_values[event][particle]
+                flowvalue_squared += flow_values[event][particle]**2.
+        
+        vn_integrated = 0.0
+        sigma = 0.0
+        if number_of_particles == 0:
+            vn_integrated = 0.0
+            sigma = 0.0
+        else:
+            vn_integrated = flowvalue / number_of_particles
+            vn_squared = flowvalue_squared / number_of_particles**2.
+            std_deviation = np.sqrt(vn_integrated**2. - vn_squared)
+            sigma = std_deviation / np.sqrt(number_of_particles)
+
+        self.integrated_flow_ = vn_integrated
+        self.integrated_flow_err_ = sigma
+        
     
-    def __integrated_flow_Q_cumulants(self):
+    def __integrated_flow_Q_cumulants(self,particle_data):
+        k_particle_cumulant = 4
+        # compute which Q-vectors are needed
+        Qn_storage = []
+        
         return 0
     
     def __integrated_flow_LeeYang_zeros(self):
@@ -273,12 +340,16 @@ class Flow:
             self.__integrated_flow_reaction_plane(particle_data)
         elif self.flow_type == "EventPlane":
             self.__integrated_flow_event_plane(particle_data)
+        elif self.flow_type == "ScalarProduct":
+            self.__integrated_flow_scalar_product(particle_data)
+        elif self.flow_type == "QCumulants":
+            self.__integrated_flow_Q_cumulants(particle_data)
         return self.integrated_flow_, self.integrated_flow_err_
 
     def __differential_flow_reaction_plane(self,binned_particle_data):
         flow_differential = [0.+0.j for i in range(len(binned_particle_data))]
-        reduce_nevents = 0. # triggered, if there is no particle in the event
         for bin in range(len(binned_particle_data)):
+            number_particles = 0.
             flow_event_average = 0. + 0.j
             for event in range(len(binned_particle_data[bin])):
                 flow_event = 0. + 0.j
@@ -286,12 +357,12 @@ class Flow:
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
                     flow_event += pt**self.n * np.exp(1j*self.n*phi) / pt**self.n
-                if len(binned_particle_data[bin][event]) != 0:
-                    flow_event /= len(binned_particle_data[bin][event])
-                else:
-                    flow_event = 0. + 0.j
+                    number_particles += 1.
                 flow_event_average += flow_event
-            flow_event_average /= len(binned_particle_data[bin])-reduce_nevents
+            if number_particles != 0.:
+                flow_event_average /= number_particles
+            else:
+                flow_event_average = 0. + 0.j
             flow_differential[bin] = flow_event_average
         self.differential_flow_ = flow_differential
 
@@ -328,6 +399,7 @@ class Flow:
                         val = particle.momentum_rapidity_Y()
                     if flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
+                        print(val)
                     if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle)
                 events_bin.extend([particles_event])
@@ -338,35 +410,3 @@ class Flow:
         return self.differential_flow_
 
 
-'''
-from OscarClass import Oscar
-data = Oscar("/home/hendrik/Git/particle-analysis/src/particle-analysis/particle_lists_nevents100_snn200_b3.oscar",events=(0,10)).pseudorapidity_cut(0.5).particle_objects_list()
-
-a = Flow("ReactionPlane",2)
-print(a.integrated_flow(data))
-
-#b = Flow("ReactionPlane",2)
-#print(b.differential_flow(data,[0.,0.5,1.0,1.5,2.,2.5,3.],"pt"))
-
-#c = Flow("ReactionPlane",3)
-#print(c.integrated_flow(data))
-
-#d = Flow("ReactionPlane",3)
-#print(d.differential_flow(data,[0.,0.5,1.0,1.5,2.,2.5,3.],"pt"))
-
-#e = Flow("ReactionPlane",4)
-#print(e.integrated_flow(data))
-
-#f = Flow("ReactionPlane",4)
-#print(f.differential_flow(data,[0.,0.5,1.0,1.5,2.,2.5,3.],"pt"))
-
-g = Flow("EventPlane",n=2,weight="pt2")
-print(g.integrated_flow(data))
-
-#h = Flow("EventPlane",n=3,weight="pt")
-#print(h.integrated_flow(data))
-
-#i = Flow("EventPlane",n=4,weight="pt")
-#print(i.integrated_flow(data))
-
-'''
