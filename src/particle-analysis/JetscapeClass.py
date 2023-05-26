@@ -718,3 +718,45 @@ class Jetscape:
         self.num_events_ -= number_deleted_events
 
         return self
+    
+    def print_particle_lists_to_file(self, output_file):
+        
+        def get_last_line(file_path):
+            with open(file_path, 'rb') as file:
+                file.seek(-2, 2)
+                while file.read(1) != b'\n':  
+                    file.seek(-2, 1)  
+                    last_line = file.readline().decode().strip()
+                return last_line
+        
+        format_jetscape = '%d %d %d %g %g %g %g'
+        
+        line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
+        header = line_in_initial_file.readline()
+        last_line = get_last_line(self.PATH_JETSCAPE_)
+        line_in_initial_file.close()
+
+        output = open(output_file, "w")
+        output.write(header)
+        output.close()
+        
+        with open(output_file, "a") as f_out:
+            if self.num_events_ == 1:
+                event = self.num_output_per_event_[0]
+                num_out = self.num_output_per_event_[1]
+                particle_output = np.asarray(self.particle_list())
+             
+                f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
+                np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
+                f_out.write(last_line)
+
+            else:
+                for i in range(self.num_events_):
+                    event = self.num_output_per_event_[i,0]
+                    num_out = self.num_output_per_event_[i,1]
+                    particle_output = np.asarray(self.particle_list()[i])
+                 
+                    f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
+                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
+                f_out.write(last_line)
+        f_out.close()
