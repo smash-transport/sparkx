@@ -720,17 +720,15 @@ class Jetscape:
         return self
     
     def print_particle_lists_to_file(self, output_file):
-        
         def get_last_line(file_path):
             with open(file_path, 'rb') as file:
                 file.seek(-2, 2)
-                while file.read(1) != b'\n':  
-                    file.seek(-2, 1)  
-                    last_line = file.readline().decode().strip()
+                while file.read(1) != b'\n':
+                    file.seek(-2, 1)
+                last_line = file.readline().decode().strip()
                 return last_line
         
         format_jetscape = '%d %d %d %g %g %g %g'
-        
         line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
         header = line_in_initial_file.readline()
         last_line = get_last_line(self.PATH_JETSCAPE_)
@@ -739,7 +737,7 @@ class Jetscape:
         output = open(output_file, "w")
         output.write(header)
         output.close()
-        
+    
         with open(output_file, "a") as f_out:
             if self.num_events_ == 1:
                 event = self.num_output_per_event_[0]
