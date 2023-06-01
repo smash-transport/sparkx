@@ -3,13 +3,166 @@ import math
 from particle import PDGID
 
 class Particle:
-    """
-    Defines a particle object.
+    """Defines a particle object.
 
     The member variables of the Particle class are the quantities in the 
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
     they stay None to throw an error if one tries to access a non existing 
     quantity.
+    
+    Attributes
+    ----------
+    t_ : float
+        The time of the particle.
+    x_ : float
+        The x coordinate of the position.
+    y_ : float
+        The y coordinate of the position.
+    z_ : float
+        The z coordinate of the position.
+    mass_ : float
+        The mass of the particle.
+    E_ : float
+        The energy of the particle.
+    px_ : float
+        The x component of the momentum.
+    py_ : float
+        The y component of the momentum.
+    pz_ : float
+        The z component of the momentum.
+    pdg_ : int
+        The PDG code of the particle.
+    ID_ : int
+        The ID of the particle (unique label of each particle in an event).
+    charge_ : int
+        Electric charge of the particle.
+    ncoll_ : int
+        Number of collisions undergone by the particle.
+    form_time_ : double
+        Formation time of the particle.
+    xsecfac_ : double
+        Scaling factor of the cross section.
+    proc_id_origin_ : int
+        ID for the process the particle stems from.
+    proc_type_origin_ : int
+        Thype information for the process the particle stems from.
+    t_last_coll_ : double
+        Time of the last collision.
+    pdg_mother1_ : int
+        PDG code of the mother particle 1.
+    pdg_mother2_ : int
+        PDG code of the mother particle 2.
+    status_ : int
+        Status code of the particle.
+    baryon_number_ : int
+        Baryon number of the particle.
+
+    Methods
+    -------
+    t:
+        Get/set t
+    x:
+        Get/set x
+    y:
+        Get/set y
+    z:
+        Get/set z
+    mass:
+        Get/set mass
+    E:
+        Get/set E
+    px:
+        Get/set px
+    py:
+        Get/set py
+    pz:
+        Get/set pz
+    pdg:
+        Get/set pdg
+    ID:
+        Get/set ID
+    charge:
+        Get/set charge
+    ncoll:
+        Get/set ncoll
+    form_time:
+        Get/set form_time
+    xsecfac:
+        Get/set xsecfactor
+    proc_id_origin:
+        Get/set proc_id_origin
+    proc_type_origin:
+        Get/set proc_type_origin
+    t_last_coll:
+        Get/set t_last_coll
+    pdg_mother1:
+        Get/set pdg_mother1
+    pdg_mother2:
+        Get/set pdg_mother2
+    status:
+        Get/set status
+    baryon_number:
+        Get/set baryon_number
+    print_particle:
+        Print the particle as CSV to terminal
+    set_quantities_OSCAR2013:
+        Set particle properties OSCAR2013
+    set_quantities_OSCAR2013Extended:
+        Set particle properties OSCAR2013Extended
+    set_quantities_JETSCAPE:
+        Set particle properties JETSCAPE
+    angular_momentum:
+        Compute angular momentum
+    momentum_rapidity_Y:
+        Compute momentum rapidity
+    p_abs:
+        Compute absolute momentum
+    pt_abs:
+        Compute absolute value of transverse momentum
+    phi:
+        Compute azimuthal angle
+    theta:
+        Compute polar angle
+    pseudorapidity:
+        Compute pseudorapidity
+    spatial_rapidity:
+        Compute spatial rapidity
+    proper_time:
+        Compute proper time
+    compute_mass_from_energy_momentum:
+        Compute mass from energy momentum relation
+    compute_charge_from_pdg:
+        Compute charge from PDG code
+    is_meson:
+        Is the particle a meson?
+    is_baryon:
+        Is the particle a baryon?
+    is_hadron:
+        Is the particle a hadron?
+    is_strange:
+        Is the particle a strange particle?
+    is_heavy_flavor:
+        Is the particle a heavy flavor particle?
+
+    Notes
+    -----
+    To set a value of one of the attributes by hand, please use the 
+    corresponding getter methods with parentheses including the value for the 
+    attribute of the particle.
+        
+    Examples
+    --------
+    To use the particle class a particle has to be created and the attributes 
+    can be set or obtained with the corresponding functions.
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> particle = Particle()
+        >>> particle.t(1.0)
+        >>> print(particle.t)
+        1.0
+
     """
     def __init__(self):
         self.t_ = None
@@ -37,7 +190,17 @@ class Particle:
 
     @property
     def t(self):
-        """Get the time of the particle."""
+        """Get or set the time of the particle.
+        
+        Returns
+        -------
+        t_ : float
+
+        Raises
+        ------
+        ValueError
+            if time is not set
+        """
         if self.t_ == None:
             raise ValueError("t not set")
         else:
@@ -45,12 +208,21 @@ class Particle:
         
     @t.setter
     def t(self,value):
-        """Set the time of the particle."""
         self.t_ = value
 
     @property
     def x(self):
-        """Get the x-position of the particle."""
+        """Get or set the x-position of the particle.
+        
+        Returns
+        -------
+        x_ : float
+
+        Raises
+        ------
+        ValueError
+            if x is not set
+        """
         if self.x_ == None:
             raise ValueError("x not set")
         else:
@@ -58,12 +230,21 @@ class Particle:
         
     @x.setter
     def x(self,value):
-        """Set the x-position of the particle."""
         self.x_ = value
 
     @property
     def y(self):
-        """Get the y-position of the particle."""
+        """Get or set the y-position of the particle.
+        
+        Returns
+        -------
+        y_ : float
+
+        Raises
+        ------
+        ValueError
+            if y is not set
+        """
         if self.y_ == None:
             raise ValueError("y not set")
         else:
@@ -71,12 +252,21 @@ class Particle:
     
     @y.setter
     def y(self,value):
-        """Set the y-position of the particle."""
         self.y_ = value
 
     @property
     def z(self):
-        """Get the z-position of the particle."""
+        """Get or set the z-position of the particle.
+        
+        Returns
+        -------
+        z_ : float
+
+        Raises
+        ------
+        ValueError
+            if z is not set
+        """
         if self.z_ == None:
             raise ValueError("z not set")
         else:
@@ -84,12 +274,21 @@ class Particle:
 
     @z.setter
     def z(self,value):
-        """Set the z-position of the particle."""
         self.z_ = value
 
     @property
     def mass(self):
-        """Get the mass of the particle."""
+        """Get or set the mass of the particle.
+        
+        Returns
+        -------
+        mass_ : float
+
+        Raises
+        ------
+        ValueError
+            if mass is not set
+        """
         if self.mass_ == None:
             raise ValueError("mass not set")
         else:
@@ -97,14 +296,20 @@ class Particle:
         
     @mass.setter
     def mass(self,value):
-        """Set the mass of the particle."""
         self.mass_ = value
     
     @property
     def E(self):
-        """
-        Get the energy of the particle (zeroth component of 
-        momentum four vector).
+        """Get or set the energy of the particle.
+
+        Returns
+        -------
+        E_ : float
+
+        Raises
+        ------
+        ValueError
+            if E is not set
         """
         if self.E_ == None:
             raise ValueError("E not set")
@@ -113,15 +318,21 @@ class Particle:
         
     @E.setter
     def E(self,value):
-        """
-        Set the energy of the particle (zeroth component of 
-        momentum four vector).
-        """
         self.E_ = value
 
     @property
     def px(self):
-        """Get the momentum x-component of the particle."""
+        """Get or set the momentum x-component of the particle.
+        
+        Returns
+        -------
+        px_ : float
+
+        Raises
+        ------
+        ValueError
+            if px is not set
+        """
         if self.px_ == None:
             raise ValueError("px not set")
         else:
@@ -129,12 +340,21 @@ class Particle:
         
     @px.setter
     def px(self,value):
-        """Set the momentum x-component of the particle."""
         self.px_ = value
 
     @property
     def py(self):
-        """Get the momentum y-component of the particle."""
+        """Get or set the momentum y-component of the particle.
+        
+        Returns
+        -------
+        py_ : float
+
+        Raises
+        ------
+        ValueError
+            if py is not set
+        """
         if self.py_ == None:
             raise ValueError("py not set")
         else:
@@ -142,12 +362,21 @@ class Particle:
         
     @py.setter
     def py(self,value):
-        """Set the momentum y-component of the particle."""
         self.py_ = value
     
     @property
     def pz(self):
-        """Get the momentum z-component of the particle."""
+        """Get or set the momentum z-component of the particle.
+        
+        Returns
+        -------
+        pz_ : float
+
+        Raises
+        ------
+        ValueError
+            if pz is not set
+        """
         if self.pz_ == None:
             raise ValueError("pz not set")
         else:
@@ -155,12 +384,21 @@ class Particle:
     
     @pz.setter
     def pz(self,value):
-        """Set the momentum z-component of the particle."""
         self.pz_ = value
 
     @property
     def pdg(self):
-        """Get the PDG code of the particle."""
+        """Get or set the PDG code of the particle.
+        
+        Returns
+        -------
+        pdg_ : int
+
+        Raises
+        ------
+        ValueError
+            if pdg is not set
+        """
         if self.pdg_ == None:
             raise ValueError("pdg not set")
         else:
@@ -168,12 +406,23 @@ class Particle:
         
     @pdg.setter
     def pdg(self,value):
-        """Set the PDG code of the particle."""
         self.pdg_ = value
 
     @property
     def ID(self):
-        """Get the ID of the particle. This is a unique number in SMASH."""
+        """Get or set the ID of the particle. 
+        
+        This is a unique number in SMASH.
+        
+        Returns
+        -------
+        ID_ : int
+
+        Raises
+        ------
+        ValueError
+            if ID is not set
+        """
         if self.ID_ == None:
             raise ValueError("ID not set")
         else:
@@ -181,12 +430,21 @@ class Particle:
     
     @ID.setter
     def ID(self,value):
-        """Set the ID of the particle. This is a unique number in SMASH."""
         self.ID_ = value
 
     @property
     def charge(self):
-        """Get the electrical charge of the particle."""
+        """Get or set the electrical charge of the particle.
+        
+        Returns
+        -------
+        charge_ : int
+
+        Raises
+        ------
+        ValueError
+            if charge is not set
+        """
         if self.charge_ == None:
             raise ValueError("charge not set")
         else:
@@ -194,12 +452,21 @@ class Particle:
         
     @charge.setter
     def charge(self,value):
-        """Set the electrical charge of the particle."""
         self.charge_ = value
 
     @property
     def ncoll(self):
-        """Get the number of collisions of the particle."""
+        """Get or set the number of collisions of the particle.
+        
+        Returns
+        -------
+        ncoll_ : int
+
+        Raises
+        ------
+        ValueError
+            if ncoll is not set
+        """
         if self.ncoll_ == None:
             raise ValueError("ncoll not set")
         else:
@@ -207,12 +474,21 @@ class Particle:
     
     @ncoll.setter
     def ncoll(self,value):
-        """Set the number of collisions of the particle."""
         self.ncoll_ = value
 
     @property
     def form_time(self):
-        """Get the formation time of the particle."""
+        """Get or set the formation time of the particle.
+        
+        Returns
+        -------
+        form_time_ : float
+
+        Raises
+        ------
+        ValueError
+            if form_time is not set
+        """
         if self.form_time_ == None:
             raise ValueError("form_time not set")
         else:
@@ -220,12 +496,21 @@ class Particle:
         
     @form_time.setter
     def form_time(self,value):
-        """Set the formation time of the particle."""
         self.form_time_ = value
 
     @property
     def xsecfac(self):
-        """Get the crosssection scaling factor of the particle."""
+        """Get or set the crosssection scaling factor of the particle.
+        
+        Returns
+        -------
+        xsecfac_ : float
+
+        Raises
+        ------
+        ValueError
+            if xsecfac is not set
+        """
         if self.xsecfac_ == None:
             raise ValueError("xsecfac not set")
         else:
@@ -233,12 +518,21 @@ class Particle:
         
     @xsecfac.setter
     def xsecfac(self,value):
-        """Set the crosssection scaling factor of the particle."""
         self.xsecfac_ = value
 
     @property
     def proc_id_origin(self):
-        """Get the process ID of the particle's origin."""
+        """Get or set the process ID of the particle's origin.
+        
+        Returns
+        -------
+        proc_id_origin_ : int
+
+        Raises
+        ------
+        ValueError
+            if proc_id_origin is not set
+        """
         if self.proc_id_origin_ == None:
             raise ValueError("proc_id_origin not set")
         else:
@@ -246,12 +540,21 @@ class Particle:
         
     @proc_id_origin.setter
     def proc_id_origin(self,value):
-        """Set the process ID of the particle's origin."""
         self.proc_id_origin_ = value
 
     @property
     def proc_type_origin(self):
-        """Get the process type of the particle's origin."""
+        """Get or set the process type of the particle's origin.
+        
+        Returns
+        -------
+        proc_type_origin_ : int
+
+        Raises
+        ------
+        ValueError
+            if proc_type_origin is not set
+        """
         if self.proc_type_origin_ == None:
             raise ValueError("proc_type_origin not set")
         else:
@@ -259,12 +562,21 @@ class Particle:
         
     @proc_type_origin.setter
     def proc_type_origin(self,value):
-        """Set the process type of the particle's origin."""
         self.proc_type_origin_ = value
 
     @property
     def t_last_coll(self):
-        """Get the last time of a collision of the particle."""
+        """Get or set the last time of a collision of the particle.
+        
+        Returns
+        -------
+        t_last_coll_ : float
+
+        Raises
+        ------
+        ValueError
+            if t_last_coll is not set
+        """
         if self.t_last_coll_ == None:
             raise ValueError("t_last_coll not set")
         else:
@@ -272,12 +584,21 @@ class Particle:
         
     @t_last_coll.setter
     def t_last_coll(self,value):
-        """Set the last time of a collision of the particle."""
         self.t_last_coll_ = value
 
     @property
     def pdg_mother1(self):
-        """Get the PDG code of the first mother particle."""
+        """Get the PDG code of the first mother particle.
+        
+        Returns
+        -------
+        pdg_mother1_ : int
+
+        Raises
+        ------
+        ValueError
+            if pdg_mother1 is not set
+        """
         if self.pdg_mother1_ == None:
             raise ValueError("pdg_mother1 not set")
         else:
@@ -285,12 +606,21 @@ class Particle:
         
     @pdg_mother1.setter
     def pdg_mother1(self,value):
-        """Set the PDG code of the first mother particle."""
         self.pdg_mother1_ = value
 
     @property
     def pdg_mother2(self):
-        """Get the PDG code of the second mother particle."""
+        """Get the PDG code of the second mother particle.
+        
+        Returns
+        -------
+        pdg_mother2_ : int
+
+        Raises
+        ------
+        ValueError
+            if pdg_mother2 is not set
+        """
         if self.pdg_mother2_ == None:
             raise ValueError("pdg_mother2 not set")
         else:
@@ -298,7 +628,6 @@ class Particle:
         
     @pdg_mother2.setter
     def pdg_mother2(self,value):
-        """Set the PDG code of the second mother particle."""
         self.pdg_mother2_ = value
         
     @property
@@ -306,6 +635,15 @@ class Particle:
         """
         Get the hadron status (stores information on the module origin of 
         a JETSCAPE hadron).
+
+        Returns
+        -------
+        status_ : int
+
+        Raises
+        ------
+        ValueError
+            if status is not set
         """
         if self.status_ == None:
             raise ValueError("status not set")
@@ -314,15 +652,21 @@ class Particle:
         
     @status.setter
     def status(self,value):
-        """
-        Set the hadron status (stores information on the module origin of 
-        a JETSCAPE hadron).
-        """
         self.status_ = value
     
     @property
     def baryon_number(self):
-        """Get the baryon number of the particle."""
+        """Get the baryon number of the particle.
+        
+        Returns
+        -------
+        baryon_number_ : int
+
+        Raises
+        ------
+        ValueError
+            if baryon_number is not set
+        """
         if self.baryon_number_ == None:
             raise ValueError("baryon number not set")
         else:
@@ -330,12 +674,16 @@ class Particle:
         
     @baryon_number.setter       
     def baryon_number(self,value):
-        """Set the baryon number of the particle."""
         self.baryon_number_ = value
 
 
     def print_particle(self):
-        """Print the whole particle information as csv string."""
+        """Print the whole particle information as csv string.
+        
+        This function prints a header line with the different quantities.
+        All particle quantities are then printed in the next line separated by
+        a comma.
+        """
         print('t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
               proc_id_origin,proc_type_origin,t_last_coll,pdg_mother1,\
               pdg_mother2,status,baryon_number')
@@ -355,6 +703,11 @@ class Particle:
         ----------
         line_from_file: list, numpy.ndarray
             Contains the values read from the file.
+
+        Raises
+        ------
+        ValueError
+            if the input line has not the same number of columns as OSCAR2013
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
@@ -384,6 +737,11 @@ class Particle:
         ----------
         line_from_file: list, numpy.ndarray
             Contains the values read from the file.
+        
+        Raises
+        ------
+        ValueError
+            if the input line has not the same number of columns as OSCAR2013Extended
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
@@ -427,6 +785,11 @@ class Particle:
         ----------
         line_from_file: list, numpy.ndarray
             Contains the values read from the file.
+
+        Raises
+        ------
+        ValueError
+            if the input line has not the same number of columns as JETSCAPE hadron file
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
@@ -447,14 +810,13 @@ class Particle:
             raise ValueError(error_message)
     
     def angular_momentum(self):
-        """
-        Compute the angular momentum L=rxp of a particle
+        """Compute the angular momentum :math:`L=r \\times p` of a particle
 
         Returns
         -------
-        angular_momentum : np.array
+        angular_momentum : numpy.ndarray
             Array containing all three components of the 
-            angular momentum as [Lx, ly, Lz]
+            angular momentum as :math:`[L_x, L_y, L_z]`.
         """
         r = [self.x, self.y, self.z]
         p = [self.px, self.py, self.pz]
@@ -463,7 +825,7 @@ class Particle:
         
     def momentum_rapidity_Y(self):
         """
-        Compute the momentum rapidity Y of the particle.
+        Compute the momentum rapidity :math:`Y=\\frac{1}{2}\\ln\\left(\\frac{E+p_z}{E-p_z}\\right)` of the particle.
         
         Returns
         -------
@@ -474,7 +836,7 @@ class Particle:
     
     def p_abs(self):
         """
-        Compute the absolute momentum of the particle.
+        Compute the absolute momentum :math:`|\\vec{p}|=\\sqrt{p_x^2+p_y^2+p_z^2}` of the particle.
         
         Returns
         -------
@@ -485,7 +847,7 @@ class Particle:
 
     def pt_abs(self):
         """
-        Compute the transverse momentum of the particle.
+        Compute the absolute transverse momentum :math:`|\\vec{p}_{\\mathrm{T}}|=\\sqrt{p_x^2+p_y^2}` of the particle.
         
         Returns
         -------
@@ -524,7 +886,7 @@ class Particle:
 
     def pseudorapidity(self):
         """
-        Compute the pseudorapidity of the particle.
+        Compute the pseudorapidity :math:`\eta=\\frac{1}{2}\\ln\\left(\\frac{|\\vec{p}|+p_z}{|\\vec{p}|-p_z}\\right)` of the particle.
         
         Returns
         -------
@@ -535,7 +897,7 @@ class Particle:
     
     def spatial_rapidity(self):
         """
-        Compute the spatial rapidity of the particle.
+        Compute the spatial rapidity :math:`y=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
         
         Returns
         -------
@@ -549,7 +911,7 @@ class Particle:
         
     def proper_time(self):
         """
-        Compute the proper time of the particle.
+        Compute the proper time :math:`\\tau=\\sqrt{t^2-z^2}` of the particle.
         
         Returns
         -------
@@ -579,6 +941,9 @@ class Particle:
     def compute_charge_from_pdg(self):
         """
         Compute the charge from the PDG code.
+
+        This function is called automatically if a JETSCAPE file is read in with
+        the :meth:`ParticleClass.Particle.set_quantities_JETSCAPE` function.
 
         Returns
         -------
