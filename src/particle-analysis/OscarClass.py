@@ -75,6 +75,8 @@ class Oscar:
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
             cumulated_lines += int(2 * len(self.num_output_per_event_))
+            if self.oscar_type_=="Oscar2013Extended IC":
+                cumulated_lines-=0
             
         elif isinstance(self.optional_arguments_['events'], int):
             read_event = self.optional_arguments_['events']
@@ -107,7 +109,7 @@ class Oscar:
         particle_list.append(int(particle.ID))
         particle_list.append(int(particle.charge))
         
-        if self.oscar_type_ == 'Oscar2013Extended':
+        if self.oscar_type_ == 'Oscar2013Extended'  or self.oscar_type_ == 'Oscar2013Extended IC':
             particle_list.append(int(particle.ncoll))
             particle_list.append(float(particle.form_time))
             particle_list.append(int(particle.xsecfac))
@@ -121,8 +123,8 @@ class Oscar:
                 particle_list.append(int(particle.baryon_number))
             
             
-        elif self.oscar_type_ != 'Oscar2013' and self.oscar_type_ != 'Oscar2013Extended':
-            raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
+        elif self.oscar_type_ != 'Oscar2013' and self.oscar_type_ != 'Oscar2013Extended' and self.oscar_type_ != 'Oscar2013Extended IC':
+            raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or OSCAR2013Extended IC format')
             
         return particle_list
     
@@ -153,7 +155,6 @@ class Oscar:
         num_read_lines = self.__get_num_read_lines()
         fname = open(self.PATH_OSCAR_, 'r')
         self.__skip_lines(fname)
-        
         for i in range(0, num_read_lines):
             line = fname.readline()
             if not line:
@@ -161,7 +162,7 @@ class Oscar:
             elif i == 0 and '#' not in line and 'out' not in line:
                 raise ValueError('First line of the event is not a comment ' +\
                                  'line or does not contain "out"')
-            elif 'event' in line and 'out' in line:
+            elif 'event' in line and ('out' in line or 'in ' in line):
                 continue
             elif '#' in line and 'end' in line:
                 particle_list.append(data)
@@ -169,10 +170,9 @@ class Oscar:
             else:
                 data_line = line.replace('\n','').split(' ')
                 particle = Particle()
-                
                 if self.oscar_type_ == 'Oscar2013':
                     particle.set_quantities_OSCAR2013(data_line)
-                elif self.oscar_type_ == 'Oscar2013Extended':
+                elif self.oscar_type_ == 'Oscar2013Extended' or self.oscar_type_ == 'Oscar2013Extended IC' :
                     particle.set_quantities_OSCAR2013Extended(data_line)
                 
                 # Check for filters by method with a dictionary
@@ -210,30 +210,49 @@ class Oscar:
         
         if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
             self.oscar_type_ = 'Oscar2013'
+        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='SMASH_IC':
+            self.oscar_type_ = 'Oscar2013Extended IC'
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
             self.oscar_type_ = 'Oscar2013Extended'
         else:
-            raise TypeError('Input file must follow the Oscar2013 or '+\
-                            'Oscar2013Extended format ')
+            raise TypeError('Input file must follow the Oscar2013, '+\
+                            'Oscar2013Extended or Oscar2013Extended IC format ')
                 
                 
     def set_num_output_per_event_and_event_footers(self):
         file = open(self.PATH_OSCAR_ , 'r')
         event_output = []
-        
-        while True:
-            line = file.readline()
-            if not line:
-                break
-            elif '#' in line and 'end' in line:
-                self.event_end_lines_.append(line)
-            elif '#' in line and 'out' in line:
-                line_str = line.replace('\n','').split(' ')
-                event = line_str[2]
-                num_output = line_str[4]
-                event_output.append([event, num_output])
-            else:
-                continue  
+        if(self.oscar_type_ != 'Oscar2013Extended IC'):
+            while True:
+                line = file.readline()
+                if not line:
+                    break
+                elif '#' in line and 'end ' in line:
+                    self.event_end_lines_.append(line)
+                elif '#' in line and 'out' in line:
+                    line_str = line.replace('\n','').split(' ')
+                    event = line_str[2]
+                    num_output = line_str[4]
+                    event_output.append([event, num_output])
+                else:
+                    continue  
+        else:
+            line_counter=0
+            event=0
+            while True:
+                line_counter+=1
+                line = file.readline()
+                if not line:
+                    break
+                elif '#' in line and 'end' in line:
+                    self.event_end_lines_.append(line)
+                    event_output.append([event, line_counter-2])
+                elif '#' in line and 'in' in line:
+                    line_str = line.replace('\n','').split(' ')
+                    event = line_str[2]
+                    line_counter=0       
+                else:
+                    continue  
         file.close()
         
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
@@ -783,7 +802,7 @@ class Oscar:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
                                        -limit<=elem.pseudorapidity()<=limit]
                 new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
+                self.num_output_per_event_[0,1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
@@ -959,7 +978,7 @@ class Oscar:
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_type_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                elif self.oscar_type_ == 'Oscar2013Extended':
+                elif self.oscar_type_ == 'Oscar2013Extended' or self.oscar_type_ == 'Oscar2013Extended IC':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
             else:
@@ -971,7 +990,7 @@ class Oscar:
                     f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                     if self.oscar_type_ == 'Oscar2013':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                    elif self.oscar_type_ == 'Oscar2013Extended':
+                    elif self.oscar_type_ == 'Oscar2013Extended'  or self.oscar_type_ == 'Oscar2013Extended IC':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                     f_out.write(self.event_end_lines_[event])
         f_out.close()
