@@ -6,6 +6,91 @@ import warnings
 import os
 
 class Oscar:
+    """
+    Defines an Oscar object.
+    
+    The Oscar class contains a single .oscar file including all or only chosen 
+    events in either the Oscar2013 or Oscar2013Extended format. It's methods 
+    allow to directly act on all contained events as aplying acceptance filters
+    (e.g. un/charged particles, spectators/participants) to keep/romove particles
+    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
+    Once these filters are applied, the new data set can saved 1) as a nested 
+    list containing all quantities of the Oscar format 2) as a list containing
+    Particle objects from the ParticleClass or it can be printed to a file 
+    complying with the input format.
+    
+    Parameters
+    ----------
+    OSCAR_FILE: str
+        Path to Oscar file
+    **events : int
+        From the input Oscar file load only a single event by specifying 
+        events=i where i is event number i.
+    **events : tuple
+        From the input Oscar file load only a range of events given by the tuple
+        be specifying events=(first_event, last_event) where last_event is 
+        included.
+        
+    Attributes
+    ----------
+    PATH_OSCAR_ : str
+        Path to the Oscar file
+    oscar_format_ : str
+        Input Oscar format "Oscar2013" or "Oscar2013Extended" (set automatically)
+    num_output_per_event_ : numpy.array
+        Array containing the event number and the number of particles in this 
+        event as num_output_per_event_[event i][num_output in event i] (updated
+        when filters are applied)
+    num_events_ : int
+        Number of events contained in the Oscar object (updated when filters 
+        are applied)
+    list_of_all_valid_pdg_ids_ : list
+        List of all PDG codes contained in the external particle package as 
+        int values
+    event_end_lines_ : list
+        List containing all comment lines at the end of each event as str. 
+        Needed to print the Oscar object to a file.
+    
+        
+    Methods
+    -------
+    particle_list:
+        Returns current Oscar data as nested list
+    particle_objects_list:
+        Returns current Oscar data as nested list of ParticleClass objects
+    num_events:
+        Get number of events 
+    num_output_per_event:
+        Get number of particles in each event
+    oscar_format:
+        Get Oscar format of the input file
+    particle_species:
+        Keep only particles with given PDG ids
+    remove_particle_species:
+        Remove particles with given PDG ids
+    participants:
+        Keep participants only
+    spectators:
+        Keep spectators only
+    charged_particles:
+        Keep charged particles only
+    uncharged_particles:
+        Keep uncharged particles only
+    strange_particles:
+        Keep strange particles only
+    pt_cut:
+        Apply pT cut to all particles
+    rapidity_cut:
+        Apply rapidity cut to all particles
+    pseudorapidity_cut:
+        Apply pseudorapidity cut to all particles
+    spatial_rapidity_cut:
+        Apply spatial rapidity (space-time rapidity) cut to all particles
+    multiplicity_cut:
+        Apply multiplicity cut to all particles
+    print_particle_lists_to_file:
+        Print current particle data to file with same format
+    """
     
     def __init__(self, OSCAR_FILE, **kwargs):
         #kwargs: 
@@ -13,14 +98,12 @@ class Oscar:
         #        - int: load single event
         #        - tuple: (event_start, event_end) load all events in given range 
         
-        if '.oscar' in OSCAR_FILE:
-            None
-        else:
+        if not '.oscar' in OSCAR_FILE:
             raise TypeError('Input file is not in the OSCAR format. Input '
                             'file must have the ending .oscar')
             
         self.PATH_OSCAR_ = OSCAR_FILE
-        self.oscar_type_ = None
+        self.oscar_format_ = None
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
@@ -29,7 +112,7 @@ class Oscar:
         self.event_end_lines_ = []
     
         
-        self.set_oscar_type()
+        self.set_oscar_format()
         self.set_num_events()
         self.set_num_output_per_event_and_event_footers()  
         self.set_list_of_all_valid_pdg_ids()
@@ -107,7 +190,7 @@ class Oscar:
         particle_list.append(int(particle.ID))
         particle_list.append(int(particle.charge))
         
-        if self.oscar_type_ == 'Oscar2013Extended':
+        if self.oscar_format_ == 'Oscar2013Extended':
             particle_list.append(int(particle.ncoll))
             particle_list.append(float(particle.form_time))
             particle_list.append(int(particle.xsecfac))
@@ -121,7 +204,7 @@ class Oscar:
                 particle_list.append(int(particle.baryon_number))
             
             
-        elif self.oscar_type_ != 'Oscar2013' and self.oscar_type_ != 'Oscar2013Extended':
+        elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended':
             raise TypeError('Input file not in OSCAR2013 or OSCAR2013Extended format')
             
         return particle_list
@@ -170,9 +253,9 @@ class Oscar:
                 data_line = line.replace('\n','').split(' ')
                 particle = Particle()
                 
-                if self.oscar_type_ == 'Oscar2013':
+                if self.oscar_format_ == 'Oscar2013':
                     particle.set_quantities_OSCAR2013(data_line)
-                elif self.oscar_type_ == 'Oscar2013Extended':
+                elif self.oscar_format_ == 'Oscar2013Extended':
                     particle.set_quantities_OSCAR2013Extended(data_line)
                 
                 # Check for filters by method with a dictionary
@@ -203,15 +286,15 @@ class Oscar:
             self.particle_list_ = particle_list
         
     
-    def set_oscar_type(self):
+    def set_oscar_format(self):
         first_line = open(self.PATH_OSCAR_,'r')
         first_line = first_line.readline()
         first_line = first_line.replace('\n','').split(' ')
         
         if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
-            self.oscar_type_ = 'Oscar2013'
+            self.oscar_format_ = 'Oscar2013'
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
-            self.oscar_type_ = 'Oscar2013Extended'
+            self.oscar_format_ = 'Oscar2013Extended'
         else:
             raise TypeError('Input file must follow the Oscar2013 or '+\
                             'Oscar2013Extended format ')
@@ -329,12 +412,12 @@ class Oscar:
         return self.particle_list_
                 
                 
-    def oscar_type(self):
+    def oscar_format(self):
         """
         Returns the Oscar type of the given Oscar file as string
         "Oscar2013" or "Oscar2013Extended"
         """
-        return self.oscar_type_
+        return self.oscar_format_
     
     
     def num_output_per_event(self):
