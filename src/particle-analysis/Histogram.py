@@ -53,7 +53,7 @@ class Histogram:
         Add a new histogram.
     average:
         Averages over the histograms.
-    weighted_average:
+    average_weighted:
         Performs a weighted average over the histograms.
     standard_error:
         Get the standard deviation for each bin.
@@ -114,7 +114,7 @@ class Histogram:
 
         Returns
         -------
-        histograms_: numpy.ndarray
+        `histograms_`: numpy.ndarray
             Array containing the histogram(s).
         """
         return self.histograms_
@@ -126,7 +126,7 @@ class Histogram:
 
         Returns
         -------
-        histograms_raw_count_: numpy.ndarray
+        `histograms_raw_count_`: numpy.ndarray
             Array containing the raw counts of the histogram(s)
         """
         return self.histograms_raw_count_
@@ -137,7 +137,7 @@ class Histogram:
 
         Returns
         -------
-        number_of_histograms_: int
+        `number_of_histograms_`: int
             Number of histograms.
         """
         return self.number_of_histograms_
