@@ -47,6 +47,26 @@ class Histogram:
         Extract the upper bounds of the individual bins.
     bin_boundaries: numpy.ndarray
         Get the bin boundaries.
+    add_value:
+        Add one or multiple values to a histogram.
+    add_histogram:
+        Add a new histogram.
+    average:
+        Averages over the histograms.
+    weighted_average:
+        Performs a weighted average over the histograms.
+    standard_error:
+        Get the standard deviation for each bin.
+    statistical_error:
+        Statistical error of all histogram bins in all histograms.
+    scale_histogram:
+        Scale the histogram.
+    set_error:
+        Set the error for the histogram by hand.
+    print_histogram:
+        Print the histogram(s) to the terminal.
+    write_to_file:
+        Write one histogram to a csv file.
     """
     def __init__(self, bin_boundaries):
         self.number_of_bins_ = None
@@ -188,6 +208,11 @@ class Histogram:
         ----------
         value: int, float, np.number, list, numpy.ndarray
             Value(s) which ar supposed to be added to the histogram instance.
+        
+        Raises
+        ------
+        TypeError
+            if the input is invalid
         """
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
@@ -231,7 +256,6 @@ class Histogram:
                       'following types: (int, float, np.number, list, np.ndarray)'
             raise TypeError(err_msg)
 
-
     def add_histogram(self):
         """
         Add a new histogram to the Histogram class instance.
@@ -244,9 +268,7 @@ class Histogram:
         self.histograms_raw_count_ = np.vstack((self.histograms_raw_count_, empty_histogram))
         self.scaling_ = np.vstack((self.scaling_, np.ones(self.number_of_bins_)))
         self.error_ = np.vstack((self.error_, np.zeros(self.number_of_bins_)))
-
         self.number_of_histograms_ += 1
-
 
     def average(self):
         """
@@ -261,6 +283,11 @@ class Histogram:
         -------
         Histogram
             Returns a Histogram object.
+        
+        Raises
+        ------
+        TypeError
+            if there is only one histogram
         """
         
         if self.histograms_.ndim == 1:
@@ -269,9 +296,7 @@ class Histogram:
             self.error_ = np.sqrt(np.sum(self.histograms_, axis=0))/self.number_of_histograms_
             self.histograms_ = np.mean(self.histograms_, axis=0)
             self.number_of_histograms_ = 1
-
             return self
-
 
     def average_weighted(self,weights):
         """
@@ -282,10 +307,20 @@ class Histogram:
         averaged histogram.
         The standard error of the histograms is computed.
 
+        Parameters
+        ----------
+        weights: numpy.ndarray
+            Array containing a weight for each histogram.
+
         Returns
         -------
         Histogram
             Returns a Histogram object.
+        
+        Raises
+        ------
+        TypeError
+            if there is only one histogram
         """
         #TODO: correct error as in average()
         
@@ -295,9 +330,7 @@ class Histogram:
             self.error_ = np.std(self.histograms_, axis=0)/np.sqrt(self.number_of_histograms_)
             self.histograms_ = np.average(self.histograms_, axis=0, weights=weights)
             self.number_of_histograms_ = 1
-
             return self
-
 
     def standard_error(self):
         """
@@ -309,7 +342,6 @@ class Histogram:
             Array containing the standard deviation for each bin.
         """
         return self.error_
-
 
     def statistical_error(self):
         """
@@ -324,9 +356,7 @@ class Histogram:
         for histogram in self.histogram():
             self.error_[counter_histogram] = np.sqrt(histogram)
             counter_histogram += 1
-
         return self.error_
-
 
     def scale_histogram(self,value):
         """
@@ -357,8 +387,6 @@ class Histogram:
                 self.histograms_[-1] *= np.asarray(value)
                 self.scaling_[-1] *= np.asarray(value)
         
-
-
     def set_error(self,own_error):
         """
         Sets the histogram error by hand. This is helpful for weighted
@@ -377,9 +405,7 @@ class Histogram:
             error_message = "The input error has a different length than the"\
                  + " number of histogram bins or it is not a list/numpy.ndarray"
             raise ValueError(error_message)
-
         self.error_ = own_error
-
 
     def print_histogram(self):
         """Print the histograms to the terminal."""
@@ -393,7 +419,6 @@ class Histogram:
                 else:
                     print(f'{self.bin_edges_[bin]},{self.bin_edges_[bin+1]},\
                           {self.histograms_[hist][bin]}')
-
 
     def write_to_file(self,filename,label_bin_center,label_bin_low,\
                       label_bin_high,label_distribution,label_error,comment=''):
@@ -418,6 +443,11 @@ class Histogram:
             Additional comment at the beginning of the file. It is possible
             to give a multi line comment, where each line should start with
             a '#'.
+        
+        Raises
+        ------
+        ValueError
+            if there is more than one histogram
         """
         if self.number_of_histograms_ > 1:
             raise ValueError("At the moment only a single histogram can be"+\
