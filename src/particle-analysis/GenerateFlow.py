@@ -217,9 +217,53 @@ class GenerateFlow:
                                    self.py_[particle],self.pz_[particle]))
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
+            
+    def generate_dummy_OSCAR_file(self,output_path,number_events,multiplicity,seed):
+            """
+            Generate a dummy JETSCAPE file with random particle momenta.
+
+            Args:
+                output_path (str): The output file path.
+                number_events (int): The number of events to generate.
+                multiplicity (int): The number of particles per event.
+                seed (int): The random seed for reproducibility.
+
+            Returns:
+                None
+
+            """
+            rd.seed(seed)
+            temperature = 0.140
+            mass = 0.138
+            pdg = 211
+            status = 27
+
+            with open(output_path, "w") as output:
+                output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
+                output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+                output.write("# SMASH-2.2\n")
+
+                for event in range(number_events):
+                    self.sample_angles(multiplicity)
+                    self.sample_momenta(multiplicity, temperature, mass)
+
+                    output.write(f"# event {event} out {multiplicity}\n")
+                    for particle in range(multiplicity):
+                        energy = np.sqrt(
+                            self.px_[particle] ** 2.
+                            + self.py_[particle] ** 2.
+                            + self.pz_[particle] ** 2.
+                            + mass ** 2.
+                        )
+                        output.write("%g %g %g %g %g %g %g %g  %g %d %d %d\n"
+                                    %(1,1,1,1,mass, energy,self.px_[particle],
+                                    self.py_[particle],self.pz_[particle],pdg, particle, 1))
+
+                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no")
         
         
 
 
 flow = GenerateFlow(v2=0.06, v3=0.02, v4=0.03)
-flow.generate_dummy_JETSCAPE_file("/home/hendrik/Git/particle-analysis/src/particle-analysis/flow_test_data.dat",100,10000,42)
+#flow.generate_dummy_JETSCAPE_file("/home/hendrik/Git/particle-analysis/src/particle-analysis/flow_test_data.dat",100,10000,42)
+flow.generate_dummy_OSCAR_file("/home/goetz/Desktop/IC/Analysis/Analysis_scripts/1/Afterburner/particle_lists.oscar",1000,950,42)
