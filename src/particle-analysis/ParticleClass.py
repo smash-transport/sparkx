@@ -761,7 +761,7 @@ class Particle:
             self.charge = int(line_from_file[11])
             self.ncoll = int(line_from_file[12])
             self.form_time = float(line_from_file[13])
-            self.xsecfac = int(line_from_file[14])
+            self.xsecfac = float(line_from_file[14])
             self.proc_id_origin = int(line_from_file[15])
             self.proc_type_origin = int(line_from_file[16])
             self.t_last_coll = float(line_from_file[17])
