@@ -21,15 +21,34 @@ class Oscar:
     
     Parameters
     ----------
-    OSCAR_FILE: str
+    OSCAR_FILE : str
         Path to Oscar file
-    **events : int
-        From the input Oscar file load only a single event by specifying 
-        events=i where i is event number i.
-    **events : tuple
-        From the input Oscar file load only a range of events given by the tuple
-        be specifying events=(first_event, last_event) where last_event is 
-        included.
+        
+    Other Parameters
+    ----------------
+    **kwargs : properties, optional
+        kwargs are used to specify optional properties like a chunk reading 
+        and must be used like :code:`'property'='value'` where the possible 
+        properties are specified below.
+        
+        .. list-table::
+            :header-rows: 1
+            :widths: 25 75
+
+            * - Property
+              - Description
+            * - :code:`events` (int)
+              - From the input Oscar file load only a single event by |br|
+                specifying :code:`events=i` where i is event number i.
+            * - :code:`events` (tuple)
+              - From the input Oscar file load only a range of events |br|
+                given by the tuple :code:`(first_event, last_event)` |br|
+                by specifying :code:`events=(first_event, last_event)` |br|
+                where last_event is included.
+                
+        .. |br| raw:: html
+        
+           <br />
         
     Attributes
     ----------
@@ -90,13 +109,77 @@ class Oscar:
         Apply multiplicity cut to all particles
     print_particle_lists_to_file:
         Print current particle data to file with same format
+        
+    Examples
+    --------
+    
+    **1. Initialization**
+
+    To create an Oscar object, the path to the Oscar file has to be passed. 
+    By default the Oscar object will contain all events of the input file. If
+    the Oscar object should only contain certain events, the keyword argument
+    "events" must be used.
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from OscarClass import Oscar
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>>
+        >>> # Oscar object containing all events
+        >>> oscar1 = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> # Oscar object containing only the first event
+        >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
+        >>>
+        >>> # Oscar object containing only events 2, 3, 4 and 5
+        >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
+    
+    **2. Method Usage**
+    
+    All methods that apply filters to the Oscar data return :code:`self`. This 
+    means that methods can be concatenated. To access the Oscar data as list to
+    store it into a variable, the method :code:`particle_list()` or 
+    :code:`particle_objects_list` must be called in the end.
+    Let's assume we only want to keep participant pions in events with a 
+    multiplicity > 500:
+        
+        >>> oscar = Oscar("path_to_file")
+        >>>
+        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>>
+        >>> # save the pions of all events as nested list
+        >>> pions_list = pions.particle_list()
+        >>>
+        >>> # save the pions as list of Particle objects
+        >>> pions_particle_objects = pions.particle_objects_list()
+        >>>
+        >>> # print the pions to an oscar file
+        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+     
     """
     
     def __init__(self, OSCAR_FILE, **kwargs):
-        #kwargs: 
-        #   events:
-        #        - int: load single event
-        #        - tuple: (event_start, event_end) load all events in given range 
+        """
+        Parameters
+        ----------
+        OSCAR_FILE : TYPE
+            DESCRIPTION.
+        **kwargs : TYPE
+            DESCRIPTION.
+
+        Raises
+        ------
+        TypeError
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+        
+        """
         
         if not '.oscar' in OSCAR_FILE:
             raise TypeError('Input file is not in the OSCAR format. Input '
@@ -121,6 +204,16 @@ class Oscar:
     # PRIVATE CLASS METHODS
     
     def __get_num_skip_lines(self):
+        """
+        Get number of initial lines in Oscar file that are header or comment 
+        lines and need to be skipped in order to read the particle output.
+
+        Returns
+        -------
+        skip_lines : int
+            Number of initial lines before data.
+
+        """
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
             skip_lines = 3
         elif isinstance(self.optional_arguments_['events'], int):
@@ -148,6 +241,18 @@ class Oscar:
     
     
     def __skip_lines(self, fname):
+        """
+        Once a file is opened with :code:`open()`, this method skips the 
+        initial header and comment lines such that the first line called with
+        :code:`fname.readline()` is the first particle in the first event.
+
+        Parameters
+        ----------
+        fname : variable name
+            Name of the variable for the file opend with the :code:`open()` 
+            command.
+
+        """
         num_skip = self.__get_num_skip_lines()
         for i in range(0, num_skip):
             fname.readline()
@@ -339,6 +444,10 @@ class Oscar:
                 
                 
     def set_list_of_all_valid_pdg_ids(self):
+        """
+        Sets list_of_all_valid_pdg_ids_ with a list containing all valid pdg 
+        ids according to the particle package (2022) as integers.
+        """
         path = particle.data.basepath / "particle2022.csv"
         valid_pdg_ids = []
         
@@ -356,16 +465,16 @@ class Oscar:
                 
     def particle_list(self):
         """
-        Returns a nested python list containing all quantities from 
-        the Oscar2013/Oscar2013Extended output as numerical values 
-        with the following shape:
+        Returns a nested python list containing all quantities from the 
+        current Oscar data as numerical values with the following shape:
             
-            Single Event:    [output_line][particle_quantity]
-            Multiple Events: [event][output_line][particle_quantity]
+            | Single Event:    [output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
 
         Returns
         -------
-        list of numerical particle quantities : list
+        list
+            Nested list containing the current Oscar data 
 
         """
         if self.num_events_ == 1:
@@ -401,21 +510,27 @@ class Oscar:
         the Oscar2013/Oscar2013Extended output as particle objects 
         from ParticleClass:
             
-            Single Event:    [particle_object]
-            Multiple Events: [event][particle_object]
+           | Single Event:    [particle_object]
+           | Multiple Events: [event][particle_object]
 
         Returns
         -------
-        List:
-            List of particle objects
+        particle_list_ : list
+            List of particle objects from ParticleClass
         """
         return self.particle_list_
                 
                 
     def oscar_format(self):
         """
-        Returns the Oscar type of the given Oscar file as string
-        "Oscar2013" or "Oscar2013Extended"
+        Get the Oscar format of the input file.
+        
+        Returns
+        -------
+        oscar_format_ : str
+            Oscar format of the input Oscar file as string ("Oscar2013" or 
+            "Oscar2013Extended")
+            
         """
         return self.oscar_format_
     
@@ -432,8 +547,9 @@ class Oscar:
 
         Returns
         -------
-        numpy.ndarray
-            Array containing the event number and the number of particles
+        num_output_per_event_ : numpy.ndarray
+            Array containing the event number and the corresponding number of 
+            particles
         """
         return self.num_output_per_event_
     
@@ -447,7 +563,7 @@ class Oscar:
 
         Returns
         -------
-        int:
+        num_events_ : int
             Number of events in particle_list
         """
         return self.num_events_
@@ -459,7 +575,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar oject:
+        self : Oscar object
             Containing charged particles in every event only
         """
         if self.num_events_ == 1:
@@ -483,7 +599,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar oject:
+        self : Oscar object
             Containing uncharged particles in every event only
         """
         if self.num_events_ == 1:
@@ -507,7 +623,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar oject:
+        self : Oscar object
             Containing strange particles in every event only
         """
         if self.num_events_ == 1:
@@ -540,7 +656,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only particle species specified by pdg_list for every event
 
         """
@@ -606,8 +722,8 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
-            Containing all but the specified particle species for every event
+        self : Oscar object
+            Containing all but the specified particle species in every event
 
         """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
@@ -662,7 +778,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar oject:
+        self : Oscar oject
             Containing participants in every event only
         """
         if self.num_events_ == 1:
@@ -686,7 +802,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar oject:
+        self : Oscar oject
             Containing spectators in every event only
         """
         if self.num_events_ == 1:
@@ -724,7 +840,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only particles complying with the p_t cut for all events
         """
         
@@ -769,7 +885,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only particles complying with the rapidity cut 
             for all events
         """
@@ -841,7 +957,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only particles complying with the pseudo-rapidity cut 
             for all events
         """
@@ -915,7 +1031,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only particles complying with the spatial rapidity cut 
             for all events
         """
@@ -982,7 +1098,7 @@ class Oscar:
 
         Returns
         -------
-        Oscar object
+        self : Oscar object
             Containing only events with a multiplicity >= min_multiplicity
         """
         if not isinstance(min_multiplicity, int):
@@ -1003,6 +1119,16 @@ class Oscar:
         return self
     
     def print_particle_lists_to_file(self, output_file):
+        """
+        Prints the current Oscar data to an output file specified by :code:`output_file`
+        with the same format as the input file        
+        
+        Parameters
+        ----------
+        output_file : str
+            Path to the output file like :code:`[output_directory]/particle_lists.oscar`
+
+        """
         header = []
         event_footer = ''
         format_oscar2013 = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
