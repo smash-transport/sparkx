@@ -840,22 +840,19 @@ class Oscar:
         return self
         
               
-    def pt_cut(self, cut_value):
+    def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events and remove all particles with a transverse 
-        momentum not complying with cut_value
+        Apply p_t cut to all events by passing an acceptance range by 
+        ::code`cut_value_tuple`. All particles outside this range will 
+        be removed.
 
         Parameters
         ----------
-        cut_value : float
-            If a single value is passed, the cut is applyed symmetrically 
-            around 0.
-            For example, if cut_value = 1, only particles with p_t in 
-            [-1.0, 1.0] are kept.
-            
-        pdg_list : tuple
-            To specify an asymmetric acceptance range for the transverse 
-            momentum of particles, pass a tuple (cut_min, cut_max)
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the pT acceptance 
+            range :code:`(cut_min, cut_max)`. If one of the limits is not 
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)` 
+            or :code:`(cut_min, None)`. 
 
         Returns
         -------
@@ -863,25 +860,36 @@ class Oscar:
             Containing only particles complying with the p_t cut for all events
         """
         
-        if not isinstance(cut_value, (int, float, np.number)) or cut_value < 0:
-            raise TypeError('Input value must be a positive number')
-                
-        elif isinstance(cut_value, (int, float, np.number)):
-            # cut symmetrically around 0
-            
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       elem.pt_abs() > cut_value]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              elem.pt_abs() > cut_value]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length   
+        if not isinstance(cut_value_tuple, tuple):
+            raise TypeError('Input value must be a tuple containing either '+\
+                            'positive numbers or None')     
+        elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
+             (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
+                 raise ValueError('The cut limits must be positiv or None')
+        elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
+            raise ValueError('At least one cut limit must be a number')
+        
+        if cut_value_tuple[0] is None:
+            lower_cut = 0.0
         else:
-            raise TypeError('Input value must be a positive number')        
+            lower_cut = cut_value_tuple[0]
+        if cut_value_tuple[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = cut_value_tuple[1]
+      
+        if self.num_events_ == 1:
+            self.particle_list_ = [elem for elem in self.particle_list_ if
+                                   lower_cut <= elem.pt_abs() <= upper_cut]
+            new_length = len(self.particle_list_)
+            self.num_output_per_event_[1] = new_length
+        else:
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                          lower_cut <= elem.pt_abs() <= upper_cut]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length   
+    
         return self    
         
         
@@ -898,7 +906,7 @@ class Oscar:
             For example, if cut_value = 1, only particles with rapidity in 
             [-1.0, 1.0] are kept.
             
-        pdg_list : tuple
+        cut_value : tuple
             To specify an asymmetric acceptance range for the rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
@@ -970,7 +978,7 @@ class Oscar:
             For example, if cut_value = 1, only particles with pseudo-rapidity 
             in [-1.0, 1.0] are kept.
             
-        pdg_list : tuple
+        cut_value : tuple
             To specify an asymmetric acceptance range for the pseudo-rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
@@ -1044,7 +1052,7 @@ class Oscar:
             For example, if cut_value = 1, only particles with spatial rapidity 
             in [-1.0, 1.0] are kept.
             
-        pdg_list : tuple
+        cut_value : tuple
             To specify an asymmetric acceptance range for the spatial rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
