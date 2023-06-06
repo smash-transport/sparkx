@@ -101,40 +101,40 @@ class Jetscape:
     
     **1. Initialization**
 
-    To create an Oscar object, the path to the Oscar file has to be passed. 
-    By default the Oscar object will contain all events of the input file. If
-    the Oscar object should only contain certain events, the keyword argument
+    To create a Jetscape object, the path to the Jetscape file has to be passed. 
+    By default the Jetscape object will contain all events of the input file. If
+    the Jetscape object should only contain certain events, the keyword argument
     "events" must be used.
 
     .. highlight:: python
     .. code-block:: python
         :linenos:
 
-        >>> from OscarClass import Oscar
+        >>> from JetscapeClass import Jetscape
         >>>
-        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
         >>>
-        >>> # Oscar object containing all events
-        >>> oscar1 = Oscar(OSCAR_FILE_PATH)
+        >>> # Jetscape object containing all events
+        >>> jetscape1 = Jetscape(JETSCAPE_FILE_PATH)
         >>>
-        >>> # Oscar object containing only the first event
-        >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
+        >>> # Jetscape object containing only the first event
+        >>> jetscape2 = Jetscape(JETSCAPE_FILE_PATH, events=0)
         >>>
-        >>> # Oscar object containing only events 2, 3, 4 and 5
-        >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
+        >>> # Jetscape object containing only events 2, 3, 4 and 5
+        >>> jetscape3 = Jetscape(JETSCAPE_FILE_PATH, events=(2,5))
     
     **2. Method Usage**
     
-    All methods that apply filters to the Oscar data return :code:`self`. This 
-    means that methods can be concatenated. To access the Oscar data as list to
+    All methods that apply filters to the Jetscape data return :code:`self`. This 
+    means that methods can be concatenated. To access the Jetscape data as list to
     store it into a variable, the method :code:`particle_list()` or 
     :code:`particle_objects_list` must be called in the end.
     Let's assume we only want to keep participant pions in events with a 
     multiplicity > 500:
         
-        >>> oscar = Oscar("path_to_file")
+        >>> jetscape = Jetscape("path_to_file")
         >>>
-        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -142,8 +142,8 @@ class Jetscape:
         >>> # save the pions as list of Particle objects
         >>> pions_particle_objects = pions.particle_objects_list()
         >>>
-        >>> # print the pions to an oscar file
-        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+        >>> # print the pions to an Jetscape file
+        >>> pions.print_particle_lists_to_file('./particle_lists.dat')
      
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
