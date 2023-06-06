@@ -3,6 +3,13 @@ import warnings
 
 class Flow:
     '''
+    Defines a Flow object.
+
+    The Flow class computes anisotropic flow. For this it needs a list of
+    Particle objects, as it is returned from the Oscar or Jetscape classes.
+
+    Parameters
+    ----------
     flow_type:
         "ReactionPlane", "EventPlane", "ScalarProduct", "QCumulants", "LeeYangZeros", "PCA"
     n: int
@@ -11,6 +18,46 @@ class Flow:
         String defining the weights in the calculation of the Q vectors.
         Options are "pt", "pt2", "ptn", "rapidity".
         There is no effect for the ReactionPlane method.
+    
+    Attributes
+    ----------
+    integrated_flow_: complex
+        Value of the integrated flow.
+    integrated_flow_err_: complex
+        Value of the integrated flow error.
+    differential_flow_: list
+        List of the differential flow.
+    differential_flow_err_: list
+        List of the differential flow error.
+    
+    Methods
+    -------
+    integrated_flow:
+        Returns the integrated flow.
+    differential_flow:
+        Returns the differential flow.
+
+    Examples
+    --------
+    
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from OscarClass import Oscar
+        >>> from Flow import Flow
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>>
+        >>> # Oscar object containing all events
+        >>> oscar = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> # Perform particle / detector cuts
+        >>> charged_particles = oscar.charged().pseudorapidity(0.5).particle_objects_list()
+        >>>
+        >>> flow = Flow(flow_type="EventPlane",n=2,weight="pt2")
+        >>> flow_val = flow.integrated_flow(oscar)
+
     '''
     def __init__(self,flow_type=None,n=None,weight=None):
         if flow_type == None:
@@ -331,10 +378,15 @@ class Flow:
         """
         Compute the integrated anisotropic flow.
 
-        Return
-        ------
-        integrated_flow_: complex / real
-            Value of the integrated flow
+        Parameters
+        ----------
+        particle_data: list
+            List with lists for each event containing Particle objects.
+
+        Returns
+        -------
+        `integrated_flow_`: complex / real
+            Value of the integrated flow.
         """
         if self.flow_type == "ReactionPlane":
             self.__integrated_flow_reaction_plane(particle_data)
@@ -379,6 +431,23 @@ class Flow:
         return 0
 
     def differential_flow(self,particle_data,bins,flow_as_function_of):
+        """
+        Compute the differential anisotropic flow.
+
+        Parameters
+        ----------
+        particle_data: list
+            List with lists for each event containing Particle objects.
+        bins: list
+            List with bin boundaries for the differential quantity.
+        flow_as_function_of: string
+            Differential variable: 'pt', 'rapidity', 'pseudorapidity'.
+
+        Returns
+        -------
+        `integrated_flow_`: list
+            List containing the differential flow.
+        """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):

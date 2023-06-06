@@ -10,4 +10,5 @@ Classes
    Oscar/index
    Jetscape/index
    Histogram/index
+   Flow/index
    GenerateFlow/index
