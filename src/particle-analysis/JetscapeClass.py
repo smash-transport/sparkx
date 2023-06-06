@@ -6,13 +6,147 @@ import warnings
 import os
 
 class Jetscape:
+    """
+    Defines a Jetscape object.
     
-    def __init__(self, JETSCAPE_FILE, **kwargs):
-        #kwargs: 
-        #   events:
-        #        - int: load single event
-        #        - tuple: (event_start, event_end) load all events in given range 
+    The Jetscape class contains a single Jetscape hadron output file including 
+    all or only chosen events. It's methods allow to directly act on all 
+    contained events as applying acceptance filters (e.g. un/charged particles) 
+    to keep/romove particles by their PDG codes or to apply cuts 
+    (e.g. multiplicity, pseudo/rapidity, pT).
+    Once these filters are applied, the new data set can be saved 1) as a nested 
+    list containing all quantities of the Jetscape format 2) as a list containing
+    Particle objects from the ParticleClass or it can be printed to a file 
+    complying with the input format.
+    
+    Parameters
+    ----------
+    JETSCAPE_FILE : str
+        Path to Jetscape file
         
+    Other Parameters
+    ----------------
+    **kwargs : properties, optional
+        kwargs are used to specify optional properties like a chunk reading 
+        and must be used like :code:`'property'='value'` where the possible 
+        properties are specified below.
+        
+        .. list-table::
+            :header-rows: 1
+            :widths: 25 75
+
+            * - Property
+              - Description
+            * - :code:`events` (int)
+              - From the input Jetscape file load only a single event by |br|
+                specifying :code:`events=i` where i is event number i.
+            * - :code:`events` (tuple)
+              - From the input Jetscape file load only a range of events |br|
+                given by the tuple :code:`(first_event, last_event)` |br|
+                by specifying :code:`events=(first_event, last_event)` |br|
+                where last_event is included.
+                
+        .. |br| raw:: html
+        
+           <br />
+        
+    Attributes
+    ----------
+    PATH_JETSCAPE_ : str
+        Path to the Jetscape file
+    num_output_per_event_ : numpy.array
+        Array containing the event number and the number of particles in this 
+        event as num_output_per_event_[event i][num_output in event i] (updated
+        when filters are applied)
+    num_events_ : int
+        Number of events contained in the Jetscape object (updated when filters 
+        are applied)
+    list_of_all_valid_pdg_ids_ : list
+        List of all PDG codes contained in the external particle package as 
+        int values
+        
+    Methods
+    -------
+    particle_list:
+        Returns current Jetscape data as nested list
+    particle_objects_list:
+        Returns current Jetscape data as nested list of ParticleClass objects
+    num_events:
+        Get number of events 
+    num_output_per_event:
+        Get number of particles in each event
+    particle_species:
+        Keep only particles with given PDG ids
+    remove_particle_species:
+        Remove particles with given PDG ids
+    charged_particles:
+        Keep charged particles only
+    uncharged_particles:
+        Keep uncharged particles only
+    strange_particles:
+        Keep strange particles only
+    pt_cut:
+        Apply pT cut to all particles
+    rapidity_cut:
+        Apply rapidity cut to all particles
+    pseudorapidity_cut:
+        Apply pseudorapidity cut to all particles
+    multiplicity_cut:
+        Apply multiplicity cut to all particles
+    print_particle_lists_to_file:
+        Print current particle data to file with same format
+        
+    Examples
+    --------
+    
+    **1. Initialization**
+
+    To create an Oscar object, the path to the Oscar file has to be passed. 
+    By default the Oscar object will contain all events of the input file. If
+    the Oscar object should only contain certain events, the keyword argument
+    "events" must be used.
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from OscarClass import Oscar
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>>
+        >>> # Oscar object containing all events
+        >>> oscar1 = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> # Oscar object containing only the first event
+        >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
+        >>>
+        >>> # Oscar object containing only events 2, 3, 4 and 5
+        >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
+    
+    **2. Method Usage**
+    
+    All methods that apply filters to the Oscar data return :code:`self`. This 
+    means that methods can be concatenated. To access the Oscar data as list to
+    store it into a variable, the method :code:`particle_list()` or 
+    :code:`particle_objects_list` must be called in the end.
+    Let's assume we only want to keep participant pions in events with a 
+    multiplicity > 500:
+        
+        >>> oscar = Oscar("path_to_file")
+        >>>
+        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>>
+        >>> # save the pions of all events as nested list
+        >>> pions_list = pions.particle_list()
+        >>>
+        >>> # save the pions as list of Particle objects
+        >>> pions_particle_objects = pions.particle_objects_list()
+        >>>
+        >>> # print the pions to an oscar file
+        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+     
+    """
+    def __init__(self, JETSCAPE_FILE, **kwargs):
         if '.dat' in JETSCAPE_FILE:
             None
         else:
@@ -33,6 +167,16 @@ class Jetscape:
     # PRIVATE CLASS METHODS
     
     def __get_num_skip_lines(self):
+        """
+        Get number of initial lines in Jetscape file that are header or comment 
+        lines and need to be skipped in order to read the particle output.
+
+        Returns
+        -------
+        skip_lines : int
+            Number of initial lines before data.
+
+        """
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
             skip_lines = 1
         elif isinstance(self.optional_arguments_['events'], int):
@@ -60,6 +204,18 @@ class Jetscape:
     
     
     def __skip_lines(self, fname):
+        """
+        Once a file is opened with :code:`open()`, this method skips the 
+        initial header and comment lines such that the first line called with
+        :code:`fname.readline()` is the first particle in the first event.
+
+        Parameters
+        ----------
+        fname : variable name
+            Name of the variable for the file opend with the :code:`open()` 
+            command.
+
+        """
         num_skip = self.__get_num_skip_lines()
         for i in range(0, num_skip):
             fname.readline()
@@ -118,8 +274,7 @@ class Jetscape:
     
         
     # PUBLIC CLASS METHODS
-        
-    
+
     def set_particle_list(self, kwargs):
         particle_list = []
         data = []
@@ -245,17 +400,16 @@ class Jetscape:
     
     def particle_objects_list(self):
         """
-        Returns a nested python list containing all particles from 
-        the Jetscape output as particle objects 
-        from ParticleClass:
+        Returns a nested python list containing all quantities from the 
+        current Jetscape data as numerical values with the following shape:
             
-            Single Event:    [particle_object]
-            Multiple Events: [event][particle_object]
+            | Single Event:    [output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
 
         Returns
         -------
-        List:
-            List of particle objects
+        list
+            Nested list containing the current Oscar data 
         """
         return self.particle_list_
     
@@ -271,11 +425,11 @@ class Jetscape:
 
         Returns
         -------
-        numpy.ndarray
-            Array containing the event number and the number of particles
+        num_output_per_event_ : numpy.ndarray
+            Array containing the event number and the corresponding number of 
+            particles
         """
         return self.num_output_per_event_
-    
     
     def num_events(self):
         """
@@ -286,19 +440,18 @@ class Jetscape:
 
         Returns
         -------
-        int:
+        num_events_ : int
             Number of events in particle_list
         """
         return self.num_events_
     
-
     def charged_particles(self):
         """
         Keep only charged particles in particle_list
 
         Returns
         -------
-        Jetscape oject:
+        self : Jetscape object
             Containing charged particles in every event only
         """
         if self.num_events_ == 1:
@@ -315,14 +468,13 @@ class Jetscape:
                 
         return self
 
-
     def uncharged_particles(self):
         """
         Keep only uncharged particles in particle_list
 
         Returns
         -------
-        Jetscape oject:
+        self : Jetscape object
             Containing uncharged particles in every event only
         """
         if self.num_events_ == 1:
@@ -338,15 +490,14 @@ class Jetscape:
                 self.num_output_per_event_[i, 1] = new_length
                 
         return self
-                
-                
+                          
     def strange_particles(self):
         """
         Keep only strange particles in particle_list
 
         Returns
         -------
-        Jetscape oject:
+        self : Jetscape object
             Containing strange particles in every event only
         """
         if self.num_events_ == 1:
@@ -361,8 +512,7 @@ class Jetscape:
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
                 
-        return self
-                
+        return self         
                 
     def particle_species(self, pdg_list):
         """
@@ -379,7 +529,7 @@ class Jetscape:
 
         Returns
         -------
-        Jetscape object
+        self : Jetscape object
             Containing only particle species specified by pdg_list for every event
 
         """
@@ -428,7 +578,6 @@ class Jetscape:
                             'of str, list of int, np.ndarray, tuple') 
         return self
     
-    
     def remove_particle_species(self, pdg_list):
         """
         Remove particle species from particle_list by their PDG ID in every 
@@ -445,8 +594,8 @@ class Jetscape:
 
         Returns
         -------
-        Jetscape object
-            Containing all but the specified particle species for every event
+        self : Jetscape object
+            Containing all but the specified particle species in every event
 
         """
         if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
@@ -493,8 +642,7 @@ class Jetscape:
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple') 
         return self
-            
-              
+                  
     def pt_cut(self, cut_value):
         """
         Apply p_t cut to all events and remove all particles with a transverse 
@@ -558,7 +706,7 @@ class Jetscape:
 
         Returns
         -------
-        Jetscape object
+        self : Jetscape object
             Containing only particles complying with the rapidity cut 
             for all events
         """
@@ -612,7 +760,6 @@ class Jetscape:
                             'with the cut limits (cut_min, cut_max)')        
         return self
     
-    
     def pseudorapidity_cut(self, cut_value):
         """
         Apply pseudo-rapidity cut to all events and remove all particles with 
@@ -632,7 +779,7 @@ class Jetscape:
 
         Returns
         -------
-        Jetscape object
+        self : Jetscape object
             Containing only particles complying with the pseudo-rapidity cut 
             for all events
         """
@@ -699,7 +846,7 @@ class Jetscape:
 
         Returns
         -------
-        Jetscape object
+        self : Jetscape object
             Containing only events with a multiplicity >= min_multiplicity
         """
         if not isinstance(min_multiplicity, int):
@@ -720,6 +867,16 @@ class Jetscape:
         return self
     
     def print_particle_lists_to_file(self, output_file):
+        """
+        Prints the current Jetscape data to an output file specified by :code:`output_file`
+        with the same format as the input file        
+        
+        Parameters
+        ----------
+        output_file : str
+            Path to the output file like :code:`[output_directory]/particle_lists.dat`
+
+        """
         def get_last_line(file_path):
             with open(file_path, 'rb') as file:
                 file.seek(-2, 2)
