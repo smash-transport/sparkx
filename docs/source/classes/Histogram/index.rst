@@ -1,4 +1,4 @@
-.. _particle:
+.. _histogram:
 
 Histogram
 =========
