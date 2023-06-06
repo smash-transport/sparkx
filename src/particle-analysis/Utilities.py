@@ -58,7 +58,3 @@ def pdg_to_latex(pdg_id):
         raise ValueError('pdg_id contains invalid PDG ID')
         
     return latex_names
-            
-names = pdg_to_latex((2112, 311))
-
-print(names)
