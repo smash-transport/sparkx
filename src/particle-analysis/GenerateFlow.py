@@ -220,7 +220,7 @@ class GenerateFlow:
             
     def generate_dummy_OSCAR_file(self,output_path,number_events,multiplicity,seed):
             """
-            Generate a dummy JETSCAPE file with random particle momenta.
+            Generate a dummy OSCAR file with random particle momenta.
 
             Args:
                 output_path (str): The output file path.
@@ -259,11 +259,10 @@ class GenerateFlow:
                                     %(1,1,1,1,mass, energy,self.px_[particle],
                                     self.py_[particle],self.pz_[particle],pdg, particle, 1))
 
-                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no")
+                    output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no")
         
         
 
 
 flow = GenerateFlow(v2=0.06, v3=0.02, v4=0.03)
-#flow.generate_dummy_JETSCAPE_file("/home/hendrik/Git/particle-analysis/src/particle-analysis/flow_test_data.dat",100,10000,42)
-flow.generate_dummy_OSCAR_file("/home/goetz/Desktop/IC/Analysis/Analysis_scripts/1/Afterburner/particle_lists.oscar",1000,950,42)
+flow.generate_dummy_JETSCAPE_file("/home/hendrik/Git/particle-analysis/src/particle-analysis/flow_test_data.dat",100,10000,42)
