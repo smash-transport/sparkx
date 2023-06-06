@@ -159,6 +159,8 @@ class Particle:
     .. code-block:: python
         :linenos:
 
+        >>> from ParticleClass import Particle
+        >>>
         >>> particle = Particle()
         >>> particle.t(1.0)
         >>> print(particle.t)
