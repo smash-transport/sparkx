@@ -5,6 +5,7 @@
 
    install
    classes/index
+   utilities/index
    license
    credits
 
