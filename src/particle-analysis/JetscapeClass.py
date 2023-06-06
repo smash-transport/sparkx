@@ -101,40 +101,40 @@ class Jetscape:
     
     **1. Initialization**
 
-    To create an Oscar object, the path to the Oscar file has to be passed. 
-    By default the Oscar object will contain all events of the input file. If
-    the Oscar object should only contain certain events, the keyword argument
+    To create a Jetscape object, the path to the Jetscape file has to be passed. 
+    By default the Jetscape object will contain all events of the input file. If
+    the Jetscape object should only contain certain events, the keyword argument
     "events" must be used.
 
     .. highlight:: python
     .. code-block:: python
         :linenos:
 
-        >>> from OscarClass import Oscar
+        >>> from JetscapeClass import Jetscape
         >>>
-        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
         >>>
-        >>> # Oscar object containing all events
-        >>> oscar1 = Oscar(OSCAR_FILE_PATH)
+        >>> # Jetscape object containing all events
+        >>> jetscape1 = Jetscape(JETSCAPE_FILE_PATH)
         >>>
-        >>> # Oscar object containing only the first event
-        >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
+        >>> # Jetscape object containing only the first event
+        >>> jetscape2 = Jetscape(JETSCAPE_FILE_PATH, events=0)
         >>>
-        >>> # Oscar object containing only events 2, 3, 4 and 5
-        >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
+        >>> # Jetscape object containing only events 2, 3, 4 and 5
+        >>> jetscape3 = Jetscape(JETSCAPE_FILE_PATH, events=(2,5))
     
     **2. Method Usage**
     
-    All methods that apply filters to the Oscar data return :code:`self`. This 
-    means that methods can be concatenated. To access the Oscar data as list to
+    All methods that apply filters to the Jetscape data return :code:`self`. This 
+    means that methods can be concatenated. To access the Jetscape data as list to
     store it into a variable, the method :code:`particle_list()` or 
     :code:`particle_objects_list` must be called in the end.
     Let's assume we only want to keep participant pions in events with a 
     multiplicity > 500:
         
-        >>> oscar = Oscar("path_to_file")
+        >>> jetscape = Jetscape("path_to_file")
         >>>
-        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -142,8 +142,8 @@ class Jetscape:
         >>> # save the pions as list of Particle objects
         >>> pions_particle_objects = pions.particle_objects_list()
         >>>
-        >>> # print the pions to an oscar file
-        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+        >>> # print the pions to an Jetscape file
+        >>> pions.print_particle_lists_to_file('./particle_lists.dat')
      
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
@@ -643,48 +643,57 @@ class Jetscape:
                             'of str, list of int, np.ndarray, tuple') 
         return self
                   
-    def pt_cut(self, cut_value):
+    def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events and remove all particles with a transverse 
-        momentum not complying with cut_value
+        Apply p_t cut to all events by passing an acceptance range by 
+        ::code`cut_value_tuple`. All particles outside this range will 
+        be removed.
 
         Parameters
         ----------
-        cut_value : float
-            If a single value is passed, the cut is applyed symmetrically 
-            around 0.
-            For example, if cut_value = 1, only particles with p_t in 
-            [-1.0, 1.0] are kept.
-            
-        pdg_list : tuple
-            To specify an asymmetric acceptance range for the transverse 
-            momentum of particles, pass a tuple (cut_min, cut_max)
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the pT acceptance 
+            range :code:`(cut_min, cut_max)`. If one of the limits is not 
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)` 
+            or :code:`(cut_min, None)`. 
 
         Returns
         -------
-        Jetscape object
+        self : Jetscape object
             Containing only particles complying with the p_t cut for all events
         """
-        if not isinstance(cut_value, (int, float, np.number)) or cut_value < 0:
-            raise TypeError('Input value must be a positive number')
-                
-        elif isinstance(cut_value, (int, float, np.number)):
-            # cut symmetrically around 0
-            
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       elem.pt_abs() > cut_value]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              elem.pt_abs() > cut_value]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length   
+        
+        if not isinstance(cut_value_tuple, tuple):
+            raise TypeError('Input value must be a tuple containing either '+\
+                            'positive numbers or None')     
+        elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
+             (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
+                 raise ValueError('The cut limits must be positiv or None')
+        elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
+            raise ValueError('At least one cut limit must be a number')
+        
+        if cut_value_tuple[0] is None:
+            lower_cut = 0.0
         else:
-            raise TypeError('Input value must be a positive number')        
-        return self    
+            lower_cut = cut_value_tuple[0]
+        if cut_value_tuple[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = cut_value_tuple[1]
+      
+        if self.num_events_ == 1:
+            self.particle_list_ = [elem for elem in self.particle_list_ if
+                                   lower_cut <= elem.pt_abs() <= upper_cut]
+            new_length = len(self.particle_list_)
+            self.num_output_per_event_[1] = new_length
+        else:
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                          lower_cut <= elem.pt_abs() <= upper_cut]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length   
+    
+        return self
         
         
     def rapidity_cut(self, cut_value):
@@ -700,7 +709,7 @@ class Jetscape:
             For example, if cut_value = 1, only particles with rapidity in 
             [-1.0, 1.0] are kept.
             
-        pdg_list : tuple
+        cut_value : tuple
             To specify an asymmetric acceptance range for the rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
@@ -773,7 +782,7 @@ class Jetscape:
             For example, if cut_value = 1, only particles with pseudo-rapidity 
             in [-1.0, 1.0] are kept.
             
-        pdg_list : tuple
+        cut_value : tuple
             To specify an asymmetric acceptance range for the pseudo-rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
