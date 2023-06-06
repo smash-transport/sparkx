@@ -8,5 +8,6 @@ Classes
 
    Particle/index
    Oscar/index
+   Jetscape/index
    Histogram/index
    GenerateFlow/index
