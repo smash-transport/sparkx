@@ -48,27 +48,6 @@ class GenerateFlow:
     """
 
     def __init__(self, *vn, **vn_kwargs):
-        """
-        Initialize the class instance.
-
-        Parameters
-        ----------
-            *vn: Variable-length arguments for harmonic components (vn).
-            **vn_kwargs: Keyword arguments for harmonic components (vn) provided as a dictionary.
-
-        Returns
-        -------
-            None
-
-        Raises
-        ------
-            TypeError: If the input is not in the expected format.
-
-        Notes
-        -----
-            - This method initializes the class instance with harmonic 
-            components (vn) and sets up other instance variables.
-        """
         if not vn and not vn_kwargs:
             self.n_ = self.vn_ = None
         else:
