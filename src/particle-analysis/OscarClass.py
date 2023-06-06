@@ -11,10 +11,10 @@ class Oscar:
     
     The Oscar class contains a single .oscar file including all or only chosen 
     events in either the Oscar2013 or Oscar2013Extended format. It's methods 
-    allow to directly act on all contained events as aplying acceptance filters
+    allow to directly act on all contained events as applying acceptance filters
     (e.g. un/charged particles, spectators/participants) to keep/romove particles
     by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
-    Once these filters are applied, the new data set can saved 1) as a nested 
+    Once these filters are applied, the new data set can be saved 1) as a nested 
     list containing all quantities of the Oscar format 2) as a list containing
     Particle objects from the ParticleClass or it can be printed to a file 
     complying with the input format.
