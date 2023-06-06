@@ -2,25 +2,52 @@ import numpy as np
 import random as rd
 
 class GenerateFlow:
+    """
+    Generate particle data with anisotropic flow for testing.
+
+    This class generates particle lists in JETSCAPE or OSCAR output format 
+    to test the correct implementation of flow analysis routines.
+
+    Attributes
+    ----------
+    n_:
+        Type of flow harmonics.
+    vn_:
+        Value of the flow harmonics.
+    phi_:
+        List containing the azimuths of the particles.
+    px_:
+        Particle momenta in x-direction.
+    py_:
+        Particle momenta in y-direction.
+    pz_:
+        Particle momenta in z-direction.
+
+    Methods
+    -------
+    generate_dummy_JETSCAPE_file:
+        Generate dummy flow data in JETSCAPE format.
+    generate_dummy_OSCAR_file:
+        Generate dummy flow data in OSCAR format.
+
+    Examples
+    --------
+    To use the class the GenerateFlow object has to be created with the desired
+    anisotropic flow harmonics and then a dummy data file can be created:
+    
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> flow_object = GenerateFlow(v2=0.06, v3=0.02, v4=0.03)
+        >>> number_events = 100
+        >>> event_multiplicity = 10000
+        >>> random_seed = 42
+        >>> flow_object.generate_dummy_JETSCAPE_file(path_to_output,number_events,event_multiplicity,random_seed)
+        
+    """
 
     def __init__(self, *vn, **vn_kwargs):
-        """
-        Initialize the class instance.
-
-        Args:
-            *vn: Variable-length arguments for harmonic components (vn).
-            **vn_kwargs: Keyword arguments for harmonic components (vn) provided as a dictionary.
-
-        Returns:
-            None
-
-        Raises:
-            TypeError: If the input is not in the expected format.
-
-        Notes:
-            - This method initializes the class instance with harmonic components (vn) and sets up other instance variables.
-
-        """
         if not vn and not vn_kwargs:
             self.n_ = self.vn_ = None
         else:
@@ -43,15 +70,20 @@ class GenerateFlow:
         """
         Calculate the distribution function value for a given angle.
 
-        Args:
-            phi (float): The angle.
+        Parameters
+        ----------
+            phi: float
+                The azimuthal angle.
 
-        Returns:
-            float: The value of the distribution function at the given angle.
+        Returns
+        -------
+            float 
+                The value of the distribution function at the given angle.
 
-        Notes:
-            - This method calculates the value of the distribution function based on the harmonic components (vn) and angles (phi).
-
+        Notes
+        -----
+            - This method calculates the value of the distribution function 
+            based on the harmonic components (vn) and angles (phi).
         """
         f = 1. / (2. * np.pi)
         f_harmonic = 1.0
@@ -63,18 +95,16 @@ class GenerateFlow:
 
     def sample_angles(self, multiplicity):
         """
-        Sample angles for a given multiplicity.
+        Sample angles for a given multiplicity according to a given distribution.
 
-        Args:
-            multiplicity (int): The number of angles to sample.
+        Parameters
+        ----------
+            multiplicity: int
+                The number of angles to sample.
 
-        Returns:
+        Returns
+        -------
             None
-
-        Notes:
-            - This method samples angles (phi) according to a given distribution function.
-            - The implementation has been optimized to avoid unnecessary calculations and improve readability.
-
         """
         f_max = (1. + 2. * self.vn_.sum()) / (2. * np.pi)
         phi = []
@@ -92,17 +122,17 @@ class GenerateFlow:
         """
         Calculate the momentum magnitude from a thermal distribution.
 
-        Args:
-            temperature (float): The temperature of the system.
-            mass (float): The mass of the particles.
+        Parameters
+        ----------
+            temperature: float
+                The temperature of the system.
+            mass: float
+                The mass of the particles.
 
-        Returns:
-            momentum_radial (float): The magnitude of the momentum.
-
-        Notes:
-            - This method calculates the magnitude of the momentum based on a thermal distribution.
-            - The implementation has been optimized to avoid unnecessary checks and repeated calculations.
-
+        Returns
+        -------
+            momentum_radial: float
+                The magnitude of the momentum.
         """
         momentum_radial = 0
         energy = 0.
@@ -145,21 +175,21 @@ class GenerateFlow:
     
     def sample_momenta(self, multiplicity, temperature, mass):
         """
-        Sample momenta for a given multiplicity, temperature, and mass.
+        Sample momenta for a given multiplicity, temperature, and mass from 
+        a thermal distribution function.
 
-        Args:
-            multiplicity (int): The number of momenta to sample.
-            temperature (float): The temperature of the system.
-            mass (float): The mass of the particles.
+        Parameters
+        ----------
+            multiplicity: int
+                The number of particles to sample.
+            temperature: float
+                The temperature of the system.
+            mass: float
+                The mass of the particles.
 
-        Returns:
+        Returns
+        -------
             None
-
-        Notes:
-            - This method calculates the momenta magnitudes (p_abs) using a thermal distribution
-            and then generates the corresponding Cartesian momenta components (px, py, pz) 
-            using random directions in spherical coordinates.
-
         """
         p_abs = [self.__thermal_distribution(temperature, mass) for _ in range(multiplicity)]
 
@@ -181,15 +211,20 @@ class GenerateFlow:
         """
         Generate a dummy JETSCAPE file with random particle momenta.
 
-        Args:
-            output_path (str): The output file path.
-            number_events (int): The number of events to generate.
-            multiplicity (int): The number of particles per event.
-            seed (int): The random seed for reproducibility.
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
 
-        Returns:
+        Returns
+        -------
             None
-
         """
         rd.seed(seed)
         temperature = 0.140
@@ -220,17 +255,22 @@ class GenerateFlow:
             
     def generate_dummy_OSCAR_file(self,output_path,number_events,multiplicity,seed):
             """
-            Generate a dummy OSCAR file with random particle momenta.
+            Generate a dummy OSCAR2013 file with random particle momenta.
 
-            Args:
-                output_path (str): The output file path.
-                number_events (int): The number of events to generate.
-                multiplicity (int): The number of particles per event.
-                seed (int): The random seed for reproducibility.
+            Parameters
+            ----------
+                output_path: str
+                    The output file path.
+                number_events: int
+                    The number of events to generate.
+                multiplicity: int
+                    The number of particles per event.
+                seed: int
+                    The random seed for reproducibility.
 
-            Returns:
+            Returns
+            -------
                 None
-
             """
             rd.seed(seed)
             temperature = 0.140
@@ -260,9 +300,3 @@ class GenerateFlow:
                                     self.py_[particle],self.pz_[particle],pdg, particle, 1))
 
                     output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no")
-        
-        
-
-
-flow = GenerateFlow(v2=0.06, v3=0.02, v4=0.03)
-flow.generate_dummy_JETSCAPE_file("/home/hendrik/Git/particle-analysis/src/particle-analysis/flow_test_data.dat",100,10000,42)

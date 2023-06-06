@@ -9,3 +9,4 @@ Classes
    Particle/index
    Oscar/index
    Histogram/index
+   GenerateFlow/index
