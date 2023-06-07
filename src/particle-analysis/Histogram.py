@@ -10,8 +10,29 @@ class Histogram:
     The histograms can be initialized either with a tuple
     (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin
     boundaries, which allows for different bin widths.
-    Multiple histograms can be added and averaged over.
+    Multiple histograms can be added and averaged.
+    
+    .. note:: 
+        It may be important to keep in mind that each bin contains it left edge 
+        but not the right edge. If a value is added to a histogram the bin 
+        assignment therefore follows:
+            
+            .. raw:: html
 
+                 <p><code style="color:red; background-color:transparent; 
+                 font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p>
+
+
+    Parameters
+    ----------
+    bin_boundaries : tuple
+        A tuple with three values :code:`(hist_min, hist_max, num_bins)`. This
+        creates an evenly sized histogram in the range :code:`[hist_min, hist_max]`
+        divided into :code:`num_bins` bins.
+    bin_boundaries : list/numpy.ndarray
+        A list or numpy array that contains all bin edges. This allows for non-
+        uniform bin sizes.
+    
     Attributes
     ----------
     number_of_bins_: int
@@ -224,26 +245,24 @@ class Histogram:
                           ']. Exceeding values are ignored. Increase histogram range!'
                 warnings.warn(warn_msg)
 
+            # Case 2.1: histogram contains only 1 instance
+            if self.number_of_histograms_ == 1:
+                bin_index = np.digitize(value, self.bin_edges_)-1
+                if bin_index > self.number_of_bins_-1:
+                    pass
+                else:
+                    self.histograms_[bin_index] += 1
+                    self.histograms_raw_count_[bin_index] += 1
+                
+            # Case 2.2: If histogram contains multiple instances,
+            #           always add values to the latest histogram
             else:
-                for bin_index in range(self.number_of_bins_):
-                    # Case 2.1: histogram contains only 1 instance
-                    if self.number_of_histograms_ == 1:
-                        if bin_index == 0 and value == self.bin_edges_[0]:
-                            self.histograms_[0] += 1
-                            self.histograms_raw_count_[0] += 1
-                        elif value > self.bin_edges_[bin_index] and value <= self.bin_edges_[bin_index+1]:
-                            self.histograms_[bin_index] += 1
-                            self.histograms_raw_count_[bin_index] += 1
-
-                    # Case 2.2: If histogram contains multiple instances,
-                    #           always add values to the latest histogram
-                    else:
-                        if bin_index == 0 and value == self.bin_edges_[0]:
-                            self.histograms_[-1,0] += 1
-                            self.histograms_raw_count_[-1,0] += 1
-                        elif value > self.bin_edges_[bin_index] and value <= self.bin_edges_[bin_index+1]:
-                            self.histograms_[-1,bin_index] += 1
-                            self.histograms_raw_count_[-1,bin_index] += 1
+                bin_index = np.digitize(value, self.bin_edges_)-1
+                if bin_index > self.number_of_bins_-1:
+                    pass
+                else:
+                    self.histograms_[-1,bin_index] += 1
+                    self.histograms_raw_count_[-1,bin_index] += 1
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
@@ -469,6 +488,4 @@ class Histogram:
         for i in range(self.number_of_bins_):
             data = [bin_centers[i],bin_low[i],bin_high[i],distribution[i],\
                     error[i]]
-            writer.writerow(data)
-
-            
+            writer.writerow(data)      
