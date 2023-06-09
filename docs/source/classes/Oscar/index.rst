@@ -23,4 +23,7 @@ OscarClass
 .. automethod:: Oscar.pseudorapidity_cut
 .. automethod:: Oscar.spatial_rapidity_cut
 .. automethod:: Oscar.multiplicity_cut
+# Just a test
+.. automethod:: Oscar.test
 .. automethod:: Oscar.print_particle_lists_to_file
+
