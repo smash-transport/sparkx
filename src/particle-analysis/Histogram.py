@@ -57,7 +57,7 @@ class Histogram:
     histogram_raw_counts:
         Get the raw bin counts of the histogram(s).
     number_of_histograms:
-        Get the number of created histograms.
+        Get the number of current histograms.
     bin_centers: numpy.ndarray
         Get the bin centers.
     bin_width: numpy.ndarray
@@ -69,25 +69,59 @@ class Histogram:
     bin_boundaries: numpy.ndarray
         Get the bin boundaries.
     add_value:
-        Add one or multiple values to a histogram.
+        Add one or multiple values to the latest histogram.
     add_histogram:
         Add a new histogram.
     average:
-        Averages over the histograms.
+        Averages over all histograms.
     average_weighted:
-        Performs a weighted average over the histograms.
+        Performs a weighted average over all histograms.
     standard_error:
         Get the standard deviation for each bin.
     statistical_error:
         Statistical error of all histogram bins in all histograms.
     scale_histogram:
-        Scale the histogram.
+        Multiply latest histogram with a factor.
     set_error:
         Set the error for the histogram by hand.
     print_histogram:
         Print the histogram(s) to the terminal.
     write_to_file:
         Write one histogram to a csv file.
+        
+    Examples
+    --------
+    **Creating histograms**
+    
+    To create multiple histograms with the same number and size of bins we can 
+    initialize the Histogram object with a tuple (otherwise initialize with a 
+    list containing all bin edges). To fill these histograms store them in a 
+    variable, the methods ``add_value(value)``, ``add_histogram()`` and 
+    ``histogram()`` can be used.
+    
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from Histogram import Histogram
+        >>>
+        >>> # Initialize a histogram in the range [0,10] with 10 bins
+        >>> histObj = Histogram((0, 10, 10))
+        >>>
+        >>> # Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram 
+        >>> histObj.add_value([1, 1.2, 3, 5, 6.5, 9, 9])
+        >>> print(histObj.histogram())
+        [0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]
+        >>>
+        >>> # Add a second histogram and add the values [2, 7, 7.2, 9]
+        >>> histObj.add_histogram()
+        >>> histObj.add_value([2, 7, 7.2, 9])
+        >>> print(histObj.histogram())
+        [[0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]
+         [0. 0. 1. 0. 0. 0. 0. 2. 0. 1.]]
+        >>>
+        >>> # Store the histograms in hist as numpy.ndarray
+        >>> hist = histObj.histogram()
     """
     def __init__(self, bin_boundaries):
         self.number_of_bins_ = None
@@ -131,7 +165,7 @@ class Histogram:
 
     def histogram(self):
         """
-        Get the created histogram(s).
+        Get the current histogram(s).
 
         Returns
         -------
@@ -154,7 +188,7 @@ class Histogram:
 
     def number_of_histograms(self):
         """
-        Get the number of created histograms.
+        Get the number of current histograms.
 
         Returns
         -------
@@ -220,7 +254,7 @@ class Histogram:
 
     def add_value(self, value):
         """
-        Add value(s) to the histogram.
+        Add value(s) to the latest histogram.
 
         Different cases, if there is just one number added or a whole list/
         array of numbers.
@@ -228,12 +262,12 @@ class Histogram:
         Parameters
         ----------
         value: int, float, np.number, list, numpy.ndarray
-            Value(s) which ar supposed to be added to the histogram instance.
+            Value(s) which are supposed to be added to the histogram instance.
         
         Raises
         ------
         TypeError
-            if the input is invalid
+            if the input is not a number or numpy.ndarray or list 
         """
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
@@ -288,10 +322,12 @@ class Histogram:
         self.scaling_ = np.vstack((self.scaling_, np.ones(self.number_of_bins_)))
         self.error_ = np.vstack((self.error_, np.zeros(self.number_of_bins_)))
         self.number_of_histograms_ += 1
+        
+        return self
 
     def average(self):
         """
-        Average the created histograms.
+        Average over all histograms.
 
         When this function is called the previously generated histograms are
         averaged with the same weigths and they are overwritten by the
@@ -319,7 +355,7 @@ class Histogram:
 
     def average_weighted(self,weights):
         """
-        Weighted average over the created histograms.
+        Weighted average over all histograms.
 
         When this function is called the previously generated histograms are
         averaged with the given weigths and they are overwritten by the
@@ -353,7 +389,7 @@ class Histogram:
 
     def standard_error(self):
         """
-        Get the standard deviation of the created histograms.
+        Get the standard deviation over all histogram counts for each bin.
 
         Returns
         -------
@@ -379,9 +415,9 @@ class Histogram:
 
     def scale_histogram(self,value):
         """
-        Scale the histogram by a factor.
+        Scale the latest histogram by a factor.
 
-        Multiplies the histogram by a number or a list/numpy array with a
+        Multiplies the latest histogram by a number or a list/numpy array with a
         scaling factor for each bin.
 
         Parameters
@@ -488,4 +524,4 @@ class Histogram:
         for i in range(self.number_of_bins_):
             data = [bin_centers[i],bin_low[i],bin_high[i],distribution[i],\
                     error[i]]
-            writer.writerow(data)      
+            writer.writerow(data)
