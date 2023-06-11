@@ -95,7 +95,7 @@ class Histogram:
     
     To create multiple histograms with the same number and size of bins we can 
     initialize the Histogram object with a tuple (otherwise initialize with a 
-    list containing all bin edges). To fill these histogramscstore them in a 
+    list containing all bin edges). To fill these histograms store them in a 
     variable, the methods ``add_value(value)``, ``add_histogram()`` and 
     ``histogram()`` can be used.
     
