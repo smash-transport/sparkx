@@ -1,9 +1,9 @@
 .. _oscar:
 
-OscarClass
-==========
+Oscar
+=====
 
-.. currentmodule:: OscarClass
+.. currentmodule:: Oscar
 .. autoclass:: Oscar
 
 .. automethod:: Oscar.particle_list

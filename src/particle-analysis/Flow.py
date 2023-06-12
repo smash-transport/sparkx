@@ -44,7 +44,7 @@ class Flow:
     .. code-block:: python
         :linenos:
 
-        >>> from OscarClass import Oscar
+        >>> from Oscar import Oscar
         >>> from Flow import Flow
         >>>
         >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
