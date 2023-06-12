@@ -1,4 +1,4 @@
-from ParticleClass import Particle
+from Particle import Particle
 import particle.data
 import numpy as np
 import csv
@@ -124,7 +124,7 @@ class Oscar:
     .. code-block:: python
         :linenos:
 
-        >>> from OscarClass import Oscar
+        >>> from Oscar import Oscar
         >>>
         >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
         >>>

@@ -1,4 +1,4 @@
-from ParticleClass import Particle
+from Particle import Particle
 import particle.data
 import numpy as np
 import csv
@@ -110,7 +110,7 @@ class Jetscape:
     .. code-block:: python
         :linenos:
 
-        >>> from JetscapeClass import Jetscape
+        >>> from Jetscape import Jetscape
         >>>
         >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
         >>>

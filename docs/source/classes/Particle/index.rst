@@ -1,9 +1,9 @@
 .. _particle:
 
-ParticleClass
-=============
+Particle
+========
 
-.. currentmodule:: ParticleClass
+.. currentmodule:: Particle
 .. autoclass:: Particle
 
 .. automethod:: Particle.print_particle

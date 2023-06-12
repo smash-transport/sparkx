@@ -1,9 +1,9 @@
 .. _jetscape:
 
-JetscapeClass
-=============
+Jetscape
+========
 
-.. currentmodule:: JetscapeClass
+.. currentmodule:: Jetscape
 .. autoclass:: Jetscape
 
 .. automethod:: Jetscape.particle_list
