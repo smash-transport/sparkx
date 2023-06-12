@@ -1,0 +1,35 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main  # adjust the branch name if needed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9.7  # adjust the Python version if needed
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r particle-analysis/docs/source/requirements.txt  # adjust the path if needed
+
+    - name: Build documentation
+      run: |
+        cd particle-analysis/docs
+        make clean && make html
+
+    - name: Deploy documentation
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: particle-analysis/docs/build/html  # adjust the path if needed
