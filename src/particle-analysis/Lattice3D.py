@@ -1,6 +1,7 @@
 import numpy as np
 import warnings
 from scipy.interpolate import interpn
+from scipy.stats import multivariate_normal
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -17,6 +18,7 @@ class Lattice3D:
         self.num_points_x_ = num_points_x
         self.num_points_y_ = num_points_y
         self.num_points_z_ = num_points_z
+        self.cell_volume = (x_max-x_min)*(y_max-y_min)*(z_max-z_min)/(num_points_x*num_points_y*num_points_z)
 
         self.x_values_ = np.linspace(x_min, x_max, num_points_x)
         self.y_values_ = np.linspace(y_min, y_max, num_points_y)
@@ -299,6 +301,31 @@ class Lattice3D:
                     new_lattice.set_value_by_index(i, j, k, value)
 
         return new_lattice
+    
+    def add_particle_data(self, particle_data, sigma, quantity):
+        for particle in particle_data:
+            x = particle.x
+            y = particle.y
+            z = particle.z
+            
+            if quantity == "energy density":
+                value = particle.E
+            else:
+                raise ValueError("Unknown quantity for lattice.");
+
+            # Calculate the Gaussian kernel centered at (x, y, z)
+            kernel = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+
+            for i, j, k in np.ndindex(self.grid_.shape):
+                # Get the coordinates of the current grid point
+                xi, yj, zk = self.get_coordinates(i, j, k)
+
+                # Calculate the value to add to the grid at (i, j, k)
+                smearing_factor = kernel.pdf([xi, yj, zk])
+                value_to_add = value * smearing_factor / self.cell_volume
+
+                # Add the value to the grid
+                self.grid_[i, j, k] += value_to_add
 
 def print_lattice(lattice):
     for i in range(lattice.num_points_x_):
@@ -324,10 +351,10 @@ print_lattice(latt)
 
 
 # Extract a slice along the X-axis at index 5
-slice_data, slice_values, slice_label = lattice.extract_slice('x', 5)
+slice_data, slice_values, slice_label = latt.extract_slice('x', 4)
 
 # Plot the slice
-plt.imshow(slice_data, extent=[slice_values.min(), slice_values.max(), lattice.z_min_, lattice.z_max_], origin='lower', cmap='jet')
+plt.imshow(slice_data, extent=[slice_values.min(), slice_values.max(), latt.z_min_, latt.z_max_], origin='lower', cmap='jet')
 plt.colorbar(label='Values')
 plt.xlabel('Y')
 plt.ylabel('Z')
