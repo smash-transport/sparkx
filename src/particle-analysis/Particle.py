@@ -162,7 +162,7 @@ class Particle:
         >>> from Particle import Particle
         >>>
         >>> particle = Particle()
-        >>> particle.t(1.0)
+        >>> particle.t = 1.0
         >>> print(particle.t)
         1.0
 
