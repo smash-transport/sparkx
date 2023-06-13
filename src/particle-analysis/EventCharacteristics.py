@@ -39,7 +39,7 @@ class EventCharacteristics:
         norm=0
         if harmonic_n < 1:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
-        for particle in particle_data:
+        for particle in self.particle_data:
             if weight_quantity == "energy":
                 weight = particle.E
             elif weight_quantity == "number":
