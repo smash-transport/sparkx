@@ -11,15 +11,16 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: true
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
-        python-version: "3.9"
-        node-version: "16"  # adjust the Python version if needed
+        python-version: "3.9"  # adjust the Python version if needed
+        cache: "pip"
+        architecture: "x64"
 
     - name: Install dependencies
       run: |
