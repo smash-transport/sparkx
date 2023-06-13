@@ -12,11 +12,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        submodules: true
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: "3.8.0"  # adjust the Python version if needed
+        python-version: "3.9"
+        node-version: "16"  # adjust the Python version if needed
 
     - name: Install dependencies
       run: |
