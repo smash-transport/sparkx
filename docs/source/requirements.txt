@@ -1,3 +1,4 @@
 particle
 sphinx
 numpydoc
+myst-parser
