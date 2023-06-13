@@ -1,11 +1,11 @@
 import numpy as np
 import fastjet as fj
 import csv
-from ParticleClass import Particle
+from Particle import Particle
 
 class JetAnalysis:
     """
-    This class analyzes events for different ptHat bins using the fastjet 
+    This class analyzes events for different ptHat bins using the fastjet
     python package.
     """
     def __init__(self,hadron_data,jet_R,jet_eta_cut,jet_pt_min,pt_hat_max,\
@@ -26,7 +26,7 @@ class JetAnalysis:
                                             event_hadrons[hadron].E)
             event_list_PseudoJets.append(pseudo_jet)
         return event_list_PseudoJets
-    
+
     def fill_associated_particles(self,jet,event):
         # select particles in jet cone
         associated_hadrons = []
@@ -40,7 +40,7 @@ class JetAnalysis:
             if delta_r < self.jet_R_:
                 associated_hadrons.append(hadron)
         return associated_hadrons
-    
+
     def write_jet_output(self,output_filename,jet,associated_hadrons,new_file=False):
         # jet data from reconstruction
         jet_status = 10
@@ -58,7 +58,7 @@ class JetAnalysis:
                           pseudo_jet.phi(),associated.status,\
                             associated.pdg,associated.E]
                 output_list.append(output)
-        
+
         mode = 'a'
         if new_file == True:
             mode = 'w'
