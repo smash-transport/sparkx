@@ -18,7 +18,7 @@ class Lattice3D:
         self.num_points_x_ = num_points_x
         self.num_points_y_ = num_points_y
         self.num_points_z_ = num_points_z
-        self.cell_volume = (x_max-x_min)*(y_max-y_min)*(z_max-z_min)/(num_points_x*num_points_y*num_points_z)
+        self.cell_volume_ = (x_max-x_min)*(y_max-y_min)*(z_max-z_min)/(num_points_x*num_points_y*num_points_z)
 
         self.x_values_ = np.linspace(x_min, x_max, num_points_x)
         self.y_values_ = np.linspace(y_min, y_max, num_points_y)
@@ -302,7 +302,14 @@ class Lattice3D:
 
         return new_lattice
     
-    def add_particle_data(self, particle_data, sigma, quantity):
+    def reset(self):
+        for i, j, k in np.ndindex(self.grid_.shape):
+            self.grid_[i, j, k]=0
+    
+    def add_particle_data(self, particle_data, sigma, quantity, add = False):
+        #delete old data?
+        if not add:
+             self.reset()
         for particle in particle_data:
             x = particle.x
             y = particle.y
@@ -310,6 +317,12 @@ class Lattice3D:
             
             if quantity == "energy density":
                 value = particle.E
+            elif quantity == "number":
+                value = 1.0
+            elif quantity == "charge":
+                vaule = particle.charge
+            elif quantity == "baryon number":
+                value = particle.baryon_number
             else:
                 raise ValueError("Unknown quantity for lattice.");
 
@@ -322,7 +335,7 @@ class Lattice3D:
 
                 # Calculate the value to add to the grid at (i, j, k)
                 smearing_factor = kernel.pdf([xi, yj, zk])
-                value_to_add = value * smearing_factor / self.cell_volume
+                value_to_add = value * smearing_factor / self.cell_volume_
 
                 # Add the value to the grid
                 self.grid_[i, j, k] += value_to_add
