@@ -307,7 +307,7 @@ class Oscar:
             particle_list.append(int(particle.pdg_mother1))
             particle_list.append(int(particle.pdg_mother2))
                                  
-            if particle.baryon_number() != None:                         
+            if particle.baryon_number != None:                         
                 particle_list.append(int(particle.baryon_number))
             
         elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC':
@@ -496,29 +496,19 @@ class Oscar:
             Nested list containing the current Oscar data 
 
         """
-        if self.num_events_ == 1:
-            
-            num_particles = self.num_output_per_event_[1] 
-            particle_array=[]
-            
-            for i in range(0, num_particles):
-                particle = self.__particle_as_list(self.particle_list_[i])
-                particle_array.append(particle)
+        num_particles = self.num_output_per_event_[:,1]
+        num_events = self.num_events_
+        
+        particle_array = []
+        
+        for i_ev in range(0, num_events):
+            event = []
                 
-        elif self.num_events_ > 1:
-            num_particles = self.num_output_per_event_[:,1]
-            num_events = self.num_events_
+            for i_part in range(0, num_particles[i_ev]):
+                particle = self.particle_list_[i_ev][i_part]
+                event.append(self.__particle_as_list(particle))
             
-            particle_array = []
-            
-            for i_ev in range(0, num_events):
-                event = []
-                    
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                
-                particle_array.append(event)
+            particle_array.append(event)
                 
         return particle_array
     
