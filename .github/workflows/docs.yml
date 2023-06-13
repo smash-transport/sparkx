@@ -29,6 +29,7 @@ jobs:
 
     - name: Build documentation
       run: |
+        pwd
         cd particle-analysis/docs
         make clean && make html
 
