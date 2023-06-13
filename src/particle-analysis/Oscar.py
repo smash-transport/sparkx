@@ -263,7 +263,7 @@ class Oscar:
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
             cumulated_lines += int(2 * len(self.num_output_per_event_))
-            if self.oscar_type_=="Oscar2013Extended_IC":
+            if self.oscar_format_=="Oscar2013Extended_IC":
                 cumulated_lines-=0
             
         elif isinstance(self.optional_arguments_['events'], int):
@@ -297,7 +297,7 @@ class Oscar:
         particle_list.append(int(particle.ID))
         particle_list.append(int(particle.charge))
         
-        if self.oscar_type_ == 'Oscar2013Extended'  or self.oscar_type_ == 'Oscar2013Extended_IC':
+        if self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC':
             particle_list.append(int(particle.ncoll))
             particle_list.append(float(particle.form_time))
             particle_list.append(int(particle.xsecfac))
@@ -310,7 +310,7 @@ class Oscar:
             if particle.baryon_number() != None:                         
                 particle_list.append(int(particle.baryon_number))
             
-        elif self.oscar_type_ != 'Oscar2013' and self.oscar_type_ != 'Oscar2013Extended' and self.oscar_type_ != 'Oscar2013Extended_IC':
+        elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC':
             raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
             
         return particle_list
@@ -358,9 +358,9 @@ class Oscar:
                 data_line = line.replace('\n','').split(' ')
                 particle = Particle()
 
-                if self.oscar_type_ == 'Oscar2013':
+                if self.oscar_format_ == 'Oscar2013':
                     particle.set_quantities_OSCAR2013(data_line)
-                elif self.oscar_type_ == 'Oscar2013Extended' or self.oscar_type_ == 'Oscar2013Extended_IC' :
+                elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' :
                     particle.set_quantities_OSCAR2013Extended(data_line)
                 
                 # Check for filters by method with a dictionary
@@ -397,9 +397,9 @@ class Oscar:
         first_line = first_line.replace('\n','').split(' ')
         
         if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
-            self.oscar_type_ = 'Oscar2013'
+            self.oscar_format_ = 'Oscar2013'
         elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='SMASH_IC':
-            self.oscar_type_ = 'Oscar2013Extended_IC'
+            self.oscar_format_ = 'Oscar2013Extended_IC'
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
             self.oscar_format_ = 'Oscar2013Extended'
         else:
@@ -410,7 +410,7 @@ class Oscar:
     def set_num_output_per_event_and_event_footers(self):
         file = open(self.PATH_OSCAR_ , 'r')
         event_output = []
-        if(self.oscar_type_ != 'Oscar2013Extended_IC'):
+        if(self.oscar_format_ != 'Oscar2013Extended_IC'):
             while True:
                 line = file.readline()
                 if not line:
@@ -597,17 +597,12 @@ class Oscar:
         self : Oscar object
             Containing charged particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge != 0]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge != 0]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.charge != 0]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
 
@@ -621,17 +616,12 @@ class Oscar:
         self : Oscar object
             Containing uncharged particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge == 0]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge == 0]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.charge == 0]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
                 
@@ -645,17 +635,12 @@ class Oscar:
         self : Oscar object
             Containing strange particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.is_strange() ]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.is_strange()]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.is_strange()]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
                 
@@ -689,34 +674,24 @@ class Oscar:
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) == pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) == pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) == pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) in pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) in pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length     
+            
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) in pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length     
                     
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
@@ -755,34 +730,24 @@ class Oscar:
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) != pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) != pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) != pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if not int(elem.pdg) in pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if not int(elem.pdg) in pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length     
+          
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if not int(elem.pdg) in pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length     
                     
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
@@ -800,17 +765,11 @@ class Oscar:
         self : Oscar oject
             Containing participants in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.ncoll != 0]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-            
-        elif self.num_events_ > 1:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if elem.ncoll != 0]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+    
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] if elem.ncoll != 0]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
     
@@ -824,18 +783,13 @@ class Oscar:
         self : Oscar oject
             Containing spectators in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.ncoll == 0 ]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        elif self.num_events_ > 1:
+        
             
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.ncoll == 0 ]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.ncoll == 0 ]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
         
@@ -1193,9 +1147,9 @@ class Oscar:
                 particle_output = np.asarray(self.particle_list())
              
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
-                if self.oscar_type_ == 'Oscar2013':
+                if self.oscar_format_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                elif self.oscar_type_ == 'Oscar2013Extended' or self.oscar_type_ == 'Oscar2013Extended_IC':
+                elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
             else:
@@ -1205,9 +1159,9 @@ class Oscar:
                     particle_output = np.asarray(self.particle_list()[i])
                  
                     f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
-                    if self.oscar_type_ == 'Oscar2013':
+                    if self.oscar_format_ == 'Oscar2013':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                    elif self.oscar_type_ == 'Oscar2013Extended'  or self.oscar_type_ == 'Oscar2013Extended_IC':
+                    elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                     f_out.write(self.event_end_lines_[event])
         f_out.close()
