@@ -2,3 +2,4 @@ particle
 sphinx
 numpydoc
 myst-parser
+sphinx-rtd-theme
