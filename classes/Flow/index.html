@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flow &mdash; particle-analysis 0.9.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="GenerateFlow" href="../GenerateFlow/index.html" />
+    <link rel="prev" title="Histogram" href="../Histogram/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            particle-analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Flow.Flow"><code class="docutils literal notranslate"><span class="pre">Flow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Flow.Flow.integrated_flow"><code class="docutils literal notranslate"><span class="pre">Flow.integrated_flow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Flow.Flow.differential_flow"><code class="docutils literal notranslate"><span class="pre">Flow.differential_flow()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">particle-analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Classes</a></li>
+      <li class="breadcrumb-item active">Flow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/classes/Flow/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="flow">
+<span id="id1"></span><h1>Flow<a class="headerlink" href="#flow" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Flow.Flow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Flow.</span></span><span class="sig-name descname"><span class="pre">Flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Flow.html#Flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Flow.Flow" title="Permalink to this definition"></a></dt>
+<dd><p>Defines a Flow object.</p>
+<p>The Flow class computes anisotropic flow. For this it needs a list of
+Particle objects, as it is returned from the Oscar or Jetscape classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>flow_type:</strong></dt><dd><p>“ReactionPlane”, “EventPlane”, “ScalarProduct”, “QCumulants”, “LeeYangZeros”, “PCA”</p>
+</dd>
+<dt><strong>n: int</strong></dt><dd><p>Integer for the n-th flow harmonic</p>
+</dd>
+<dt><strong>weight: str</strong></dt><dd><p>String defining the weights in the calculation of the Q vectors.
+Options are “pt”, “pt2”, “ptn”, “rapidity”.
+There is no effect for the ReactionPlane method.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Oscar</span> <span class="kn">import</span> <span class="n">Oscar</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">OSCAR_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Oscar_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">oscar</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar object containing all events</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform particle / detector cuts</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">charged_particles</span> <span class="o">=</span> <span class="n">oscar</span><span class="o">.</span><span class="n">charged</span><span class="p">()</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">flow_type</span><span class="o">=</span><span class="s2">&quot;EventPlane&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">)</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow_val</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">oscar</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>integrated_flow_: complex</strong></dt><dd><p>Value of the integrated flow.</p>
+</dd>
+<dt><strong>integrated_flow_err_: complex</strong></dt><dd><p>Value of the integrated flow error.</p>
+</dd>
+<dt><strong>differential_flow_: list</strong></dt><dd><p>List of the differential flow.</p>
+</dd>
+<dt><strong>differential_flow_err_: list</strong></dt><dd><p>List of the differential flow error.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>integrated_flow:</strong></p></td>
+<td><p>Returns the integrated flow.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>differential_flow:</strong></p></td>
+<td><p>Returns the differential flow.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Flow.Flow.integrated_flow">
+<span class="sig-prename descclassname"><span class="pre">Flow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Flow.html#Flow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Flow.Flow.integrated_flow" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the integrated anisotropic flow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_data: list</strong></dt><dd><p>List with lists for each event containing Particle objects.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><cite>integrated_flow_</cite>: complex / real</dt><dd><p>Value of the integrated flow.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Flow.Flow.differential_flow">
+<span class="sig-prename descclassname"><span class="pre">Flow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Flow.html#Flow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Flow.Flow.differential_flow" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the differential anisotropic flow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_data: list</strong></dt><dd><p>List with lists for each event containing Particle objects.</p>
+</dd>
+<dt><strong>bins: list</strong></dt><dd><p>List with bin boundaries for the differential quantity.</p>
+</dd>
+<dt><strong>flow_as_function_of: string</strong></dt><dd><p>Differential variable: ‘pt’, ‘rapidity’, ‘pseudorapidity’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><cite>integrated_flow_</cite>: list</dt><dd><p>List containing the differential flow.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Histogram/index.html" class="btn btn-neutral float-left" title="Histogram" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../GenerateFlow/index.html" class="btn btn-neutral float-right" title="GenerateFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hendrik Roch, Nils Sass.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

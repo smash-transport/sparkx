@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Histogram &mdash; particle-analysis 0.9.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Flow" href="../Flow/index.html" />
+    <link rel="prev" title="Jetscape" href="../Jetscape/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            particle-analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Histogram</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Histogram.Histogram"><code class="docutils literal notranslate"><span class="pre">Histogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.histogram_raw_counts"><code class="docutils literal notranslate"><span class="pre">Histogram.histogram_raw_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.number_of_histograms"><code class="docutils literal notranslate"><span class="pre">Histogram.number_of_histograms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_centers"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_centers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_width"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_bounds_left"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_bounds_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_bounds_right"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_bounds_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_boundaries"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_boundaries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.add_value"><code class="docutils literal notranslate"><span class="pre">Histogram.add_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.add_histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.add_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.average"><code class="docutils literal notranslate"><span class="pre">Histogram.average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.average_weighted"><code class="docutils literal notranslate"><span class="pre">Histogram.average_weighted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.standard_error"><code class="docutils literal notranslate"><span class="pre">Histogram.standard_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.statistical_error"><code class="docutils literal notranslate"><span class="pre">Histogram.statistical_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.scale_histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.scale_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.set_error"><code class="docutils literal notranslate"><span class="pre">Histogram.set_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.print_histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.print_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.write_to_file"><code class="docutils literal notranslate"><span class="pre">Histogram.write_to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">particle-analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Classes</a></li>
+      <li class="breadcrumb-item active">Histogram</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/classes/Histogram/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="histogram">
+<span id="id1"></span><h1>Histogram<a class="headerlink" href="#histogram" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Histogram.Histogram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">Histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_boundaries</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Defines a histogram object.</p>
+<p>The histograms can be initialized either with a tuple
+(hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin
+boundaries, which allows for different bin widths.
+Multiple histograms can be added and averaged.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It may be important to keep in mind that each bin contains it left edge 
+but not the right edge. If a value is added to a histogram the bin 
+assignment therefore follows:</p>
+<blockquote>
+<div><p><code style="color:red; background-color:transparent; 
+font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p></div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bin_boundaries</strong><span class="classifier">tuple</span></dt><dd><p>A tuple with three values <code class="code docutils literal notranslate"><span class="pre">(hist_min,</span> <span class="pre">hist_max,</span> <span class="pre">num_bins)</span></code>. This
+creates an evenly sized histogram in the range <code class="code docutils literal notranslate"><span class="pre">[hist_min,</span> <span class="pre">hist_max]</span></code>
+divided into <code class="code docutils literal notranslate"><span class="pre">num_bins</span></code> bins.</p>
+</dd>
+<dt><strong>bin_boundaries</strong><span class="classifier">list/numpy.ndarray</span></dt><dd><p>A list or numpy array that contains all bin edges. This allows for non-
+uniform bin sizes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><strong>Creating histograms</strong></p>
+<p>To create multiple histograms with the same number and size of bins we can 
+initialize the Histogram object with a tuple (otherwise initialize with a 
+list containing all bin edges). To fill these histograms store them in a 
+variable, the methods <code class="docutils literal notranslate"><span class="pre">add_value(value)</span></code>, <code class="docutils literal notranslate"><span class="pre">add_histogram()</span></code> and 
+<code class="docutils literal notranslate"><span class="pre">histogram()</span></code> can be used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Histogram</span> <span class="kn">import</span> <span class="n">Histogram</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize a histogram in the range [0,10] with 10 bins</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histObj</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram </span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histObj</span><span class="o">.</span><span class="n">add_value</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">histObj</span><span class="o">.</span><span class="n">histogram</span><span class="p">())</span>
+<span class="linenos"> 9</span><span class="go">[0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add a second histogram and add the values [2, 7, 7.2, 9]</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histObj</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">()</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histObj</span><span class="o">.</span><span class="n">add_value</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">7.2</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">histObj</span><span class="o">.</span><span class="n">histogram</span><span class="p">())</span>
+<span class="linenos">15</span><span class="go">[[0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]</span>
+<span class="linenos">16</span><span class="go"> [0. 0. 1. 0. 0. 0. 0. 2. 0. 1.]]</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">18</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Store the histograms in hist as numpy.ndarray</span>
+<span class="linenos">19</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span> <span class="o">=</span> <span class="n">histObj</span><span class="o">.</span><span class="n">histogram</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>number_of_bins_: int</strong></dt><dd><p>Number of histogram bins.</p>
+</dd>
+<dt><strong>bin_edges_: numpy.ndarray</strong></dt><dd><p>Array containing the edges of the bins.</p>
+</dd>
+<dt><strong>number_of_histograms_: int</strong></dt><dd><p>Number of created histograms.</p>
+</dd>
+<dt><strong>histograms_: numpy.ndarray</strong></dt><dd><p>Array containing the histograms (might be scaled).</p>
+</dd>
+<dt><strong>histograms_raw_count_: numpy.ndarray</strong></dt><dd><p>Array containing the raw counts of the histograms.</p>
+</dd>
+<dt><strong>error_: numpy.ndarray</strong></dt><dd><p>Array containing the histogram error.</p>
+</dd>
+<dt><strong>scaling_: numpy.ndarray</strong></dt><dd><p>Array containing scaling factors for each bin.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>histogram:</strong></p></td>
+<td><p>Get the created histogram(s)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>histogram_raw_counts:</strong></p></td>
+<td><p>Get the raw bin counts of the histogram(s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>number_of_histograms:</strong></p></td>
+<td><p>Get the number of current histograms.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>bin_centers: numpy.ndarray</strong></p></td>
+<td><p>Get the bin centers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>bin_width: numpy.ndarray</strong></p></td>
+<td><p>Get the bin widths.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>bin_bounds_left: numpy.ndarray</strong></p></td>
+<td><p>Extract the lower bounds of the individual bins.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>bin_bounds_right: numpy.ndarray</strong></p></td>
+<td><p>Extract the upper bounds of the individual bins.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>bin_boundaries: numpy.ndarray</strong></p></td>
+<td><p>Get the bin boundaries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>add_value:</strong></p></td>
+<td><p>Add one or multiple values to the latest histogram.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_histogram:</strong></p></td>
+<td><p>Add a new histogram.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>average:</strong></p></td>
+<td><p>Averages over all histograms.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>average_weighted:</strong></p></td>
+<td><p>Performs a weighted average over all histograms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>standard_error:</strong></p></td>
+<td><p>Get the standard deviation for each bin.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>statistical_error:</strong></p></td>
+<td><p>Statistical error of all histogram bins in all histograms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>scale_histogram:</strong></p></td>
+<td><p>Multiply latest histogram with a factor.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_error:</strong></p></td>
+<td><p>Set the error for the histogram by hand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>print_histogram:</strong></p></td>
+<td><p>Print the histogram(s) to the terminal.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>write_to_file:</strong></p></td>
+<td><p>Write one histogram to a csv file.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.histogram">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current histogram(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><cite>histograms_</cite>: numpy.ndarray</dt><dd><p>Array containing the histogram(s).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.histogram_raw_counts">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">histogram_raw_counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.histogram_raw_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.histogram_raw_counts" title="Permalink to this definition"></a></dt>
+<dd><p>Get the raw bin counts of the histogram(s), even after the original
+histograms are scaled or averaged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><cite>histograms_raw_count_</cite>: numpy.ndarray</dt><dd><p>Array containing the raw counts of the histogram(s)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.number_of_histograms">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">number_of_histograms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.number_of_histograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.number_of_histograms" title="Permalink to this definition"></a></dt>
+<dd><p>Get the number of current histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><cite>number_of_histograms_</cite>: int</dt><dd><p>Number of histograms.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.bin_centers">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">bin_centers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.bin_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.bin_centers" title="Permalink to this definition"></a></dt>
+<dd><p>Get the bin centers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the bin centers.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.bin_width">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">bin_width</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.bin_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.bin_width" title="Permalink to this definition"></a></dt>
+<dd><p>Get the bin widths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the bin widths.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.bin_bounds_left">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">bin_bounds_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.bin_bounds_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.bin_bounds_left" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the lower bounds of the individual bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the lower bin boundaries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.bin_bounds_right">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">bin_bounds_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.bin_bounds_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.bin_bounds_right" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the upper bounds of the individual bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the upper bin boundaries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.bin_boundaries">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">bin_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.bin_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.bin_boundaries" title="Permalink to this definition"></a></dt>
+<dd><p>Get the bin boundaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the bin boundaries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.add_value">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">add_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.add_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.add_value" title="Permalink to this definition"></a></dt>
+<dd><p>Add value(s) to the latest histogram.</p>
+<p>Different cases, if there is just one number added or a whole list/
+array of numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value: int, float, np.number, list, numpy.ndarray</strong></dt><dd><p>Value(s) which are supposed to be added to the histogram instance.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>TypeError</dt><dd><p>if the input is not a number or numpy.ndarray or list</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.add_histogram">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">add_histogram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.add_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.add_histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new histogram to the Histogram class instance.</p>
+<p>If new values are added to the histogram afterwards, these are added
+to the last histogram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.average">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.average" title="Permalink to this definition"></a></dt>
+<dd><p>Average over all histograms.</p>
+<p>When this function is called the previously generated histograms are
+averaged with the same weigths and they are overwritten by the
+averaged histogram.
+The standard error of the histograms is computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Histogram</dt><dd><p>Returns a Histogram object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>TypeError</dt><dd><p>if there is only one histogram</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.average_weighted">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">average_weighted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.average_weighted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.average_weighted" title="Permalink to this definition"></a></dt>
+<dd><p>Weighted average over all histograms.</p>
+<p>When this function is called the previously generated histograms are
+averaged with the given weigths and they are overwritten by the
+averaged histogram.
+The standard error of the histograms is computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>weights: numpy.ndarray</strong></dt><dd><p>Array containing a weight for each histogram.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Histogram</dt><dd><p>Returns a Histogram object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>if there is only one histogram</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.standard_error">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">standard_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.standard_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.standard_error" title="Permalink to this definition"></a></dt>
+<dd><p>Get the standard deviation over all histogram counts for each bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Array containing the standard deviation for each bin.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.statistical_error">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">statistical_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.statistical_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.statistical_error" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the statistical error of all histogram bins for all histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>2D Array containing the statistical error for each bin and histogram.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.scale_histogram">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">scale_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.scale_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.scale_histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Scale the latest histogram by a factor.</p>
+<p>Multiplies the latest histogram by a number or a list/numpy array with a
+scaling factor for each bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value: int, float, np.number, list, numpy.ndarray</strong></dt><dd><p>Scaling factor for the histogram.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.set_error">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">set_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">own_error</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.set_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.set_error" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the histogram error by hand. This is helpful for weighted
+histograms where the weight has also an uncertainty.</p>
+<p>This function has to be called after averaging, otherwise the error will
+be overwritten by the standard error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>value: list, numpy.ndarray</strong></dt><dd><p>Values for the uncertainties of the individual bins.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.print_histogram">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">print_histogram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.print_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.print_histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Print the histograms to the terminal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.write_to_file">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_bin_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_bin_low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_bin_high</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_distribution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.write_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.write_to_file" title="Permalink to this definition"></a></dt>
+<dd><p>Write one histogram to a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename: string</strong></dt><dd><p>Name for the output file</p>
+</dd>
+<dt><strong>label_bin_center: string</strong></dt><dd><p>Label for the bin center column.</p>
+</dd>
+<dt><strong>label_bin_low: string</strong></dt><dd><p>Label for the lower boundary of the bins.</p>
+</dd>
+<dt><strong>label_bin_high: string</strong></dt><dd><p>Label for the upper boundary of the bins.</p>
+</dd>
+<dt><strong>label_distribution: string</strong></dt><dd><p>Label for the histogram / distribution.</p>
+</dd>
+<dt><strong>label_error: string</strong></dt><dd><p>Label for the statistical error.</p>
+</dd>
+<dt><strong>comment: string</strong></dt><dd><p>Additional comment at the beginning of the file. It is possible
+to give a multi line comment, where each line should start with
+a ‘#’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>if there is more than one histogram</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Jetscape/index.html" class="btn btn-neutral float-left" title="Jetscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Flow/index.html" class="btn btn-neutral float-right" title="Flow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hendrik Roch, Nils Sass.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
