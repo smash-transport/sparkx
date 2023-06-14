@@ -5,6 +5,10 @@ on:
     branches:
       - main  # adjust the branch name if needed
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
