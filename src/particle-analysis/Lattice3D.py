@@ -65,22 +65,46 @@ class Lattice3D:
 
     Methods
     -------
-    set_value_by_index(i, j, k, value)
+    set_value_by_index:
         Set the value at the specified indices in the grid.
-    get_value_by_index(i, j, k)
+    get_value_by_index:
         Get the value at the specified indices in the grid.
-    set_value(x, y, z, value)
+    set_value:
         Set the value at the specified coordinates in the lattice.
-    get_value(x, y, z)
+    get_value:
         Get the value at the specified coordinates in the lattice.
-    get_coordinates(i, j, k)
+    get_coordinates:
         Get the coordinates corresponding to the given indices.
-    find_closest_indices(x, y, z)
+    find_closest_indices:
         Find the closest indices in the lattice for the given coordinates.
-    interpolate_value(x, y, z)
+    interpolate_value:
         Interpolate the value at the specified position using trilinear interpolation.
-    average(*lattices)
+    average:
         Compute the element-wise average of multiple Lattice3D objects.
+    rescale:
+        Rescale the values of the lattice by a specified factor.
+    save_to_csv:
+        Save the lattice data, including metadata, to a CSV file.
+    load_from_csv:
+        Load lattice data, including metadata, from a CSV file.
+    visualize:
+        Visualize the lattice data in a 3D plot.
+    extract_slice:
+        Extract a 2D slice from the lattice along the specified axis at the 
+        given index.
+    save_slice_to_csv:
+        Save a 2D slice from the lattice along the specified axis and index to 
+        a CSV file.
+    interpolate_to_lattice:
+        Interpolate the current lattice data to a new lattice with the specified 
+        number of points along each axis.
+    interpolate_to_lattice_new_extent:
+        Interpolate the current lattice data to a new lattice with the specified 
+        number of points and extent.
+    reset:
+        Reset the values of all grid points in the lattice to zero.
+    add_particle_data:
+        Add particle data to the lattice.
 
     """
     def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z):
@@ -708,14 +732,13 @@ class Lattice3D:
 
         Returns
         -------
-        tuple
-            A tuple containing the following:
-            slice_data : ndarray
-                The 2D slice data extracted from the lattice.
-            slice_values : ndarray
-                The values corresponding to the axis perpendicular to the slice.
-            slice_label : str
-                The label describing the slice plane.
+        A tuple containing the following:
+        slice_data : ndarray
+            The 2D slice data extracted from the lattice.
+        slice_values : ndarray
+            The values corresponding to the axis perpendicular to the slice.
+        slice_label : str
+            The label describing the slice plane.
 
         Raises
         ------
@@ -940,13 +963,12 @@ class Lattice3D:
         `sigma`. The larger the `sigma` value, the smoother the smearing effect.
 
         The supported quantities for particle data are as follows:
-        - 'energy density': Uses the particle's energy (`E`) as the value to 
-        be added to the lattice.
+
+        - 'energy density': Uses the particle's energy (`E`) as the value to be added to the lattice.
         - 'number': Adds a value of 1.0 to each grid point for each particle.
-        - 'charge': Uses the particle's charge as the value to be added to the 
-        lattice.
-        - 'baryon number': Uses the particle's baryon number as the value to be 
-        added to the lattice.
+        - 'charge': Uses the particle's charge as the value to be added to the lattice. 
+        - 'baryon number': Uses the particle's baryon number as the value to be added to the lattice.
+
         """
         #delete old data?
         if not add:
