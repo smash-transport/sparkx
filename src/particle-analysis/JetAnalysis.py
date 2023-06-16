@@ -48,6 +48,37 @@ class JetAnalysis:
         Write the jet and associated hadron information to a CSV file.
     perform_jet_analysis(output_filename):
         Perform the jet analysis for multiple events.
+
+    Examples
+    --------
+    First import your hadron data and maybe perform some cuts:
+    
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from Jetscape import Jetscape
+        >>> from JetAnalysis import JetAnalysis
+        >>>
+        >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
+        >>>
+        >>> # Jetscape object containing all events
+        >>> hadron_data = Jetscape(JETSCAPE_FILE_PATH)
+        >>> hadron_data.charged_particles().particle_objects_list()
+    
+    Then you can perform the jet analysis:
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> JET_ANALYSIS_OUTPUT_PATH = [Jetscape_directory]/jet_analysis.dat
+        >>>
+        >>> # Create an instance of the JetAnalysis class
+        >>> jet_analysis = JetAnalysis(hadron_data=hadron_data,jet_R=0.4,jet_eta_cut=2.0,jet_pt_min=15,pt_hat_max=500)
+        >>>
+        >>> # Perform the jet analysis
+        >>> jet_analysis.perform_jet_analysis(JET_ANALYSIS_OUTPUT_PATH)
     """
     def __init__(self,hadron_data,jet_R,jet_eta_cut,jet_pt_min,pt_hat_max,\
                  jet_algorithm=fj.antikt_algorithm):
