@@ -9,6 +9,7 @@ Classes
    Particle/index
    Oscar/index
    Jetscape/index
+   JetAnalysis/index
    Histogram/index
    Flow/index
    GenerateFlow/index
