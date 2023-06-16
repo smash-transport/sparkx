@@ -69,6 +69,16 @@ class JetAnalysis:
         return False
 
     def perform_jet_analysis(self,output_filename):
+        """
+        Perform the jet analysis for multiple events. The function generates a
+        file containing the jets consisting of a leading particle and associated
+        hadrons in the jet cone.
+
+        Parameters
+        ----------
+        output_filename: string
+            Filename for the jet output.
+        """
         for event in range(len(self.hadron_data_)):
             new_file = False
             all_hadrons_event = self.hadron_data_[event]
