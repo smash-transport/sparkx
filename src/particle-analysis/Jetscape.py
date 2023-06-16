@@ -85,6 +85,8 @@ class Jetscape:
         Keep uncharged particles only
     strange_particles:
         Keep strange particles only
+    particle_status:
+        Keep only particles with a given status flag
     pt_cut:
         Apply pT cut to all particles
     rapidity_cut:
@@ -639,6 +641,67 @@ class Jetscape:
                     
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple') 
+        return self
+    
+    def particle_status(self, status_list):
+        """
+        Keep only particles with a given particle status
+
+        Parameters
+        ----------
+        status_list : int
+            To keep a particles with a single status only, pass a single status
+            
+        status_list : tuple/list/array
+            To keep hadrons with different hadron status, pass a tuple or list 
+            or array
+
+        Returns
+        -------
+        self : Jetscape object
+            Containing only hadrons with status specified by status_list for 
+            every event
+
+        """
+        if not isinstance(status_list, (str, int, list, np.integer, np.ndarray, tuple)):
+            raise TypeError('Input value for status codes has not one of the ' +\
+                            'following types: str, int, np.integer, list ' +\
+                            'of str, list of int, np.ndarray, tuple')
+                
+        elif isinstance(status_list, (int, str, np.integer)):
+            status_list = int(status_list)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if int(elem.status) == status_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if int(elem.status) == status_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length
+                    
+        elif isinstance(status_list, (list, np.ndarray, tuple)):
+            status_list = np.asarray(status_list, dtype=np.int64)
+            
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ 
+                                       if int(elem.status) in status_list]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                              if int(elem.status) in status_list]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length     
+                    
+        else:
+            raise TypeError('Input value for status flag has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple') 
         return self
