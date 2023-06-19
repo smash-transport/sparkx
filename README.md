@@ -14,6 +14,10 @@ It contains multiple classes to read in the simulation outputs in OSCAR2013/OSCA
 
 </p>
 
+<a href="https://hendrik1704.github.io/particle-analysis/" target="_blank">
+  <img src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat" alt="documentation">
+</a>
+
 [![documentation](https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat)](https://hendrik1704.github.io/particle-analysis/){:target="_blank"}
 
 
