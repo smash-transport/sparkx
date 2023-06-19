@@ -20,5 +20,8 @@ It contains multiple classes to read in the simulation outputs in OSCAR2013/OSCA
 
 [![documentation](https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat)](https://hendrik1704.github.io/particle-analysis/){:target="_blank"}
 
-
-<a href="https://hendrik1704.github.io/particle-analysis/" rel="documentation">![Foo](https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat)</a>
+<div style="display: inline-block; border: 1px solid blue; padding: 10px;">
+  <a href="https://hendrik1704.github.io/particle-analysis/" target="_blank" style="display: block; width: 100%; height: 100%; text-decoration: none; color: inherit;">
+    Clickable Box
+  </a>
+</div>
