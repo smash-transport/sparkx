@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as cm
 
 class Lattice3D:
-    def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z, it_lim_x=None, it_lim_y=None, it_lim_z=None):
+    def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z, n_sigma_x=None, n_sigma_y=None, n_sigma_z=None):
         self.x_min_ = x_min
         self.x_max_ = x_max
         self.y_min_ = y_min
@@ -26,9 +26,9 @@ class Lattice3D:
 
         self.grid_ = np.zeros((num_points_x, num_points_y, num_points_z))
         
-        self.it_lim_x_ = int(it_lim_x) if it_lim_x is not None else num_points_x
-        self.it_lim_y_ = int(it_lim_y) if it_lim_y is not None else num_points_y
-        self.it_lim_z_ = int(it_lim_z) if it_lim_z is not None else num_points_z
+        self.n_sigma_x_ = int(n_sigma_x) if n_sigma_x is not None else None
+        self.n_sigma_y_ = int(n_sigma_y) if n_sigma_y is not None else None
+        self.n_sigma_z_ = int(n_sigma_z) if n_sigma_z is not None else None
         
         self.spacing_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
         self.spacing_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
@@ -338,12 +338,24 @@ class Lattice3D:
             # Calculate the Gaussian kernel centered at (x, y, z)
             kernel = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
             # Determine the range of cells within the boundary
-            i_min = max(int((x  - self.it_lim_x_ * self.spacing_x_) / self.spacing_x_) + self.origin_x_, 0)
-            i_max = min(int((x  + self.it_lim_x_ * self.spacing_x_) / self.spacing_x_) + self.origin_x_ + 1 , self.grid_.shape[0])
-            j_min = max(int((y  - self.it_lim_y_ * self.spacing_y_) / self.spacing_y_) + self.origin_y_, 0)
-            j_max = min(int((y  + self.it_lim_y_ * self.spacing_y_) / self.spacing_y_) + self.origin_y_ + 1 , self.grid_.shape[1])
-            k_min = max(int((z  - self.it_lim_z_ * self.spacing_z_) / self.spacing_z_) + self.origin_z_, 0)
-            k_max = min(int((z  + self.it_lim_z_ * self.spacing_z_) / self.spacing_z_) + self.origin_z_ + 1 , self.grid_.shape[2])
+            if self.n_sigma_x_ is not None:
+                i_min = max(int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_, 0)
+                i_max = min(int((x  + self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_ + 1 , self.grid_.shape[0])
+            else:
+                i_min = 0
+                i_max = self.num_points_x_
+            if self.n_sigma_y_ is not None:
+                j_min = max(int((y  - self.n_sigma_y_ * sigma ) / self.spacing_y_) + self.origin_y_, 0)
+                j_max = min(int((y  + self.n_sigma_y_ * sigma ) / self.spacing_y_) + self.origin_y_ + 1 , self.grid_.shape[1])
+            else:
+                j_min = 0
+                j_max = self.num_points_y_
+            if self.n_sigma_z_ is not None:
+                k_min = max(int((z  - self.n_sigma_z_ * sigma ) / self.spacing_z_) + self.origin_z_, 0)
+                k_max = min(int((z  + self.n_sigma_z_ * sigma ) / self.spacing_z_) + self.origin_z_ + 1 , self.grid_.shape[2])
+            else:
+                k_min = 0
+                k_max = self.num_points_z_
 
             for i in range(i_min, i_max):
                 for j in range(j_min, j_max):
