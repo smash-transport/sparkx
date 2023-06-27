@@ -105,26 +105,42 @@ class EventCharacteristics:
         else:
             return self.eccentricity_from_particles(harmonic_n, weight_quantity)
 
-#particle = Particle()
-#particle.t_=1.0
-#part1=Particle()
-#part1.x_=1.0
-#part1.y_=0.0
-#part1.z_=0.0
-#part1.E_=1
-#part2=Particle()
-#part2.x_=0.0
-#part2.y_=1.0
-#part2.z_=0.0
-#part2.E_=2.0
-#particle_data=[part1,part2]
-#event=EventCharacteristics(particle_data)
-#print(event.eccentricity(2))
-#latt=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50)
-#latt.add_particle_data(particle_data, 0.1, "energy density")
-#event2=EventCharacteristics(latt)
-#print(event2.eccentricity(2))
-#print(event.eccentricity_from_particles(2,"number"))
-#latt.add_particle_data(particle_data, 0.1, "number")
-#event2.set_event_data(latt)
-#print(event2.eccentricity_from_lattice(2))
+""" 
+particle = Particle()
+particle.t_=1.0
+part1=Particle()
+part1.x_=1.0
+part1.y_=0.0
+part1.z_=0.0
+part1.E_=1
+part2=Particle()
+part2.x_=0.0
+part2.y_=1.0
+part2.z_=0.0
+part2.E_=2.0
+particle_data=[part1,part2]
+event=EventCharacteristics(particle_data)
+print("Particle eps2")
+print(event.eccentricity(2))
+latt=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50)
+latt2=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50,3,3,3)
+latt3=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50,1,1,1)
+
+latt.add_particle_data(particle_data, 0.2, "energy density")
+latt2.add_particle_data(particle_data, 0.2, "energy density")
+latt3.add_particle_data(particle_data, 0.2, "energy density")
+event2=EventCharacteristics(latt)
+event3=EventCharacteristics(latt2)
+event4=EventCharacteristics(latt3)
+print("Lattice eps, no cutoff")
+print(event2.eccentricity(2))
+
+
+#event2.set_event_data(latt2)
+print("Lattice eps, big cutoff")
+print(event3.eccentricity(2, "energy"))
+
+#event3.set_event_data(latt3)
+print("Lattice eps, small cutoff")
+print(event4.eccentricity(2, "energy")) 
+"""
