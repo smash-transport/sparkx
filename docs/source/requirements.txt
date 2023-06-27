@@ -6,4 +6,3 @@ fastjet
 numpydoc
 myst-parser
 sphinx-rtd-theme
-csv
