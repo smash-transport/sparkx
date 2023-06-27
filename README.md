@@ -1,5 +1,7 @@
-SPARKX - Software Package for Analyzing Relativistic Kinematics in Collision eXperiments
-========================================================================================
+SPARKX 
+======
+Software Package for Analyzing Relativistic Kinematics in Collision eXperiments
+-------------------------------------------------------------------------------
 <a href="https://hendrik1704.github.io/sparkx/" target="_blank">
   <img src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat" alt="documentation">
 </a>
