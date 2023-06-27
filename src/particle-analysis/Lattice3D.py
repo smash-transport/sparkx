@@ -107,7 +107,7 @@ class Lattice3D:
         Add particle data to the lattice.
 
     """
-    def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z):
+    def __init__(self, x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z, n_sigma_x=None, n_sigma_y=None, n_sigma_z=None):
         self.x_min_ = x_min
         self.x_max_ = x_max
         self.y_min_ = y_min
@@ -124,6 +124,15 @@ class Lattice3D:
         self.z_values_ = np.linspace(z_min, z_max, num_points_z)
 
         self.grid_ = np.zeros((num_points_x, num_points_y, num_points_z))
+        
+        self.n_sigma_x_ = int(n_sigma_x) if n_sigma_x is not None else None
+        self.n_sigma_y_ = int(n_sigma_y) if n_sigma_y is not None else None
+        self.n_sigma_z_ = int(n_sigma_z) if n_sigma_z is not None else None
+        
+        self.spacing_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
+        self.spacing_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
+        self.spacing_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
+        self.origin_x_, self.origin_y_, self.origin_z_ = self.__get_indices(0,0,0)
 
     def __is_valid_index(self, i, j, k):
         """
@@ -983,7 +992,7 @@ class Lattice3D:
             elif quantity == "number":
                 value = 1.0
             elif quantity == "charge":
-                vaule = particle.charge
+                value = particle.charge
             elif quantity == "baryon number":
                 value = particle.baryon_number
             else:
@@ -991,17 +1000,38 @@ class Lattice3D:
 
             # Calculate the Gaussian kernel centered at (x, y, z)
             kernel = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+            # Determine the range of cells within the boundary
+            if self.n_sigma_x_ is not None:
+                i_min = max(int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_, 0)
+                i_max = min(int((x  + self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_ + 1 , self.grid_.shape[0])
+            else:
+                i_min = 0
+                i_max = self.num_points_x_
+            if self.n_sigma_y_ is not None:
+                j_min = max(int((y  - self.n_sigma_y_ * sigma ) / self.spacing_y_) + self.origin_y_, 0)
+                j_max = min(int((y  + self.n_sigma_y_ * sigma ) / self.spacing_y_) + self.origin_y_ + 1 , self.grid_.shape[1])
+            else:
+                j_min = 0
+                j_max = self.num_points_y_
+            if self.n_sigma_z_ is not None:
+                k_min = max(int((z  - self.n_sigma_z_ * sigma ) / self.spacing_z_) + self.origin_z_, 0)
+                k_max = min(int((z  + self.n_sigma_z_ * sigma ) / self.spacing_z_) + self.origin_z_ + 1 , self.grid_.shape[2])
+            else:
+                k_min = 0
+                k_max = self.num_points_z_
 
-            for i, j, k in np.ndindex(self.grid_.shape):
-                # Get the coordinates of the current grid point
-                xi, yj, zk = self.get_coordinates(i, j, k)
+            for i in range(i_min, i_max):
+                for j in range(j_min, j_max):
+                    for k in range(k_min, k_max):
+                        # Get the coordinates of the current grid point
+                        xi, yj, zk = self.get_coordinates(i, j, k)
 
-                # Calculate the value to add to the grid at (i, j, k)
-                smearing_factor = kernel.pdf([xi, yj, zk])
-                value_to_add = value * smearing_factor / self.cell_volume_
+                        # Calculate the value to add to the grid at (i, j, k)
+                        smearing_factor = kernel.pdf([xi, yj, zk])
+                        value_to_add = value * smearing_factor / self.cell_volume_
 
-                # Add the value to the grid
-                self.grid_[i, j, k] += value_to_add
+                        # Add the value to the grid
+                        self.grid_[i, j, k] += value_to_add
 
 def print_lattice(lattice):
     for i in range(lattice.num_points_x_):
@@ -1036,5 +1066,5 @@ plt.xlabel('Y')
 plt.ylabel('Z')
 plt.title(slice_label)
 plt.show()
-
 """
+
