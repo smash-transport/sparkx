@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JetAnalysis &mdash; particle-analysis 0.9.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            particle-analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">particle-analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">JetAnalysis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for JetAnalysis</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">fastjet</span> <span class="k">as</span> <span class="nn">fj</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+
+<div class="viewcode-block" id="JetAnalysis"><a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis">[docs]</a><span class="k">class</span> <span class="nc">JetAnalysis</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class analyzes events for different ptHat bins using the fastjet</span>
+<span class="sd">    python package.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hadron_data: list</span>
+<span class="sd">        List of hadron data for each event.</span>
+<span class="sd">    jet_R: float</span>
+<span class="sd">        Jet radius parameter.</span>
+<span class="sd">    jet_eta_cut: float</span>
+<span class="sd">        Maximum pseudorapidity for jet selection.</span>
+<span class="sd">    jet_pt_min: float</span>
+<span class="sd">        Minimum transverse momentum for jet selection.</span>
+<span class="sd">    pt_hat_max: float</span>
+<span class="sd">        Maximum ptHat value for jet analysis.</span>
+<span class="sd">    jet_algorithm: fastjet.JetAlgorithm, optional</span>
+<span class="sd">        Jet algorithm for jet finding. Default is `fj.antikt_algorithm`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hadron_data_: list</span>
+<span class="sd">        List of hadron data for each event.</span>
+<span class="sd">    jet_R_: float</span>
+<span class="sd">        Jet radius parameter.</span>
+<span class="sd">    jet_eta_cut_: float</span>
+<span class="sd">        Maximum pseudorapidity for jet selection.</span>
+<span class="sd">    jet_pt_min_: float</span>
+<span class="sd">        Minimum transverse momentum for jet selection.</span>
+<span class="sd">    pt_hat_max_: float</span>
+<span class="sd">        Maximum ptHat value for jet analysis.</span>
+<span class="sd">    jet_algorithm_: fastjet.JetAlgorithm</span>
+<span class="sd">        Jet algorithm for jet finding.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    create_fastjet_PseudoJets(event_hadrons):</span>
+<span class="sd">        Convert hadron data to a list of fastjet.PseudoJet objects.</span>
+<span class="sd">    fill_associated_particles(jet, event):</span>
+<span class="sd">        Select particles in the jet cone.</span>
+<span class="sd">    write_jet_output(output_filename, jet, associated_hadrons, new_file=False):</span>
+<span class="sd">        Write the jet and associated hadron information to a CSV file.</span>
+<span class="sd">    perform_jet_analysis(output_filename):</span>
+<span class="sd">        Perform the jet analysis for multiple events.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    First import your hadron data and maybe perform some cuts:</span>
+<span class="sd">    </span>
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; from Jetscape import Jetscape</span>
+<span class="sd">        &gt;&gt;&gt; from JetAnalysis import JetAnalysis</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Jetscape object containing all events</span>
+<span class="sd">        &gt;&gt;&gt; hadron_data = Jetscape(JETSCAPE_FILE_PATH)</span>
+<span class="sd">        &gt;&gt;&gt; hadron_data.charged_particles().particle_objects_list()</span>
+<span class="sd">    </span>
+<span class="sd">    Then you can perform the jet analysis:</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; JET_ANALYSIS_OUTPUT_PATH = [Jetscape_directory]/jet_analysis.dat</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Create an instance of the JetAnalysis class</span>
+<span class="sd">        &gt;&gt;&gt; jet_analysis = JetAnalysis(hadron_data=hadron_data,jet_R=0.4,jet_eta_cut=2.0,jet_pt_min=15,pt_hat_max=500)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Perform the jet analysis</span>
+<span class="sd">        &gt;&gt;&gt; jet_analysis.perform_jet_analysis(JET_ANALYSIS_OUTPUT_PATH)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hadron_data</span><span class="p">,</span><span class="n">jet_R</span><span class="p">,</span><span class="n">jet_eta_cut</span><span class="p">,</span><span class="n">jet_pt_min</span><span class="p">,</span><span class="n">pt_hat_max</span><span class="p">,</span>\
+                 <span class="n">jet_algorithm</span><span class="o">=</span><span class="n">fj</span><span class="o">.</span><span class="n">antikt_algorithm</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hadron_data_</span> <span class="o">=</span> <span class="n">hadron_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span> <span class="o">=</span> <span class="n">jet_R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_cut_</span> <span class="o">=</span> <span class="n">jet_eta_cut</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_min_</span> <span class="o">=</span> <span class="n">jet_pt_min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt_hat_max_</span> <span class="o">=</span> <span class="n">pt_hat_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jet_algorithm_</span> <span class="o">=</span> <span class="n">jet_algorithm</span>
+    
+<div class="viewcode-block" id="JetAnalysis.create_fastjet_PseudoJets"><a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.create_fastjet_PseudoJets">[docs]</a>    <span class="k">def</span> <span class="nf">create_fastjet_PseudoJets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_hadrons</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert hadron data to a list of fastjet.PseudoJet objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_hadrons: list</span>
+<span class="sd">            List of Particle objects representing hadrons.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            List of fastjet.PseudoJet objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event_list_PseudoJets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">hadron</span><span class="o">.</span><span class="n">px</span><span class="p">,</span> <span class="n">hadron</span><span class="o">.</span><span class="n">py</span><span class="p">,</span> <span class="n">hadron</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span> <span class="n">hadron</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">hadron</span> <span class="ow">in</span> <span class="n">event_hadrons</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">event_list_PseudoJets</span></div>
+
+<div class="viewcode-block" id="JetAnalysis.fill_associated_particles"><a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.fill_associated_particles">[docs]</a>    <span class="k">def</span> <span class="nf">fill_associated_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select particles in the jet cone.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        jet: fastjet.PseudoJet</span>
+<span class="sd">            The jet to check for associated particles.</span>
+<span class="sd">        event: int</span>
+<span class="sd">            The event index.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            list</span>
+<span class="sd">        List of associated particles in the jet cone.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">associated_hadrons</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">hadron</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hadron_data_</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
+            <span class="n">fastjet_particle</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">hadron</span><span class="o">.</span><span class="n">px</span><span class="p">,</span><span class="n">hadron</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>\
+                                            <span class="n">hadron</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span><span class="n">hadron</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+            <span class="n">delta_eta</span> <span class="o">=</span> <span class="n">fastjet_particle</span><span class="o">.</span><span class="n">eta</span><span class="p">()</span> <span class="o">-</span> <span class="n">jet</span><span class="o">.</span><span class="n">eta</span><span class="p">()</span>
+            <span class="n">delta_phi</span> <span class="o">=</span> <span class="n">fastjet_particle</span><span class="o">.</span><span class="n">delta_phi_to</span><span class="p">(</span><span class="n">jet</span><span class="p">)</span>
+            <span class="n">delta_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta_eta</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">delta_phi</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">delta_r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span><span class="p">:</span>
+                <span class="n">associated_hadrons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hadron</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">associated_hadrons</span></div>
+
+    <span class="k">def</span> <span class="nf">write_jet_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_filename</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">associated_hadrons</span><span class="p">,</span><span class="n">new_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the jet and associated hadron information to a CSV file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_filename: str</span>
+<span class="sd">            Filename for the jet output.</span>
+<span class="sd">        jet: fastjet.PseudoJet</span>
+<span class="sd">            The jet object.</span>
+<span class="sd">        associated_hadrons: list</span>
+<span class="sd">            List of associated hadrons.</span>
+<span class="sd">        new_file: bool, optional</span>
+<span class="sd">            Whether to create a new file or append to an existing file. </span>
+<span class="sd">            Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            False if successful.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># jet data from reconstruction</span>
+        <span class="n">jet_status</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">jet_pid</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">output_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">jet</span><span class="o">.</span><span class="n">perp</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pt_hat_max_</span><span class="p">:</span>
+            <span class="n">output_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="n">jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span><span class="n">jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span><span class="n">jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span><span class="n">jet_status</span><span class="p">,</span>\
+                            <span class="n">jet_pid</span><span class="p">,</span><span class="n">jet</span><span class="o">.</span><span class="n">e</span><span class="p">()]]</span>
+
+            <span class="c1"># associated hadrons</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">associated</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">associated_hadrons</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">pseudo_jet</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">associated</span><span class="o">.</span><span class="n">px</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>\
+                                          <span class="n">associated</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">pseudo_jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span><span class="n">pseudo_jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span>\
+                          <span class="n">pseudo_jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span><span class="n">associated</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>\
+                            <span class="n">associated</span><span class="o">.</span><span class="n">pdg</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">]</span>
+                <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">new_file</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">output_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="JetAnalysis.perform_jet_analysis"><a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.perform_jet_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">perform_jet_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform the jet analysis for multiple events. The function generates a</span>
+<span class="sd">        file containing the jets consisting of a leading particle and associated</span>
+<span class="sd">        hadrons in the jet cone.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_filename: str</span>
+<span class="sd">            Filename for the jet output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">event</span><span class="p">,</span> <span class="n">hadron_data_event</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hadron_data_</span><span class="p">):</span>
+            <span class="n">new_file</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">event_PseudoJets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fastjet_PseudoJets</span><span class="p">(</span><span class="n">hadron_data_event</span><span class="p">)</span>
+            <span class="n">jet_definition</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">JetDefinition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_algorithm_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span><span class="p">)</span>
+            <span class="n">jet_selector</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">SelectorAbsEtaMax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_cut_</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;jet definition is:&quot;</span><span class="p">,</span> <span class="n">jet_definition</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;jet selector is:&quot;</span><span class="p">,</span> <span class="n">jet_selector</span><span class="p">)</span>
+                <span class="c1"># create a new file for the first event in the dataset</span>
+                <span class="n">new_file</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># perform the jet finiding algorithm</span>
+            <span class="n">cluster</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">ClusterSequence</span><span class="p">(</span><span class="n">event_PseudoJets</span><span class="p">,</span> <span class="n">jet_definition</span><span class="p">)</span>
+            <span class="n">jets</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">sorted_by_pt</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">inclusive_jets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_min_</span><span class="p">))</span>
+            <span class="n">jets</span> <span class="o">=</span> <span class="n">jet_selector</span><span class="p">(</span><span class="n">jets</span><span class="p">)</span>
+
+            <span class="c1"># get the associated particles in the jet cone</span>
+            <span class="k">for</span> <span class="n">jet</span> <span class="ow">in</span> <span class="n">jets</span><span class="p">:</span>
+                <span class="n">associated_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_associated_particles</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+                <span class="n">new_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_jet_output</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">jet</span><span class="p">,</span>\
+                                                  <span class="n">associated_particles</span><span class="p">,</span> <span class="n">new_file</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hendrik Roch, Nils Sass.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

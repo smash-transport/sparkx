@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oscar &mdash; particle-analysis 0.9.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            particle-analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">particle-analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Oscar</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Oscar</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">import</span> <span class="nn">particle.data</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="Oscar"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar">[docs]</a><span class="k">class</span> <span class="nc">Oscar</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines an Oscar object.</span>
+<span class="sd">    </span>
+<span class="sd">    The Oscar class contains a single .oscar file including all or only chosen </span>
+<span class="sd">    events in either the Oscar2013 or Oscar2013Extended format. It&#39;s methods </span>
+<span class="sd">    allow to directly act on all contained events as applying acceptance filters</span>
+<span class="sd">    (e.g. un/charged particles, spectators/participants) to keep/romove particles</span>
+<span class="sd">    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).</span>
+<span class="sd">    Once these filters are applied, the new data set can be saved as a</span>
+<span class="sd">    </span>
+<span class="sd">    1) nested list containing all quantities of the Oscar format </span>
+<span class="sd">    2) list containing Particle objects from the ParticleClass </span>
+<span class="sd">    </span>
+<span class="sd">    or it may be printed to a file complying with the input format.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    OSCAR_FILE : str</span>
+<span class="sd">        Path to Oscar file</span>
+<span class="sd">        </span>
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    **kwargs : properties, optional</span>
+<span class="sd">        kwargs are used to specify optional properties like a chunk reading </span>
+<span class="sd">        and must be used like :code:`&#39;property&#39;=&#39;value&#39;` where the possible </span>
+<span class="sd">        properties are specified below.</span>
+<span class="sd">        </span>
+<span class="sd">        .. list-table::</span>
+<span class="sd">            :header-rows: 1</span>
+<span class="sd">            :widths: 25 75</span>
+
+<span class="sd">            * - Property</span>
+<span class="sd">              - Description</span>
+<span class="sd">            * - :code:`events` (int)</span>
+<span class="sd">              - From the input Oscar file load only a single event by |br|</span>
+<span class="sd">                specifying :code:`events=i` where i is event number i.</span>
+<span class="sd">            * - :code:`events` (tuple)</span>
+<span class="sd">              - From the input Oscar file load only a range of events |br|</span>
+<span class="sd">                given by the tuple :code:`(first_event, last_event)` |br|</span>
+<span class="sd">                by specifying :code:`events=(first_event, last_event)` |br|</span>
+<span class="sd">                where last_event is included.</span>
+<span class="sd">                </span>
+<span class="sd">        .. |br| raw:: html</span>
+<span class="sd">        </span>
+<span class="sd">           &lt;br /&gt;</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    PATH_OSCAR_ : str</span>
+<span class="sd">        Path to the Oscar file</span>
+<span class="sd">    oscar_format_ : str</span>
+<span class="sd">        Input Oscar format &quot;Oscar2013&quot; or &quot;Oscar2013Extended&quot; (set automatically)</span>
+<span class="sd">    num_output_per_event_ : numpy.array</span>
+<span class="sd">        Array containing the event number and the number of particles in this </span>
+<span class="sd">        event as num_output_per_event_[event i][num_output in event i] (updated</span>
+<span class="sd">        when filters are applied)</span>
+<span class="sd">    num_events_ : int</span>
+<span class="sd">        Number of events contained in the Oscar object (updated when filters </span>
+<span class="sd">        are applied)</span>
+<span class="sd">    list_of_all_valid_pdg_ids_ : list</span>
+<span class="sd">        List of all PDG codes contained in the external particle package as </span>
+<span class="sd">        int values</span>
+<span class="sd">    event_end_lines_ : list</span>
+<span class="sd">        List containing all comment lines at the end of each event as str. </span>
+<span class="sd">        Needed to print the Oscar object to a file.</span>
+<span class="sd">    </span>
+<span class="sd">        </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    particle_list:</span>
+<span class="sd">        Returns current Oscar data as nested list</span>
+<span class="sd">    particle_objects_list:</span>
+<span class="sd">        Returns current Oscar data as nested list of ParticleClass objects</span>
+<span class="sd">    num_events:</span>
+<span class="sd">        Get number of events </span>
+<span class="sd">    num_output_per_event:</span>
+<span class="sd">        Get number of particles in each event</span>
+<span class="sd">    oscar_format:</span>
+<span class="sd">        Get Oscar format of the input file</span>
+<span class="sd">    particle_species:</span>
+<span class="sd">        Keep only particles with given PDG ids</span>
+<span class="sd">    remove_particle_species:</span>
+<span class="sd">        Remove particles with given PDG ids</span>
+<span class="sd">    participants:</span>
+<span class="sd">        Keep participants only</span>
+<span class="sd">    spectators:</span>
+<span class="sd">        Keep spectators only</span>
+<span class="sd">    charged_particles:</span>
+<span class="sd">        Keep charged particles only</span>
+<span class="sd">    uncharged_particles:</span>
+<span class="sd">        Keep uncharged particles only</span>
+<span class="sd">    strange_particles:</span>
+<span class="sd">        Keep strange particles only</span>
+<span class="sd">    pt_cut:</span>
+<span class="sd">        Apply pT cut to all particles</span>
+<span class="sd">    rapidity_cut:</span>
+<span class="sd">        Apply rapidity cut to all particles</span>
+<span class="sd">    pseudorapidity_cut:</span>
+<span class="sd">        Apply pseudorapidity cut to all particles</span>
+<span class="sd">    spatial_rapidity_cut:</span>
+<span class="sd">        Apply spatial rapidity (space-time rapidity) cut to all particles</span>
+<span class="sd">    multiplicity_cut:</span>
+<span class="sd">        Apply multiplicity cut to all particles</span>
+<span class="sd">    print_particle_lists_to_file:</span>
+<span class="sd">        Print current particle data to file with same format</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    **1. Initialization**</span>
+
+<span class="sd">    To create an Oscar object, the path to the Oscar file has to be passed. </span>
+<span class="sd">    By default the Oscar object will contain all events of the input file. If</span>
+<span class="sd">    the Oscar object should only contain certain events, the keyword argument</span>
+<span class="sd">    &quot;events&quot; must be used.</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; from Oscar import Oscar</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar object containing all events</span>
+<span class="sd">        &gt;&gt;&gt; oscar1 = Oscar(OSCAR_FILE_PATH)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar object containing only the first event</span>
+<span class="sd">        &gt;&gt;&gt; oscar2 = Oscar(OSCAR_FILE_PATH, events=0)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar object containing only events 2, 3, 4 and 5</span>
+<span class="sd">        &gt;&gt;&gt; oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))</span>
+<span class="sd">    </span>
+<span class="sd">    **2. Method Usage**</span>
+<span class="sd">    </span>
+<span class="sd">    All methods that apply filters to the Oscar data return :code:`self`. This </span>
+<span class="sd">    means that methods can be concatenated. To access the Oscar data as list to</span>
+<span class="sd">    store it into a variable, the method :code:`particle_list()` or </span>
+<span class="sd">    :code:`particle_objects_list` must be called in the end.</span>
+<span class="sd">    Let&#39;s assume we only want to keep participant pions in events with a </span>
+<span class="sd">    multiplicity &gt; 500:</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; oscar = Oscar(&quot;path_to_file&quot;)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # save the pions of all events as nested list</span>
+<span class="sd">        &gt;&gt;&gt; pions_list = pions.particle_list()</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # save the pions as list of Particle objects</span>
+<span class="sd">        &gt;&gt;&gt; pions_particle_objects = pions.particle_objects_list()</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # print the pions to an oscar file</span>
+<span class="sd">        &gt;&gt;&gt; pions.print_particle_lists_to_file(&#39;./particle_lists.oscar&#39;)</span>
+<span class="sd">     </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OSCAR_FILE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        OSCAR_FILE : TYPE</span>
+<span class="sd">            DESCRIPTION.</span>
+<span class="sd">        **kwargs : TYPE</span>
+<span class="sd">            DESCRIPTION.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            DESCRIPTION.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;.oscar&#39;</span> <span class="ow">in</span> <span class="n">OSCAR_FILE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input file is not in the OSCAR format. Input &#39;</span>
+                            <span class="s1">&#39;file must have the ending .oscar&#39;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span> <span class="o">=</span> <span class="n">OSCAR_FILE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span> <span class="o">=</span> <span class="p">[]</span>
+    
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_oscar_format</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_events</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_output_per_event_and_event_footers</span><span class="p">()</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_list_of_all_valid_pdg_ids</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_particle_list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="c1"># PRIVATE CLASS METHODS</span>
+    
+    <span class="k">def</span> <span class="nf">__get_num_skip_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get number of initial lines in Oscar file that are header or comment </span>
+<span class="sd">        lines and need to be skipped in order to read the particle output.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        skip_lines : int</span>
+<span class="sd">            Number of initial lines before data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span> <span class="ow">or</span> <span class="s1">&#39;events&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]):</span>
+                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">line_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">line_start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">line_start</span><span class="p">):</span>
+                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Value given as flag &quot;events&quot; is not of type &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;int or a tuple of two int values&#39;</span><span class="p">)</span>
+    
+        <span class="k">return</span> <span class="n">skip_lines</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__skip_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Once a file is opened with :code:`open()`, this method skips the </span>
+<span class="sd">        initial header and comment lines such that the first line called with</span>
+<span class="sd">        :code:`fname.readline()` is the first particle in the first event.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : variable name</span>
+<span class="sd">            Name of the variable for the file opend with the :code:`open()` </span>
+<span class="sd">            command.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_skip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_num_skip_lines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_skip</span><span class="p">):</span>
+            <span class="n">fname</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            
+            
+    <span class="k">def</span> <span class="nf">__get_num_read_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span> <span class="ow">or</span> <span class="s1">&#39;events&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># add number of comments</span>
+            <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span><span class="o">==</span><span class="s2">&quot;Oscar2013Extended_IC&quot;</span><span class="p">:</span>
+                <span class="n">cumulated_lines</span><span class="o">-=</span><span class="mi">0</span>
+            
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">read_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">read_event</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">event_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">event_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_start</span><span class="p">,</span> <span class="n">event_end</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Value given as flag events is not of type int or a tuple&#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">cumulated_lines</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__particle_as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle</span><span class="p">):</span>
+        <span class="n">particle_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">E</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">pz</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">ID</span><span class="p">))</span>
+        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">charge</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended&#39;</span>  <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span><span class="p">:</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">ncoll</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">form_time</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">xsecfac</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">proc_id_origin</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">proc_type_origin</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">t_last_coll</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother1</span><span class="p">))</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother2</span><span class="p">))</span>
+                                 
+            <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>                         
+                <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span><span class="p">))</span>
+            
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">!=</span> <span class="s1">&#39;Oscar2013&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">!=</span> <span class="s1">&#39;Oscar2013Extended&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">!=</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format&#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">particle_list</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__check_if_pdg_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdg_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pdg_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid PDG ID given according to the following &#39;</span> <span class="o">+</span>\
+                                 <span class="s1">&#39;data base: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>\
+                                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Enter a valid PDG ID or update database.&#39;</span><span class="p">)</span>
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">pdg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span> <span class="k">for</span> <span class="n">pdg</span> <span class="ow">in</span> <span class="n">pdg_list</span><span class="p">):</span>
+                <span class="n">non_valid_elements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;One or more invalid PDG IDs given. The IDs &#39;</span> <span class="o">+</span>\
+                                 <span class="nb">str</span><span class="p">(</span><span class="n">non_valid_elements</span><span class="p">)</span> <span class="o">+</span><span class="s1">&#39; are not contained in &#39;</span> <span class="o">+</span>\
+                                 <span class="s1">&#39;the data base: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>\
+                                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Enter valid PDG IDs or update database.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    
+        
+    <span class="c1"># PUBLIC CLASS METHODS</span>
+        
+    
+    <span class="k">def</span> <span class="nf">set_particle_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">particle_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num_read_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_num_read_lines</span><span class="p">()</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__skip_lines</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_read_lines</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index out of range of OSCAR file&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s1">&#39;#&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;out&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First line of the event is not a comment &#39;</span> <span class="o">+</span>\
+                                 <span class="s1">&#39;line or does not contain &quot;out&quot;&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;event&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;out&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">or</span> <span class="s1">&#39;in &#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;end&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                <span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013&#39;</span><span class="p">:</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">set_quantities_OSCAR2013</span><span class="p">(</span><span class="n">data_line</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span> <span class="p">:</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">set_quantities_OSCAR2013Extended</span><span class="p">(</span><span class="n">data_line</span><span class="p">)</span>
+                
+                <span class="c1"># Check for filters by method with a dictionary</span>
+                <span class="c1"># and do not append if empty (Method: WantToKeep(particle, filter) -&gt; True/False)</span>
+                
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span> 
+        <span class="n">fname</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="c1"># Correct num_output_per_event and num_events</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s1">&#39;events&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">update</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">event_start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">event_end</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">event_start</span> <span class="p">:</span> <span class="n">event_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">update</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_end</span> <span class="o">-</span> <span class="n">event_start</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s1">&#39;events&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="n">particle_list</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="n">particle_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="n">particle_list</span>
+        
+    
+    <span class="k">def</span> <span class="nf">set_oscar_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="n">first_line</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="n">first_line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">15</span> <span class="ow">or</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#!OSCAR2013&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">=</span> <span class="s1">&#39;Oscar2013&#39;</span>
+        <span class="k">elif</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#!OSCAR2013Extended&#39;</span> <span class="ow">and</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;SMASH_IC&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">=</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">23</span> <span class="ow">or</span> <span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#!OSCAR2013Extended&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">=</span> <span class="s1">&#39;Oscar2013Extended&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input file must follow the Oscar2013, &#39;</span><span class="o">+</span>\
+                            <span class="s1">&#39;Oscar2013Extended or Oscar2013Extended_IC format &#39;</span><span class="p">)</span>
+                
+                
+    <span class="k">def</span> <span class="nf">set_num_output_per_event_and_event_footers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span> <span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">event_output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">!=</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span><span class="p">):</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;end &#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;out&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">num_output</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                    <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event</span><span class="p">,</span> <span class="n">num_output</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>  
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_counter</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">event</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">line_counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;end&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event</span><span class="p">,</span> <span class="n">line_counter</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;in&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">line_counter</span><span class="o">=</span><span class="mi">0</span>       
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>  
+        <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">event_output</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    
+    
+    <span class="k">def</span> <span class="nf">set_num_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Read the file in binary mode to search for last line. In this way one</span>
+        <span class="c1"># does not need to loop through the whole file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>         
+            <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_CUR</span><span class="p">)</span> 
+            <span class="n">last_line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span> <span class="ow">and</span> <span class="s1">&#39;event&#39;</span> <span class="ow">in</span> <span class="n">last_line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input file does not end with a comment line &#39;</span><span class="o">+</span>\
+                            <span class="s1">&#39;including the events. File might be incomplete &#39;</span><span class="o">+</span>\
+                            <span class="s1">&#39;or corrupted.&#39;</span><span class="p">)</span>
+                
+                
+    <span class="k">def</span> <span class="nf">set_list_of_all_valid_pdg_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets list_of_all_valid_pdg_ids_ with a list containing all valid pdg </span>
+<span class="sd">        ids according to the particle package (2022) as integers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">basepath</span> <span class="o">/</span> <span class="s2">&quot;particle2022.csv&quot;</span>
+        <span class="n">valid_pdg_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+            <span class="n">csv_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">counter_row</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv_reader</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">counter_row</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">valid_pdg_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">counter_row</span><span class="p">:</span>
+                    <span class="n">valid_pdg_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">counter_row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_of_all_valid_pdg_ids_</span> <span class="o">=</span> <span class="n">valid_pdg_ids</span>
+        
+                
+<div class="viewcode-block" id="Oscar.particle_list"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.particle_list">[docs]</a>    <span class="k">def</span> <span class="nf">particle_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a nested python list containing all quantities from the </span>
+<span class="sd">        current Oscar data as numerical values with the following shape:</span>
+<span class="sd">            </span>
+<span class="sd">            | Single Event:    [output_line][particle_quantity]</span>
+<span class="sd">            | Multiple Events: [event][output_line][particle_quantity]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            Nested list containing the current Oscar data </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">num_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span>
+        
+        <span class="n">particle_array</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i_ev</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_events</span><span class="p">):</span>
+            <span class="n">event</span> <span class="o">=</span> <span class="p">[]</span>
+                
+            <span class="k">for</span> <span class="n">i_part</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_particles</span><span class="p">[</span><span class="n">i_ev</span><span class="p">]):</span>
+                <span class="n">particle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i_ev</span><span class="p">][</span><span class="n">i_part</span><span class="p">]</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__particle_as_list</span><span class="p">(</span><span class="n">particle</span><span class="p">))</span>
+            
+            <span class="n">particle_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">particle_array</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.particle_objects_list"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.particle_objects_list">[docs]</a>    <span class="k">def</span> <span class="nf">particle_objects_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a nested python list containing all particles from </span>
+<span class="sd">        the Oscar2013/Oscar2013Extended output as particle objects </span>
+<span class="sd">        from ParticleClass:</span>
+<span class="sd">            </span>
+<span class="sd">           | Single Event:    [particle_object]</span>
+<span class="sd">           | Multiple Events: [event][particle_object]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_list_ : list</span>
+<span class="sd">            List of particle objects from ParticleClass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span></div>
+                
+                
+<div class="viewcode-block" id="Oscar.oscar_format"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.oscar_format">[docs]</a>    <span class="k">def</span> <span class="nf">oscar_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the Oscar format of the input file.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        oscar_format_ : str</span>
+<span class="sd">            Oscar format of the input Oscar file as string (&quot;Oscar2013&quot; or </span>
+<span class="sd">            &quot;Oscar2013Extended&quot;)</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.num_output_per_event"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.num_output_per_event">[docs]</a>    <span class="k">def</span> <span class="nf">num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a numpy array containing the event number (starting with 1) </span>
+<span class="sd">        and the corresponding number of particles created in this event as</span>
+<span class="sd">        </span>
+<span class="sd">        num_output_per_event[event_n, numer_of_particles_in_event_n]</span>
+<span class="sd">        </span>
+<span class="sd">        num_output_per_event is updated with every manipulation e.g. after </span>
+<span class="sd">        applying cuts.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num_output_per_event_ : numpy.ndarray</span>
+<span class="sd">            Array containing the event number and the corresponding number of </span>
+<span class="sd">            particles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.num_events"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.num_events">[docs]</a>    <span class="k">def</span> <span class="nf">num_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of events in particle_list</span>
+<span class="sd">        </span>
+<span class="sd">        num_events is updated with every manipulation e.g. after </span>
+<span class="sd">        applying cuts.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num_events_ : int</span>
+<span class="sd">            Number of events in particle_list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.charged_particles"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.charged_particles">[docs]</a>    <span class="k">def</span> <span class="nf">charged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only charged particles in particle_list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing charged particles in every event only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                        <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">charge</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Oscar.uncharged_particles"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.uncharged_particles">[docs]</a>    <span class="k">def</span> <span class="nf">uncharged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only uncharged particles in particle_list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing uncharged particles in every event only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                        <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                
+        <span class="k">return</span> <span class="bp">self</span></div>
+                
+                
+<div class="viewcode-block" id="Oscar.strange_particles"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.strange_particles">[docs]</a>    <span class="k">def</span> <span class="nf">strange_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only strange particles in particle_list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing strange particles in every event only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                        <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">is_strange</span><span class="p">()]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                
+        <span class="k">return</span> <span class="bp">self</span></div>
+                
+                
+<div class="viewcode-block" id="Oscar.particle_species"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.particle_species">[docs]</a>    <span class="k">def</span> <span class="nf">particle_species</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdg_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only particle species given by their PDG ID in every event</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdg_list : int</span>
+<span class="sd">            To keep a single particle species only, pass a single PDG ID</span>
+<span class="sd">            </span>
+<span class="sd">        pdg_list : tuple/list/array</span>
+<span class="sd">            To keep multiple particle species, pass a tuple or list or array</span>
+<span class="sd">            of PDG IDs</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only particle species specified by pdg_list for every event</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value for pgd codes has not one of the &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;following types: str, int, np.integer, list &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;of str, list of int, np.ndarray, tuple&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
+            <span class="n">pdg_list</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_pdg_is_valid</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span> <span class="o">==</span> <span class="n">pdg_list</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">pdg_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_pdg_is_valid</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pdg_list</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>     
+                    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value for pgd codes has not one of the &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;following types: str, int, np.integer, list &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;of str, list of int, np.ndarray, tuple&#39;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.remove_particle_species"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.remove_particle_species">[docs]</a>    <span class="k">def</span> <span class="nf">remove_particle_species</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdg_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove particle species from particle_list by their PDG ID in every </span>
+<span class="sd">        event</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdg_list : int</span>
+<span class="sd">            To remove a single particle species only, pass a single PDG ID</span>
+<span class="sd">            </span>
+<span class="sd">        pdg_list : tuple/list/array</span>
+<span class="sd">            To remove multiple particle species, pass a tuple or list or array</span>
+<span class="sd">            of PDG IDs</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing all but the specified particle species in every event</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value for pgd codes has not one of the &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;following types: str, int, np.integer, list &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;of str, list of int, np.ndarray, tuple&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
+            <span class="n">pdg_list</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_pdg_is_valid</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span> <span class="o">!=</span> <span class="n">pdg_list</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">pdg_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_if_pdg_is_valid</span><span class="p">(</span><span class="n">pdg_list</span><span class="p">)</span>
+            
+          
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                            <span class="k">if</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pdg_list</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>     
+                    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value for pgd codes has not one of the &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;following types: str, int, np.integer, list &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;of str, list of int, np.ndarray, tuple&#39;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.participants"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.participants">[docs]</a>    <span class="k">def</span> <span class="nf">participants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only participants in particle_list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar oject</span>
+<span class="sd">            Containing participants in every event only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">ncoll</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.spectators"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.spectators">[docs]</a>    <span class="k">def</span> <span class="nf">spectators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only spectators in particle_list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar oject</span>
+<span class="sd">            Containing spectators in every event only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+            
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+                                        <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">ncoll</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+                
+        <span class="k">return</span> <span class="bp">self</span></div>
+        
+              
+<div class="viewcode-block" id="Oscar.pt_cut"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.pt_cut">[docs]</a>    <span class="k">def</span> <span class="nf">pt_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply p_t cut to all events by passing an acceptance range by </span>
+<span class="sd">        ::code`cut_value_tuple`. All particles outside this range will </span>
+<span class="sd">        be removed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cut_value_tuple : tuple</span>
+<span class="sd">            Tuple with the upper and lower limits of the pT acceptance </span>
+<span class="sd">            range :code:`(cut_min, cut_max)`. If one of the limits is not </span>
+<span class="sd">            required, set it to :code:`None`, i.e. :code:`(None, cut_max)` </span>
+<span class="sd">            or :code:`(cut_min, None)`. </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only particles complying with the p_t cut for all events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value_tuple</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a tuple containing either &#39;</span><span class="o">+</span>\
+                            <span class="s1">&#39;positive numbers or None&#39;</span><span class="p">)</span>     
+        <span class="k">elif</span> <span class="p">(</span><span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> \
+             <span class="p">(</span><span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
+                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The cut limits must be positiv or None&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one cut limit must be a number&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lower_cut</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lower_cut</span> <span class="o">=</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">upper_cut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">upper_cut</span> <span class="o">=</span> <span class="n">cut_value_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                   <span class="n">lower_cut</span> <span class="o">&lt;=</span> <span class="n">elem</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">upper_cut</span><span class="p">]</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                          <span class="n">lower_cut</span> <span class="o">&lt;=</span> <span class="n">elem</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">upper_cut</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>   
+    
+        <span class="k">return</span> <span class="bp">self</span>    </div>
+        
+        
+<div class="viewcode-block" id="Oscar.rapidity_cut"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.rapidity_cut">[docs]</a>    <span class="k">def</span> <span class="nf">rapidity_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply rapidity cut to all events and remove all particles with rapidity </span>
+<span class="sd">        not complying with cut_value</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cut_value : float</span>
+<span class="sd">            If a single value is passed, the cut is applyed symmetrically </span>
+<span class="sd">            around 0.</span>
+<span class="sd">            For example, if cut_value = 1, only particles with rapidity in </span>
+<span class="sd">            [-1.0, 1.0] are kept.</span>
+<span class="sd">            </span>
+<span class="sd">        cut_value : tuple</span>
+<span class="sd">            To specify an asymmetric acceptance range for the rapidity</span>
+<span class="sd">            of particles, pass a tuple (cut_min, cut_max)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only particles complying with the rapidity cut </span>
+<span class="sd">            for all events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;Lower limit </span><span class="si">{}</span><span class="s1"> is greater that upper limit </span><span class="si">{}</span><span class="s1">. Switched order is assumed in the following.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The tuple of cut limits must contain 2 values&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="c1"># cut symmetrically around 0</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">lim_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">lim_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>        
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.pseudorapidity_cut"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.pseudorapidity_cut">[docs]</a>    <span class="k">def</span> <span class="nf">pseudorapidity_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply pseudo-rapidity cut to all events and remove all particles with </span>
+<span class="sd">        pseudo-rapidity not complying with cut_value</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cut_value : float</span>
+<span class="sd">            If a single value is passed, the cut is applyed symmetrically </span>
+<span class="sd">            around 0.</span>
+<span class="sd">            For example, if cut_value = 1, only particles with pseudo-rapidity </span>
+<span class="sd">            in [-1.0, 1.0] are kept.</span>
+<span class="sd">            </span>
+<span class="sd">        cut_value : tuple</span>
+<span class="sd">            To specify an asymmetric acceptance range for the pseudo-rapidity</span>
+<span class="sd">            of particles, pass a tuple (cut_min, cut_max)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only particles complying with the pseudo-rapidity cut </span>
+<span class="sd">            for all events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;Cut limits in wrong order: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; &gt; &#39;</span><span class="o">+</span>\
+                        <span class="nb">str</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;. Switched order is assumed in &#39;</span> <span class="o">+</span>\
+                       <span class="s1">&#39;the following.&#39;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The tuple of cut limits must contain 2 values&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="c1"># cut symmetrically around 0</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">lim_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">lim_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>        
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+    
+<div class="viewcode-block" id="Oscar.spatial_rapidity_cut"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.spatial_rapidity_cut">[docs]</a>    <span class="k">def</span> <span class="nf">spatial_rapidity_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply spatial rapidity (space-time rapidity) cut to all events and </span>
+<span class="sd">        remove all particles with spatial rapidity not complying with cut_value</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cut_value : float</span>
+<span class="sd">            If a single value is passed, the cut is applyed symmetrically </span>
+<span class="sd">            around 0.</span>
+<span class="sd">            For example, if cut_value = 1, only particles with spatial rapidity </span>
+<span class="sd">            in [-1.0, 1.0] are kept.</span>
+<span class="sd">            </span>
+<span class="sd">        cut_value : tuple</span>
+<span class="sd">            To specify an asymmetric acceptance range for the spatial rapidity</span>
+<span class="sd">            of particles, pass a tuple (cut_min, cut_max)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only particles complying with the spatial rapidity cut </span>
+<span class="sd">            for all events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;Cut limits in wrong order: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; &gt; &#39;</span><span class="o">+</span>\
+                        <span class="nb">str</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;. Switched order is assumed in &#39;</span> <span class="o">+</span>\
+                       <span class="s1">&#39;the following.&#39;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The tuple of cut limits must contain 2 values&#39;</span><span class="p">)</span>
+                
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="c1"># cut symmetrically around 0</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cut_value</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">spatial_rapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="o">-</span><span class="n">limit</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">spatial_rapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">limit</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+                    
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cut_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">lim_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">lim_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cut_value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="k">if</span>
+                                       <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">spatial_rapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span>
+                                              <span class="n">lim_min</span><span class="o">&lt;=</span><span class="n">elem</span><span class="o">.</span><span class="n">spatial_rapidity</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">lim_max</span><span class="p">]</span>
+                    <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_length</span> 
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value must be a number or a tuple &#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;with the cut limits (cut_min, cut_max)&#39;</span><span class="p">)</span>        
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+<div class="viewcode-block" id="Oscar.multiplicity_cut"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.multiplicity_cut">[docs]</a>    <span class="k">def</span> <span class="nf">multiplicity_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_multiplicity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply multiplicity cut. Remove all events with a multiplicity lower </span>
+<span class="sd">        than min_multiplicity</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        min_multiplicity : float</span>
+<span class="sd">            Lower bound for multiplicity. If the multiplicity of an event is </span>
+<span class="sd">            lower than min_multiplicity, this event is discarded.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : Oscar object</span>
+<span class="sd">            Containing only events with a multiplicity &gt;= min_multiplicity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_multiplicity</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input value for multiplicity cut must be an int&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_multiplicity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Minimum multiplicity must &gt;= 0&#39;</span><span class="p">)</span>
+            
+        <span class="n">idx_keep_event</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">multiplicity</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">&gt;=</span> <span class="n">min_multiplicity</span><span class="p">:</span>
+                <span class="n">idx_keep_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idx_keep_event</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idx_keep_event</span><span class="p">])</span>
+        <span class="n">number_deleted_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx_keep_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">-=</span> <span class="n">number_deleted_events</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+<div class="viewcode-block" id="Oscar.print_particle_lists_to_file"><a class="viewcode-back" href="../classes/Oscar/index.html#Oscar.Oscar.print_particle_lists_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">print_particle_lists_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the current Oscar data to an output file specified by :code:`output_file`</span>
+<span class="sd">        with the same format as the input file        </span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_file : str</span>
+<span class="sd">            Path to the output file like :code:`[output_directory]/particle_lists.oscar`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">event_footer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">format_oscar2013</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">&#39;</span>
+        <span class="n">format_oscar2013_extended</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%.9g</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%g</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">&#39;</span>
+        
+        <span class="n">line_in_initial_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_OSCAR_</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">counter_line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line_in_initial_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">line_splitted</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">counter_line</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">line_splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span> <span class="ow">and</span> <span class="n">line_splitted</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;end&#39;</span><span class="p">:</span>
+                <span class="n">event_footer</span> <span class="o">=</span> <span class="n">line</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">counter_line</span> <span class="o">&gt;</span> <span class="mi">1000000</span><span class="p">:</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Unable to find the end of an event in the original&#39;</span> <span class="o">+</span>\
+                          <span class="s1">&#39;Oscar file within the first 1000000 lines&#39;</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+            <span class="n">counter_line</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">line_in_initial_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="n">event_footer</span> <span class="o">=</span> <span class="n">event_footer</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">num_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">particle_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list</span><span class="p">())</span>
+             
+                <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# event &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; out &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_out</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013&#39;</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f_out</span><span class="p">,</span> <span class="n">particle_output</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">format_oscar2013</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f_out</span><span class="p">,</span> <span class="n">particle_output</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">format_oscar2013_extended</span><span class="p">)</span>
+                <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">num_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">particle_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list</span><span class="p">()[</span><span class="n">i</span><span class="p">])</span>
+                 
+                    <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# event &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; out &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_out</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013&#39;</span><span class="p">:</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f_out</span><span class="p">,</span> <span class="n">particle_output</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">format_oscar2013</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended&#39;</span>  <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscar_format_</span> <span class="o">==</span> <span class="s1">&#39;Oscar2013Extended_IC&#39;</span><span class="p">:</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f_out</span><span class="p">,</span> <span class="n">particle_output</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">format_oscar2013_extended</span><span class="p">)</span>
+                    <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+        <span class="n">f_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Hendrik Roch, Nils Sass.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

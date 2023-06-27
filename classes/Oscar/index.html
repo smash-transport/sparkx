@@ -46,7 +46,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Oscar</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Oscar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Oscar.Oscar"><code class="docutils literal notranslate"><span class="pre">Oscar</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.particle_list"><code class="docutils literal notranslate"><span class="pre">Oscar.particle_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.particle_objects_list"><code class="docutils literal notranslate"><span class="pre">Oscar.particle_objects_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.num_events"><code class="docutils literal notranslate"><span class="pre">Oscar.num_events()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.num_output_per_event"><code class="docutils literal notranslate"><span class="pre">Oscar.num_output_per_event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.oscar_format"><code class="docutils literal notranslate"><span class="pre">Oscar.oscar_format()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.particle_species"><code class="docutils literal notranslate"><span class="pre">Oscar.particle_species()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.remove_particle_species"><code class="docutils literal notranslate"><span class="pre">Oscar.remove_particle_species()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.participants"><code class="docutils literal notranslate"><span class="pre">Oscar.participants()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.spectators"><code class="docutils literal notranslate"><span class="pre">Oscar.spectators()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.charged_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.charged_particles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.uncharged_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.uncharged_particles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.strange_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.strange_particles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.pt_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.pt_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.rapidity_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.rapidity_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.pseudorapidity_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.pseudorapidity_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.spatial_rapidity_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.spatial_rapidity_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.multiplicity_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.multiplicity_cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.print_particle_lists_to_file"><code class="docutils literal notranslate"><span class="pre">Oscar.print_particle_lists_to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
@@ -87,6 +110,541 @@
              
   <section id="oscar">
 <span id="id1"></span><h1>Oscar<a class="headerlink" href="#oscar" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Oscar.Oscar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">Oscar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OSCAR_FILE</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar" title="Permalink to this definition"></a></dt>
+<dd><p>Defines an Oscar object.</p>
+<p>The Oscar class contains a single .oscar file including all or only chosen 
+events in either the Oscar2013 or Oscar2013Extended format. It’s methods 
+allow to directly act on all contained events as applying acceptance filters
+(e.g. un/charged particles, spectators/participants) to keep/romove particles
+by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
+Once these filters are applied, the new data set can be saved as a</p>
+<ol class="arabic simple">
+<li><p>nested list containing all quantities of the Oscar format</p></li>
+<li><p>list containing Particle objects from the ParticleClass</p></li>
+</ol>
+<p>or it may be printed to a file complying with the input format.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>OSCAR_FILE</strong><span class="classifier">str</span></dt><dd><p>Path to Oscar file</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Other Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>**kwargs</strong><span class="classifier">properties, optional</span></dt><dd><p>kwargs are used to specify optional properties like a chunk reading 
+and must be used like <code class="code docutils literal notranslate"><span class="pre">'property'='value'</span></code> where the possible 
+properties are specified below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">events</span></code> (int)</p></td>
+<td><p>From the input Oscar file load only a single event by <br />
+specifying <code class="code docutils literal notranslate"><span class="pre">events=i</span></code> where i is event number i.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">events</span></code> (tuple)</p></td>
+<td><p>From the input Oscar file load only a range of events <br />
+given by the tuple <code class="code docutils literal notranslate"><span class="pre">(first_event,</span> <span class="pre">last_event)</span></code> <br />
+by specifying <code class="code docutils literal notranslate"><span class="pre">events=(first_event,</span> <span class="pre">last_event)</span></code> <br />
+where last_event is included.</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><strong>1. Initialization</strong></p>
+<p>To create an Oscar object, the path to the Oscar file has to be passed. 
+By default the Oscar object will contain all events of the input file. If
+the Oscar object should only contain certain events, the keyword argument
+“events” must be used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Oscar</span> <span class="kn">import</span> <span class="n">Oscar</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">OSCAR_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Oscar_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">oscar</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar object containing all events</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar1</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar object containing only the first event</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar2</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar object containing only events 2, 3, 4 and 5</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar3</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>2. Method Usage</strong></p>
+<p>All methods that apply filters to the Oscar data return <code class="code docutils literal notranslate"><span class="pre">self</span></code>. This 
+means that methods can be concatenated. To access the Oscar data as list to
+store it into a variable, the method <code class="code docutils literal notranslate"><span class="pre">particle_list()</span></code> or 
+<code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code> must be called in the end.
+Let’s assume we only want to keep participant pions in events with a 
+multiplicity &gt; 500:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="s2">&quot;path_to_file&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pions</span> <span class="o">=</span> <span class="n">oscar</span><span class="o">.</span><span class="n">multiplicity_cut</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">participants</span><span class="p">()</span><span class="o">.</span><span class="n">particle_species</span><span class="p">((</span><span class="mi">211</span><span class="p">,</span> <span class="o">-</span><span class="mi">211</span><span class="p">,</span> <span class="mi">111</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># save the pions of all events as nested list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pions_list</span> <span class="o">=</span> <span class="n">pions</span><span class="o">.</span><span class="n">particle_list</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># save the pions as list of Particle objects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pions_particle_objects</span> <span class="o">=</span> <span class="n">pions</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># print the pions to an oscar file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pions</span><span class="o">.</span><span class="n">print_particle_lists_to_file</span><span class="p">(</span><span class="s1">&#39;./particle_lists.oscar&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>PATH_OSCAR_</strong><span class="classifier">str</span></dt><dd><p>Path to the Oscar file</p>
+</dd>
+<dt><strong>oscar_format_</strong><span class="classifier">str</span></dt><dd><p>Input Oscar format “Oscar2013” or “Oscar2013Extended” (set automatically)</p>
+</dd>
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.array</span></dt><dd><p>Array containing the event number and the number of particles in this 
+event as num_output_per_event_[event i][num_output in event i] (updated
+when filters are applied)</p>
+</dd>
+<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>Number of events contained in the Oscar object (updated when filters 
+are applied)</p>
+</dd>
+<dt><strong>list_of_all_valid_pdg_ids_</strong><span class="classifier">list</span></dt><dd><p>List of all PDG codes contained in the external particle package as 
+int values</p>
+</dd>
+<dt><strong>event_end_lines_</strong><span class="classifier">list</span></dt><dd><p>List containing all comment lines at the end of each event as str. 
+Needed to print the Oscar object to a file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>particle_list:</strong></p></td>
+<td><p>Returns current Oscar data as nested list</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>particle_objects_list:</strong></p></td>
+<td><p>Returns current Oscar data as nested list of ParticleClass objects</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>num_events:</strong></p></td>
+<td><p>Get number of events</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>num_output_per_event:</strong></p></td>
+<td><p>Get number of particles in each event</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>oscar_format:</strong></p></td>
+<td><p>Get Oscar format of the input file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>particle_species:</strong></p></td>
+<td><p>Keep only particles with given PDG ids</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>remove_particle_species:</strong></p></td>
+<td><p>Remove particles with given PDG ids</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>participants:</strong></p></td>
+<td><p>Keep participants only</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>spectators:</strong></p></td>
+<td><p>Keep spectators only</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>charged_particles:</strong></p></td>
+<td><p>Keep charged particles only</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>uncharged_particles:</strong></p></td>
+<td><p>Keep uncharged particles only</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>strange_particles:</strong></p></td>
+<td><p>Keep strange particles only</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>pt_cut:</strong></p></td>
+<td><p>Apply pT cut to all particles</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>rapidity_cut:</strong></p></td>
+<td><p>Apply rapidity cut to all particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>pseudorapidity_cut:</strong></p></td>
+<td><p>Apply pseudorapidity cut to all particles</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>spatial_rapidity_cut:</strong></p></td>
+<td><p>Apply spatial rapidity (space-time rapidity) cut to all particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>multiplicity_cut:</strong></p></td>
+<td><p>Apply multiplicity cut to all particles</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>print_particle_lists_to_file:</strong></p></td>
+<td><p>Print current particle data to file with same format</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.particle_list">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">particle_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.particle_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.particle_list" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a nested python list containing all quantities from the 
+current Oscar data as numerical values with the following shape:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">Single Event:    [output_line][particle_quantity]</div>
+<div class="line">Multiple Events: [event][output_line][particle_quantity]</div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>Nested list containing the current Oscar data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.particle_objects_list">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">particle_objects_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.particle_objects_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.particle_objects_list" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a nested python list containing all particles from 
+the Oscar2013/Oscar2013Extended output as particle objects 
+from ParticleClass:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">Single Event:    [particle_object]</div>
+<div class="line">Multiple Events: [event][particle_object]</div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_list_</strong><span class="classifier">list</span></dt><dd><p>List of particle objects from ParticleClass</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.num_events">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">num_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.num_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.num_events" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the number of events in particle_list</p>
+<p>num_events is updated with every manipulation e.g. after 
+applying cuts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>Number of events in particle_list</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.num_output_per_event">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.num_output_per_event" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a numpy array containing the event number (starting with 1) 
+and the corresponding number of particles created in this event as</p>
+<p>num_output_per_event[event_n, numer_of_particles_in_event_n]</p>
+<p>num_output_per_event is updated with every manipulation e.g. after 
+applying cuts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array containing the event number and the corresponding number of 
+particles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.oscar_format">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">oscar_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.oscar_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.oscar_format" title="Permalink to this definition"></a></dt>
+<dd><p>Get the Oscar format of the input file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>oscar_format_</strong><span class="classifier">str</span></dt><dd><p>Oscar format of the input Oscar file as string (“Oscar2013” or 
+“Oscar2013Extended”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.particle_species">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">particle_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdg_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.particle_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.particle_species" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only particle species given by their PDG ID in every event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pdg_list</strong><span class="classifier">int</span></dt><dd><p>To keep a single particle species only, pass a single PDG ID</p>
+</dd>
+<dt><strong>pdg_list</strong><span class="classifier">tuple/list/array</span></dt><dd><p>To keep multiple particle species, pass a tuple or list or array
+of PDG IDs</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particle species specified by pdg_list for every event</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.remove_particle_species">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">remove_particle_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdg_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.remove_particle_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.remove_particle_species" title="Permalink to this definition"></a></dt>
+<dd><p>Remove particle species from particle_list by their PDG ID in every 
+event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pdg_list</strong><span class="classifier">int</span></dt><dd><p>To remove a single particle species only, pass a single PDG ID</p>
+</dd>
+<dt><strong>pdg_list</strong><span class="classifier">tuple/list/array</span></dt><dd><p>To remove multiple particle species, pass a tuple or list or array
+of PDG IDs</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing all but the specified particle species in every event</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.participants">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">participants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.participants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.participants" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only participants in particle_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar oject</span></dt><dd><p>Containing participants in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.spectators">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">spectators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.spectators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.spectators" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only spectators in particle_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar oject</span></dt><dd><p>Containing spectators in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.charged_particles">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">charged_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.charged_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.charged_particles" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only charged particles in particle_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing charged particles in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.uncharged_particles">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">uncharged_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.uncharged_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.uncharged_particles" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only uncharged particles in particle_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing uncharged particles in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.strange_particles">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">strange_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.strange_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.strange_particles" title="Permalink to this definition"></a></dt>
+<dd><p>Keep only strange particles in particle_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing strange particles in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.pt_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">pt_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.pt_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.pt_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Apply p_t cut to all events by passing an acceptance range by 
+::code`cut_value_tuple`. All particles outside this range will 
+be removed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cut_value_tuple</strong><span class="classifier">tuple</span></dt><dd><p>Tuple with the upper and lower limits of the pT acceptance 
+range <code class="code docutils literal notranslate"><span class="pre">(cut_min,</span> <span class="pre">cut_max)</span></code>. If one of the limits is not 
+required, set it to <code class="code docutils literal notranslate"><span class="pre">None</span></code>, i.e. <code class="code docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">cut_max)</span></code> 
+or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</span> <span class="pre">None)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the p_t cut for all events</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.rapidity_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">rapidity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.rapidity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.rapidity_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Apply rapidity cut to all events and remove all particles with rapidity 
+not complying with cut_value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically 
+around 0.
+For example, if cut_value = 1, only particles with rapidity in 
+[-1.0, 1.0] are kept.</p>
+</dd>
+<dt><strong>cut_value</strong><span class="classifier">tuple</span></dt><dd><p>To specify an asymmetric acceptance range for the rapidity
+of particles, pass a tuple (cut_min, cut_max)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the rapidity cut 
+for all events</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.pseudorapidity_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">pseudorapidity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.pseudorapidity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.pseudorapidity_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Apply pseudo-rapidity cut to all events and remove all particles with 
+pseudo-rapidity not complying with cut_value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically 
+around 0.
+For example, if cut_value = 1, only particles with pseudo-rapidity 
+in [-1.0, 1.0] are kept.</p>
+</dd>
+<dt><strong>cut_value</strong><span class="classifier">tuple</span></dt><dd><p>To specify an asymmetric acceptance range for the pseudo-rapidity
+of particles, pass a tuple (cut_min, cut_max)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the pseudo-rapidity cut 
+for all events</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.spatial_rapidity_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">spatial_rapidity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.spatial_rapidity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.spatial_rapidity_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Apply spatial rapidity (space-time rapidity) cut to all events and 
+remove all particles with spatial rapidity not complying with cut_value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically 
+around 0.
+For example, if cut_value = 1, only particles with spatial rapidity 
+in [-1.0, 1.0] are kept.</p>
+</dd>
+<dt><strong>cut_value</strong><span class="classifier">tuple</span></dt><dd><p>To specify an asymmetric acceptance range for the spatial rapidity
+of particles, pass a tuple (cut_min, cut_max)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the spatial rapidity cut 
+for all events</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.multiplicity_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">multiplicity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_multiplicity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.multiplicity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.multiplicity_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Apply multiplicity cut. Remove all events with a multiplicity lower 
+than min_multiplicity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>min_multiplicity</strong><span class="classifier">float</span></dt><dd><p>Lower bound for multiplicity. If the multiplicity of an event is 
+lower than min_multiplicity, this event is discarded.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only events with a multiplicity &gt;= min_multiplicity</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.print_particle_lists_to_file">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">print_particle_lists_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.print_particle_lists_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.print_particle_lists_to_file" title="Permalink to this definition"></a></dt>
+<dd><p>Prints the current Oscar data to an output file specified by <code class="code docutils literal notranslate"><span class="pre">output_file</span></code>
+with the same format as the input file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>output_file</strong><span class="classifier">str</span></dt><dd><p>Path to the output file like <code class="code docutils literal notranslate"><span class="pre">[output_directory]/particle_lists.oscar</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
