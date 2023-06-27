@@ -13,3 +13,4 @@ Classes
    Histogram/index
    Flow/index
    GenerateFlow/index
+   Lattice3D/index
