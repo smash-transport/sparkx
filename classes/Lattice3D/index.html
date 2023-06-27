@@ -52,7 +52,30 @@
 <li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Flow/index.html">Flow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Lattice3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lattice3D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Lattice3D.Lattice3D"><code class="docutils literal notranslate"><span class="pre">Lattice3D</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.set_value_by_index"><code class="docutils literal notranslate"><span class="pre">Lattice3D.set_value_by_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.get_value_by_index"><code class="docutils literal notranslate"><span class="pre">Lattice3D.get_value_by_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.set_value"><code class="docutils literal notranslate"><span class="pre">Lattice3D.set_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.get_value"><code class="docutils literal notranslate"><span class="pre">Lattice3D.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.get_coordinates"><code class="docutils literal notranslate"><span class="pre">Lattice3D.get_coordinates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.find_closest_indices"><code class="docutils literal notranslate"><span class="pre">Lattice3D.find_closest_indices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.interpolate_value"><code class="docutils literal notranslate"><span class="pre">Lattice3D.interpolate_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.average"><code class="docutils literal notranslate"><span class="pre">Lattice3D.average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.rescale"><code class="docutils literal notranslate"><span class="pre">Lattice3D.rescale()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.save_to_csv"><code class="docutils literal notranslate"><span class="pre">Lattice3D.save_to_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.load_from_csv"><code class="docutils literal notranslate"><span class="pre">Lattice3D.load_from_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.visualize"><code class="docutils literal notranslate"><span class="pre">Lattice3D.visualize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.extract_slice"><code class="docutils literal notranslate"><span class="pre">Lattice3D.extract_slice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.save_slice_to_csv"><code class="docutils literal notranslate"><span class="pre">Lattice3D.save_slice_to_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.interpolate_to_lattice"><code class="docutils literal notranslate"><span class="pre">Lattice3D.interpolate_to_lattice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.interpolate_to_lattice_new_extent"><code class="docutils literal notranslate"><span class="pre">Lattice3D.interpolate_to_lattice_new_extent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.reset"><code class="docutils literal notranslate"><span class="pre">Lattice3D.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.add_particle_data"><code class="docutils literal notranslate"><span class="pre">Lattice3D.add_particle_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -87,6 +110,585 @@
              
   <section id="lattice3d">
 <span id="lattice-3d"></span><h1>Lattice3D<a class="headerlink" href="#lattice3d" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">Lattice3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D" title="Permalink to this definition"></a></dt>
+<dd><p>Represents a 3D lattice with evenly spaced points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the x-axis.</p>
+</dd>
+<dt><strong>x_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the x-axis.</p>
+</dd>
+<dt><strong>y_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the y-axis.</p>
+</dd>
+<dt><strong>y_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the y-axis.</p>
+</dd>
+<dt><strong>z_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the z-axis.</p>
+</dd>
+<dt><strong>z_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the z-axis.</p>
+</dd>
+<dt><strong>num_points_x</strong><span class="classifier">int</span></dt><dd><p>The number of points along the x-axis.</p>
+</dd>
+<dt><strong>num_points_y</strong><span class="classifier">int</span></dt><dd><p>The number of points along the y-axis.</p>
+</dd>
+<dt><strong>num_points_z</strong><span class="classifier">int</span></dt><dd><p>The number of points along the z-axis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x_min_</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the x-axis.</p>
+</dd>
+<dt><strong>x_max_</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the x-axis.</p>
+</dd>
+<dt><strong>y_min_</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the y-axis.</p>
+</dd>
+<dt><strong>y_max_</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the y-axis.</p>
+</dd>
+<dt><strong>z_min_</strong><span class="classifier">float</span></dt><dd><p>The minimum value along the z-axis.</p>
+</dd>
+<dt><strong>z_max_</strong><span class="classifier">float</span></dt><dd><p>The maximum value along the z-axis.</p>
+</dd>
+<dt><strong>num_points_x_</strong><span class="classifier">int</span></dt><dd><p>The number of points along the x-axis.</p>
+</dd>
+<dt><strong>num_points_y_</strong><span class="classifier">int</span></dt><dd><p>The number of points along the y-axis.</p>
+</dd>
+<dt><strong>num_points_z_</strong><span class="classifier">int</span></dt><dd><p>The number of points along the z-axis.</p>
+</dd>
+<dt><strong>cell_volume_</strong><span class="classifier">float</span></dt><dd><p>The volume of each cell in the lattice.</p>
+</dd>
+<dt><strong>x_values_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The array of x-axis values.</p>
+</dd>
+<dt><strong>y_values_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The array of y-axis values.</p>
+</dd>
+<dt><strong>z_values_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The array of z-axis values.</p>
+</dd>
+<dt><strong>grid_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The 3D grid containing the values at each lattice point.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>set_value_by_index:</strong></p></td>
+<td><p>Set the value at the specified indices in the grid.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_value_by_index:</strong></p></td>
+<td><p>Get the value at the specified indices in the grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_value:</strong></p></td>
+<td><p>Set the value at the specified coordinates in the lattice.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_value:</strong></p></td>
+<td><p>Get the value at the specified coordinates in the lattice.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_coordinates:</strong></p></td>
+<td><p>Get the coordinates corresponding to the given indices.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>find_closest_indices:</strong></p></td>
+<td><p>Find the closest indices in the lattice for the given coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>interpolate_value:</strong></p></td>
+<td><p>Interpolate the value at the specified position using trilinear interpolation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>average:</strong></p></td>
+<td><p>Compute the element-wise average of multiple Lattice3D objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>rescale:</strong></p></td>
+<td><p>Rescale the values of the lattice by a specified factor.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>save_to_csv:</strong></p></td>
+<td><p>Save the lattice data, including metadata, to a CSV file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>load_from_csv:</strong></p></td>
+<td><p>Load lattice data, including metadata, from a CSV file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>visualize:</strong></p></td>
+<td><p>Visualize the lattice data in a 3D plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>extract_slice:</strong></p></td>
+<td><p>Extract a 2D slice from the lattice along the specified axis at the given index.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>save_slice_to_csv:</strong></p></td>
+<td><p>Save a 2D slice from the lattice along the specified axis and index to a CSV file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>interpolate_to_lattice:</strong></p></td>
+<td><p>Interpolate the current lattice data to a new lattice with the specified number of points along each axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>interpolate_to_lattice_new_extent:</strong></p></td>
+<td><p>Interpolate the current lattice data to a new lattice with the specified number of points and extent.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>reset:</strong></p></td>
+<td><p>Reset the values of all grid points in the lattice to zero.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_particle_data:</strong></p></td>
+<td><p>Add particle data to the lattice.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.set_value_by_index">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">set_value_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.set_value_by_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.set_value_by_index" title="Permalink to this definition"></a></dt>
+<dd><p>Set the value at the specified indices (i, j, k) in the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>The index along the x-axis.</p>
+</dd>
+<dt><strong>j</strong><span class="classifier">int</span></dt><dd><p>The index along the y-axis.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The index along the z-axis.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">int or float</span></dt><dd><p>The value to set at the specified indices.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.get_value_by_index">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">get_value_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.get_value_by_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.get_value_by_index" title="Permalink to this definition"></a></dt>
+<dd><p>Get the value at the specified indices (i, j, k) in the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>The index along the x-axis.</p>
+</dd>
+<dt><strong>j</strong><span class="classifier">int</span></dt><dd><p>The index along the y-axis.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The index along the z-axis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int or float or None</dt><dd><p>The value at the specified indices if the indices are valid, otherwise None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.set_value">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.set_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.set_value" title="Permalink to this definition"></a></dt>
+<dd><p>Set the value at the specified coordinates within the lattice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">int or float</span></dt><dd><p>The x-coordinate where the value is to be set.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">int or float</span></dt><dd><p>The y-coordinate where the value is to be set.</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">int or float</span></dt><dd><p>The z-coordinate where the value is to be set.</p>
+</dd>
+<dt><strong>value</strong><span class="classifier">int or float</span></dt><dd><p>The value to be set.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If any of the coordinates are outside their specified ranges.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.get_value">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.get_value" title="Permalink to this definition"></a></dt>
+<dd><p>Get the value at the specified coordinates within the lattice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">int or float</span></dt><dd><p>The x-coordinate where the value is to be retrieved.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">int or float</span></dt><dd><p>The y-coordinate where the value is to be retrieved.</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">int or float</span></dt><dd><p>The z-coordinate where the value is to be retrieved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int or float or None</dt><dd><p>The value at the specified coordinates. Returns None if any of 
+the coordinates are outside their specified ranges.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.get_coordinates">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">get_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.get_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.get_coordinates" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve the coordinates associated with the given indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>The index along the x-axis.</p>
+</dd>
+<dt><strong>j</strong><span class="classifier">int</span></dt><dd><p>The index along the y-axis.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The index along the z-axis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the x, y, and z coordinates corresponding to 
+the given indices.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If any of the indices are outside the specified range.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.find_closest_indices">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">find_closest_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.find_closest_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.find_closest_indices" title="Permalink to this definition"></a></dt>
+<dd><p>Find the closest indices in the lattice corresponding to the given coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float</span></dt><dd><p>The x-coordinate.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">float</span></dt><dd><p>The y-coordinate.</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">float</span></dt><dd><p>The z-coordinate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple of three integers representing the closest indices in the 
+lattice for the given coordinates (x, y, z).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.interpolate_value">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">interpolate_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.interpolate_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.interpolate_value" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate the value at the specified position using trilinear 
+interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float</span></dt><dd><p>The x-coordinate.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">float</span></dt><dd><p>The y-coordinate.</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">float</span></dt><dd><p>The z-coordinate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float or None</dt><dd><p>The interpolated value at the specified position. If the provided 
+position is outside the lattice range, None is returned.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.average">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">lattices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.average" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the average of multiple Lattice3D objects element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>*lattices</strong><span class="classifier">Lattice3D</span></dt><dd><p>Multiple Lattice3D objects to compute the average.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Lattice3D</dt><dd><p>A new Lattice3D object containing the element-wise average.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If any of the operands are not of type ‘Lattice3D’.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the lattices do not have the same shape.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.rescale">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">rescale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.rescale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.rescale" title="Permalink to this definition"></a></dt>
+<dd><p>Rescale the values of the lattice by a specified factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>factor</strong><span class="classifier">numeric</span></dt><dd><p>The rescaling factor.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.save_to_csv">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.save_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.save_to_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Save the lattice data, including metadata, to a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The filename of the CSV file to save.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.load_from_csv">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">load_from_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.load_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.load_from_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Load lattice data, including metadata, from a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The filename of the CSV file to load.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>lattice</strong><span class="classifier">Lattice3D</span></dt><dd><p>The loaded Lattice3D object containing the data and metadata.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.visualize">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize the lattice data in a 3D plot.</p>
+<p>The lattice values are represented as a scatter plot in a 3D space.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.extract_slice">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">extract_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.extract_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.extract_slice" title="Permalink to this definition"></a></dt>
+<dd><p>Extract a 2D slice from the lattice along the specified axis at the 
+given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>axis</strong><span class="classifier">str</span></dt><dd><p>The axis along which to extract the slice. Must be ‘x’, ‘y’, or ‘z’.</p>
+</dd>
+<dt><strong>index</strong><span class="classifier">int</span></dt><dd><p>The index of the slice along the specified axis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>A tuple containing the following:</dt><dd></dd>
+<dt><strong>slice_data</strong><span class="classifier">ndarray</span></dt><dd><p>The 2D slice data extracted from the lattice.</p>
+</dd>
+<dt><strong>slice_values</strong><span class="classifier">ndarray</span></dt><dd><p>The values corresponding to the axis perpendicular to the slice.</p>
+</dd>
+<dt><strong>slice_label</strong><span class="classifier">str</span></dt><dd><p>The label describing the slice plane.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the <cite>axis</cite> parameter is invalid or the <cite>index</cite> is out of range.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.save_slice_to_csv">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">save_slice_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.save_slice_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.save_slice_to_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Save a 2D slice from the lattice along the specified axis and index to 
+a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>axis</strong><span class="classifier">str</span></dt><dd><p>The axis along which to extract the slice. Must be ‘x’, ‘y’, or ‘z’.</p>
+</dd>
+<dt><strong>index</strong><span class="classifier">int</span></dt><dd><p>The index of the slice along the specified axis.</p>
+</dd>
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The name of the CSV file to save the slice data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the <cite>axis</cite> parameter is invalid or the <cite>index</cite> is out of range.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.interpolate_to_lattice">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">interpolate_to_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_points_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.interpolate_to_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.interpolate_to_lattice" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate the current lattice data to a new lattice with the specified 
+number of points along each axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_points_x</strong><span class="classifier">int</span></dt><dd><p>The number of points along the X-axis of the new lattice.</p>
+</dd>
+<dt><strong>num_points_y</strong><span class="classifier">int</span></dt><dd><p>The number of points along the Y-axis of the new lattice.</p>
+</dd>
+<dt><strong>num_points_z</strong><span class="classifier">int</span></dt><dd><p>The number of points along the Z-axis of the new lattice.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Lattice3D</dt><dd><p>A new Lattice3D object containing the interpolated data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method performs spline interpolation to generate the values for 
+each grid point of the new lattice. The interpolation is based on the 
+current lattice data and the desired number of points along each axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.interpolate_to_lattice_new_extent">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">interpolate_to_lattice_new_extent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_points_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.interpolate_to_lattice_new_extent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.interpolate_to_lattice_new_extent" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate the current lattice data to a new lattice with the specified 
+number of points and extent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_points_x</strong><span class="classifier">int</span></dt><dd><p>The number of points along the X-axis of the new lattice.</p>
+</dd>
+<dt><strong>num_points_y</strong><span class="classifier">int</span></dt><dd><p>The number of points along the Y-axis of the new lattice.</p>
+</dd>
+<dt><strong>num_points_z</strong><span class="classifier">int</span></dt><dd><p>The number of points along the Z-axis of the new lattice.</p>
+</dd>
+<dt><strong>x_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value of the X-axis for the new lattice extent.</p>
+</dd>
+<dt><strong>x_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value of the X-axis for the new lattice extent.</p>
+</dd>
+<dt><strong>y_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value of the Y-axis for the new lattice extent.</p>
+</dd>
+<dt><strong>y_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value of the Y-axis for the new lattice extent.</p>
+</dd>
+<dt><strong>z_min</strong><span class="classifier">float</span></dt><dd><p>The minimum value of the Z-axis for the new lattice extent.</p>
+</dd>
+<dt><strong>z_max</strong><span class="classifier">float</span></dt><dd><p>The maximum value of the Z-axis for the new lattice extent.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Lattice3D</dt><dd><p>A new Lattice3D object containing the interpolated data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method performs spline interpolation to generate the values for 
+each grid point of the new lattice. The interpolation is based on the 
+current lattice data and the desired number of points and extent along 
+each axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.reset">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the values of all grid points in the lattice to zero.</p>
+<p class="rubric">Notes</p>
+<p>This method iterates over all grid points in the lattice and sets their 
+values to zero.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Lattice3D.Lattice3D.add_particle_data">
+<span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">add_particle_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.add_particle_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.add_particle_data" title="Permalink to this definition"></a></dt>
+<dd><p>Add particle data to the lattice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_data</strong><span class="classifier">list</span></dt><dd><p>A list of Particle objects containing the particle data.</p>
+</dd>
+<dt><strong>sigma</strong><span class="classifier">float</span></dt><dd><p>The standard deviation of the Gaussian kernel used for smearing the 
+particle data.</p>
+</dd>
+<dt><strong>quantity</strong><span class="classifier">str</span></dt><dd><p>The quantity of the particle data to be added. Supported values are 
+‘energy density’, ‘number’, ‘charge’, and ‘baryon number’.</p>
+</dd>
+<dt><strong>add</strong><span class="classifier">bool, optional</span></dt><dd><p>Specifies whether to add the particle data to the existing lattice 
+values or replace them. If True, the particle data will be added to 
+the existing lattice values. If False (default), the lattice values 
+will be reset before adding the particle data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If an unknown quantity is specified.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method calculates the smearing of the particle data using a 
+Gaussian kernel centered at each particle’s coordinates. The smeared 
+values are added to the corresponding grid points in the lattice.</p>
+<p>The Gaussian kernel is defined by the provided standard deviation 
+<cite>sigma</cite>. The larger the <cite>sigma</cite> value, the smoother the smearing effect.</p>
+<p>The supported quantities for particle data are as follows:</p>
+<ul class="simple">
+<li><p>‘energy density’: Uses the particle’s energy (<cite>E</cite>) as the value to be added to the lattice.</p></li>
+<li><p>‘number’: Adds a value of 1.0 to each grid point for each particle.</p></li>
+<li><p>‘charge’: Uses the particle’s charge as the value to be added to the lattice.</p></li>
+<li><p>‘baryon number’: Uses the particle’s baryon number as the value to be added to the lattice.</p></li>
+</ul>
+</dd></dl>
+
 </section>
 
 
