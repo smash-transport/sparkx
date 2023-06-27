@@ -671,7 +671,7 @@ class Particle:
             if baryon_number is not set
         """
         if self.baryon_number_ == None:
-            return None
+            raise ValueError("baryon number not set")
         else:
             return self.baryon_number_
 

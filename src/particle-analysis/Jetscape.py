@@ -370,31 +370,19 @@ class Jetscape:
         self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
                 
     def particle_list(self):
-        print(len(self.particle_list_))
-        if self.num_events_ == 1:
-            
-            num_particles = self.num_output_per_event_[1]
-             
-            particle_array = []
-            
-            for i in range(0, num_particles):
-                particle = self.__particle_as_list(self.particle_list_[i])
-                particle_array.append(particle)
+        num_particles = self.num_output_per_event_[:,1]
+        num_events = self.num_events_
+        
+        particle_array = []
+        
+        for i_ev in range(0, num_events):
+            event = []
                 
-        elif self.num_events_ > 1:
-            num_particles = self.num_output_per_event_[:,1]
-            num_events = self.num_events_
-            particle_array = []
-
-            for i_ev in range(0, num_events):
-
-                event = []
+            for i_part in range(0, num_particles[i_ev]):
+                particle = self.particle_list_[i_ev][i_part]
+                event.append(self.__particle_as_list(particle))
             
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                
-                particle_array.append(event)
+            particle_array.append(event)
                 
         return particle_array
     
@@ -454,17 +442,11 @@ class Jetscape:
         self : Jetscape object
             Containing charged particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge != 0]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge != 0]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.charge != 0]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
 
@@ -477,17 +459,11 @@ class Jetscape:
         self : Jetscape object
             Containing uncharged particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.charge == 0]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.charge == 0]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.charge == 0]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
         return self
                           
@@ -500,19 +476,13 @@ class Jetscape:
         self : Jetscape object
             Containing strange particles in every event only
         """
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ 
-                                   if elem.is_strange() ]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                          if elem.is_strange()]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                        if elem.is_strange()]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
                 
-        return self         
+        return self      
                 
     def particle_species(self, pdg_list):
         """
@@ -543,34 +513,22 @@ class Jetscape:
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) == pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) == pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) == pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) in pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) in pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length     
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) in pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length     
                     
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
@@ -608,34 +566,22 @@ class Jetscape:
             
             self.__check_if_pdg_is_valid(pdg_list)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.pdg) != pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.pdg) != pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.pdg) != pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                     
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
             
             self.__check_if_pdg_is_valid(pdg_list)
-            
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if not int(elem.pdg) in pdg_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if not int(elem.pdg) in pdg_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length     
+          
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if not int(elem.pdg) in pdg_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length     
                     
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
