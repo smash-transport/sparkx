@@ -1,7 +1,6 @@
 numpy
 scipy
 matplotlib
-mpl_toolkits
 sphinx
 fastjet
 numpydoc
