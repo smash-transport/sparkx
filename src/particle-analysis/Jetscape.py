@@ -618,33 +618,21 @@ class Jetscape:
                 
         elif isinstance(status_list, (int, str, np.integer)):
             status_list = int(status_list)
-            
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.status) == status_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.status) == status_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if int(elem.status) != status_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
                     
         elif isinstance(status_list, (list, np.ndarray, tuple)):
             status_list = np.asarray(status_list, dtype=np.int64)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ 
-                                       if int(elem.status) in status_list]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                              if int(elem.status) in status_list]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length     
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                            if not int(elem.status) in status_list]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length  
                     
         else:
             raise TypeError('Input value for status flag has not one of the ' +\
