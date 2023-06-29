@@ -3,6 +3,7 @@
 Utilities
 =========
 
-.. automodule:: Utilities
+.. toctree::
+   :maxdepth: 2
 
-.. autofunction:: Utilities.pdg_to_latex
+   functions/index
