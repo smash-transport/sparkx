@@ -57,6 +57,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.remove_particle_species"><code class="docutils literal notranslate"><span class="pre">Oscar.remove_particle_species()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.participants"><code class="docutils literal notranslate"><span class="pre">Oscar.participants()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.spectators"><code class="docutils literal notranslate"><span class="pre">Oscar.spectators()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.lower_event_energy_cut"><code class="docutils literal notranslate"><span class="pre">Oscar.lower_event_energy_cut()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.charged_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.charged_particles()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.uncharged_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.uncharged_particles()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.strange_particles"><code class="docutils literal notranslate"><span class="pre">Oscar.strange_particles()</span></code></a></li>
@@ -258,31 +259,34 @@ Needed to print the Oscar object to a file.</p>
 <tr class="row-odd"><td><p><strong>spectators:</strong></p></td>
 <td><p>Keep spectators only</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>charged_particles:</strong></p></td>
+<tr class="row-even"><td><p><strong>lower_event_energy_cut:</strong></p></td>
+<td><p>Filters out events with total energy lower than a threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>charged_particles:</strong></p></td>
 <td><p>Keep charged particles only</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>uncharged_particles:</strong></p></td>
+<tr class="row-even"><td><p><strong>uncharged_particles:</strong></p></td>
 <td><p>Keep uncharged particles only</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>strange_particles:</strong></p></td>
+<tr class="row-odd"><td><p><strong>strange_particles:</strong></p></td>
 <td><p>Keep strange particles only</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>pt_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>pt_cut:</strong></p></td>
 <td><p>Apply pT cut to all particles</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>rapidity_cut:</strong></p></td>
+<tr class="row-odd"><td><p><strong>rapidity_cut:</strong></p></td>
 <td><p>Apply rapidity cut to all particles</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>pseudorapidity_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>pseudorapidity_cut:</strong></p></td>
 <td><p>Apply pseudorapidity cut to all particles</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>spatial_rapidity_cut:</strong></p></td>
+<tr class="row-odd"><td><p><strong>spatial_rapidity_cut:</strong></p></td>
 <td><p>Apply spatial rapidity (space-time rapidity) cut to all particles</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>multiplicity_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>multiplicity_cut:</strong></p></td>
 <td><p>Apply multiplicity cut to all particles</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>print_particle_lists_to_file:</strong></p></td>
+<tr class="row-odd"><td><p><strong>print_particle_lists_to_file:</strong></p></td>
 <td><p>Print current particle data to file with same format</p></td>
 </tr>
 </tbody>
@@ -451,6 +455,35 @@ of PDG IDs</p>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>self</strong><span class="classifier">Oscar oject</span></dt><dd><p>Containing spectators in every event only</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Oscar.Oscar.lower_event_energy_cut">
+<span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">lower_event_energy_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimum_event_energy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.lower_event_energy_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.lower_event_energy_cut" title="Permalink to this definition"></a></dt>
+<dd><p>Filters out events with total energy lower than a threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>minimum_event_energy</strong><span class="classifier">int or float</span></dt><dd><p>The minimum event energy threshold. Should be a positive integer or float.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>self: Oscar object</dt><dd><p>The updated instance of the class contains only events above the
+energy threshold.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the minimum_event_energy parameter is not an integer or float.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the minimum_event_energy parameter is less than or equal to 0.</p>
 </dd>
 </dl>
 </dd>

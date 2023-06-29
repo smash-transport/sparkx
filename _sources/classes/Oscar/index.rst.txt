@@ -15,6 +15,7 @@ Oscar
 .. automethod:: Oscar.remove_particle_species
 .. automethod:: Oscar.participants
 .. automethod:: Oscar.spectators
+.. automethod:: Oscar.lower_event_energy_cut
 .. automethod:: Oscar.charged_particles
 .. automethod:: Oscar.uncharged_particles
 .. automethod:: Oscar.strange_particles
