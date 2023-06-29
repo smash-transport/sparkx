@@ -45,8 +45,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Utilities.pdg_to_latex"><code class="docutils literal notranslate"><span class="pre">pdg_to_latex()</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -79,40 +78,8 @@
              
   <section id="utilities">
 <span id="id1"></span><h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading"></a></h1>
-<span class="target" id="module-Utilities"></span><dl class="py function">
-<dt class="sig sig-object py" id="Utilities.pdg_to_latex">
-<span class="sig-prename descclassname"><span class="pre">Utilities.</span></span><span class="sig-name descname"><span class="pre">pdg_to_latex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdg_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Utilities.html#pdg_to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Utilities.pdg_to_latex" title="Permalink to this definition"></a></dt>
-<dd><p>Converts a given PDG ID or a list of PDG IDs into the corresponding LaTeX
-formatted particle name as sts or a list of LaTeX formated particle names 
-as str which has the same order as the input PDG IDs</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>pdg_id</strong><span class="classifier">int / list</span></dt><dd><p>PDG ID or a list of PDG IDs</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>latex_names</strong><span class="classifier">str / list</span></dt><dd><p>LaTeX formated particle name or list of LaTeX formated particle names
-in the same order as the input PDG IDs.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Utilities</span> <span class="kn">import</span> <span class="n">pdg_to_latex</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">pdg_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2112</span><span class="p">,</span> <span class="o">-</span><span class="mi">3112</span><span class="p">,</span> <span class="mi">4232</span><span class="p">]</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos">5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">latex_names</span> <span class="o">=</span> <span class="n">pdg_to_latex</span><span class="p">(</span><span class="n">pdg_ids</span><span class="p">)</span>
-<span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">latex_names</span><span class="p">)</span>
-<span class="linenos">7</span>
-<span class="linenos">8</span><span class="go">[&#39;n&#39;, &#39;\overline{\Sigma}^{+}&#39;, &#39;\Xi_{c}^{+}&#39;]</span>
-</pre></div>
+<div class="toctree-wrapper compound">
 </div>
-</dd></dl>
-
 </section>
 
 
