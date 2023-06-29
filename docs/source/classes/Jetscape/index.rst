@@ -12,6 +12,7 @@ Jetscape
 .. automethod:: Jetscape.num_output_per_event
 .. automethod:: Jetscape.particle_species
 .. automethod:: Jetscape.remove_particle_species
+.. automethod:: Jetscape.lower_event_energy_cut
 .. automethod:: Jetscape.charged_particles
 .. automethod:: Jetscape.uncharged_particles
 .. automethod:: Jetscape.strange_particles

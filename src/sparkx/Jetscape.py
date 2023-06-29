@@ -95,6 +95,8 @@ class Jetscape:
         Apply pseudorapidity cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
+    lower_event_energy_cut:
+        Filters out events with total energy lower than a threshold.
     print_particle_lists_to_file:
         Print current particle data to file with same format
         
@@ -638,6 +640,53 @@ class Jetscape:
             raise TypeError('Input value for status flag has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple') 
+        return self
+    
+    def lower_event_energy_cut(self,minimum_event_energy):
+        """
+        Filters out events with total energy lower than a threshold.
+
+        Parameters
+        ----------
+        minimum_event_energy : int or float
+            The minimum event energy threshold. Should be a positive integer or float.
+
+        Returns
+        -------
+        self: Jetscape object
+            The updated instance of the class contains only events above the
+            energy threshold.
+
+        Raises
+        ------
+        TypeError
+            If the minimum_event_energy parameter is not an integer or float.
+        ValueError
+            If the minimum_event_energy parameter is less than or equal to 0.
+        """
+        if not isinstance(minimum_event_energy, (int, float)):
+            raise TypeError('Input value for lower event energy cut has not ' +\
+                            'one of the following types: int, float')
+        if minimum_event_energy <= 0.:
+            raise ValueError('The lower event energ cut value should be positive')
+
+        updated_particle_list = []
+        for event_particles in self.particle_list_:
+            print(len(event_particles))
+            total_energy = sum(particle.E for particle in event_particles)
+            if total_energy >= minimum_event_energy:
+                updated_particle_list.append(event_particles)
+        self.particle_list_ = updated_particle_list
+        self.num_output_per_event_ = np.array([[i+1, len(event_particles)] \
+                    for i, event_particles in enumerate(updated_particle_list)],\
+                    dtype=np.int32)
+        self.num_events_ = len(updated_particle_list)
+
+        if self.num_events_ == 0:
+            warnings.warn('There are no events left after low energy cut')
+            self.particle_list_ = [[]]
+            self.num_output_per_event_ = np.asarray([[None, None]])
+        
         return self
                   
     def pt_cut(self, cut_value_tuple):
