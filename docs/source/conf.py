@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../../src/sparkx'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'sparkx'
-copyright = '2023, Hendrik Roch, Nils Sass'
+copyright = '2023, SPARKX Collaboration'
 author = 'Hendrik Roch, Nils Sass'
 release = '0.9.0'
 
