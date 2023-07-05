@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-import numpy as np
-import warnings
 
 class FlowInterface(ABC):
     @abstractmethod
@@ -12,5 +10,5 @@ class FlowInterface(ABC):
         pass
 
     @abstractmethod
-    def differential_flow(self, particle_data,bins,flow_as_function_of, *args, **kwargs):
+    def differential_flow(self, particle_data, bins, flow_as_function_of, *args, **kwargs):
         pass
