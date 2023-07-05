@@ -1,18 +1,15 @@
 from FlowInterface import FlowInterface
+import numpy as np
+import warnings
 
 class ReactionPlaneFlow(FlowInterface):
-    def __init__(self,n=None):
-        if n == None:
-            warnings.warn("No 'n' for the flow harmonic given, default set to 2")
-            self.n = 2
-        elif not isinstance(n, int):
+    def __init__(self,n=2):
+        if not isinstance(n, int):
             raise TypeError('n has to be int')
         elif n <= 0:
             raise ValueError('n-th harmonic with value n<=0 can not be computed')
         else:
-            self.n = n
-
-        return
+            self.n_ = n
 
     def integrated_flow(self, particle_data):
         flow_event_average = 0. + 0.j
@@ -22,7 +19,7 @@ class ReactionPlaneFlow(FlowInterface):
             for particle in range(len(particle_data[event])):
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
-                flow_event += pt**self.n * np.exp(1j*self.n*phi) / pt**self.n
+                flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
                 number_particles += 1.
             if number_particles != 0.:
                 flow_event_average += flow_event
@@ -32,24 +29,6 @@ class ReactionPlaneFlow(FlowInterface):
         return flow_event_average
 
     def differential_flow(self,particle_data,bins,flow_as_function_of):
-        #TODO implement as a common function in separate class?
-        """
-        Compute the differential anisotropic flow.
-
-        Parameters
-        ----------
-        particle_data: list
-            List with lists for each event containing Particle objects.
-        bins: list
-            List with bin boundaries for the differential quantity.
-        flow_as_function_of: string
-            Differential variable: 'pt', 'rapidity', 'pseudorapidity'.
-
-        Returns
-        -------
-        `integrated_flow_`: list
-            List containing the differential flow.
-        """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
@@ -76,7 +55,7 @@ class ReactionPlaneFlow(FlowInterface):
                 events_bin.extend([particles_event])
             particles_bin.extend([events_bin])
 
-        self.__differential_flow_calculation(particles_bin)
+        return self.__differential_flow_calculation(particles_bin)
 
     def __differential_flow_calculation(self, binned_particle_data):
         flow_differential = [0.+0.j for i in range(len(binned_particle_data))]
@@ -88,7 +67,7 @@ class ReactionPlaneFlow(FlowInterface):
                 for particle in range(len(binned_particle_data[bin][event])):
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
-                    flow_event += pt**self.n * np.exp(1j*self.n*phi) / pt**self.n
+                    flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
                     number_particles += 1.
                 flow_event_average += flow_event
             if number_particles != 0.:
@@ -97,3 +76,11 @@ class ReactionPlaneFlow(FlowInterface):
                 flow_event_average = 0. + 0.j
             flow_differential[bin] = flow_event_average
         return flow_differential
+
+from Jetscape import Jetscape
+oscar = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
+liste = oscar.particle_objects_list()
+
+test = ReactionPlaneFlow()
+print(test.integrated_flow(liste))
+print(test.differential_flow(liste, [0.,0.1,0.2,0.3,0.5,1,1.5], "pt"))
