@@ -15,7 +15,7 @@ class JetAnalysis:
         List of hadron data for each event.
     jet_R: float
         Jet radius parameter.
-    jet_eta_range: float
+    jet_eta_range: tuple
         Minimum and maximum pseudorapidity for jet selection.
         `None` values are allowed and are exchanged by :math:`-\\infty` 
         or :math:`+\\infty` automatically.
