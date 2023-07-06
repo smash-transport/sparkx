@@ -47,7 +47,7 @@ class EventPlaneFlow(FlowInterface):
             event_weights.append(particle_weights)
         return event_weights
 
-    def __compute_flow_vectors_whole_event(self, particle_data, weights):
+    def __compute_flow_vectors(self, particle_data, weights):
         # Q vector whole event
         Q_vector = []
         for event in range(len(particle_data)):
@@ -158,7 +158,6 @@ class EventPlaneFlow(FlowInterface):
                 weight_particle = np.abs(weights[event][particle])
                 Q_vector_particle = Q_vector[event]
                 Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
-                #Q_vector_particle /= np.sqrt(sum_weights_u[event] - weight_particle**2.)
 
                 Psi_n = (1./float(self.n_)) * np.arctan2(Q_vector_particle.imag, Q_vector_particle.real)
                 vn_obs = np.cos(float(self.n_)* (particle_data[event][particle].phi() - Psi_n))
@@ -173,12 +172,12 @@ class EventPlaneFlow(FlowInterface):
         event_weights_event_plane = self.__compute_particle_weights(particle_data_event_plane)
         Psi_A, Psi_B = self.__compute_event_angles_sub_events(particle_data_event_plane,event_weights_event_plane)
         resolution = self.__compute_event_plane_resolution(Psi_A,Psi_B)
+        Q_vector = self.__compute_flow_vectors(particle_data_event_plane,event_weights_event_plane)
 
-        return resolution
+        return resolution, Q_vector
 
-    def __calculate_particle_flow(self, particle_data, resolution):
+    def __calculate_particle_flow(self, particle_data, resolution, Q_vector):
         event_weights = self.__compute_particle_weights(particle_data)
-        Q_vector = self.__compute_flow_vectors_whole_event(particle_data,event_weights)
         u_vectors = self.__compute_u_vectors(particle_data)
         sum_weights_u = self.__sum_weights(event_weights)
 
@@ -210,7 +209,8 @@ class EventPlaneFlow(FlowInterface):
         return vn_integrated, sigma
 
     def integrated_flow(self,particle_data,particle_data_event_plane):
-        return self.__calculate_flow_event_average(self.__calculate_particle_flow(particle_data, self.__calculate_reference(particle_data_event_plane)))
+        resolution, Q_vector = self.__calculate_reference(particle_data_event_plane)
+        return self.__calculate_flow_event_average(self.__calculate_particle_flow(particle_data, resolution, Q_vector))
     
 
     def differential_flow(self, particle_data, bins, flow_as_function_of, particle_data_event_plane):
@@ -240,11 +240,11 @@ class EventPlaneFlow(FlowInterface):
                 events_bin.extend([particles_event])
             particles_bin.extend([events_bin])
 
-        resolution = self.__calculate_reference(particle_data_event_plane)
+        resolution, Q_vector = self.__calculate_reference(particle_data_event_plane)
 
         flow_bin = []
         for bin in range(len(bins)-1):
-            flow_bin.append(self.__calculate_flow_event_average(self.__calculate_particle_flow(particles_bin[bin],resolution)))
+            flow_bin.append(self.__calculate_flow_event_average(self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector)))
 
         return flow_bin
     
@@ -258,4 +258,4 @@ test = EventPlaneFlow()
 print(test.integrated_flow(liste1, liste1))
 
 test1 = EventPlaneFlow()
-print(test1.differential_flow(liste1, [0.,0.1,0.2,0.3,0.4,2.,4.], "pt", liste1))
+print(test1.differential_flow(liste1, [0.,0.1,0.2,0.3,0.5,1,1.5], "pt", liste1))
