@@ -112,7 +112,6 @@ class JetAnalysis:
             warnings.warn("The lower jet eta cut value is larger than the " +\
                           "one. They are interchanged automatically.")
 
-        print(self.jet_eta_range_)
         # check the jet pt range
         if not isinstance(jet_pt_range, tuple):
             raise TypeError("jet_pt_range is not a tuple. " +\
