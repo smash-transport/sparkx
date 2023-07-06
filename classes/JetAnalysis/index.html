@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -97,7 +98,7 @@
 <span id="jet-analysis"></span><h1>JetAnalysis<a class="headerlink" href="#jetanalysis" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_cut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_hat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Permalink to this definition"></a></dt>
 <dd><p>This class analyzes events for different ptHat bins using the fastjet
 python package.</p>
 <dl class="field-list simple">
@@ -107,11 +108,14 @@ python package.</p>
 </dd>
 <dt><strong>jet_R: float</strong></dt><dd><p>Jet radius parameter.</p>
 </dd>
-<dt><strong>jet_eta_cut: float</strong></dt><dd><p>Maximum pseudorapidity for jet selection.</p>
+<dt><strong>jet_eta_range: tuple</strong></dt><dd><p>Minimum and maximum pseudorapidity for jet selection.
+<cite>None</cite> values are allowed and are exchanged by <span class="math notranslate nohighlight">\(-\infty\)</span> 
+or <span class="math notranslate nohighlight">\(+\infty\)</span> automatically.</p>
 </dd>
-<dt><strong>jet_pt_min: float</strong></dt><dd><p>Minimum transverse momentum for jet selection.</p>
-</dd>
-<dt><strong>pt_hat_max: float</strong></dt><dd><p>Maximum ptHat value for jet analysis.</p>
+<dt><strong>jet_pt_range: tuple</strong></dt><dd><p>Minimum transverse momentum for jet finding algotithm and maximum 
+transverse momentum to write out the jet to a file.
+Values can be <cite>None</cite>, then the lower bound is set to zero and the upper
+one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
 </dd>
 <dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. Default is <cite>fj.antikt_algorithm</cite>.</p>
 </dd>
@@ -134,7 +138,7 @@ python package.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">dat</span>
 <span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create an instance of the JetAnalysis class</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">(</span><span class="n">hadron_data</span><span class="o">=</span><span class="n">hadron_data</span><span class="p">,</span><span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">jet_eta_cut</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">jet_pt_min</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">pt_hat_max</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">(</span><span class="n">hadron_data</span><span class="o">=</span><span class="n">hadron_data</span><span class="p">,</span><span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">jet_eta_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">),</span><span class="n">jet_pt_range</span><span class="o">=</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform the jet analysis</span>
 <span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">perform_jet_analysis</span><span class="p">(</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
@@ -147,11 +151,10 @@ python package.</p>
 </dd>
 <dt><strong>jet_R_: float</strong></dt><dd><p>Jet radius parameter.</p>
 </dd>
-<dt><strong>jet_eta_cut_: float</strong></dt><dd><p>Maximum pseudorapidity for jet selection.</p>
+<dt><strong>jet_eta_range_: tuple</strong></dt><dd><p>Mimimum and maximum pseudorapidity for jet selection.</p>
 </dd>
-<dt><strong>jet_pt_min_: float</strong></dt><dd><p>Minimum transverse momentum for jet selection.</p>
-</dd>
-<dt><strong>pt_hat_max_: float</strong></dt><dd><p>Maximum ptHat value for jet analysis.</p>
+<dt><strong>jet_pt_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse 
+momentum to write out the jet.</p>
 </dd>
 <dt><strong>jet_algorithm_: fastjet.JetAlgorithm</strong></dt><dd><p>Jet algorithm for jet finding.</p>
 </dd>
