@@ -56,6 +56,8 @@ class Particle:
         Status code of the particle.
     baryon_number_ : int
         Baryon number of the particle.
+    weight_ : float
+        Weight of the particle.
 
     Methods
     -------
@@ -143,6 +145,8 @@ class Particle:
         Is the particle a strange particle?
     is_heavy_flavor:
         Is the particle a heavy flavor particle?
+    weight:
+        What is the weight of the particle?
 
     Notes
     -----
@@ -190,6 +194,7 @@ class Particle:
         self.pdg_mother2_ = None
         self.status_ = None
         self.baryon_number_ = None
+        self.weight_ = None
 
     @property
     def t(self):
@@ -679,6 +684,28 @@ class Particle:
     def baryon_number(self,value):
         self.baryon_number_ = value
 
+    @property
+    def weight(self):
+        """Get the weight of the particle.
+
+        Returns
+        -------
+        weight_ : float
+
+        Raises
+        ------
+        ValueError
+            if weight is not set
+        """
+        if self.weight_ == None:
+            raise ValueError("weight not set")
+        else:
+            return self.weight_
+
+    @weight.setter
+    def weight(self,value):
+        self.weight_ = value
+
 
     def print_particle(self):
         """Print the whole particle information as csv string.
@@ -689,13 +716,13 @@ class Particle:
         """
         print('t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
               proc_id_origin,proc_type_origin,t_last_coll,pdg_mother1,\
-              pdg_mother2,status,baryon_number')
+              pdg_mother2,status,baryon_number,weight')
         print(f'{self.t_},{self.x_},{self.y_},{self.z_},{self.mass_},{self.E_},\
               {self.px_},{self.py_},{self.pz_},{self.pdg_},{self.ID_},\
               {self.charge_},{self.ncoll_},{self.form_time_},{self.xsecfac_},\
               {self.proc_id_origin_},{self.proc_type_origin_}\
               ,{self.t_last_coll_},{self.pdg_mother1_},{self.pdg_mother2_},\
-              {self.status_},{self.baryon_number_}')
+              {self.status_},{self.baryon_number_},{self.weight_}')
 
 
     def set_quantities_OSCAR2013(self,line_from_file):
@@ -732,7 +759,7 @@ class Particle:
                             'columns as the OSCAR2013 format'
             raise ValueError(error_message)
 
-    def set_quantities_OSCAR2013Extended(self,line_from_file):
+    def set_quantities_OSCAR2013Extended(self,line_from_file,photon=False):
         """
         Sets the particle quantities obtained from OSCAR2013Extended.
 
@@ -740,6 +767,8 @@ class Particle:
         ----------
         line_from_file: list, numpy.ndarray
             Contains the values read from the file.
+        photon: bool
+            Read in the extra field 'weight' for photon output.
 
         Raises
         ------
@@ -769,8 +798,10 @@ class Particle:
             self.t_last_coll = float(line_from_file[17])
             self.pdg_mother1 = int(line_from_file[18])
             self.pdg_mother2 = int(line_from_file[19])
-            if len(line_from_file)==21:
+            if len(line_from_file)==21 and not photon:
                 self.baryon_number = int(line_from_file[20])
+            elif len(line_from_file)==21 and photon:
+                self.weight = float(line_from_file[20])
         else:
             error_message = 'The input line does not have the same number of '+\
                             'columns as the OSCAR2013Extended format'
