@@ -623,7 +623,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                            if int(elem.status) != status_list]
+                                            if int(elem.status) == status_list]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
                     
@@ -632,7 +632,7 @@ class Jetscape:
             
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                            if not int(elem.status) in status_list]
+                                            if int(elem.status) in status_list]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length  
                     
