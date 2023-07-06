@@ -1,6 +1,7 @@
 import numpy as np
 import fastjet as fj
 import csv
+import warnings
 from Particle import Particle
 
 class JetAnalysis:
@@ -14,12 +15,15 @@ class JetAnalysis:
         List of hadron data for each event.
     jet_R: float
         Jet radius parameter.
-    jet_eta_cut: float
-        Maximum pseudorapidity for jet selection.
-    jet_pt_min: float
-        Minimum transverse momentum for jet selection.
-    pt_hat_max: float
-        Maximum ptHat value for jet analysis.
+    jet_eta_range: tuple
+        Minimum and maximum pseudorapidity for jet selection.
+        `None` values are allowed and are exchanged by :math:`-\\infty` 
+        or :math:`+\\infty` automatically.
+    jet_pt_range: tuple
+        Minimum transverse momentum for jet finding algotithm and maximum 
+        transverse momentum to write out the jet to a file.
+        Values can be `None`, then the lower bound is set to zero and the upper
+        one to :math:`+\\infty`.
     jet_algorithm: fastjet.JetAlgorithm, optional
         Jet algorithm for jet finding. Default is `fj.antikt_algorithm`.
 
@@ -29,12 +33,11 @@ class JetAnalysis:
         List of hadron data for each event.
     jet_R_: float
         Jet radius parameter.
-    jet_eta_cut_: float
-        Maximum pseudorapidity for jet selection.
-    jet_pt_min_: float
-        Minimum transverse momentum for jet selection.
-    pt_hat_max_: float
-        Maximum ptHat value for jet analysis.
+    jet_eta_range_: tuple
+        Mimimum and maximum pseudorapidity for jet selection.
+    jet_pt_range_: tuple
+        Minimum transverse momentum for jet selection and maximum transverse 
+        momentum to write out the jet.
     jet_algorithm_: fastjet.JetAlgorithm
         Jet algorithm for jet finding.
 
@@ -75,18 +78,63 @@ class JetAnalysis:
         >>> JET_ANALYSIS_OUTPUT_PATH = [Jetscape_directory]/jet_analysis.dat
         >>>
         >>> # Create an instance of the JetAnalysis class
-        >>> jet_analysis = JetAnalysis(hadron_data=hadron_data,jet_R=0.4,jet_eta_cut=2.0,jet_pt_min=15,pt_hat_max=500)
+        >>> jet_analysis = JetAnalysis(hadron_data=hadron_data,jet_R=0.4,jet_eta_range=(-2.,2.),jet_pt_range=(10.,None))
         >>>
         >>> # Perform the jet analysis
         >>> jet_analysis.perform_jet_analysis(JET_ANALYSIS_OUTPUT_PATH)
     """
-    def __init__(self,hadron_data,jet_R,jet_eta_cut,jet_pt_min,pt_hat_max,\
+    def __init__(self,hadron_data,jet_R,jet_eta_range,jet_pt_range,\
                  jet_algorithm=fj.antikt_algorithm):
         self.hadron_data_ = hadron_data
+
+        # check jet radius
+        if jet_R <= 0.:
+            raise ValueError("jet_R must be larger than 0")
         self.jet_R_ = jet_R
-        self.jet_eta_cut_ = jet_eta_cut
-        self.jet_pt_min_ = jet_pt_min
-        self.pt_hat_max_ = pt_hat_max
+
+        # check jet eta range
+        if not isinstance(jet_eta_range, tuple):
+            raise TypeError("jet_eta_range is not a tuple. " +\
+                            "It must contain either values or None.")
+        
+        if jet_eta_range[0] is None:
+            lower_cut = float('-inf')
+        else:
+            lower_cut = jet_eta_range[0]
+        if jet_eta_range[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = jet_eta_range[1]
+        if lower_cut < upper_cut:
+            self.jet_eta_range_ = (lower_cut, upper_cut)
+        else:
+            self.jet_eta_range_ = (upper_cut, lower_cut)
+            warnings.warn("The lower jet eta cut value is larger than the " +\
+                          "one. They are interchanged automatically.")
+
+        # check the jet pt range
+        if not isinstance(jet_pt_range, tuple):
+            raise TypeError("jet_pt_range is not a tuple. " +\
+                            "It must contain either values or None.")
+        if (jet_pt_range[0] is not None and jet_pt_range[0]<0) or \
+            (jet_pt_range[1] is not None and jet_pt_range[1]<0):
+            raise ValueError("One of the requested jet pt cuts is negative. " +\
+                             "This should not happen.")
+        
+        if jet_pt_range[0] is None:
+            lower_cut = 0.
+        else:
+            lower_cut = jet_pt_range[0]
+        if jet_pt_range[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = jet_pt_range[1]
+        if lower_cut < upper_cut:
+            self.jet_pt_range_ = (lower_cut, upper_cut)
+        else:
+            raise ValueError("The lower jet transverse momentum cut value is " +\
+                          "larger or equal to the upper one.")
+        
         self.jet_algorithm_ = jet_algorithm
     
     def create_fastjet_PseudoJets(self, event_hadrons):
@@ -163,7 +211,7 @@ class JetAnalysis:
         jet_pid = 10
         output_list = []
 
-        if jet.perp() < self.pt_hat_max_:
+        if jet.perp() < self.jet_pt_range_[1]:
             output_list = [[0,jet.perp(),jet.eta(),jet.phi(),jet_status,\
                             jet_pid,jet.e()]]
 
@@ -199,7 +247,7 @@ class JetAnalysis:
             new_file = False
             event_PseudoJets = self.create_fastjet_PseudoJets(hadron_data_event)
             jet_definition = fj.JetDefinition(self.jet_algorithm_, self.jet_R_)
-            jet_selector = fj.SelectorAbsEtaMax(self.jet_eta_cut_)
+            jet_selector = fj.SelectorEtaRange(self.jet_eta_range_[0],self.jet_eta_range_[1])
 
             if event == 0:
                 print("jet definition is:", jet_definition)
@@ -209,7 +257,7 @@ class JetAnalysis:
 
             # perform the jet finiding algorithm
             cluster = fj.ClusterSequence(event_PseudoJets, jet_definition)
-            jets = fj.sorted_by_pt(cluster.inclusive_jets(self.jet_pt_min_))
+            jets = fj.sorted_by_pt(cluster.inclusive_jets(self.jet_pt_range_[0]))
             jets = jet_selector(jets)
 
             # get the associated particles in the jet cone
