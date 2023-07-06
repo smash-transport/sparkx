@@ -1,6 +1,5 @@
 from FlowInterface import FlowInterface
 import numpy as np
-import warnings
 
 class ReactionPlaneFlow(FlowInterface):
     def __init__(self,n=2):
@@ -17,10 +16,11 @@ class ReactionPlaneFlow(FlowInterface):
         for event in range(len(particle_data)):
             flow_event = 0. + 0.j
             for particle in range(len(particle_data[event])):
+                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
-                flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
-                number_particles += 1.
+                flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                number_particles += weight
             if number_particles != 0.:
                 flow_event_average += flow_event
             else:
@@ -65,10 +65,11 @@ class ReactionPlaneFlow(FlowInterface):
             for event in range(len(binned_particle_data[bin])):
                 flow_event = 0. + 0.j
                 for particle in range(len(binned_particle_data[bin][event])):
+                    weight = 1. if binned_particle_data[bin][event][particle].weight is None else binned_particle_data[bin][event][particle].weight
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
-                    flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
-                    number_particles += 1.
+                    flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                    number_particles += weight
                 flow_event_average += flow_event
             if number_particles != 0.:
                 flow_event_average /= number_particles
