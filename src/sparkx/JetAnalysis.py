@@ -133,9 +133,7 @@ class JetAnalysis:
             self.jet_pt_range_ = (lower_cut, upper_cut)
         else:
             raise ValueError("The lower jet transverse momentum cut value is " +\
-                          "larger than the upper one.")
-
-        print(self.jet_pt_range_)
+                          "larger or equal to the upper one.")
         
         self.jet_algorithm_ = jet_algorithm
     
