@@ -183,6 +183,8 @@ can be set or obtained with the corresponding functions.</p>
 </dd>
 <dt><strong>baryon_number_</strong><span class="classifier">int</span></dt><dd><p>Baryon number of the particle.</p>
 </dd>
+<dt><strong>weight_</strong><span class="classifier">float</span></dt><dd><p>Weight of the particle.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -315,6 +317,9 @@ can be set or obtained with the corresponding functions.</p>
 <tr class="row-even"><td><p><strong>is_heavy_flavor:</strong></p></td>
 <td><p>Is the particle a heavy flavor particle?</p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>weight:</strong></p></td>
+<td><p>What is the weight of the particle?</p></td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -350,12 +355,14 @@ a comma.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.set_quantities_OSCAR2013Extended">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">set_quantities_OSCAR2013Extended</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_from_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.set_quantities_OSCAR2013Extended"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.set_quantities_OSCAR2013Extended" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">set_quantities_OSCAR2013Extended</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_from_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.set_quantities_OSCAR2013Extended"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.set_quantities_OSCAR2013Extended" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the particle quantities obtained from OSCAR2013Extended.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>line_from_file: list, numpy.ndarray</strong></dt><dd><p>Contains the values read from the file.</p>
+</dd>
+<dt><strong>photon: bool</strong></dt><dd><p>Read in the extra field ‘weight’ for photon output.</p>
 </dd>
 </dl>
 </dd>
