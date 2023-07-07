@@ -45,9 +45,9 @@ class ReactionPlaneFlow(FlowInterface):
                     val = 0.
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
-                    if flow_as_function_of == "rapidity":
+                    elif flow_as_function_of == "rapidity":
                         val = particle.momentum_rapidity_Y()
-                    if flow_as_function_of == "pseudorapidity":
+                    elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                         print(val)
                     if val >= bins[bin] and val < bins[bin+1]:

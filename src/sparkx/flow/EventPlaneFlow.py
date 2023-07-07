@@ -235,7 +235,7 @@ class EventPlaneFlow(FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                    elif val >= bins[bin] and val < bins[bin+1]:
+                    if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle)
                 events_bin.extend([particles_event])
             particles_bin.extend([events_bin])
