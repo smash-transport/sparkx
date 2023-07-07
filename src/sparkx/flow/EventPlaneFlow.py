@@ -244,7 +244,7 @@ class EventPlaneFlow(FlowInterface):
 
         flow_bin = []
         for bin in range(len(bins)-1):
-            flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector)))
+            flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)))
 
         return flow_bin
     
