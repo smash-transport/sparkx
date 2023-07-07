@@ -1,6 +1,5 @@
 from FlowInterface import FlowInterface
 import numpy as np
-import warnings
 
 class ReactionPlaneFlow(FlowInterface):
     def __init__(self,n=2):
@@ -17,10 +16,11 @@ class ReactionPlaneFlow(FlowInterface):
         for event in range(len(particle_data)):
             flow_event = 0. + 0.j
             for particle in range(len(particle_data[event])):
+                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
-                flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
-                number_particles += 1.
+                flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                number_particles += weight
             if number_particles != 0.:
                 flow_event_average += flow_event
             else:
@@ -35,19 +35,19 @@ class ReactionPlaneFlow(FlowInterface):
             raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
-        
+
         particles_bin = []
         for bin in range(len(bins)-1):
             events_bin = []
             for event in range(len(particle_data)):
                 particles_event = []
-                for particle in particle_data[event]:                
+                for particle in particle_data[event]:
                     val = 0.
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
-                    if flow_as_function_of == "rapidity":
+                    elif flow_as_function_of == "rapidity":
                         val = particle.momentum_rapidity_Y()
-                    if flow_as_function_of == "pseudorapidity":
+                    elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                         print(val)
                     if val >= bins[bin] and val < bins[bin+1]:
@@ -65,10 +65,11 @@ class ReactionPlaneFlow(FlowInterface):
             for event in range(len(binned_particle_data[bin])):
                 flow_event = 0. + 0.j
                 for particle in range(len(binned_particle_data[bin][event])):
+                    weight = 1. if binned_particle_data[bin][event][particle].weight is None else binned_particle_data[bin][event][particle].weight
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
-                    flow_event += pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_
-                    number_particles += 1.
+                    flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                    number_particles += weight
                 flow_event_average += flow_event
             if number_particles != 0.:
                 flow_event_average /= number_particles

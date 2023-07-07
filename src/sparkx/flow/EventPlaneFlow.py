@@ -5,7 +5,7 @@ import scipy.optimize as optimize
 
 class EventPlaneFlow(FlowInterface):
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):
-        
+
         if not isinstance(n, int):
             raise TypeError('n has to be int')
         elif n <= 0:
@@ -35,13 +35,13 @@ class EventPlaneFlow(FlowInterface):
                 weight = 0.
                 if self.weight_ == "pt":
                     weight = particle.pt_abs()
-                if self.weight_ == "pt2":
+                elif self.weight_ == "pt2":
                     weight = particle.pt_abs()**2.
-                if self.weight_ == "ptn":
+                elif self.weight_ == "ptn":
                     weight = particle.pt_abs()**self.n_
-                if self.weight_ == "rapidity":
+                elif self.weight_ == "rapidity":
                     weight = particle.momentum_rapidity_Y()
-                if self.weight_ == "pseudorapidity":
+                elif self.weight_ == "pseudorapidity":
                     weight = particle.pseudorapidity()
                 particle_weights.append(weight)
             event_weights.append(particle_weights)
@@ -57,17 +57,15 @@ class EventPlaneFlow(FlowInterface):
             Q_vector.append(Q_vector_val)
 
         return Q_vector
-    
+
     def __sum_weights(self, weights):
         sum_weights = []
         for event in weights:
-            weight_val = 0.
-            for w in event:
-                weight_val += w**2.
+            weight_val = np.sum(np.square(event))
             sum_weights.append(weight_val)
-        
+
         return sum_weights
-    
+
     def __compute_event_angles_sub_events(self, particle_data, weights):
         # Q vector sub-event A
         Q_vector_A = []
@@ -124,7 +122,7 @@ class EventPlaneFlow(FlowInterface):
             for particle in event:
                 u_vector_event.append(np.exp(1.0j*float(self.n_)*particle.phi()))
             u_vectors.extend([u_vector_event])
-        
+
         return u_vectors
 
     def __compute_event_plane_resolution(self, Psi_A, Psi_B):
@@ -137,7 +135,7 @@ class EventPlaneFlow(FlowInterface):
         # alternative: if Rn < 0.5: R = Rn * sqrt(2), we don't do that
         # implements: arXiv:0809.2949
         def resolution(x):
-            R = (np.sqrt(np.pi) / 2.) * x * np.exp(-0.5 * x * x) * (special.i0(0.5 * x * x) + special.i1(0.5 * x * x))   
+            R = (np.sqrt(np.pi) / 2.) * x * np.exp(-0.5 * x * x) * (special.i0(0.5 * x * x) + special.i1(0.5 * x * x))
             return R
 
         def f1(x,Rn):
@@ -145,19 +143,20 @@ class EventPlaneFlow(FlowInterface):
 
         def f1_wrapper(x):
             return f1(x,Rn)
-    
+
         xi = optimize.root_scalar(f1_wrapper, bracket=[0, 20], method='brentq').root
         xi_new = np.sqrt(2) * xi
         return resolution(xi_new)
-    
-    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, sum_weights_u, resolution):
+
+    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, sum_weights_u, resolution, self_corr):
         flow_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
             for particle in range(len(particle_data[event])):
                 weight_particle = np.abs(weights[event][particle])
                 Q_vector_particle = Q_vector[event]
-                Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
+                if (self_corr):
+                    Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
 
                 Psi_n = (1./float(self.n_)) * np.arctan2(Q_vector_particle.imag, Q_vector_particle.real)
                 vn_obs = np.cos(float(self.n_)* (particle_data[event][particle].phi() - Psi_n))
@@ -165,9 +164,9 @@ class EventPlaneFlow(FlowInterface):
                 flow_of_particle = vn_obs / resolution
                 flow_values_event.append(flow_of_particle)
             flow_values.extend([flow_values_event])
-        
+
         return flow_values
-    
+
     def __calculate_reference(self, particle_data_event_plane):
         event_weights_event_plane = self.__compute_particle_weights(particle_data_event_plane)
         Psi_A, Psi_B = self.__compute_event_angles_sub_events(particle_data_event_plane,event_weights_event_plane)
@@ -176,24 +175,25 @@ class EventPlaneFlow(FlowInterface):
 
         return resolution, Q_vector
 
-    def __calculate_particle_flow(self, particle_data, resolution, Q_vector):
+    def __calculate_particle_flow(self, particle_data, resolution, Q_vector, self_corr):
         event_weights = self.__compute_particle_weights(particle_data)
         u_vectors = self.__compute_u_vectors(particle_data)
         sum_weights_u = self.__sum_weights(event_weights)
 
-        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,sum_weights_u,resolution)
+        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,sum_weights_u,resolution, self_corr)
 
-    def __calculate_flow_event_average(self, flow_particle_list):
+    def __calculate_flow_event_average(self, particle_data, flow_particle_list):
         # compute the integrated flow
         number_of_particles = 0
         flowvalue = 0.0
         flowvalue_squared = 0.0
         for event in range(len(flow_particle_list)):
             for particle in range(len(flow_particle_list[event])):
-                number_of_particles += 1
-                flowvalue += flow_particle_list[event][particle]
-                flowvalue_squared += flow_particle_list[event][particle]**2.
-        
+                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
+                number_of_particles += weight
+                flowvalue += flow_particle_list[event][particle]*weight
+                flowvalue_squared += flow_particle_list[event][particle]**2.*weight**2.
+
         vn_integrated = 0.0
         sigma = 0.0
         print(number_of_particles)
@@ -208,12 +208,12 @@ class EventPlaneFlow(FlowInterface):
 
         return vn_integrated, sigma
 
-    def integrated_flow(self,particle_data,particle_data_event_plane):
+    def integrated_flow(self,particle_data,particle_data_event_plane, self_corr=True):
         resolution, Q_vector = self.__calculate_reference(particle_data_event_plane)
-        return self.__calculate_flow_event_average(self.__calculate_particle_flow(particle_data, resolution, Q_vector))
-    
+        return self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particle_data, resolution, Q_vector, self_corr))
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of, particle_data_event_plane):
+
+    def differential_flow(self, particle_data, bins, flow_as_function_of, particle_data_event_plane, self_corr=True):
 
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
@@ -221,19 +221,19 @@ class EventPlaneFlow(FlowInterface):
             raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
-        
+
         particles_bin = []
         for bin in range(len(bins)-1):
             events_bin = []
             for event in range(len(particle_data)):
                 particles_event = []
-                for particle in particle_data[event]:                
+                for particle in particle_data[event]:
                     val = 0.
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
-                    if flow_as_function_of == "rapidity":
+                    elif flow_as_function_of == "rapidity":
                         val = particle.momentum_rapidity_Y()
-                    if flow_as_function_of == "pseudorapidity":
+                    elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle)
@@ -244,10 +244,10 @@ class EventPlaneFlow(FlowInterface):
 
         flow_bin = []
         for bin in range(len(bins)-1):
-            flow_bin.append(self.__calculate_flow_event_average(self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector)))
+            flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)))
 
         return flow_bin
-    
+
 from Jetscape import Jetscape
 oscar1 = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
 #oscar2 = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
