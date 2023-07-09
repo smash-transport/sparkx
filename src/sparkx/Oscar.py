@@ -475,7 +475,6 @@ class Oscar:
                 else:
                     continue
         file.close()
-        file.close()
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
 
 
