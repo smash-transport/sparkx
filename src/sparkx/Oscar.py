@@ -456,20 +456,25 @@ class Oscar:
         elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
             line_counter=0
             event=0
+            line_memory=0
             while True:
                 line_counter+=1
+                line_memory+=1
                 line = file.readline()
                 if not line:
                     break
                 elif '#' in line and 'end' in line:
+                    if(line_memory==1):
+                        continue
                     self.event_end_lines_.append(line)
-                    event_output.append([event, line_counter-2])
-                elif '#' in line and 'out' in line:
                     line_str = line.replace('\n','').split(' ')
                     event = line_str[2]
+                    event_output.append([event, line_counter-1])
+                elif '#' in line and 'out' in line:
                     line_counter=0
                 else:
                     continue
+        file.close()
         file.close()
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
 
@@ -965,17 +970,11 @@ class Oscar:
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
 
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            lim_min<=elem.momentum_rapidity_Y()<=lim_max]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
 
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
