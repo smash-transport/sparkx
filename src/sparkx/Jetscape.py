@@ -727,17 +727,11 @@ class Jetscape:
         else:
             upper_cut = cut_value_tuple[1]
       
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ if
-                                   lower_cut <= elem.pt_abs() <= upper_cut]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                          lower_cut <= elem.pt_abs() <= upper_cut]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length   
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.pt_abs() <= upper_cut]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length   
     
         return self
         
@@ -782,33 +776,21 @@ class Jetscape:
             # cut symmetrically around 0
             limit = np.abs(cut_value)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       -limit<=elem.momentum_rapidity_Y()<=limit]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              -limit<=elem.momentum_rapidity_Y()<=limit]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length 
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            -limit<=elem.momentum_rapidity_Y()<=limit]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length 
                     
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length 
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            lim_min<=elem.momentum_rapidity_Y()<=lim_max]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length 
             
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
@@ -855,33 +837,21 @@ class Jetscape:
             # cut symmetrically around 0
             limit = np.abs(cut_value)
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       -limit<=elem.pseudorapidity()<=limit]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              -limit<=elem.pseudorapidity()<=limit]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length 
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            -limit<=elem.pseudorapidity()<=limit]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length 
                     
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
             
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.pseudorapidity()<=lim_max]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.pseudorapidity()<=lim_max]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length 
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            lim_min<=elem.pseudorapidity()<=lim_max]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length 
             
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
@@ -951,22 +921,12 @@ class Jetscape:
         output.close()
     
         with open(output_file, "a") as f_out:
-            if self.num_events_ == 1:
-                event = self.num_output_per_event_[0]
-                num_out = self.num_output_per_event_[1]
-                particle_output = np.asarray(self.particle_list())
-             
+            for i in range(self.num_events_):
+                event = self.num_output_per_event_[i,0]
+                num_out = self.num_output_per_event_[i,1]
+                particle_output = np.asarray(self.particle_list()[i])
+            
                 f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
                 np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
-                f_out.write(last_line)
-
-            else:
-                for i in range(self.num_events_):
-                    event = self.num_output_per_event_[i,0]
-                    num_out = self.num_output_per_event_[i,1]
-                    particle_output = np.asarray(self.particle_list()[i])
-                 
-                    f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
-                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
-                f_out.write(last_line)
+            f_out.write(last_line)
         f_out.close()

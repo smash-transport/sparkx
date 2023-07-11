@@ -456,17 +456,21 @@ class Oscar:
         elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
             line_counter=0
             event=0
+            line_memory=0
             while True:
                 line_counter+=1
+                line_memory+=1
                 line = file.readline()
                 if not line:
                     break
                 elif '#' in line and 'end' in line:
+                    if(line_memory==1):
+                        continue
                     self.event_end_lines_.append(line)
-                    event_output.append([event, line_counter-2])
-                elif '#' in line and 'out' in line:
                     line_str = line.replace('\n','').split(' ')
                     event = line_str[2]
+                    event_output.append([event, line_counter-1])
+                elif '#' in line and 'out' in line:
                     line_counter=0
                 else:
                     continue
@@ -896,17 +900,11 @@ class Oscar:
         else:
             upper_cut = cut_value_tuple[1]
 
-        if self.num_events_ == 1:
-            self.particle_list_ = [elem for elem in self.particle_list_ if
-                                   lower_cut <= elem.pt_abs() <= upper_cut]
-            new_length = len(self.particle_list_)
-            self.num_output_per_event_[1] = new_length
-        else:
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                          lower_cut <= elem.pt_abs() <= upper_cut]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+        for i in range(0, self.num_events_):
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.pt_abs() <= upper_cut]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
 
         return self
 
@@ -949,33 +947,21 @@ class Oscar:
             # cut symmetrically around 0
             limit = np.abs(cut_value)
 
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       -limit<=elem.momentum_rapidity_Y()<=limit]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              -limit<=elem.momentum_rapidity_Y()<=limit]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            -limit<=elem.momentum_rapidity_Y()<=limit]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
 
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
 
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.momentum_rapidity_Y()<=lim_max]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            lim_min<=elem.momentum_rapidity_Y()<=lim_max]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
 
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
@@ -1023,17 +1009,11 @@ class Oscar:
             # cut symmetrically around 0
             limit = np.abs(cut_value)
 
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       -limit<=elem.pseudorapidity()<=limit]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[0,1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              -limit<=elem.pseudorapidity()<=limit]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            -limit<=elem.pseudorapidity()<=limit]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
 
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
@@ -1097,17 +1077,11 @@ class Oscar:
             # cut symmetrically around 0
             limit = np.abs(cut_value)
 
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       -limit<=elem.spatial_rapidity()<=limit]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              -limit<=elem.spatial_rapidity()<=limit]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
+            for i in range(0, self.num_events_):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                            -limit<=elem.spatial_rapidity()<=limit]
+                new_length = len(self.particle_list_[i])
+                self.num_output_per_event_[i, 1] = new_length
 
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
@@ -1205,27 +1179,15 @@ class Oscar:
         output.close()
 
         with open(output_file, "a") as f_out:
-            if self.num_events_ == 1:
-                event = self.num_output_per_event_[0]
-                num_out = self.num_output_per_event_[1]
-                particle_output = np.asarray(self.particle_list())
+            for i in range(self.num_events_):
+                event = self.num_output_per_event_[i,0]
+                num_out = self.num_output_per_event_[i,1]
+                particle_output = np.asarray(self.particle_list()[i])
 
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_format_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+                elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
-            else:
-                for i in range(self.num_events_):
-                    event = self.num_output_per_event_[i,0]
-                    num_out = self.num_output_per_event_[i,1]
-                    particle_output = np.asarray(self.particle_list()[i])
-
-                    f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
-                    if self.oscar_format_ == 'Oscar2013':
-                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                    elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
-                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
-                    f_out.write(self.event_end_lines_[event])
         f_out.close()
