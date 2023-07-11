@@ -253,9 +253,9 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
         return flow_bin
 
-from ..Jetscape import Jetscape
-oscar1 = Jetscape("/home/niklas/Downloads/new_testdata.dat")
-liste1 = oscar1.particle_objects_list()
+# from ..Jetscape import Jetscape
+# oscar1 = Jetscape("/home/niklas/Downloads/new_testdata.dat")
+# liste1 = oscar1.particle_objects_list()
 
-test1 = EventPlaneFlow()
-print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt", liste1))
+# test1 = EventPlaneFlow()
+# print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt", liste1))
