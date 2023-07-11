@@ -1,9 +1,10 @@
-from FlowInterface import FlowInterface
+from . import FlowInterface
 import numpy as np
 from scipy import special
 import scipy.optimize as optimize
+import warnings
 
-class EventPlaneFlow(FlowInterface):
+class EventPlaneFlow(FlowInterface.FlowInterface):
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):
 
         if not isinstance(n, int):
@@ -144,11 +145,16 @@ class EventPlaneFlow(FlowInterface):
         def f1_wrapper(x):
             return f1(x,Rn)
 
-        xi = optimize.root_scalar(f1_wrapper, bracket=[0, 20], method='brentq').root
+        try:
+            xi = optimize.root_scalar(f1_wrapper, bracket=[0, 20], method='brentq').root
+        except:
+            warnings.warn("Could not find solution of resolution equation. Use approximation instead.")
+            return Rn
+
         xi_new = np.sqrt(2) * xi
         return resolution(xi_new)
 
-    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, sum_weights_u, resolution, self_corr):
+    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, resolution, self_corr):
         flow_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
@@ -180,7 +186,7 @@ class EventPlaneFlow(FlowInterface):
         u_vectors = self.__compute_u_vectors(particle_data)
         sum_weights_u = self.__sum_weights(event_weights)
 
-        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,sum_weights_u,resolution, self_corr)
+        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,resolution, self_corr)
 
     def __calculate_flow_event_average(self, particle_data, flow_particle_list):
         # compute the integrated flow
@@ -196,7 +202,6 @@ class EventPlaneFlow(FlowInterface):
 
         vn_integrated = 0.0
         sigma = 0.0
-        print(number_of_particles)
         if number_of_particles == 0:
             vn_integrated = 0.0
             sigma = 0.0
@@ -248,14 +253,9 @@ class EventPlaneFlow(FlowInterface):
 
         return flow_bin
 
-from Jetscape import Jetscape
-oscar1 = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
-#oscar2 = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
+from ..Jetscape import Jetscape
+oscar1 = Jetscape("/home/niklas/Downloads/new_testdata.dat")
 liste1 = oscar1.particle_objects_list()
-#liste2 = oscar2.pt_cut((0.1,0.2)).particle_objects_list()
-
-test = EventPlaneFlow()
-print(test.integrated_flow(liste1, liste1))
 
 test1 = EventPlaneFlow()
-print(test1.differential_flow(liste1, [0.,0.1,0.2,0.3,0.5,1,1.5], "pt", liste1))
+print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt", liste1))

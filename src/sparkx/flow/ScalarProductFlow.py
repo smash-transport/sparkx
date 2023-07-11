@@ -1,7 +1,7 @@
-from FlowInterface import FlowInterface
+from . import FlowInterface
 import numpy as np
 
-class ScalarProductFlow(FlowInterface):
+class ScalarProductFlow(FlowInterface.FlowInterface):
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):
 
         if not isinstance(n, int):
@@ -71,6 +71,7 @@ class ScalarProductFlow(FlowInterface):
         for event in range(len(particle_data)):
             Q_vector_A_val = 0. + 0.j
             relevant_weights_A_event = []
+            
             for particle in range(len(particle_data[event])):
                 if particle_data[event][particle].pseudorapidity() >= +self.pseudorapidity_gap_:
                     Q_vector_A_val += weights[event][particle] * np.exp(1.0j * float(self.n_) * particle_data[event][particle].phi())
@@ -81,6 +82,7 @@ class ScalarProductFlow(FlowInterface):
         # Q vector sub-event B
         Q_vector_B = []
         relevant_weights_B = []
+        #count=0
         for event in range(len(particle_data)):
             Q_vector_B_val = 0. + 0.j
             relevant_weights_B_event = []
@@ -88,23 +90,9 @@ class ScalarProductFlow(FlowInterface):
                 if particle_data[event][particle].pseudorapidity() < -self.pseudorapidity_gap_:
                     Q_vector_B_val += weights[event][particle] * np.exp(1.0j * float(self.n_) * particle_data[event][particle].phi())
                     relevant_weights_B_event.append(weights[event][particle])
+                    #count+=1
             Q_vector_B.append(Q_vector_B_val)
             relevant_weights_B.extend([relevant_weights_B_event])
-
-        sum_weights_A = self.__sum_weights(relevant_weights_A)
-        sum_weights_B = self.__sum_weights(relevant_weights_B)
-
-        for event in range(len(particle_data)):
-            # avoid division by 0, if there is no weight, there is also no particle and no flow for an event
-            if sum_weights_A[event] == 0.0:
-                Q_vector_A[event] = 0.0
-            else:
-                Q_vector_A[event] /= np.sqrt(sum_weights_A[event])
-
-            if sum_weights_B[event] == 0.0:
-                Q_vector_B[event] = 0.0
-            else:
-                Q_vector_B[event] /= np.sqrt(sum_weights_B[event])
 
         return Q_vector_A, Q_vector_B
 
@@ -121,10 +109,10 @@ class ScalarProductFlow(FlowInterface):
     def __compute_event_plane_resolution(self, Q_vector_A, Q_vector_B):
         # implements Eq.15 from arXiv:0809.2949
         QnSquared = np.asarray([(np.conjugate(Q_vector_A[event]) * Q_vector_B[event]).real for event in range(len(Q_vector_A))])
-        QnSquaredSum = np.sum(QnSquared)
-        return 2. * np.sqrt(QnSquaredSum / len(Q_vector_A))
+        QnSquaredSum = np.mean(QnSquared)
+        return  2. * np.sqrt(QnSquaredSum)
 
-    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, sum_weights_u, resolution, self_corr):
+    def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, resolution, self_corr):
         flow_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
@@ -133,18 +121,12 @@ class ScalarProductFlow(FlowInterface):
                 Q_vector_particle = Q_vector[event]
                 if (self_corr):
                     Q_vector_particle -= weight_particle*u_vectors[event][particle] # avoid autocorrelation
-                #Q_vector_particle /= np.sqrt(sum_weights_u[event] - weight_particle**2.)
-
                 u_vector = u_vectors[event][particle]
-                u_vector *= weight_particle
-                u_vector /= np.sqrt(sum_weights_u[event])
-                u_vector /= abs(u_vector) # correlate with unit vector of POI
 
                 vn_obs = (np.conjugate(u_vector) * Q_vector_particle).real
                 flow_of_particle = vn_obs / resolution
                 flow_values_event.append(flow_of_particle)
             flow_values.extend([flow_values_event])
-
         return flow_values
 
     def __calculate_reference(self, particle_data_event_plane):
@@ -160,7 +142,7 @@ class ScalarProductFlow(FlowInterface):
         u_vectors = self.__compute_u_vectors(particle_data)
         sum_weights_u = self.__sum_weights(event_weights)
 
-        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,sum_weights_u,resolution, self_corr)
+        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,resolution, self_corr)
 
     def __calculate_flow_event_average(self, particle_data, flow_particle_list):
         # compute the integrated flow
@@ -226,12 +208,10 @@ class ScalarProductFlow(FlowInterface):
             flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)))
 
         return flow_bin
-import sys
-sys.path.append("/home/niklas/Desktop/sparkx/src/sparkx")
-from Jetscape import Jetscape
-oscar = Jetscape("/home/niklas/Downloads/LYZ_testdata.dat")
-liste = oscar.particle_objects_list()
 
-test = ScalarProductFlow()
-print(test.integrated_flow(liste, liste, True))
-print(test.differential_flow(liste, [0.,0.1,0.2,0.3,0.5,1,1.5], "pt", liste, True))
+# from ..Jetscape import Jetscape
+# oscar1 = Jetscape("/home/niklas/Downloads/new_testdata.dat")
+# liste1 = oscar1.particle_objects_list()
+
+# test1 = ScalarProductFlow()
+# print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt", liste1))

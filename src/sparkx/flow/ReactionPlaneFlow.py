@@ -1,7 +1,7 @@
-from FlowInterface import FlowInterface
+from . import FlowInterface
 import numpy as np
 
-class ReactionPlaneFlow(FlowInterface):
+class ReactionPlaneFlow(FlowInterface.FlowInterface):
     def __init__(self,n=2):
         if not isinstance(n, int):
             raise TypeError('n has to be int')
@@ -78,10 +78,9 @@ class ReactionPlaneFlow(FlowInterface):
             flow_differential[bin] = flow_event_average
         return flow_differential
 
-from Jetscape import Jetscape
-oscar = Jetscape("/home/hendrik/Git/sparkx/src/sparkx/LYZ_testdata.dat")
-liste = oscar.particle_objects_list()
+# from ..Jetscape import Jetscape
+# oscar1 = Jetscape("/home/niklas/Downloads/new_testdata_no_rot.dat")
+# liste1 = oscar1.particle_objects_list()
 
-test = ReactionPlaneFlow()
-print(test.integrated_flow(liste))
-print(test.differential_flow(liste, [0.,0.1,0.2,0.3,0.5,1,1.5], "pt"))
+# test1 = ReactionPlaneFlow()
+# print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt"))

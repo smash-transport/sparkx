@@ -1,6 +1,6 @@
 import numpy as np
-from Particle import Particle
-from Lattice3D import Lattice3D
+from .Particle import Particle
+from .Lattice3D import Lattice3D
 
 class EventCharacteristics:
     """
