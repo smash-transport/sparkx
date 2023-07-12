@@ -51,7 +51,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">JetAnalysis</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#JetAnalysis.JetAnalysis"><code class="docutils literal notranslate"><span class="pre">JetAnalysis</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.perform_jet_analysis"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.perform_jet_analysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.perform_jet_finding"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.perform_jet_finding()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.read_jet_data"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.read_jet_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.get_jets"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.get_jets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.get_associated_particles"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.get_associated_particles()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.create_fastjet_PseudoJets"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.create_fastjet_PseudoJets()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.fill_associated_particles"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.fill_associated_particles()</span></code></a></li>
 </ul>
@@ -98,30 +101,47 @@
 <span id="jet-analysis"></span><h1>JetAnalysis<a class="headerlink" href="#jetanalysis" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Permalink to this definition"></a></dt>
-<dd><p>This class analyzes events for different ptHat bins using the fastjet
-python package.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>hadron_data: list</strong></dt><dd><p>List of hadron data for each event.</p>
-</dd>
-<dt><strong>jet_R: float</strong></dt><dd><p>Jet radius parameter.</p>
-</dd>
-<dt><strong>jet_eta_range: tuple</strong></dt><dd><p>Minimum and maximum pseudorapidity for jet selection.
-<cite>None</cite> values are allowed and are exchanged by <span class="math notranslate nohighlight">\(-\infty\)</span> 
-or <span class="math notranslate nohighlight">\(+\infty\)</span> automatically.</p>
-</dd>
-<dt><strong>jet_pt_range: tuple</strong></dt><dd><p>Minimum transverse momentum for jet finding algotithm and maximum 
-transverse momentum to write out the jet to a file.
-Values can be <cite>None</cite>, then the lower bound is set to zero and the upper
-one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
-</dd>
-<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. Default is <cite>fj.antikt_algorithm</cite>.</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Permalink to this definition"></a></dt>
+<dd><p>This class analyzes simulation output using the fastjet python package.</p>
+<p class="rubric">Notes</p>
+<p>The columns of the output file include the following quantities:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Quantity</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td><p>Index of the particle in the jet. Index 0 is always the jet itself, all higher values are the associated particles of the jet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(p_{\mathrm{T}}\)</span></p></td>
+<td><p>Transverse momentum of the jet / associated particle.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\eta\)</span></p></td>
+<td><p>Pseudorapidity of the jet / associated particle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\varphi\)</span></p></td>
+<td><p>Azimuth of the jet / associated particle.</p></td>
+</tr>
+<tr class="row-even"><td><p>status flag</p></td>
+<td><p>Always set to 10.</p></td>
+</tr>
+<tr class="row-odd"><td><p>jet pid</p></td>
+<td><p>Always set to 10.</p></td>
+</tr>
+<tr class="row-even"><td><p>energy</p></td>
+<td><p>Energy of the jet / associated particle.</p></td>
+</tr>
+<tr class="row-odd"><td><p>event index</p></td>
+<td><p>Index of the event in the input hadron data.</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Examples</p>
 <p>First import your hadron data and maybe perform some cuts:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
@@ -130,18 +150,32 @@ one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
 <span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">dat</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing all events</span>
-<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hadron_data</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH</span><span class="p">)</span>
-<span class="linenos">8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hadron_data</span><span class="o">.</span><span class="n">charged_particles</span><span class="p">()</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
+<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hadron_data_set</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH</span><span class="p">)</span>
+<span class="linenos">8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hadron_data</span> <span class="o">=</span> <span class="n">hadron_data_set</span><span class="o">.</span><span class="n">charged_particles</span><span class="p">()</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Then you can perform the jet analysis:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">dat</span>
 <span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create an instance of the JetAnalysis class</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">(</span><span class="n">hadron_data</span><span class="o">=</span><span class="n">hadron_data</span><span class="p">,</span><span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">jet_eta_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span><span class="mf">2.</span><span class="p">),</span><span class="n">jet_pt_range</span><span class="o">=</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">()</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform the jet analysis</span>
-<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">perform_jet_analysis</span><span class="p">(</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
+<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">perform_jet_finding</span><span class="p">(</span><span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">),</span> <span class="n">jet_pt_range</span><span class="o">=</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">output_filename</span><span class="o">=</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to analyze the jets further, you have to read in the jet data
+from the file like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create an instance of the JetAnalysis class</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">()</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Read the jets from file</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">read_jet_data</span><span class="p">(</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># list of the jets (all lines with index 0 in first column)</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jets</span> <span class="o">=</span> <span class="n">jet_analysis</span><span class="o">.</span><span class="n">get_jets</span><span class="p">()</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># list of the associated particles for all jets (associated hadrons for each jet have a sub-list)</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">assoc_hadrons</span> <span class="o">=</span> <span class="n">jet_analysis</span><span class="o">.</span><span class="n">get_associated_particles</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -153,10 +187,10 @@ one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
 </dd>
 <dt><strong>jet_eta_range_: tuple</strong></dt><dd><p>Mimimum and maximum pseudorapidity for jet selection.</p>
 </dd>
-<dt><strong>jet_pt_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse 
+<dt><strong>jet_pt_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse
 momentum to write out the jet.</p>
 </dd>
-<dt><strong>jet_algorithm_: fastjet.JetAlgorithm</strong></dt><dd><p>Jet algorithm for jet finding.</p>
+<dt><strong>jet_data_: list</strong></dt><dd><p>List containing the jet data after <code class="code docutils literal notranslate"><span class="pre">read_jet_data</span></code> is used.</p>
 </dd>
 </dl>
 </dd>
@@ -173,23 +207,93 @@ momentum to write out the jet.</p>
 <tr class="row-odd"><td><p><strong>write_jet_output(output_filename, jet, associated_hadrons, new_file=False):</strong></p></td>
 <td><p>Write the jet and associated hadron information to a CSV file.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>perform_jet_analysis(output_filename):</strong></p></td>
+<tr class="row-even"><td><p><strong>perform_jet_finding(output_filename):</strong></p></td>
 <td><p>Perform the jet analysis for multiple events.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_jet_data:</strong></p></td>
+<td><p>Read the jet data from a CSV file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_jets:</strong></p></td>
+<td><p>Get a list of jets from the jet data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_associated_particles:</strong></p></td>
+<td><p>Get a list of associated particles for all jets.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.perform_jet_analysis">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_analysis" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.perform_jet_finding">
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the jet analysis for multiple events. The function generates a
 file containing the jets consisting of a leading particle and associated
 hadrons in the jet cone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
+<dt><strong>hadron_data: list</strong></dt><dd><p>List of hadron data for each event.
+Use the for example the Jetscape class and generate a <code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code>.</p>
+</dd>
+<dt><strong>jet_R: float</strong></dt><dd><p>Jet radius parameter.</p>
+</dd>
+<dt><strong>jet_eta_range: tuple</strong></dt><dd><p>Minimum and maximum pseudorapidity for jet selection.
+<code class="code docutils literal notranslate"><span class="pre">None</span></code> values are allowed and are exchanged
+by <span class="math notranslate nohighlight">\(-\infty\)</span> or <span class="math notranslate nohighlight">\(+\infty\)</span> automatically.</p>
+</dd>
+<dt><strong>jet_pt_range: tuple</strong></dt><dd><p>Minimum transverse momentum for jet finding algorithm and maximum
+transverse momentum to write out the jet to a file.
+Values can be <code class="code docutils literal notranslate"><span class="pre">None</span></code>, then the lower bound is set to zero
+and the upper one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
+</dd>
 <dt><strong>output_filename: str</strong></dt><dd><p>Filename for the jet output.</p>
+</dd>
+<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. Default is <code class="code docutils literal notranslate"><span class="pre">fastjet.antikt_algorithm</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.read_jet_data">
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">read_jet_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.read_jet_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.read_jet_data" title="Permalink to this definition"></a></dt>
+<dd><p>Read the jet data from a CSV file and store it in the
+<code class="code docutils literal notranslate"><span class="pre">JetAnalysis</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_filename: str</strong></dt><dd><p>Filename of the CSV file containing the jet data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.get_jets">
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_jets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_jets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_jets" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of jets from the jet data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>List of jets. Contains all data of the jet output file rows in each
+element of the list (<code class="code docutils literal notranslate"><span class="pre">[jet][column]</span></code>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.get_associated_particles">
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_associated_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_associated_particles" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of associated particles for all jets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list</dt><dd><p>List of associated particles for each jet in each element
+(<code class="code docutils literal notranslate"><span class="pre">[jet][associated_particle][column]</span></code>).</p>
 </dd>
 </dl>
 </dd>
