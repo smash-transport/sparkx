@@ -63,8 +63,8 @@ class GenerateFlow:
     integrated flow.
 
     The implemented method for the more realistic transverse momentum profile is
-    taken from a generator from Nicolas Borghini implemented in the following
-    [code](https://www.physik.uni-bielefeld.de/~borghini/Software/flow_analysis_codes/generator.cc).
+    taken from Nicolas Borghini implemented in this
+    `event generator <https://www.physik.uni-bielefeld.de/~borghini/Software/flow_analysis_codes/generator.cc>`__.
     """
 
     def __init__(self, *vn, **vn_kwargs):
