@@ -863,7 +863,12 @@ class Particle:
         float
             momentum rapidity
         """
-        return 0.5 * np.log((self.E + self.pz) / (self.E - self.pz))
+        if abs(self.E - self.pz) < 1e-10:
+            denominator = (self.E - self.pz) + 1e-10  # Adding a small positive value
+        else:
+            denominator = (self.E - self.pz)
+    
+        return 0.5 * np.log((self.E + self.pz) / denominator)
 
     def p_abs(self):
         """
@@ -924,7 +929,12 @@ class Particle:
         float
             pseudorapidity
         """
-        return 0.5 * np.log((self.p_abs()+self.pz) / (self.p_abs()-self.pz))
+        if abs(self.p_abs() - self.pz) < 1e-10:
+            denominator = (self.p_abs() - self.pz) + 1e-10  # Adding a small positive value
+        else:
+            denominator = (self.p_abs() - self.pz)
+
+        return 0.5 * np.log((self.p_abs()+self.pz) / denominator)
 
     def spatial_rapidity(self):
         """
