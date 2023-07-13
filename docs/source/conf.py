@@ -12,6 +12,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src/sparkx'))
+sys.path.insert(0, os.path.abspath('../../src/sparkx/flow'))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -28,7 +29,6 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
-    #'sphinx.ext.napoleon',
     'numpydoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.autosummary',
