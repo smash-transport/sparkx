@@ -2,40 +2,40 @@ from sparkx.flow import FlowInterface
 import numpy as np
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
-    
+
     """
-    This class implements a reaction plane flow analysis algorithm 
-    
-    For this method, the flow is calculated under the assumption that the event plane angle is constant 
+    This class implements a reaction plane flow analysis algorithm
+
+    For this method, the flow is calculated under the assumption that the event plane angle is constant
     throughout all events. The flow is calculated as
 
     .. math::
 
-        v_n = \\langle p_T^n \\exp{\\frac{in\\phi_i}{p_T^n}}\\rangle
-    
+        v_n = \\left\\langle p_{\\mathrm{T}}^n \\exp{\\frac{in\\phi_i}{p_{\\mathrm{T}}^n}}\\right\\rangle
+
     where we average over all particles of all events. We return complex numbers, which contain the information
     about the position of the event plane.
-    
-    
+
+
     Parameters
     ----------
     n : int, optional
         The value of the harmonic. Default is 2.
-   
-    Example
+
+    Examples
     --------
-    
+
     A demonstration how to calculate flow with the reaction plane method.
 
     .. highlight:: python
     .. code-block:: python
         :linenos:
 
-        >>> from Jetscape import Jetscape
-        >>> from flow.ReactionPlaneFlow import ReactionPlaneFlow
+        >>> from sparkx.Jetscape import Jetscape
+        >>> from sparkx.flow.ReactionPlaneFlow import ReactionPlaneFlow
         >>>
         >>> JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat
-       
+
         >>> # Jetscape object containing the particles on which we want to calculate flow
         >>> jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)
         >>>

@@ -47,8 +47,8 @@ class JetAnalysis:
     .. code-block:: python
         :linenos:
 
-        >>> from Jetscape import Jetscape
-        >>> from JetAnalysis import JetAnalysis
+        >>> from sparkx.Jetscape import Jetscape
+        >>> from sparkx.JetAnalysis import JetAnalysis
         >>>
         >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
         >>>

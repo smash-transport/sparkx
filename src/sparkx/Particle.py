@@ -163,7 +163,7 @@ class Particle:
     .. code-block:: python
         :linenos:
 
-        >>> from Particle import Particle
+        >>> from sparkx.Particle import Particle
         >>>
         >>> particle = Particle()
         >>> particle.t = 1.0
@@ -867,7 +867,7 @@ class Particle:
             denominator = (self.E - self.pz) + 1e-10  # Adding a small positive value
         else:
             denominator = (self.E - self.pz)
-    
+
         return 0.5 * np.log((self.E + self.pz) / denominator)
 
     def p_abs(self):
