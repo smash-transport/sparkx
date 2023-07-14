@@ -8,29 +8,29 @@ import os
 class Jetscape:
     """
     Defines a Jetscape object.
-    
-    The Jetscape class contains a single Jetscape hadron output file including 
-    all or only chosen events. It's methods allow to directly act on all 
-    contained events as applying acceptance filters (e.g. un/charged particles) 
-    to keep/romove particles by their PDG codes or to apply cuts 
+
+    The Jetscape class contains a single Jetscape hadron output file including
+    all or only chosen events. It's methods allow to directly act on all
+    contained events as applying acceptance filters (e.g. un/charged particles)
+    to keep/romove particles by their PDG codes or to apply cuts
     (e.g. multiplicity, pseudo/rapidity, pT).
-    Once these filters are applied, the new data set can be saved 1) as a nested 
+    Once these filters are applied, the new data set can be saved 1) as a nested
     list containing all quantities of the Jetscape format 2) as a list containing
-    Particle objects from the ParticleClass or it can be printed to a file 
+    Particle objects from the ParticleClass or it can be printed to a file
     complying with the input format.
-    
+
     Parameters
     ----------
     JETSCAPE_FILE : str
         Path to Jetscape file
-        
+
     Other Parameters
     ----------------
     **kwargs : properties, optional
-        kwargs are used to specify optional properties like a chunk reading 
-        and must be used like :code:`'property'='value'` where the possible 
+        kwargs are used to specify optional properties like a chunk reading
+        and must be used like :code:`'property'='value'` where the possible
         properties are specified below.
-        
+
         .. list-table::
             :header-rows: 1
             :widths: 25 75
@@ -45,26 +45,26 @@ class Jetscape:
                 given by the tuple :code:`(first_event, last_event)` |br|
                 by specifying :code:`events=(first_event, last_event)` |br|
                 where last_event is included.
-                
+
         .. |br| raw:: html
-        
+
            <br />
-        
+
     Attributes
     ----------
     PATH_JETSCAPE_ : str
         Path to the Jetscape file
     num_output_per_event_ : numpy.array
-        Array containing the event number and the number of particles in this 
+        Array containing the event number and the number of particles in this
         event as num_output_per_event_[event i][num_output in event i] (updated
         when filters are applied)
     num_events_ : int
-        Number of events contained in the Jetscape object (updated when filters 
+        Number of events contained in the Jetscape object (updated when filters
         are applied)
     list_of_all_valid_pdg_ids_ : list
-        List of all PDG codes contained in the external particle package as 
+        List of all PDG codes contained in the external particle package as
         int values
-        
+
     Methods
     -------
     particle_list:
@@ -72,9 +72,11 @@ class Jetscape:
     particle_objects_list:
         Returns current Jetscape data as nested list of ParticleClass objects
     num_events:
-        Get number of events 
+        Get number of events
     num_output_per_event:
         Get number of particles in each event
+    get_sigmaGen:
+        Retrieves the sigmaGen values with error
     particle_species:
         Keep only particles with given PDG ids
     remove_particle_species:
@@ -99,13 +101,13 @@ class Jetscape:
         Filters out events with total energy lower than a threshold.
     print_particle_lists_to_file:
         Print current particle data to file with same format
-        
+
     Examples
     --------
-    
+
     **1. Initialization**
 
-    To create a Jetscape object, the path to the Jetscape file has to be passed. 
+    To create a Jetscape object, the path to the Jetscape file has to be passed.
     By default the Jetscape object will contain all events of the input file. If
     the Jetscape object should only contain certain events, the keyword argument
     "events" must be used.
@@ -126,16 +128,16 @@ class Jetscape:
         >>>
         >>> # Jetscape object containing only events 2, 3, 4 and 5
         >>> jetscape3 = Jetscape(JETSCAPE_FILE_PATH, events=(2,5))
-    
+
     **2. Method Usage**
-    
-    All methods that apply filters to the Jetscape data return :code:`self`. This 
+
+    All methods that apply filters to the Jetscape data return :code:`self`. This
     means that methods can be concatenated. To access the Jetscape data as list to
-    store it into a variable, the method :code:`particle_list()` or 
+    store it into a variable, the method :code:`particle_list()` or
     :code:`particle_objects_list` must be called in the end.
-    Let's assume we only want to keep participant pions in events with a 
+    Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
-        
+
         >>> jetscape = Jetscape("path_to_file")
         >>>
         >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
@@ -148,7 +150,7 @@ class Jetscape:
         >>>
         >>> # print the pions to an Jetscape file
         >>> pions.print_particle_lists_to_file('./particle_lists.dat')
-     
+
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
         if '.dat' in JETSCAPE_FILE:
@@ -156,23 +158,23 @@ class Jetscape:
         else:
             raise TypeError('Input file is not in the JETSCAPE format. Input '
                             'file must have the ending .dat')
-            
+
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
         self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
-        
-        self.set_num_output_per_event()        
+
+        self.set_num_output_per_event()
         self.set_particle_list(kwargs)
         self.set_list_of_all_valid_pdg_ids()
-    
+
     # PRIVATE CLASS METHODS
-    
+
     def __get_num_skip_lines(self):
         """
-        Get number of initial lines in Jetscape file that are header or comment 
+        Get number of initial lines in Jetscape file that are header or comment
         lines and need to be skipped in order to read the particle output.
 
         Returns
@@ -203,38 +205,38 @@ class Jetscape:
         else:
             raise TypeError('Value given as flag "events" is not of type ' +\
                             'int or a tuple of two int values')
-    
+
         return skip_lines
-    
-    
+
+
     def __skip_lines(self, fname):
         """
-        Once a file is opened with :code:`open()`, this method skips the 
+        Once a file is opened with :code:`open()`, this method skips the
         initial header and comment lines such that the first line called with
         :code:`fname.readline()` is the first particle in the first event.
 
         Parameters
         ----------
         fname : variable name
-            Name of the variable for the file opend with the :code:`open()` 
+            Name of the variable for the file opend with the :code:`open()`
             command.
 
         """
         num_skip = self.__get_num_skip_lines()
         for i in range(0, num_skip):
             fname.readline()
-            
-            
+
+
     def __get_num_read_lines(self):
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
             cumulated_lines += int(len(self.num_output_per_event_))
-            
+
         elif isinstance(self.optional_arguments_['events'], int):
             read_event = self.optional_arguments_['events']
             cumulated_lines = int(self.num_output_per_event_[read_event,1] + 1)
-            
+
         elif isinstance(self.optional_arguments_['events'], tuple):
             cumulated_lines = 0
             event_start = self.optional_arguments_['events'][0]
@@ -243,11 +245,11 @@ class Jetscape:
                 cumulated_lines += int(self.num_output_per_event_[i, 1] + 1)
         else:
             raise TypeError('Value given as flag events is not of type int or a tuple')
-        
+
         # +1 for the end line in Jetscape format
         return cumulated_lines + 1
-    
-    
+
+
     def __particle_as_list(self, particle):
         particle_list = [0.0]*7
         particle_list[0] = int(particle.ID)
@@ -257,16 +259,16 @@ class Jetscape:
         particle_list[4]  = float(particle.px)
         particle_list[5]  = float(particle.py)
         particle_list[6]  = float(particle.pz)
-            
+
         return particle_list
-    
+
     def __check_if_pdg_is_valid(self, pdg_list):
         if isinstance(pdg_list, int):
             if not pdg_list in self.list_of_all_valid_pdg_ids_:
                 raise ValueError('Invalid PDG ID given according to the following ' +\
                                  'data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
                                  '\n Enter a valid PDG ID or update database.')
-                    
+
         elif isinstance(pdg_list, np.ndarray):
             if not all(pdg in self.list_of_all_valid_pdg_ids_ for pdg in pdg_list):
                 non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids_)
@@ -275,8 +277,8 @@ class Jetscape:
                                  'the data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
                                  '\n Enter valid PDG IDs or update database.')
         return True
-    
-        
+
+
     # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs):
@@ -285,7 +287,7 @@ class Jetscape:
         num_read_lines = self.__get_num_read_lines()
         fname = open(self.PATH_JETSCAPE_, 'r')
         self.__skip_lines(fname)
-        
+
         for i in range(0, num_read_lines):
             line = fname.readline()
             if not line:
@@ -308,15 +310,15 @@ class Jetscape:
             else:
                 data_line = line.replace('\n','').replace('\t',' ').split(' ')
                 particle = Particle()
-                
+
                 particle.set_quantities_JETSCAPE(data_line)
-                
+
                 # Check for filters by method with a dictionary
                 # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
-                
+
                 data.append(particle)
         fname.close()
-        
+
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             None
@@ -330,18 +332,18 @@ class Jetscape:
             update = self.num_output_per_event_[event_start : event_end+1]
             self.num_output_per_event_ = update
             self.num_events_ = int(event_end - event_start+1)
-        
+
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
         elif isinstance(kwargs['events'], int):
             self.particle_list_ = particle_list[0]
         else:
-            self.particle_list_ = particle_list    
-                
+            self.particle_list_ = particle_list
+
     def set_num_output_per_event(self):
         file = open(self.PATH_JETSCAPE_ , 'r')
         event_output = []
-        
+
         while True:
             line = file.readline()
             if not line:
@@ -352,16 +354,16 @@ class Jetscape:
                 num_output = line_str[8]
                 event_output.append([event, num_output])
             else:
-                continue  
+                continue
         file.close()
-        
+
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
-        
+
     def set_list_of_all_valid_pdg_ids(self):
         path = particle.data.basepath / "particle2022.csv"
         valid_pdg_ids = []
-        
+
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             counter_row = 0
@@ -372,62 +374,62 @@ class Jetscape:
                     valid_pdg_ids.append(int(row[0]))
                 counter_row += 1
         self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
-                
+
     def particle_list(self):
         num_particles = self.num_output_per_event_[:,1]
         num_events = self.num_events_
-        
+
         particle_array = []
-        
+
         for i_ev in range(0, num_events):
             event = []
-                
+
             for i_part in range(0, num_particles[i_ev]):
                 particle = self.particle_list_[i_ev][i_part]
                 event.append(self.__particle_as_list(particle))
-            
+
             particle_array.append(event)
-                
+
         return particle_array
-    
+
     def particle_objects_list(self):
         """
-        Returns a nested python list containing all quantities from the 
+        Returns a nested python list containing all quantities from the
         current Jetscape data as numerical values with the following shape:
-            
+
             | Single Event:    [output_line][particle_quantity]
             | Multiple Events: [event][output_line][particle_quantity]
 
         Returns
         -------
         list
-            Nested list containing the current Oscar data 
+            Nested list containing the current Oscar data
         """
         return self.particle_list_
-    
+
     def num_output_per_event(self):
         """
-        Returns a numpy array containing the event number (starting with 1) 
+        Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
-        
+
         num_output_per_event[event_n, numer_of_particles_in_event_n]
-        
-        num_output_per_event is updated with every manipulation e.g. after 
+
+        num_output_per_event is updated with every manipulation e.g. after
         applying cuts.
 
         Returns
         -------
         num_output_per_event_ : numpy.ndarray
-            Array containing the event number and the corresponding number of 
+            Array containing the event number and the corresponding number of
             particles
         """
         return self.num_output_per_event_
-    
+
     def num_events(self):
         """
         Returns the number of events in particle_list
-        
-        num_events is updated with every manipulation e.g. after 
+
+        num_events is updated with every manipulation e.g. after
         applying cuts.
 
         Returns
@@ -436,7 +438,7 @@ class Jetscape:
             Number of events in particle_list
         """
         return self.num_events_
-    
+
     def charged_particles(self):
         """
         Keep only charged particles in particle_list
@@ -447,11 +449,11 @@ class Jetscape:
             Containing charged particles in every event only
         """
         for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                         if elem.charge != 0]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
-                
+
         return self
 
     def uncharged_particles(self):
@@ -464,13 +466,13 @@ class Jetscape:
             Containing uncharged particles in every event only
         """
         for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                         if elem.charge == 0]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
-                
+
         return self
-                          
+
     def strange_particles(self):
         """
         Keep only strange particles in particle_list
@@ -481,13 +483,13 @@ class Jetscape:
             Containing strange particles in every event only
         """
         for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                         if elem.is_strange()]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
-                
-        return self      
-                
+
+        return self
+
     def particle_species(self, pdg_list):
         """
         Keep only particle species given by their PDG ID in every event
@@ -496,7 +498,7 @@ class Jetscape:
         ----------
         pdg_list : int
             To keep a single particle species only, pass a single PDG ID
-            
+
         pdg_list : tuple/list/array
             To keep multiple particle species, pass a tuple or list or array
             of PDG IDs
@@ -511,45 +513,45 @@ class Jetscape:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple')
-                
+
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
-            
+
             self.__check_if_pdg_is_valid(pdg_list)
-            
+
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) == pdg_list]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
-                    
+
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-            
+
             self.__check_if_pdg_is_valid(pdg_list)
-            
+
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) in pdg_list]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length     
-                    
+                self.num_output_per_event_[i, 1] = new_length
+
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple') 
+                            'of str, list of int, np.ndarray, tuple')
         return self
-    
+
     def remove_particle_species(self, pdg_list):
         """
-        Remove particle species from particle_list by their PDG ID in every 
+        Remove particle species from particle_list by their PDG ID in every
         event
 
         Parameters
         ----------
         pdg_list : int
             To remove a single particle species only, pass a single PDG ID
-            
+
         pdg_list : tuple/list/array
             To remove multiple particle species, pass a tuple or list or array
             of PDG IDs
@@ -564,35 +566,35 @@ class Jetscape:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple')
-                
+
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
-            
+
             self.__check_if_pdg_is_valid(pdg_list)
-            
+
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) != pdg_list]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
-                    
+
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-            
+
             self.__check_if_pdg_is_valid(pdg_list)
-          
+
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if not int(elem.pdg) in pdg_list]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length     
-                    
+                self.num_output_per_event_[i, 1] = new_length
+
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple') 
+                            'of str, list of int, np.ndarray, tuple')
         return self
-    
+
     def particle_status(self, status_list):
         """
         Keep only particles with a given particle status
@@ -601,15 +603,15 @@ class Jetscape:
         ----------
         status_list : int
             To keep a particles with a single status only, pass a single status
-            
+
         status_list : tuple/list/array
-            To keep hadrons with different hadron status, pass a tuple or list 
+            To keep hadrons with different hadron status, pass a tuple or list
             or array
 
         Returns
         -------
         self : Jetscape object
-            Containing only hadrons with status specified by status_list for 
+            Containing only hadrons with status specified by status_list for
             every event
 
         """
@@ -617,31 +619,31 @@ class Jetscape:
             raise TypeError('Input value for status codes has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
                             'of str, list of int, np.ndarray, tuple')
-                
+
         elif isinstance(status_list, (int, str, np.integer)):
             status_list = int(status_list)
 
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.status) == status_list]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
-                    
+
         elif isinstance(status_list, (list, np.ndarray, tuple)):
             status_list = np.asarray(status_list, dtype=np.int64)
-            
+
             for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.status) in status_list]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length  
-                    
+                self.num_output_per_event_[i, 1] = new_length
+
         else:
             raise TypeError('Input value for status flag has not one of the ' +\
                             'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple') 
+                            'of str, list of int, np.ndarray, tuple')
         return self
-    
+
     def lower_event_energy_cut(self,minimum_event_energy):
         """
         Filters out events with total energy lower than a threshold.
@@ -686,38 +688,38 @@ class Jetscape:
             warnings.warn('There are no events left after low energy cut')
             self.particle_list_ = [[]]
             self.num_output_per_event_ = np.asarray([[None, None]])
-        
+
         return self
-                  
+
     def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events by passing an acceptance range by 
-        ::code`cut_value_tuple`. All particles outside this range will 
+        Apply p_t cut to all events by passing an acceptance range by
+        ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
         ----------
         cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the pT acceptance 
-            range :code:`(cut_min, cut_max)`. If one of the limits is not 
-            required, set it to :code:`None`, i.e. :code:`(None, cut_max)` 
-            or :code:`(cut_min, None)`. 
+            Tuple with the upper and lower limits of the pT acceptance
+            range :code:`(cut_min, cut_max)`. If one of the limits is not
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+            or :code:`(cut_min, None)`.
 
         Returns
         -------
         self : Jetscape object
             Containing only particles complying with the p_t cut for all events
         """
-        
+
         if not isinstance(cut_value_tuple, tuple):
             raise TypeError('Input value must be a tuple containing either '+\
-                            'positive numbers or None')     
+                            'positive numbers or None')
         elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
              (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
                  raise ValueError('The cut limits must be positiv or None')
         elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
             raise ValueError('At least one cut limit must be a number')
-        
+
         if cut_value_tuple[0] is None:
             lower_cut = 0.0
         else:
@@ -726,29 +728,29 @@ class Jetscape:
             upper_cut = float('inf')
         else:
             upper_cut = cut_value_tuple[1]
-      
+
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                         lower_cut <= elem.pt_abs() <= upper_cut]
             new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length   
-    
+            self.num_output_per_event_[i, 1] = new_length
+
         return self
-        
-        
+
+
     def rapidity_cut(self, cut_value):
         """
-        Apply rapidity cut to all events and remove all particles with rapidity 
+        Apply rapidity cut to all events and remove all particles with rapidity
         not complying with cut_value
 
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically 
+            If a single value is passed, the cut is applyed symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with rapidity in 
+            For example, if cut_value = 1, only particles with rapidity in
             [-1.0, 1.0] are kept.
-            
+
         cut_value : tuple
             To specify an asymmetric acceptance range for the rapidity
             of particles, pass a tuple (cut_min, cut_max)
@@ -756,7 +758,7 @@ class Jetscape:
         Returns
         -------
         self : Jetscape object
-            Containing only particles complying with the rapidity cut 
+            Containing only particles complying with the rapidity cut
             for all events
         """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
@@ -768,48 +770,48 @@ class Jetscape:
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
-                
+
         elif isinstance(cut_value, tuple) and len(cut_value) != 2:
             raise TypeError('The tuple of cut limits must contain 2 values')
-                
+
         elif isinstance(cut_value, (int, float)):
             # cut symmetrically around 0
             limit = np.abs(cut_value)
-            
+
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             -limit<=elem.momentum_rapidity_Y()<=limit]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length 
-                    
+                self.num_output_per_event_[i, 1] = new_length
+
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
-            
+
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             lim_min<=elem.momentum_rapidity_Y()<=lim_max]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length 
-            
+                self.num_output_per_event_[i, 1] = new_length
+
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')        
+                            'with the cut limits (cut_min, cut_max)')
         return self
-    
+
     def pseudorapidity_cut(self, cut_value):
         """
-        Apply pseudo-rapidity cut to all events and remove all particles with 
+        Apply pseudo-rapidity cut to all events and remove all particles with
         pseudo-rapidity not complying with cut_value
 
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically 
+            If a single value is passed, the cut is applyed symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with pseudo-rapidity 
+            For example, if cut_value = 1, only particles with pseudo-rapidity
             in [-1.0, 1.0] are kept.
-            
+
         cut_value : tuple
             To specify an asymmetric acceptance range for the pseudo-rapidity
             of particles, pass a tuple (cut_min, cut_max)
@@ -817,7 +819,7 @@ class Jetscape:
         Returns
         -------
         self : Jetscape object
-            Containing only particles complying with the pseudo-rapidity cut 
+            Containing only particles complying with the pseudo-rapidity cut
             for all events
         """
         if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
@@ -829,44 +831,44 @@ class Jetscape:
         if not isinstance(cut_value, (int, float, tuple)):
             raise TypeError('Input value must be a number or a tuple ' +\
                             'with the cut limits (cut_min, cut_max)')
-                
+
         elif isinstance(cut_value, tuple) and len(cut_value) != 2:
             raise TypeError('The tuple of cut limits must contain 2 values')
-                
+
         elif isinstance(cut_value, (int, float)):
             # cut symmetrically around 0
             limit = np.abs(cut_value)
-            
+
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             -limit<=elem.pseudorapidity()<=limit]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length 
-                    
+                self.num_output_per_event_[i, 1] = new_length
+
         elif isinstance(cut_value, tuple):
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
-            
+
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             lim_min<=elem.pseudorapidity()<=lim_max]
                 new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length 
-            
+                self.num_output_per_event_[i, 1] = new_length
+
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')        
+                            'with the cut limits (cut_min, cut_max)')
         return self
-    
+
     def multiplicity_cut(self,min_multiplicity):
         """
-        Apply multiplicity cut. Remove all events with a multiplicity lower 
+        Apply multiplicity cut. Remove all events with a multiplicity lower
         than min_multiplicity
 
         Parameters
         ----------
         min_multiplicity : float
-            Lower bound for multiplicity. If the multiplicity of an event is 
+            Lower bound for multiplicity. If the multiplicity of an event is
             lower than min_multiplicity, this event is discarded.
 
         Returns
@@ -878,7 +880,7 @@ class Jetscape:
             raise TypeError('Input value for multiplicity cut must be an int')
         if min_multiplicity < 0:
             raise ValueError('Minimum multiplicity must >= 0')
-        
+
         idx_keep_event = []
         for idx, multiplicity in enumerate(self.num_output_per_event_[:, 1]):
             if multiplicity >= min_multiplicity:
@@ -890,42 +892,79 @@ class Jetscape:
         self.num_events_ -= number_deleted_events
 
         return self
-    
+
+    def __get_last_line(self,file_path):
+        """
+        Returns the last line of a file.
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the file.
+
+        Returns
+        -------
+        str
+            The last line of the file, stripped of leading and trailing whitespace.
+        """
+        with open(file_path, 'rb') as file:
+            file.seek(-2, 2)
+            while file.read(1) != b'\n':
+                file.seek(-2, 1)
+            last_line = file.readline().decode().strip()
+            return last_line
+
+    def get_sigmaGen(self):
+        """
+        Retrieves the sigmaGen values with error from the last line of a file.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the first and second sigmaGen values as floats.
+        """
+        last_line = self.__get_last_line(self.PATH_JETSCAPE_)
+        words = last_line.split()
+        numbers = []
+
+        for word in words:
+            try:
+                number = float(word)
+                numbers.append(number)
+                if len(numbers) == 2:
+                    break
+            except ValueError:
+                continue
+
+        return (numbers[0],numbers[1])
+
     def print_particle_lists_to_file(self, output_file):
         """
         Prints the current Jetscape data to an output file specified by :code:`output_file`
-        with the same format as the input file        
-        
+        with the same format as the input file
+
         Parameters
         ----------
         output_file : str
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        def get_last_line(file_path):
-            with open(file_path, 'rb') as file:
-                file.seek(-2, 2)
-                while file.read(1) != b'\n':
-                    file.seek(-2, 1)
-                last_line = file.readline().decode().strip()
-                return last_line
-        
         format_jetscape = '%d %d %d %g %g %g %g'
         line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
         header = line_in_initial_file.readline()
-        last_line = get_last_line(self.PATH_JETSCAPE_)
+        last_line = self.get_last_line(self.PATH_JETSCAPE_)
         line_in_initial_file.close()
 
         output = open(output_file, "w")
         output.write(header)
         output.close()
-    
+
         with open(output_file, "a") as f_out:
             for i in range(self.num_events_):
                 event = self.num_output_per_event_[i,0]
                 num_out = self.num_output_per_event_[i,1]
                 particle_output = np.asarray(self.particle_list()[i])
-            
+
                 f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
                 np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
             f_out.write(last_line)

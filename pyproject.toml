@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "particle-analysis"
-version = "0.0.1"
+name = "sparkx"
+version = "1.0.0"
 authors = [
     { name="Hendrik Roch", email="roch@fias.uni-frankfurt.de" },
     { name="Nils Sass", email="nsass@fias.uni-frankfurt.de" },
     { name="Niklas Götz", email="goetz@fias.uni-frankfurt.de"}
 ]
-description = "Package to analyze particle data from event generators."
+description = "Software Package for Analyzing Relativistic Kinematics in Collision eXperiments"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -22,13 +22,19 @@ classifiers = [
     "Natural Language :: English"
 ]
 
-[project.urls]
-"Repository" = "https://github.com/Hendrik1704/particle-analysis"
-"Bug Tracker" = "https://github.com/Hendrik1704/particle-analysis/issues"
-"Documentation" = "https://hendrik1704.github.io/particle-analysis/index.html"
-
-
 dependencies = [
-    "particle>=0.22.0",
-    "fastjet>=3.4.1.0",
+    "particle==0.22.0",
+    "numpy==1.23.5",
+    "scipy==1.10.1",
+    "matplotlib==3.7.1",
+    "abc-property==1.0",
+    "fastjet==3.4.1.2"
 ]
+
+
+[project.urls]
+"Repository" = "https://github.com/Hendrik1704/sparkx"
+"Bug Tracker" = "https://github.com/Hendrik1704/sparkx/issues"
+"Documentation" = "https://hendrik1704.github.io/sparkx/index.html"
+
+
