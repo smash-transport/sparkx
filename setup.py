@@ -17,7 +17,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author='Hendrik Roch, Nils Sass, Niklas Götz',
-    author_email="roch@fias.uni-frankfurt.de, sass@fias.uni-frankfurt.de, goetz@fias.uni-frankfurt.de",
+    author_email="roch@fias.uni-frankfurt.de, nsass@fias.uni-frankfurt.de, goetz@fias.uni-frankfurt.de",
     url="https://hendrik1704.github.io/sparkx/",
     download_url="https://github.com/Hendrik1704/sparkx",
     license='MIT',
