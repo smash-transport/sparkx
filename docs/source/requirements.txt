@@ -1,0 +1,10 @@
+particle
+numpy
+scipy
+matplotlib
+sphinx
+fastjet
+numpydoc
+myst-parser
+sphinx-rtd-theme
+abc-property

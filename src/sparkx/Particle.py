@@ -697,10 +697,7 @@ class Particle:
         ValueError
             if weight is not set
         """
-        if self.weight_ == None:
-            raise ValueError("weight not set")
-        else:
-            return self.weight_
+        return self.weight_
 
     @weight.setter
     def weight(self,value):
