@@ -35,6 +35,6 @@ dependencies = [
 [project.urls]
 "Repository" = "https://github.com/smash-transport/sparkx"
 "Bug Tracker" = "https://github.com/smash-transport/sparkx/issues"
-"Documentation" = "https://hendrik1704.github.io/sparkx/index.html"
+"Documentation" = "https://smash-transport.github.io/sparkx/"
 
 
