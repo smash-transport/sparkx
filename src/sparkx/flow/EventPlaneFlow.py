@@ -7,32 +7,32 @@ import warnings
 class EventPlaneFlow(FlowInterface.FlowInterface):
 
     """
-    This class implements a event plane flow analysis algorithm 
-    `Poskanzer, Arthur M., and Sergei A. Voloshin. "Methods for analyzing anisotropic flow in relativistic nuclear collisions." Physical Review C 58.3 (1998): 1671. <https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws>`__. 
-    
-    For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane :math:`Q`, relative 
+    This class implements a event plane flow analysis algorithm
+    `Poskanzer, Arthur M., and Sergei A. Voloshin. "Methods for analyzing anisotropic flow in relativistic nuclear collisions." Physical Review C 58.3 (1998): 1671. <https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws>`__.
+
+    For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane :math:`Q`, relative
     to the event plane angle determined from the flow itself.
-    Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution 
+    Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution
     for each harmonic.
 
     In summary, this class calculates the following:
 
     .. math::
 
-        v_n = \\frac{v_{n,obs}}{R_n}
+        v_n = \\frac{v_{n}^{\\mathrm{obs}}}{R_n}
 
     with
 
     .. math::
 
-        v_{n,obs} = \\langle \\cos(n (\\phi_i -\\Psi_n)) \\rangle
+        v_{n}^{\\mathrm{obs}} = \\langle \\cos(n (\\phi_i -\\Psi_n)) \\rangle
 
-    
+
     where we average over all particles of all events. :math:`R_n` is the resolution, which we calculate in an interative method
     according to the mentioned reference. This is done by using two subevents, which we assume to be of same size and which
     are determined by splitting the event into subsets of positive and negative pseudorapidity.
-    
-    
+
+
     Parameters
     ----------
     n : int, optional
@@ -42,9 +42,9 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
 
-    Example
+    Examples
     --------
-    
+
     A demonstration how to calculate flow according to the event plane of a separate particle list.
     The same particle list can also be used to determine the event plane and the flow.
 
@@ -71,7 +71,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         >>> # Calculate the integrated flow with error
         >>> v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)
         >>> v3, v3_error = flow3.integrated_flow(jetscape_flow,jetscape_event)
-       
+
 
     """
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):

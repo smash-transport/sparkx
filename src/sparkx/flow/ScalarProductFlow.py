@@ -4,10 +4,10 @@ import numpy as np
 class ScalarProductFlow(FlowInterface.FlowInterface):
 
     """
-    This class implements a scalar product flow analysis algorithm 
+    This class implements a scalar product flow analysis algorithm
     `Adler, C., et al. "Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV." Physical Review C 66.3 (2002): 034904 <https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A>`__.
 
- 
+
     For this method, the flow is calcuated by correlating the event vector :math:`Q` with the conjugated unit momentum vector
     of the particle. This is normalized by square root of the scalar product of the event vectors of two equal-sized
     subevents. We choose here to divide the subevents by positive and negative pseudorapidity. Note that for asymmetric
@@ -17,11 +17,11 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     .. math::
 
-        v_n = \\frac{\\langle Q_nu_{n,i}^\\star \\rangle}{2\\sqrt{\\langle Q_n^aQ_n^{b \\star}\\rangle}}
+        v_n = \\frac{\\langle Q_n u_{n,i}^\\ast \\rangle}{2\\sqrt{\\langle Q_n^aQ_n^{b \\ast}\\rangle}}
 
 
     where we average over all particles of all events.
-    
+
     Parameters
     ----------
     n : int, optional
@@ -31,8 +31,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
 
-    Example
+    Examples
     --------
+
     A demonstration how to calculate flow according to the event plane of a separate particle list.
     The same particle list can also be used to determine the event plane and the flow.
 
@@ -59,7 +60,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         >>> # Calculate the integrated flow with error
         >>> v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)
         >>> v3, v3_error = flow3.integrated_flow(jetscape_flow,jetscape_event)
-       
+
 
     """
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):
@@ -135,7 +136,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         for event in range(len(particle_data)):
             Q_vector_A_val = 0. + 0.j
             relevant_weights_A_event = []
-            
+
             for particle in range(len(particle_data[event])):
                 if particle_data[event][particle].pseudorapidity() >= +self.pseudorapidity_gap_:
                     Q_vector_A_val += weights[event][particle] * np.exp(1.0j * float(self.n_) * particle_data[event][particle].phi())
