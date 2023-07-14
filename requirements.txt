@@ -1,0 +1,14 @@
+particle==0.22.0
+numpy==1.23.5
+scipy==1.10.1
+matplotlib==3.7.1
+sphinx==6.2.1
+fastjet==3.4.1.2
+numpydoc==1.5.0
+myst-parser==2.0.0
+sphinx-rtd-theme==1.2.2
+abc-property==1.0
+setuptools==68.0.0
+
+# Editable Sparkx install
+-e .
