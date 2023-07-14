@@ -33,7 +33,6 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     Example
     --------
-    
     A demonstration how to calculate flow according to the event plane of a separate particle list.
     The same particle list can also be used to determine the event plane and the flow.
 
@@ -54,8 +53,8 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         >>> jetscape_event = Jetscape(JETSCAPE_FILE_EVENT_PLANE)
         >>>
         >>> # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**3
-        >>> flow2 = ScalarProductFlow(n=2, weight="pt2")
-        >>> flow3 = ScalarProductFlow(n=2, weight="ptn")
+        >>> flow2 = ScalarProductFlow(n=2, weight="pt2",pseudorapidity_gap=0.1)
+        >>> flow3 = ScalarProductFlow(n=3, weight="pt2",pseudorapidity_gap=0.1)
         >>>
         >>> # Calculate the integrated flow with error
         >>> v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)
