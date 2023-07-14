@@ -53,6 +53,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.particle_objects_list"><code class="docutils literal notranslate"><span class="pre">Jetscape.particle_objects_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.num_events"><code class="docutils literal notranslate"><span class="pre">Jetscape.num_events()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.num_output_per_event"><code class="docutils literal notranslate"><span class="pre">Jetscape.num_output_per_event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.get_sigmaGen"><code class="docutils literal notranslate"><span class="pre">Jetscape.get_sigmaGen()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.particle_species"><code class="docutils literal notranslate"><span class="pre">Jetscape.particle_species()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.remove_particle_species"><code class="docutils literal notranslate"><span class="pre">Jetscape.remove_particle_species()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.lower_event_energy_cut"><code class="docutils literal notranslate"><span class="pre">Jetscape.lower_event_energy_cut()</span></code></a></li>
@@ -111,14 +112,14 @@
 <dt class="sig sig-object py" id="Jetscape.Jetscape">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">Jetscape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">JETSCAPE_FILE</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape" title="Permalink to this definition"></a></dt>
 <dd><p>Defines a Jetscape object.</p>
-<p>The Jetscape class contains a single Jetscape hadron output file including 
-all or only chosen events. It’s methods allow to directly act on all 
-contained events as applying acceptance filters (e.g. un/charged particles) 
-to keep/romove particles by their PDG codes or to apply cuts 
+<p>The Jetscape class contains a single Jetscape hadron output file including
+all or only chosen events. It’s methods allow to directly act on all
+contained events as applying acceptance filters (e.g. un/charged particles)
+to keep/romove particles by their PDG codes or to apply cuts
 (e.g. multiplicity, pseudo/rapidity, pT).
-Once these filters are applied, the new data set can be saved 1) as a nested 
+Once these filters are applied, the new data set can be saved 1) as a nested
 list containing all quantities of the Jetscape format 2) as a list containing
-Particle objects from the ParticleClass or it can be printed to a file 
+Particle objects from the ParticleClass or it can be printed to a file
 complying with the input format.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -129,8 +130,8 @@ complying with the input format.</p>
 </dd>
 <dt class="field-even">Other Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>**kwargs</strong><span class="classifier">properties, optional</span></dt><dd><p>kwargs are used to specify optional properties like a chunk reading 
-and must be used like <code class="code docutils literal notranslate"><span class="pre">'property'='value'</span></code> where the possible 
+<dt><strong>**kwargs</strong><span class="classifier">properties, optional</span></dt><dd><p>kwargs are used to specify optional properties like a chunk reading
+and must be used like <code class="code docutils literal notranslate"><span class="pre">'property'='value'</span></code> where the possible
 properties are specified below.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -161,7 +162,7 @@ where last_event is included.</p></td>
 </dl>
 <p class="rubric">Examples</p>
 <p><strong>1. Initialization</strong></p>
-<p>To create a Jetscape object, the path to the Jetscape file has to be passed. 
+<p>To create a Jetscape object, the path to the Jetscape file has to be passed.
 By default the Jetscape object will contain all events of the input file. If
 the Jetscape object should only contain certain events, the keyword argument
 “events” must be used.</p>
@@ -180,11 +181,11 @@ the Jetscape object should only contain certain events, the keyword argument
 </pre></div>
 </div>
 <p><strong>2. Method Usage</strong></p>
-<p>All methods that apply filters to the Jetscape data return <code class="code docutils literal notranslate"><span class="pre">self</span></code>. This 
+<p>All methods that apply filters to the Jetscape data return <code class="code docutils literal notranslate"><span class="pre">self</span></code>. This
 means that methods can be concatenated. To access the Jetscape data as list to
-store it into a variable, the method <code class="code docutils literal notranslate"><span class="pre">particle_list()</span></code> or 
+store it into a variable, the method <code class="code docutils literal notranslate"><span class="pre">particle_list()</span></code> or
 <code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code> must be called in the end.
-Let’s assume we only want to keep participant pions in events with a 
+Let’s assume we only want to keep participant pions in events with a
 multiplicity &gt; 500:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="s2">&quot;path_to_file&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
@@ -205,14 +206,14 @@ multiplicity &gt; 500:</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>PATH_JETSCAPE_</strong><span class="classifier">str</span></dt><dd><p>Path to the Jetscape file</p>
 </dd>
-<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.array</span></dt><dd><p>Array containing the event number and the number of particles in this 
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.array</span></dt><dd><p>Array containing the event number and the number of particles in this
 event as num_output_per_event_[event i][num_output in event i] (updated
 when filters are applied)</p>
 </dd>
-<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>Number of events contained in the Jetscape object (updated when filters 
+<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>Number of events contained in the Jetscape object (updated when filters
 are applied)</p>
 </dd>
-<dt><strong>list_of_all_valid_pdg_ids_</strong><span class="classifier">list</span></dt><dd><p>List of all PDG codes contained in the external particle package as 
+<dt><strong>list_of_all_valid_pdg_ids_</strong><span class="classifier">list</span></dt><dd><p>List of all PDG codes contained in the external particle package as
 int values</p>
 </dd>
 </dl>
@@ -233,40 +234,43 @@ int values</p>
 <tr class="row-even"><td><p><strong>num_output_per_event:</strong></p></td>
 <td><p>Get number of particles in each event</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>particle_species:</strong></p></td>
+<tr class="row-odd"><td><p><strong>get_sigmaGen:</strong></p></td>
+<td><p>Retrieves the sigmaGen values with error</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>particle_species:</strong></p></td>
 <td><p>Keep only particles with given PDG ids</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>remove_particle_species:</strong></p></td>
+<tr class="row-odd"><td><p><strong>remove_particle_species:</strong></p></td>
 <td><p>Remove particles with given PDG ids</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>charged_particles:</strong></p></td>
+<tr class="row-even"><td><p><strong>charged_particles:</strong></p></td>
 <td><p>Keep charged particles only</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>uncharged_particles:</strong></p></td>
+<tr class="row-odd"><td><p><strong>uncharged_particles:</strong></p></td>
 <td><p>Keep uncharged particles only</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>strange_particles:</strong></p></td>
+<tr class="row-even"><td><p><strong>strange_particles:</strong></p></td>
 <td><p>Keep strange particles only</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>particle_status:</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_status:</strong></p></td>
 <td><p>Keep only particles with a given status flag</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>pt_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>pt_cut:</strong></p></td>
 <td><p>Apply pT cut to all particles</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>rapidity_cut:</strong></p></td>
+<tr class="row-odd"><td><p><strong>rapidity_cut:</strong></p></td>
 <td><p>Apply rapidity cut to all particles</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>pseudorapidity_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>pseudorapidity_cut:</strong></p></td>
 <td><p>Apply pseudorapidity cut to all particles</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>multiplicity_cut:</strong></p></td>
+<tr class="row-odd"><td><p><strong>multiplicity_cut:</strong></p></td>
 <td><p>Apply multiplicity cut to all particles</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>lower_event_energy_cut:</strong></p></td>
+<tr class="row-even"><td><p><strong>lower_event_energy_cut:</strong></p></td>
 <td><p>Filters out events with total energy lower than a threshold.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>print_particle_lists_to_file:</strong></p></td>
+<tr class="row-odd"><td><p><strong>print_particle_lists_to_file:</strong></p></td>
 <td><p>Print current particle data to file with same format</p></td>
 </tr>
 </tbody>
@@ -281,7 +285,7 @@ int values</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.particle_objects_list">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">particle_objects_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.particle_objects_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.particle_objects_list" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a nested python list containing all quantities from the 
+<dd><p>Returns a nested python list containing all quantities from the
 current Jetscape data as numerical values with the following shape:</p>
 <blockquote>
 <div><div class="line-block">
@@ -303,7 +307,7 @@ current Jetscape data as numerical values with the following shape:</p>
 <dt class="sig sig-object py" id="Jetscape.Jetscape.num_events">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">num_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.num_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.num_events" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the number of events in particle_list</p>
-<p>num_events is updated with every manipulation e.g. after 
+<p>num_events is updated with every manipulation e.g. after
 applying cuts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -318,16 +322,30 @@ applying cuts.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.num_output_per_event">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.num_output_per_event" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a numpy array containing the event number (starting with 1) 
+<dd><p>Returns a numpy array containing the event number (starting with 1)
 and the corresponding number of particles created in this event as</p>
 <p>num_output_per_event[event_n, numer_of_particles_in_event_n]</p>
-<p>num_output_per_event is updated with every manipulation e.g. after 
+<p>num_output_per_event is updated with every manipulation e.g. after
 applying cuts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array containing the event number and the corresponding number of 
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array containing the event number and the corresponding number of
 particles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Jetscape.Jetscape.get_sigmaGen">
+<span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">get_sigmaGen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.get_sigmaGen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.get_sigmaGen" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieves the sigmaGen values with error from the last line of a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the first and second sigmaGen values as floats.</p>
 </dd>
 </dl>
 </dd>
@@ -360,7 +378,7 @@ of PDG IDs</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.remove_particle_species">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">remove_particle_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdg_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.remove_particle_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.remove_particle_species" title="Permalink to this definition"></a></dt>
-<dd><p>Remove particle species from particle_list by their PDG ID in every 
+<dd><p>Remove particle species from particle_list by their PDG ID in every
 event</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -455,15 +473,15 @@ energy threshold.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.pt_cut">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">pt_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.pt_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.pt_cut" title="Permalink to this definition"></a></dt>
-<dd><p>Apply p_t cut to all events by passing an acceptance range by 
-::code`cut_value_tuple`. All particles outside this range will 
+<dd><p>Apply p_t cut to all events by passing an acceptance range by
+::code`cut_value_tuple`. All particles outside this range will
 be removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value_tuple</strong><span class="classifier">tuple</span></dt><dd><p>Tuple with the upper and lower limits of the pT acceptance 
-range <code class="code docutils literal notranslate"><span class="pre">(cut_min,</span> <span class="pre">cut_max)</span></code>. If one of the limits is not 
-required, set it to <code class="code docutils literal notranslate"><span class="pre">None</span></code>, i.e. <code class="code docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">cut_max)</span></code> 
+<dt><strong>cut_value_tuple</strong><span class="classifier">tuple</span></dt><dd><p>Tuple with the upper and lower limits of the pT acceptance
+range <code class="code docutils literal notranslate"><span class="pre">(cut_min,</span> <span class="pre">cut_max)</span></code>. If one of the limits is not
+required, set it to <code class="code docutils literal notranslate"><span class="pre">None</span></code>, i.e. <code class="code docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">cut_max)</span></code>
 or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</span> <span class="pre">None)</span></code>.</p>
 </dd>
 </dl>
@@ -480,14 +498,14 @@ or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.rapidity_cut">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">rapidity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.rapidity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.rapidity_cut" title="Permalink to this definition"></a></dt>
-<dd><p>Apply rapidity cut to all events and remove all particles with rapidity 
+<dd><p>Apply rapidity cut to all events and remove all particles with rapidity
 not complying with cut_value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically 
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically
 around 0.
-For example, if cut_value = 1, only particles with rapidity in 
+For example, if cut_value = 1, only particles with rapidity in
 [-1.0, 1.0] are kept.</p>
 </dd>
 <dt><strong>cut_value</strong><span class="classifier">tuple</span></dt><dd><p>To specify an asymmetric acceptance range for the rapidity
@@ -497,7 +515,7 @@ of particles, pass a tuple (cut_min, cut_max)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the rapidity cut 
+<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the rapidity cut
 for all events</p>
 </dd>
 </dl>
@@ -508,14 +526,14 @@ for all events</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.pseudorapidity_cut">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">pseudorapidity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.pseudorapidity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.pseudorapidity_cut" title="Permalink to this definition"></a></dt>
-<dd><p>Apply pseudo-rapidity cut to all events and remove all particles with 
+<dd><p>Apply pseudo-rapidity cut to all events and remove all particles with
 pseudo-rapidity not complying with cut_value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically 
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically
 around 0.
-For example, if cut_value = 1, only particles with pseudo-rapidity 
+For example, if cut_value = 1, only particles with pseudo-rapidity
 in [-1.0, 1.0] are kept.</p>
 </dd>
 <dt><strong>cut_value</strong><span class="classifier">tuple</span></dt><dd><p>To specify an asymmetric acceptance range for the pseudo-rapidity
@@ -525,7 +543,7 @@ of particles, pass a tuple (cut_min, cut_max)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the pseudo-rapidity cut 
+<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the pseudo-rapidity cut
 for all events</p>
 </dd>
 </dl>
@@ -536,12 +554,12 @@ for all events</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.multiplicity_cut">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">multiplicity_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_multiplicity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.multiplicity_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.multiplicity_cut" title="Permalink to this definition"></a></dt>
-<dd><p>Apply multiplicity cut. Remove all events with a multiplicity lower 
+<dd><p>Apply multiplicity cut. Remove all events with a multiplicity lower
 than min_multiplicity</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>min_multiplicity</strong><span class="classifier">float</span></dt><dd><p>Lower bound for multiplicity. If the multiplicity of an event is 
+<dt><strong>min_multiplicity</strong><span class="classifier">float</span></dt><dd><p>Lower bound for multiplicity. If the multiplicity of an event is
 lower than min_multiplicity, this event is discarded.</p>
 </dd>
 </dl>
