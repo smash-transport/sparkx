@@ -1,6 +1,6 @@
 import numpy as np
-from .Particle import Particle
-from .Lattice3D import Lattice3D
+from sparkx.Particle import Particle
+from sparkx.Lattice3D import Lattice3D
 
 class EventCharacteristics:
     """
@@ -29,11 +29,46 @@ class EventCharacteristics:
         Computes the spatial eccentricity from particles.
     eccentricity_from_lattice:
         Computes the spatial eccentricity from a 3D lattice.
+
+    Examples
+    --------
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from sparkx.Oscar import Oscar
+        >>> from sparkx.EventCharacteristics import EventCharacteristics
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>>
+        >>> # Oscar object containing all events
+        >>> oscar = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> event_characterization = EventCharacteristics(oscar)
+        >>> event_characterization.eccentricity(2, weight_quantitiy = "number")
+
     """
     def __init__(self, event_data):
         self.set_event_data(event_data)
 
-    def set_event_data (self, event_data):
+    def set_event_data(self, event_data):
+        """
+        Overwrites the event data.
+
+        Parameters
+        ----------
+        event_data : list, numpy.ndarray, or Lattice3D
+            List or array containing particle objects for one event, or a
+            lattice containing the relevant densities.
+
+        Raises
+        ------
+        TypeError
+            If the input is not a list or numpy.ndarray when deriving
+            characteristics from particles.
+            If at least one element in the input is not of type Particle.
+        """
         # check if the input is a Lattice3D object
         if isinstance(event_data, Lattice3D):
             self.event_data_ = event_data
@@ -48,8 +83,31 @@ class EventCharacteristics:
                                     'Particle type.')
             self.event_data_ = event_data
             self.has_lattice_ = False
-            
+
     def eccentricity_from_particles(self,harmonic_n, weight_quantity = "energy"):
+        """
+        Computes the spatial eccentricity from particles.
+
+        Parameters
+        ----------
+        harmonic_n : int
+            The harmonic order for the eccentricity calculation.
+        weight_quantity : str, optional
+            The quantity used for particle weighting.
+            Valid options are "energy", "number", "charge", or "baryon number".
+            Default is "energy".
+
+        Returns
+        -------
+        complex
+            The complex-valued eccentricity.
+
+        Raises
+        ------
+        ValueError
+            If the harmonic order is less than 1.
+            If the weight quantity is unknown.
+        """
         real_eps=0
         imag_eps=0
         norm=0
@@ -78,8 +136,27 @@ class EventCharacteristics:
             imag_eps += rn*np.sin(harmonic_n*t)*weight
             norm += rn*weight
         return real_eps/norm + (imag_eps/norm)*1j
-    
+
     def eccentricity_from_lattice(self,harmonic_n):
+        """
+        Computes the spatial eccentricity from a 3D lattice. Takes all z-values
+        into account.
+
+        Parameters
+        ----------
+        harmonic_n : int
+            The harmonic order for the eccentricity calculation.
+
+        Returns
+        -------
+        complex
+            The complex-valued eccentricity.
+
+        Raises
+        ------
+        ValueError
+            If the harmonic order is less than 1.
+        """
         real_eps=0
         imag_eps=0
         norm=0
@@ -98,49 +175,31 @@ class EventCharacteristics:
             imag_eps += rn*np.sin(harmonic_n*t)*lattice_density
             norm += rn*lattice_density
         return real_eps/norm + (imag_eps/norm)*1j
-    
+
     def eccentricity(self,harmonic_n,weight_quantity = "energy"):
+        """
+        Computes the spatial eccentricity.
+
+        Parameters
+        ----------
+        harmonic_n : int
+            The harmonic order for the eccentricity calculation.
+        weight_quantity : str, optional
+            The quantity used for particle weighting.
+            Valid options are "energy", "number", "charge", or "baryon number".
+            Default is "energy".
+
+        Returns
+        -------
+        complex
+            The complex-valued eccentricity.
+
+        Raises
+        ------
+        ValueError
+            If the harmonic order is less than 1.
+        """
         if self.has_lattice_:
             return self.eccentricity_from_lattice(harmonic_n)
         else:
             return self.eccentricity_from_particles(harmonic_n, weight_quantity)
-
-""" 
-particle = Particle()
-particle.t_=1.0
-part1=Particle()
-part1.x_=1.0
-part1.y_=0.0
-part1.z_=0.0
-part1.E_=1
-part2=Particle()
-part2.x_=0.0
-part2.y_=1.0
-part2.z_=0.0
-part2.E_=2.0
-particle_data=[part1,part2]
-event=EventCharacteristics(particle_data)
-print("Particle eps2")
-print(event.eccentricity(2))
-latt=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50)
-latt2=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50,3,3,3)
-latt3=Lattice3D(-2, 2, -2, 2, -2, 2, 50, 50, 50,1,1,1)
-
-latt.add_particle_data(particle_data, 0.2, "energy density")
-latt2.add_particle_data(particle_data, 0.2, "energy density")
-latt3.add_particle_data(particle_data, 0.2, "energy density")
-event2=EventCharacteristics(latt)
-event3=EventCharacteristics(latt2)
-event4=EventCharacteristics(latt3)
-print("Lattice eps, no cutoff")
-print(event2.eccentricity(2))
-
-
-#event2.set_event_data(latt2)
-print("Lattice eps, big cutoff")
-print(event3.eccentricity(2, "energy"))
-
-#event3.set_event_data(latt3)
-print("Lattice eps, small cutoff")
-print(event4.eccentricity(2, "energy")) 
-"""

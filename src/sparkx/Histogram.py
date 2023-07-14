@@ -11,15 +11,15 @@ class Histogram:
     (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin
     boundaries, which allows for different bin widths.
     Multiple histograms can be added and averaged.
-    
-    .. note:: 
-        It may be important to keep in mind that each bin contains it left edge 
-        but not the right edge. If a value is added to a histogram the bin 
+
+    .. note::
+        It may be important to keep in mind that each bin contains it left edge
+        but not the right edge. If a value is added to a histogram the bin
         assignment therefore follows:
-            
+
             .. raw:: html
 
-                 <p><code style="color:red; background-color:transparent; 
+                 <p><code style="color:red; background-color:transparent;
                  font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p>
 
 
@@ -32,7 +32,7 @@ class Histogram:
     bin_boundaries : list/numpy.ndarray
         A list or numpy array that contains all bin edges. This allows for non-
         uniform bin sizes.
-    
+
     Attributes
     ----------
     number_of_bins_: int
@@ -88,27 +88,27 @@ class Histogram:
         Print the histogram(s) to the terminal.
     write_to_file:
         Write one histogram to a csv file.
-        
+
     Examples
     --------
     **Creating histograms**
-    
-    To create multiple histograms with the same number and size of bins we can 
-    initialize the Histogram object with a tuple (otherwise initialize with a 
-    list containing all bin edges). To fill these histograms store them in a 
-    variable, the methods ``add_value(value)``, ``add_histogram()`` and 
+
+    To create multiple histograms with the same number and size of bins we can
+    initialize the Histogram object with a tuple (otherwise initialize with a
+    list containing all bin edges). To fill these histograms store them in a
+    variable, the methods ``add_value(value)``, ``add_histogram()`` and
     ``histogram()`` can be used.
-    
+
     .. highlight:: python
     .. code-block:: python
         :linenos:
 
-        >>> from Histogram import Histogram
+        >>> from sparkx.Histogram import Histogram
         >>>
         >>> # Initialize a histogram in the range [0,10] with 10 bins
         >>> histObj = Histogram((0, 10, 10))
         >>>
-        >>> # Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram 
+        >>> # Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram
         >>> histObj.add_value([1, 1.2, 3, 5, 6.5, 9, 9])
         >>> print(histObj.histogram())
         [0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]
@@ -263,11 +263,11 @@ class Histogram:
         ----------
         value: int, float, np.number, list, numpy.ndarray
             Value(s) which are supposed to be added to the histogram instance.
-        
+
         Raises
         ------
         TypeError
-            if the input is not a number or numpy.ndarray or list 
+            if the input is not a number or numpy.ndarray or list
         """
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
@@ -287,7 +287,7 @@ class Histogram:
                 else:
                     self.histograms_[bin_index] += 1
                     self.histograms_raw_count_[bin_index] += 1
-                
+
             # Case 2.2: If histogram contains multiple instances,
             #           always add values to the latest histogram
             else:
@@ -322,7 +322,7 @@ class Histogram:
         self.scaling_ = np.vstack((self.scaling_, np.ones(self.number_of_bins_)))
         self.error_ = np.vstack((self.error_, np.zeros(self.number_of_bins_)))
         self.number_of_histograms_ += 1
-        
+
         return self
 
     def average(self):
@@ -338,13 +338,13 @@ class Histogram:
         -------
         Histogram
             Returns a Histogram object.
-        
+
         Raises
         ------
         TypeError
             if there is only one histogram
         """
-        
+
         if self.histograms_.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
@@ -371,14 +371,14 @@ class Histogram:
         -------
         Histogram
             Returns a Histogram object.
-        
+
         Raises
         ------
         TypeError
             if there is only one histogram
         """
         #TODO: correct error as in average()
-        
+
         if self.histograms_.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
@@ -401,7 +401,7 @@ class Histogram:
     def statistical_error(self):
         """
         Compute the statistical error of all histogram bins for all histograms.
-        
+
         Returns
         -------
         numpy.ndarray
@@ -441,7 +441,7 @@ class Histogram:
             elif isinstance(value, (list, np.ndarray)):
                 self.histograms_[-1] *= np.asarray(value)
                 self.scaling_[-1] *= np.asarray(value)
-        
+
     def set_error(self,own_error):
         """
         Sets the histogram error by hand. This is helpful for weighted
@@ -498,7 +498,7 @@ class Histogram:
             Additional comment at the beginning of the file. It is possible
             to give a multi line comment, where each line should start with
             a '#'.
-        
+
         Raises
         ------
         ValueError

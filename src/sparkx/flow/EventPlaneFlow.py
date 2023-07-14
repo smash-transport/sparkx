@@ -52,8 +52,8 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
     .. code-block:: python
         :linenos:
 
-        >>> from Jetscape import Jetscape
-        >>> from flow.EventPlaneFlow import EventPlaneFlow
+        >>> from sparkx.Jetscape import Jetscape
+        >>> from sparkx.flow.EventPlaneFlow import EventPlaneFlow
         >>>
         >>> JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat
         >>> JETSCAPE_FILE_PATH_EVENT_PLANE = [Jetscape_directory]/particle_lists_ep.dat
@@ -64,7 +64,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         >>> # Jetscape object containing the particles which determine the event plane
         >>> jetscape_event = Jetscape(JETSCAPE_FILE_EVENT_PLANE)
         >>>
-        >>> # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**3
+        >>> # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2
         >>> flow2 = EventPlaneFlow(n=2, weight="pt2",pseudorapidity_gap=0.1)
         >>> flow3 = EventPlaneFlow(n=3, weight="pt2",pseudorapidity_gap=0.1)
         >>>

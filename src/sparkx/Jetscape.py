@@ -116,7 +116,7 @@ class Jetscape:
     .. code-block:: python
         :linenos:
 
-        >>> from Jetscape import Jetscape
+        >>> from sparkx.Jetscape import Jetscape
         >>>
         >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists.dat
         >>>

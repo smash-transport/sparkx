@@ -128,7 +128,7 @@ class Oscar:
     .. code-block:: python
         :linenos:
 
-        >>> from Oscar import Oscar
+        >>> from sparkx.Oscar import Oscar
         >>>
         >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
         >>>

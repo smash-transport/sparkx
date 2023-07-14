@@ -46,7 +46,7 @@ class GenerateFlow:
     .. code-block:: python
         :linenos:
 
-        >>> from GenerateFlow import GenerateFlow
+        >>> from sparkx.flow.GenerateFlow import GenerateFlow
         >>>
         >>> flow_object = GenerateFlow(v2=0.06, v3=0.02, v4=0.03)
         >>> number_events = 100
