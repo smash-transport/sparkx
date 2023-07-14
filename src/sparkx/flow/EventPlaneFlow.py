@@ -1,11 +1,92 @@
-from . import FlowInterface
+from sparkx.flow import FlowInterface
 import numpy as np
 from scipy import special
 import scipy.optimize as optimize
 import warnings
 
 class EventPlaneFlow(FlowInterface.FlowInterface):
+
+    """
+    This class implements a event plane flow analysis algorithm 
+    `Poskanzer, Arthur M., and Sergei A. Voloshin. "Methods for analyzing anisotropic flow in relativistic nuclear collisions." Physical Review C 58.3 (1998): 1671. <https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws>`__. 
+    
+    For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane :math:`Q`, relative 
+    to the event plane angle determined from the flow itself.
+    Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution 
+    for each harmonic.
+
+    In summary, this class calculates the following:
+
+    .. math::
+
+        v_n = \\frac{v_{n,obs}}{R_n}
+
+    with
+
+    .. math::
+
+        v_{n,obs} = \\langle \\cos(n (\\phi_i -\\Psi_n)) \\rangle
+
+    
+    where we average over all particles of all events. :math:`R_n` is the resolution, which we calculate in an interative method
+    according to the mentioned reference. This is done by using two subevents, which we assume to be of same size and which
+    are determined by splitting the event into subsets of positive and negative pseudorapidity.
+    
+    
+    Parameters
+    ----------
+    n : int, optional
+        The value of the harmonic. Default is 2.
+    weight : str, optional
+        The weight used for calculating the flow. Default is "pt2".
+    pseudorapidity_gap : float, optional
+        The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
+
+    Example
+    --------
+    
+    A demonstration how to calculate flow according to the event plane of a separate particle list.
+    The same particle list can also be used to determine the event plane and the flow.
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from Jetscape import Jetscape
+        >>> from flow.EventPlaneFlow import EventPlaneFlow
+        >>>
+        >>> JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat
+        >>> JETSCAPE_FILE_PATH_EVENT_PLANE = [Jetscape_directory]/particle_lists_ep.dat
+        >>>
+        >>> # Jetscape object containing the particles on which we want to calculate flow
+        >>> jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)
+        >>>
+        >>> # Jetscape object containing the particles which determine the event plane
+        >>> jetscape_event = Jetscape(JETSCAPE_FILE_EVENT_PLANE)
+        >>>
+        >>> # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**3
+        >>> flow2 = EventPlaneFlow(n=2, weight="pt2")
+        >>> flow3 = EventPlaneFlow(n=2, weight="ptn")
+        >>>
+        >>> # Calculate the integrated flow with error
+        >>> v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)
+        >>> v3, v3_error = flow3.integrated_flow(jetscape_flow,jetscape_event)
+       
+
+    """
     def __init__(self,n=2,weight="pt2",pseudorapidity_gap=0.):
+        """
+        Initialize the ScalarProductFlow object.
+
+        Parameters
+        ----------
+        n : int, optional
+            The value of the harmonic. Default is 2.
+        weight : str, optional
+            The weight used for calculating the flow. Default is "pt2".
+        pseudorapidity_gap : float, optional
+            The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
+        """
 
         if not isinstance(n, int):
             raise TypeError('n has to be int')
@@ -214,12 +295,49 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         return vn_integrated, sigma
 
     def integrated_flow(self,particle_data,particle_data_event_plane, self_corr=True):
+        """
+        Compute the integrated flow.
+
+        Parameters
+        ----------
+        particle_data : list
+            List of particle data of which the flow is calculated.
+        particle_data_event_plane : list
+            List of particle data for the event plane calculation.
+        self_corr : bool, optional
+            Whether to consider self-correlation in the flow calculation. Default is True.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the integrated flow value and the corresponding uncertainty.
+        """
         resolution, Q_vector = self.__calculate_reference(particle_data_event_plane)
         return self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particle_data, resolution, Q_vector, self_corr))
 
 
     def differential_flow(self, particle_data, bins, flow_as_function_of, particle_data_event_plane, self_corr=True):
+        """
+        Compute the differential flow.
 
+        Parameters
+        ----------
+        particle_data : list
+            List of particle data of which the flow is calculated.
+        bins : list or np.ndarray
+            Bins used for the differential flow calculation.
+        flow_as_function_of : str
+            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+        particle_data_event_plane : list
+            List of particle data for the event plane calculation.
+        self_corr : bool, optional
+            Whether to consider self-correlation in the flow calculation. Default is True.
+
+        Returns
+        -------
+        list
+            A list of tuples containing the flow values and uncertainties for each bin.
+        """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
@@ -252,10 +370,3 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)))
 
         return flow_bin
-
-# from ..Jetscape import Jetscape
-# oscar1 = Jetscape("/home/niklas/Downloads/new_testdata.dat")
-# liste1 = oscar1.particle_objects_list()
-
-# test1 = EventPlaneFlow()
-# print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt", liste1))

@@ -11,12 +11,8 @@
 #
 import os
 import sys
-<<<<<<< HEAD
-sys.path.insert(0, os.path.abspath('../../src/sparkx/'))
-=======
 sys.path.insert(0, os.path.abspath('../../src/sparkx'))
 sys.path.insert(0, os.path.abspath('../../src/sparkx/flow'))
->>>>>>> roch/GenerateFlow
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -61,8 +57,6 @@ language = "en"
 
 templates_path = ['_templates']
 exclude_patterns = []
-autodoc_mock_imports = ["Particle"]
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

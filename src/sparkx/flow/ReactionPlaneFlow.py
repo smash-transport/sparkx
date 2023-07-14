@@ -2,7 +2,62 @@ from sparkx.flow import FlowInterface
 import numpy as np
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
+    
+    """
+    This class implements a reaction plane flow analysis algorithm 
+    
+    For this method, the flow is calculated under the assumption that the event plane angle is constant 
+    throughout all events. The flow is calculated as
+
+    .. math::
+
+        v_n = \\langle p_T^n \\exp{\\frac{in\\phi_i}{p_T^n}}\\rangle
+    
+    where we average over all particles of all events. We return complex numbers, which contain the information
+    about the position of the event plane.
+    
+    
+    Parameters
+    ----------
+    n : int, optional
+        The value of the harmonic. Default is 2.
+   
+    Example
+    --------
+    
+    A demonstration how to calculate flow according to the event plane of a separate particle list.
+    The same particle list can also be used to determine the event plane and the flow.
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> from Jetscape import Jetscape
+        >>> from flow.EventPlaneFlow import EventPlaneFlow
+        >>>
+        >>> JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat
+       
+        >>> # Jetscape object containing the particles on which we want to calculate flow
+        >>> jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)
+        >>>
+        >>> # Create flow objects for v2
+        >>> flow2 = ReactionPlaneFlow(n=2)
+        >>>
+        >>> # Calculate the integrated flow with error
+        >>> v2, v2_error = flow2.integrated_flow(jetscape_flow)
+ 
+       
+
+    """
     def __init__(self,n=2):
+        """
+        Initialize the ReactionPlaneFlow object.
+
+        Parameters
+        ----------
+        n : int, optional
+            The value of the harmonic. Default is 2.
+        """
         if not isinstance(n, int):
             raise TypeError('n has to be int')
         elif n <= 0:
@@ -11,6 +66,19 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             self.n_ = n
 
     def integrated_flow(self, particle_data):
+        """
+        Compute the integrated flow.
+
+        Parameters
+        ----------
+        particle_data : list
+            List of particle data.
+
+        Returns
+        -------
+        complex
+            The integrated flow value, represented as a complex number.
+        """
         flow_event_average = 0. + 0.j
         number_particles = 0.
         for event in range(len(particle_data)):
@@ -29,6 +97,23 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         return flow_event_average
 
     def differential_flow(self,particle_data,bins,flow_as_function_of):
+        """
+        Compute the differential flow.
+
+        Parameters
+        ----------
+        particle_data : list
+            List of particle data.
+        bins : list or np.ndarray
+            Bins used for the differential flow calculation.
+        flow_as_function_of : str
+            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+
+        Returns
+        -------
+        list
+            A list of complex numbers representing the flow values for each bin.
+        """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
@@ -77,10 +162,3 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                 flow_event_average = 0. + 0.j
             flow_differential[bin] = flow_event_average
         return flow_differential
-
-# from ..Jetscape import Jetscape
-# oscar1 = Jetscape("/home/niklas/Downloads/new_testdata_no_rot.dat")
-# liste1 = oscar1.particle_objects_list()
-
-# test1 = ReactionPlaneFlow()
-# print(test1.differential_flow(liste1, [0.1,0.2,0.3,0.5,1,2,3,4.5], "pt"))

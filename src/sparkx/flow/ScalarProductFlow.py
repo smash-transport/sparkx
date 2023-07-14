@@ -5,18 +5,21 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     """
     This class implements a scalar product flow analysis algorithm 
-    [Adler, C., et al. "Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV."
-    Physical Review C 66.3 (2002): 034904.](https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A)
+    `Adler, C., et al. "Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV." Physical Review C 66.3 (2002): 034904 <https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A>`__.
 
-    For this method, the flow is calcuated by correlating the event vector $Q$ with the conjugated unit momentum vector
+ 
+    For this method, the flow is calcuated by correlating the event vector :math:`Q` with the conjugated unit momentum vector
     of the particle. This is normalized by square root of the scalar product of the event vectors of two equal-sized
     subevents. We choose here to divide the subevents by positive and negative pseudorapidity. Note that for asymmetric
     systems, this will not be sufficient.
 
     In summary, this class calculates the following:
-    $$
-    v_n=\frac{<Q_nu_{n,i}^\star>}{2\sqrt{<Q_n^aQ_n^{b \star},>}}
-    $$
+
+    .. math::
+
+        v_n = \\frac{\\langle Q_nu_{n,i}^\\star \\rangle}{2\\sqrt{\\langle Q_n^aQ_n^{b \\star}\\rangle}}
+
+
     where we average over all particles of all events.
     
     Parameters
@@ -28,7 +31,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
 
-    Examples
+    Example
     --------
     
     A demonstration how to calculate flow according to the event plane of a separate particle list.
