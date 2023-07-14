@@ -78,10 +78,10 @@
 <div class="viewcode-block" id="ScalarProductFlow"><a class="viewcode-back" href="../classes/flow/ScalarProductFlow/index.html#ScalarProductFlow.ScalarProductFlow">[docs]</a><span class="k">class</span> <span class="nc">ScalarProductFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class implements a scalar product flow analysis algorithm </span>
+<span class="sd">    This class implements a scalar product flow analysis algorithm</span>
 <span class="sd">    `Adler, C., et al. &quot;Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV.&quot; Physical Review C 66.3 (2002): 034904 &lt;https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A&gt;`__.</span>
 
-<span class="sd"> </span>
+
 <span class="sd">    For this method, the flow is calcuated by correlating the event vector :math:`Q` with the conjugated unit momentum vector</span>
 <span class="sd">    of the particle. This is normalized by square root of the scalar product of the event vectors of two equal-sized</span>
 <span class="sd">    subevents. We choose here to divide the subevents by positive and negative pseudorapidity. Note that for asymmetric</span>
@@ -91,11 +91,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        v_n = \\frac{\\langle Q_nu_{n,i}^\\star \\rangle}{2\\sqrt{\\langle Q_n^aQ_n^{b \\star}\\rangle}}</span>
+<span class="sd">        v_n = \\frac{\\langle Q_n u_{n,i}^\\ast \\rangle}{2\\sqrt{\\langle Q_n^aQ_n^{b \\ast}\\rangle}}</span>
 
 
 <span class="sd">    where we average over all particles of all events.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n : int, optional</span>
@@ -105,8 +105,9 @@
 <span class="sd">    pseudorapidity_gap : float, optional</span>
 <span class="sd">        The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.</span>
 
-<span class="sd">    Example</span>
+<span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+
 <span class="sd">    A demonstration how to calculate flow according to the event plane of a separate particle list.</span>
 <span class="sd">    The same particle list can also be used to determine the event plane and the flow.</span>
 
@@ -114,8 +115,8 @@
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Jetscape import Jetscape</span>
-<span class="sd">        &gt;&gt;&gt; from flow.ScalarProductFlow import ScalarProductFlow</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Jetscape import Jetscape</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.flow.ScalarProductFlow import ScalarProductFlow</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat</span>
 <span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH_EVENT_PLANE = [Jetscape_directory]/particle_lists_ep.dat</span>
@@ -126,14 +127,14 @@
 <span class="sd">        &gt;&gt;&gt; # Jetscape object containing the particles which determine the event plane</span>
 <span class="sd">        &gt;&gt;&gt; jetscape_event = Jetscape(JETSCAPE_FILE_EVENT_PLANE)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**3</span>
+<span class="sd">        &gt;&gt;&gt; # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2</span>
 <span class="sd">        &gt;&gt;&gt; flow2 = ScalarProductFlow(n=2, weight=&quot;pt2&quot;,pseudorapidity_gap=0.1)</span>
 <span class="sd">        &gt;&gt;&gt; flow3 = ScalarProductFlow(n=3, weight=&quot;pt2&quot;,pseudorapidity_gap=0.1)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Calculate the integrated flow with error</span>
 <span class="sd">        &gt;&gt;&gt; v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)</span>
 <span class="sd">        &gt;&gt;&gt; v3, v3_error = flow3.integrated_flow(jetscape_flow,jetscape_event)</span>
-<span class="sd">       </span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
@@ -209,7 +210,7 @@
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
             <span class="n">Q_vector_A_val</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">+</span> <span class="mf">0.</span><span class="n">j</span>
             <span class="n">relevant_weights_A_event</span> <span class="o">=</span> <span class="p">[]</span>
-            
+
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
                 <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span><span class="p">:</span>
                     <span class="n">Q_vector_A_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>

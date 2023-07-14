@@ -85,15 +85,15 @@
 <span class="sd">    (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin</span>
 <span class="sd">    boundaries, which allows for different bin widths.</span>
 <span class="sd">    Multiple histograms can be added and averaged.</span>
-<span class="sd">    </span>
-<span class="sd">    .. note:: </span>
-<span class="sd">        It may be important to keep in mind that each bin contains it left edge </span>
-<span class="sd">        but not the right edge. If a value is added to a histogram the bin </span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        It may be important to keep in mind that each bin contains it left edge</span>
+<span class="sd">        but not the right edge. If a value is added to a histogram the bin</span>
 <span class="sd">        assignment therefore follows:</span>
-<span class="sd">            </span>
+
 <span class="sd">            .. raw:: html</span>
 
-<span class="sd">                 &lt;p&gt;&lt;code style=&quot;color:red; background-color:transparent; </span>
+<span class="sd">                 &lt;p&gt;&lt;code style=&quot;color:red; background-color:transparent;</span>
 <span class="sd">                 font-size: 0.9em;&quot;&gt;bins[i-1] &amp;lt;= value &amp;lt; bins[i]&lt;/code&gt;&lt;/p&gt;</span>
 
 
@@ -106,7 +106,7 @@
 <span class="sd">    bin_boundaries : list/numpy.ndarray</span>
 <span class="sd">        A list or numpy array that contains all bin edges. This allows for non-</span>
 <span class="sd">        uniform bin sizes.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    number_of_bins_: int</span>
@@ -162,27 +162,27 @@
 <span class="sd">        Print the histogram(s) to the terminal.</span>
 <span class="sd">    write_to_file:</span>
 <span class="sd">        Write one histogram to a csv file.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    **Creating histograms**</span>
-<span class="sd">    </span>
-<span class="sd">    To create multiple histograms with the same number and size of bins we can </span>
-<span class="sd">    initialize the Histogram object with a tuple (otherwise initialize with a </span>
-<span class="sd">    list containing all bin edges). To fill these histograms store them in a </span>
-<span class="sd">    variable, the methods ``add_value(value)``, ``add_histogram()`` and </span>
+
+<span class="sd">    To create multiple histograms with the same number and size of bins we can</span>
+<span class="sd">    initialize the Histogram object with a tuple (otherwise initialize with a</span>
+<span class="sd">    list containing all bin edges). To fill these histograms store them in a</span>
+<span class="sd">    variable, the methods ``add_value(value)``, ``add_histogram()`` and</span>
 <span class="sd">    ``histogram()`` can be used.</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. highlight:: python</span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Histogram import Histogram</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Histogram import Histogram</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Initialize a histogram in the range [0,10] with 10 bins</span>
 <span class="sd">        &gt;&gt;&gt; histObj = Histogram((0, 10, 10))</span>
 <span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; # Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram </span>
+<span class="sd">        &gt;&gt;&gt; # Add the values [1, 1.2, 3, 5, 6.5, 9, 9] to the histogram</span>
 <span class="sd">        &gt;&gt;&gt; histObj.add_value([1, 1.2, 3, 5, 6.5, 9, 9])</span>
 <span class="sd">        &gt;&gt;&gt; print(histObj.histogram())</span>
 <span class="sd">        [0. 2. 0. 1. 0. 1. 1. 0. 0. 2.]</span>
@@ -337,11 +337,11 @@
 <span class="sd">        ----------</span>
 <span class="sd">        value: int, float, np.number, list, numpy.ndarray</span>
 <span class="sd">            Value(s) which are supposed to be added to the histogram instance.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            if the input is not a number or numpy.ndarray or list </span>
+<span class="sd">            if the input is not a number or numpy.ndarray or list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Case 1.1: value is a single number</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
@@ -361,7 +361,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                
+
             <span class="c1"># Case 2.2: If histogram contains multiple instances,</span>
             <span class="c1">#           always add values to the latest histogram</span>
             <span class="k">else</span><span class="p">:</span>
@@ -396,7 +396,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">+=</span> <span class="mi">1</span>
-        
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Histogram.average"><a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.average">[docs]</a>    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -412,13 +412,13 @@
 <span class="sd">        -------</span>
 <span class="sd">        Histogram</span>
 <span class="sd">            Returns a Histogram object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            if there is only one histogram</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot average an array of dim = 1&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -445,14 +445,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        Histogram</span>
 <span class="sd">            Returns a Histogram object.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            if there is only one histogram</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#TODO: correct error as in average()</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cannot average an array of dim = 1&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -475,7 +475,7 @@
 <div class="viewcode-block" id="Histogram.statistical_error"><a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.statistical_error">[docs]</a>    <span class="k">def</span> <span class="nf">statistical_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the statistical error of all histogram bins for all histograms.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        numpy.ndarray</span>
@@ -515,7 +515,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-        
+
 <div class="viewcode-block" id="Histogram.set_error"><a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.set_error">[docs]</a>    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">own_error</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the histogram error by hand. This is helpful for weighted</span>
@@ -572,7 +572,7 @@
 <span class="sd">            Additional comment at the beginning of the file. It is possible</span>
 <span class="sd">            to give a multi line comment, where each line should start with</span>
 <span class="sd">            a &#39;#&#39;.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>

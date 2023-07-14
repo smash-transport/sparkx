@@ -78,9 +78,9 @@
 <div class="viewcode-block" id="pdg_to_latex"><a class="viewcode-back" href="../utilities/functions/index.html#Utilities.pdg_to_latex">[docs]</a><span class="k">def</span> <span class="nf">pdg_to_latex</span><span class="p">(</span><span class="n">pdg_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a given PDG ID or a list of PDG IDs into the corresponding LaTeX</span>
-<span class="sd">    formatted particle name as sts or a list of LaTeX formated particle names </span>
+<span class="sd">    formatted particle name as sts or a list of LaTeX formated particle names</span>
 <span class="sd">    as str which has the same order as the input PDG IDs</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pdg_id : int / list</span>
@@ -91,34 +91,34 @@
 <span class="sd">    latex_names : str / list</span>
 <span class="sd">        LaTeX formated particle name or list of LaTeX formated particle names</span>
 <span class="sd">        in the same order as the input PDG IDs.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. highlight:: python</span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Utilities import pdg_to_latex</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Utilities import pdg_to_latex</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; pdg_ids = [2112, -3112, 4232]</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; latex_names = pdg_to_latex(pdg_ids)</span>
 <span class="sd">        &gt;&gt;&gt; print(latex_names)</span>
-<span class="sd">        </span>
+
 <span class="sd">        [&#39;n&#39;, &#39;\overline{\Sigma}^{+}&#39;, &#39;\Xi_{c}^{+}&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">pdg_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">pdg_id</span><span class="p">]</span>
-        
+
     <span class="n">path</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">basepath</span> <span class="o">/</span> <span class="s2">&quot;particle2022.csv&quot;</span>
     <span class="n">latex_names</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">pdg_id</span><span class="p">)</span>
-    
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
         <span class="n">csv_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
         <span class="n">counter_row</span> <span class="o">=</span> <span class="mi">0</span>
-        
+
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv_reader</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">counter_row</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -127,10 +127,10 @@
                     <span class="n">index</span> <span class="o">=</span> <span class="n">pdg_id</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
                     <span class="n">latex_names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span>
             <span class="n">counter_row</span> <span class="o">+=</span> <span class="mi">1</span>
-            
+
     <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">latex_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pdg_id contains invalid PDG ID&#39;</span><span class="p">)</span>
-        
+
     <span class="k">return</span> <span class="n">latex_names</span></div>
 </pre></div>
 

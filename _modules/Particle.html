@@ -237,7 +237,7 @@
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Particle import Particle</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Particle import Particle</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; particle = Particle()</span>
 <span class="sd">        &gt;&gt;&gt; particle.t = 1.0</span>
@@ -941,7 +941,7 @@
             <span class="n">denominator</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-10</span>  <span class="c1"># Adding a small positive value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">denominator</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz</span><span class="p">)</span>
-    
+
         <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Particle.p_abs"><a class="viewcode-back" href="../classes/Particle/index.html#Particle.Particle.p_abs">[docs]</a>    <span class="k">def</span> <span class="nf">p_abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

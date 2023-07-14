@@ -13,3 +13,4 @@ Classes
    Histogram/index
    flow/index
    Lattice3D/index
+   EventCharacteristics/index

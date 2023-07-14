@@ -100,18 +100,18 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="EventPlaneFlow.EventPlaneFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">EventPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow" title="Permalink to this definition"></a></dt>
-<dd><p>This class implements a event plane flow analysis algorithm 
+<dd><p>This class implements a event plane flow analysis algorithm
 <a class="reference external" href="https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws">Poskanzer, Arthur M., and Sergei A. Voloshin. “Methods for analyzing anisotropic flow in relativistic nuclear collisions.” Physical Review C 58.3 (1998): 1671.</a>.</p>
-<p>For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane <span class="math notranslate nohighlight">\(Q\)</span>, relative 
+<p>For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane <span class="math notranslate nohighlight">\(Q\)</span>, relative
 to the event plane angle determined from the flow itself.
-Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution 
+Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution
 for each harmonic.</p>
 <p>In summary, this class calculates the following:</p>
 <div class="math notranslate nohighlight">
-\[v_n = \frac{v_{n,obs}}{R_n}\]</div>
+\[v_n = \frac{v_{n}^{\mathrm{obs}}}{R_n}\]</div>
 <p>with</p>
 <div class="math notranslate nohighlight">
-\[v_{n,obs} = \langle \cos(n (\phi_i -\Psi_n)) \rangle\]</div>
+\[v_{n}^{\mathrm{obs}} = \langle \cos(n (\phi_i -\Psi_n)) \rangle\]</div>
 <p>where we average over all particles of all events. <span class="math notranslate nohighlight">\(R_n\)</span> is the resolution, which we calculate in an interative method
 according to the mentioned reference. This is done by using two subevents, which we assume to be of same size and which
 are determined by splitting the event into subsets of positive and negative pseudorapidity.</p>
@@ -127,6 +127,30 @@ are determined by splitting the event into subsets of positive and negative pseu
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>A demonstration how to calculate flow according to the event plane of a separate particle list.
+The same particle list can also be used to determine the event plane and the flow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.EventPlaneFlow</span> <span class="kn">import</span> <span class="n">EventPlaneFlow</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH_FLOW</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_flow</span><span class="o">.</span><span class="n">dat</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH_EVENT_PLANE</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_ep</span><span class="o">.</span><span class="n">dat</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles on which we want to calculate flow</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_flow</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH_FLOW</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles which determine the event plane</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_event</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_EVENT_PLANE</span><span class="p">)</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow2</span> <span class="o">=</span> <span class="n">EventPlaneFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="linenos">15</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow3</span> <span class="o">=</span> <span class="n">EventPlaneFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="linenos">16</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error</span>
+<span class="linenos">18</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span><span class="p">,</span> <span class="n">v2_error</span> <span class="o">=</span> <span class="n">flow2</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">,</span><span class="n">jetscape_event</span><span class="p">)</span>
+<span class="linenos">19</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span><span class="p">,</span> <span class="n">v3_error</span> <span class="o">=</span> <span class="n">flow3</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">,</span><span class="n">jetscape_event</span><span class="p">)</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>

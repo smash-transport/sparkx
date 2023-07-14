@@ -76,40 +76,40 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="ReactionPlaneFlow"><a class="viewcode-back" href="../classes/flow/ReactionPlaneFlow/index.html#ReactionPlaneFlow.ReactionPlaneFlow">[docs]</a><span class="k">class</span> <span class="nc">ReactionPlaneFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
-<span class="w">    </span>
+
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class implements a reaction plane flow analysis algorithm </span>
-<span class="sd">    </span>
-<span class="sd">    For this method, the flow is calculated under the assumption that the event plane angle is constant </span>
+<span class="sd">    This class implements a reaction plane flow analysis algorithm</span>
+
+<span class="sd">    For this method, the flow is calculated under the assumption that the event plane angle is constant</span>
 <span class="sd">    throughout all events. The flow is calculated as</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        v_n = \\langle p_T^n \\exp{\\frac{in\\phi_i}{p_T^n}}\\rangle</span>
-<span class="sd">    </span>
+<span class="sd">        v_n = \\left\\langle p_{\\mathrm{T}}^n \\exp{\\frac{in\\phi_i}{p_{\\mathrm{T}}^n}}\\right\\rangle</span>
+
 <span class="sd">    where we average over all particles of all events. We return complex numbers, which contain the information</span>
 <span class="sd">    about the position of the event plane.</span>
-<span class="sd">    </span>
-<span class="sd">    </span>
+
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n : int, optional</span>
 <span class="sd">        The value of the harmonic. Default is 2.</span>
-<span class="sd">   </span>
-<span class="sd">    Example</span>
+
+<span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
+
 <span class="sd">    A demonstration how to calculate flow with the reaction plane method.</span>
 
 <span class="sd">    .. highlight:: python</span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Jetscape import Jetscape</span>
-<span class="sd">        &gt;&gt;&gt; from flow.ReactionPlaneFlow import ReactionPlaneFlow</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Jetscape import Jetscape</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.flow.ReactionPlaneFlow import ReactionPlaneFlow</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat</span>
-<span class="sd">       </span>
+
 <span class="sd">        &gt;&gt;&gt; # Jetscape object containing the particles on which we want to calculate flow</span>
 <span class="sd">        &gt;&gt;&gt; jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)</span>
 <span class="sd">        &gt;&gt;&gt;</span>

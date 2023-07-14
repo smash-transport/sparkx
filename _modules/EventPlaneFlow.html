@@ -81,32 +81,32 @@
 <div class="viewcode-block" id="EventPlaneFlow"><a class="viewcode-back" href="../classes/flow/EventPlaneFlow/index.html#EventPlaneFlow.EventPlaneFlow">[docs]</a><span class="k">class</span> <span class="nc">EventPlaneFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class implements a event plane flow analysis algorithm </span>
-<span class="sd">    `Poskanzer, Arthur M., and Sergei A. Voloshin. &quot;Methods for analyzing anisotropic flow in relativistic nuclear collisions.&quot; Physical Review C 58.3 (1998): 1671. &lt;https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws&gt;`__. </span>
-<span class="sd">    </span>
-<span class="sd">    For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane :math:`Q`, relative </span>
+<span class="sd">    This class implements a event plane flow analysis algorithm</span>
+<span class="sd">    `Poskanzer, Arthur M., and Sergei A. Voloshin. &quot;Methods for analyzing anisotropic flow in relativistic nuclear collisions.&quot; Physical Review C 58.3 (1998): 1671. &lt;https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws&gt;`__.</span>
+
+<span class="sd">    For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane :math:`Q`, relative</span>
 <span class="sd">    to the event plane angle determined from the flow itself.</span>
-<span class="sd">    Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution </span>
+<span class="sd">    Since finite multiplicity limits the estimation of the angle of the reaction plane, the flow is corrected for the event plane resolution</span>
 <span class="sd">    for each harmonic.</span>
 
 <span class="sd">    In summary, this class calculates the following:</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        v_n = \\frac{v_{n,obs}}{R_n}</span>
+<span class="sd">        v_n = \\frac{v_{n}^{\\mathrm{obs}}}{R_n}</span>
 
 <span class="sd">    with</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        v_{n,obs} = \\langle \\cos(n (\\phi_i -\\Psi_n)) \\rangle</span>
+<span class="sd">        v_{n}^{\\mathrm{obs}} = \\langle \\cos(n (\\phi_i -\\Psi_n)) \\rangle</span>
 
-<span class="sd">    </span>
+
 <span class="sd">    where we average over all particles of all events. :math:`R_n` is the resolution, which we calculate in an interative method</span>
 <span class="sd">    according to the mentioned reference. This is done by using two subevents, which we assume to be of same size and which</span>
 <span class="sd">    are determined by splitting the event into subsets of positive and negative pseudorapidity.</span>
-<span class="sd">    </span>
-<span class="sd">    </span>
+
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n : int, optional</span>
@@ -116,9 +116,9 @@
 <span class="sd">    pseudorapidity_gap : float, optional</span>
 <span class="sd">        The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.</span>
 
-<span class="sd">    Example</span>
+<span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
+
 <span class="sd">    A demonstration how to calculate flow according to the event plane of a separate particle list.</span>
 <span class="sd">    The same particle list can also be used to determine the event plane and the flow.</span>
 
@@ -126,8 +126,8 @@
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
-<span class="sd">        &gt;&gt;&gt; from Jetscape import Jetscape</span>
-<span class="sd">        &gt;&gt;&gt; from flow.EventPlaneFlow import EventPlaneFlow</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.Jetscape import Jetscape</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.flow.EventPlaneFlow import EventPlaneFlow</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat</span>
 <span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH_EVENT_PLANE = [Jetscape_directory]/particle_lists_ep.dat</span>
@@ -138,14 +138,14 @@
 <span class="sd">        &gt;&gt;&gt; # Jetscape object containing the particles which determine the event plane</span>
 <span class="sd">        &gt;&gt;&gt; jetscape_event = Jetscape(JETSCAPE_FILE_EVENT_PLANE)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**3</span>
+<span class="sd">        &gt;&gt;&gt; # Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2</span>
 <span class="sd">        &gt;&gt;&gt; flow2 = EventPlaneFlow(n=2, weight=&quot;pt2&quot;,pseudorapidity_gap=0.1)</span>
 <span class="sd">        &gt;&gt;&gt; flow3 = EventPlaneFlow(n=3, weight=&quot;pt2&quot;,pseudorapidity_gap=0.1)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Calculate the integrated flow with error</span>
 <span class="sd">        &gt;&gt;&gt; v2, v2_error = flow2.integrated_flow(jetscape_flow,jetscape_event)</span>
 <span class="sd">        &gt;&gt;&gt; v3, v3_error = flow3.integrated_flow(jetscape_flow,jetscape_event)</span>
-<span class="sd">       </span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>

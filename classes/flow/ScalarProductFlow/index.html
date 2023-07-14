@@ -100,7 +100,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ScalarProductFlow.ScalarProductFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">ScalarProductFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow" title="Permalink to this definition"></a></dt>
-<dd><p>This class implements a scalar product flow analysis algorithm 
+<dd><p>This class implements a scalar product flow analysis algorithm
 <a class="reference external" href="https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A">Adler, C., et al. “Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV.” Physical Review C 66.3 (2002): 034904</a>.</p>
 <p>For this method, the flow is calcuated by correlating the event vector <span class="math notranslate nohighlight">\(Q\)</span> with the conjugated unit momentum vector
 of the particle. This is normalized by square root of the scalar product of the event vectors of two equal-sized
@@ -108,7 +108,7 @@ subevents. We choose here to divide the subevents by positive and negative pseud
 systems, this will not be sufficient.</p>
 <p>In summary, this class calculates the following:</p>
 <div class="math notranslate nohighlight">
-\[v_n = \frac{\langle Q_nu_{n,i}^\star \rangle}{2\sqrt{\langle Q_n^aQ_n^{b \star}\rangle}}\]</div>
+\[v_n = \frac{\langle Q_n u_{n,i}^\ast \rangle}{2\sqrt{\langle Q_n^aQ_n^{b \ast}\rangle}}\]</div>
 <p>where we average over all particles of all events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -122,6 +122,30 @@ systems, this will not be sufficient.</p>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>A demonstration how to calculate flow according to the event plane of a separate particle list.
+The same particle list can also be used to determine the event plane and the flow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.ScalarProductFlow</span> <span class="kn">import</span> <span class="n">ScalarProductFlow</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH_FLOW</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_flow</span><span class="o">.</span><span class="n">dat</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH_EVENT_PLANE</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_ep</span><span class="o">.</span><span class="n">dat</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles on which we want to calculate flow</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_flow</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH_FLOW</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles which determine the event plane</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_event</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_EVENT_PLANE</span><span class="p">)</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow2</span> <span class="o">=</span> <span class="n">ScalarProductFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="linenos">15</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow3</span> <span class="o">=</span> <span class="n">ScalarProductFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="linenos">16</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error</span>
+<span class="linenos">18</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span><span class="p">,</span> <span class="n">v2_error</span> <span class="o">=</span> <span class="n">flow2</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">,</span><span class="n">jetscape_event</span><span class="p">)</span>
+<span class="linenos">19</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v3</span><span class="p">,</span> <span class="n">v3_error</span> <span class="o">=</span> <span class="n">flow3</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">,</span><span class="n">jetscape_event</span><span class="p">)</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
