@@ -3,8 +3,7 @@
 Flow
 ====
 
-.. currentmodule:: Flow
-.. autoclass:: Flow
+.. toctree::
+   :maxdepth: 2
 
-.. automethod:: Flow.integrated_flow
-.. automethod:: Flow.differential_flow
+   GenerateFlow/index

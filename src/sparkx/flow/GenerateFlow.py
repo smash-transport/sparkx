@@ -5,7 +5,7 @@ class GenerateFlow:
     """
     Generate particle data with anisotropic flow for testing.
 
-    This class generates particle lists in JETSCAPE or OSCAR output format 
+    This class generates particle lists in JETSCAPE or OSCAR output format
     to test the correct implementation of flow analysis routines.
 
     Attributes
@@ -26,15 +26,22 @@ class GenerateFlow:
     Methods
     -------
     generate_dummy_JETSCAPE_file:
-        Generate dummy flow data in JETSCAPE format.
+        Generate a dummy JETSCAPE file with random particle momenta resulting in
+        the same flow for all transverse momenta.
+    generate_dummy_JETSCAPE_file_realistic_pt_shape:
+        Generate a dummy JETSCAPE file with particles having flow with a more
+        realistic transverse momentum distribution.
     generate_dummy_OSCAR_file:
         Generate dummy flow data in OSCAR format.
+    generate_dummy_OSCAR_file_realistic_pt_shape:
+        Generate a dummy OSCAR2013 file with particles having flow with a more
+        realistic transverse momentum distribution.
 
     Examples
     --------
     To use the class the GenerateFlow object has to be created with the desired
     anisotropic flow harmonics and then a dummy data file can be created:
-    
+
     .. highlight:: python
     .. code-block:: python
         :linenos:
@@ -46,7 +53,18 @@ class GenerateFlow:
         >>> event_multiplicity = 10000
         >>> random_seed = 42
         >>> flow_object.generate_dummy_JETSCAPE_file(path_to_output,number_events,event_multiplicity,random_seed)
-        
+
+    Notes
+    -----
+    If you use the :py:meth:`generate_dummy_JETSCAPE_file_realistic_pt_shape` or
+    :py:meth:`generate_dummy_OSCAR_file_realistic_pt_shape` keep in mind, that the
+    flow values given during construction are used for the saturation value of the
+    flow at large transverse momentum. They do **not** reflect the value of the
+    integrated flow.
+
+    The implemented method for the more realistic transverse momentum profile is
+    taken from Nicolas Borghini implemented in this
+    `event generator <https://www.physik.uni-bielefeld.de/~borghini/Software/flow_analysis_codes/generator.cc>`__.
     """
 
     def __init__(self, *vn, **vn_kwargs):
@@ -79,12 +97,12 @@ class GenerateFlow:
 
         Returns
         -------
-            float 
+            float
                 The value of the distribution function at the given angle.
 
         Notes
         -----
-            - This method calculates the value of the distribution function 
+            - This method calculates the value of the distribution function
             based on the harmonic components (vn) and angles (phi).
         """
         f = 1. / (2. * np.pi)
@@ -95,7 +113,7 @@ class GenerateFlow:
 
         return f * f_harmonic
 
-    def sample_angles(self, multiplicity):
+    def __sample_angles(self, multiplicity):
         """
         Sample angles for a given multiplicity according to a given distribution.
 
@@ -114,7 +132,7 @@ class GenerateFlow:
         while len(phi) < multiplicity:
             random_phi = rd.uniform(0., 2. * np.pi)
             random_dist_val = rd.uniform(0., f_max)
-        
+
             if random_dist_val <= self.__distribution_function(random_phi):
                 phi.append(random_phi)
 
@@ -174,10 +192,10 @@ class GenerateFlow:
                     break
 
         return momentum_radial
-    
-    def sample_momenta(self, multiplicity, temperature, mass):
+
+    def __sample_momenta_thermal(self, multiplicity, temperature, mass):
         """
-        Sample momenta for a given multiplicity, temperature, and mass from 
+        Sample momenta for a given multiplicity, temperature, and mass from
         a thermal distribution function.
 
         Parameters
@@ -209,9 +227,166 @@ class GenerateFlow:
         self.py_ = py
         self.pz_ = pz
 
+    def __artificial_pT_distribution(self, pT, pTmin, pT0, pT1, T0):
+        """
+        Calculate the artificial pT distribution.
+
+        Parameters
+        ----------
+        pT : float
+            Transverse momentum.
+        pTmin : float
+            Minimum transverse momentum.
+        pT0 : float
+            Lower threshold for the flat region.
+        pT1 : float
+            Cutoff transverse momentum.
+        T0 : float
+            Inverse slope parameter.
+
+        Returns
+        -------
+        float
+            The value of the artificial transverse momentum distribution.
+
+        Notes
+        -----
+        This function gives the transverse-momentum distribution, following a simple functional shape:
+
+        - dN/dpT is flat for 0 < pT < pT0.
+        - Decreases exponentially (with inverse slope parameter T0) for pT0 < pT < pT1.
+        - Decreases with an inverse power-law for pT > pT1.
+
+        Momenta (pT, pT0...) are given in GeV.
+        """
+        value = 0.
+        if pT < pTmin:
+            value = 0.
+        elif pT <= pT0:
+            value = 1.
+        elif pT <= pT1:
+            value = np.exp(-(pT-pT0)/T0)
+        else:
+            value = np.exp(-(pT1-pT0)/T0) * (pT1/pT)**7
+        return value
+
+    def __artificial_flow_pT_shape(self, pT, pT0_bis, pT_sat, vn_sat):
+        """
+        Calculate the artificial flow pT shape.
+
+        Parameters
+        ----------
+        pT : float
+            Transverse momentum.
+        pT0 : float
+            Lower threshold for the quadratic rise.
+        pT_sat : float
+            Saturation point for the quadratic rise.
+        vn_sat : float
+            Saturation value.
+
+        Returns
+        -------
+        float
+            The value of the artificial flow pT shape.
+
+        Notes
+        -----
+        This function mimics the shape measured at RHIC:
+
+        - Quadratic rise for 0 < pT < pT0.
+        - Linear rise for pT0 < pT < pT_sat - pT0.
+        - Quadratic rise again for pT_sat - pT0 < pT < pT_sat.
+        - Constant value vn_sat for pT > pT_sat.
+        """
+        value = 0.
+        vn_pT0_bis = 0.5 * vn_sat * pT0_bis / (pT_sat - pT0_bis)
+
+        if pT < pT0_bis:
+            value = (pT / pT0_bis)**2. * vn_pT0_bis
+        elif pT < (pT_sat - pT0_bis):
+            value = (vn_sat - 2.*vn_pT0_bis) * (pT - pT0_bis) / (pT_sat - 2.*pT0_bis) + vn_pT0_bis
+        elif pT < pT_sat:
+            value = vn_sat - ((pT - pT_sat) / pT0_bis)**2. * vn_pT0_bis
+        else:
+            value = vn_sat
+
+        return value
+
+    def __distribution_function_pT_differential(self, phi, vn_pt_list):
+        """
+        Calculates the pT-differential distribution function for a given
+        azimuthal angle.
+
+        Parameters
+        ----------
+        phi : float
+            The azimuthal angle at which to calculate the distribution function.
+        vn_pt_list : list
+            A list of flow harmonics vn for different transverse momenta pT.
+
+        Returns
+        -------
+        float
+            The calculated pT-differential distribution function value.
+        """
+        f_harmonic = 1.0
+        f_norm = 1.0
+        for term in range(len(self.n_)):
+            f_harmonic += 2. * vn_pt_list[term] * np.cos(self.n_[term] * phi)
+            f_norm += 2. * np.abs(vn_pt_list[term])
+
+        return f_harmonic / f_norm
+
+    def generate_flow_realistic_pt_distribution(self, multiplicity, reaction_plane_angle):
+        pTmax = 4.5
+        pTmin = 0.1
+        pT0 = 0.5
+        pT1 = 3.0
+        T0 = 0.6
+        pT0_bis = 0.1
+
+        pT_sat = 1.5
+
+        for particle in range(multiplicity):
+            pT_chosen = 0.
+            need_momentum = True
+            while need_momentum:
+                pT = rd.random()*pTmax
+                if rd.random() < self.__artificial_pT_distribution(pT, pTmin, pT0, pT1, T0):
+                    pT_chosen = pT
+                    need_momentum = False
+
+            vn_pt_list = []
+            for harmonic in range(len(self.n_)):
+                vn_pt_list.append(self.__artificial_flow_pT_shape(pT,pT0_bis,pT_sat,self.vn_[harmonic]))
+
+            phi_chosen = 0.
+            need_angle = True
+            while need_angle:
+                phi = 2.*np.pi*rd.random()
+                if rd.random() < self.__distribution_function_pT_differential(phi,vn_pt_list):
+                    phi_chosen = phi
+                    need_angle = False
+
+            if reaction_plane_angle != 0.:
+                phi_chosen += reaction_plane_angle
+                if phi_chosen > 2.*np.pi:
+                    phi_chosen -= 2.*np.pi
+
+            # convert to cartesian
+            self.px_.append(pT_chosen * np.cos(phi_chosen))
+            self.py_.append(pT_chosen * np.sin(phi_chosen))
+            self.pz_.append(rd.uniform(-1,1)*pTmax)
+
     def generate_dummy_JETSCAPE_file(self,output_path,number_events,multiplicity,seed):
         """
-        Generate a dummy JETSCAPE file with random particle momenta.
+        Generate a dummy JETSCAPE file with random particle momenta resulting in
+        the same flow for all transverse momenta.
+
+        For simplicity we generate :math:`\\pi^+` particles with a mass of
+        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a
+        temperature of :math:`T=0.140` GeV.
 
         Parameters
         ----------
@@ -238,8 +413,8 @@ class GenerateFlow:
             output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
 
             for event in range(number_events):
-                self.sample_angles(multiplicity)
-                self.sample_momenta(multiplicity, temperature, mass)
+                self.__sample_angles(multiplicity)
+                self.__sample_momenta_thermal(multiplicity, temperature, mass)
 
                 output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
                 for particle in range(multiplicity):
@@ -252,53 +427,180 @@ class GenerateFlow:
                     output.write("%d %d %d %g %g %g %g\n"
                                  %(particle,pdg,status,energy,self.px_[particle],
                                    self.py_[particle],self.pz_[particle]))
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
-            
+
+    def generate_dummy_JETSCAPE_file_realistic_pt_shape(self,output_path,number_events,multiplicity,seed,random_reaction_plane=True):
+        """
+        Generate a dummy JETSCAPE file with particles having flow with a more
+        realistic transverse momentum distribution.
+
+        For more details on the chosen parameters have a look at the source code.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            random_reaction_plane: bool
+                Switch for random reaction plane angle. Default is `True`.
+                Should be switched off for testing ReactionPlaneFlow.
+
+        Returns
+        -------
+            None
+        """
+        rd.seed(seed)
+        mass = 0.138
+        pdg = 211
+        status = 27
+
+        with open(output_path, "w") as output:
+            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+
+            for event in range(number_events):
+                if random_reaction_plane:
+                    reaction_plane_angle = 2.*np.pi*rd.random()
+                else:
+                    reaction_plane_angle = 0.
+                self.generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+
+                output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%d %d %d %g %g %g %g\n"
+                                 %(particle,pdg,status,energy,self.px_[particle],
+                                   self.py_[particle],self.pz_[particle]))
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+            output.write("#	sigmaGen	0.0	sigmaErr	0.0")
+
     def generate_dummy_OSCAR_file(self,output_path,number_events,multiplicity,seed):
-            """
-            Generate a dummy OSCAR2013 file with random particle momenta.
+        """
+        Generate a dummy OSCAR2013 file with random particle momenta
+        resulting in the same flow for all transverse momenta.
 
-            Parameters
-            ----------
-                output_path: str
-                    The output file path.
-                number_events: int
-                    The number of events to generate.
-                multiplicity: int
-                    The number of particles per event.
-                seed: int
-                    The random seed for reproducibility.
+        For simplicity we generate :math:`\\pi^+` particles with a mass of
+        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a
+        temperature of :math:`T=0.140` GeV.
 
-            Returns
-            -------
-                None
-            """
-            rd.seed(seed)
-            temperature = 0.140
-            mass = 0.138
-            pdg = 211
-            status = 27
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
 
-            with open(output_path, "w") as output:
-                output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
-                output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
-                output.write("# SMASH-2.2\n")
+        Returns
+        -------
+            None
+        """
+        rd.seed(seed)
+        temperature = 0.140
+        mass = 0.138
+        pdg = 211
 
-                for event in range(number_events):
-                    self.sample_angles(multiplicity)
-                    self.sample_momenta(multiplicity, temperature, mass)
+        with open(output_path, "w") as output:
+            output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
+            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write("# SMASH-2.2\n")
 
-                    output.write(f"# event {event} out {multiplicity}\n")
-                    for particle in range(multiplicity):
-                        energy = np.sqrt(
-                            self.px_[particle] ** 2.
-                            + self.py_[particle] ** 2.
-                            + self.pz_[particle] ** 2.
-                            + mass ** 2.
-                        )
-                        output.write("%g %g %g %g %g %g %g %g  %g %d %d %d\n"
-                                    %(1,1,1,1,mass, energy,self.px_[particle],
-                                    self.py_[particle],self.pz_[particle],pdg, particle, 1))
+            for event in range(number_events):
+                self.__sample_angles(multiplicity)
+                self.__sample_momenta_thermal(multiplicity, temperature, mass)
 
-                    output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no")
+                output.write(f"# event {event} out {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%g %g %g %g %g %g %g %g %g %d %d %d\n"
+                                %(1,1,1,1,mass, energy,self.px_[particle],
+                                self.py_[particle],self.pz_[particle],pdg, particle, 1))
+
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")
+
+    def generate_dummy_OSCAR_file_realistic_pt_shape(self,output_path,number_events,multiplicity,seed,random_reaction_plane=True):
+        """
+        Generate a dummy OSCAR2013 file with particles having flow with a more
+        realistic transverse momentum distribution.
+
+        For more details on the chosen parameters have a look at the source code.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            random_reaction_plane: bool
+                Switch for random reaction plane angle. Default is `True`.
+                Should be switched off for testing ReactionPlaneFlow.
+
+        Returns
+        -------
+            None
+        """
+        rd.seed(seed)
+        mass = 0.138
+        pdg = 211
+
+        with open(output_path, "w") as output:
+            output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
+            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write("# SMASH-2.2\n")
+
+            for event in range(number_events):
+                if random_reaction_plane:
+                    reaction_plane_angle = 2.*np.pi*rd.random()
+                else:
+                    reaction_plane_angle = 0.
+                self.generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+
+                output.write(f"# event {event} out {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%g %g %g %g %g %g %g %g %g %d %d %d\n"
+                                %(1,1,1,1,mass, energy,self.px_[particle],
+                                self.py_[particle],self.pz_[particle],pdg, particle, 1))
+
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")

@@ -1,4 +1,4 @@
-SPARKX 
+SPARKX
 ======
 
 .. raw:: html
