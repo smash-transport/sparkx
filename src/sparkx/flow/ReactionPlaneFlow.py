@@ -44,8 +44,6 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>>
         >>> # Calculate the integrated flow with error
         >>> v2 = flow2.integrated_flow(jetscape_flow)
- 
-       
 
     """
     def __init__(self,n=2):
