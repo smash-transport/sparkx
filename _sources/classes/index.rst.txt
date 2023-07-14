@@ -11,6 +11,5 @@ Classes
    Jetscape/index
    JetAnalysis/index
    Histogram/index
-   Flow/index
-   GenerateFlow/index
+   flow/index
    Lattice3D/index
