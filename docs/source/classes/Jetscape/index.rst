@@ -10,6 +10,7 @@ Jetscape
 .. automethod:: Jetscape.particle_objects_list
 .. automethod:: Jetscape.num_events
 .. automethod:: Jetscape.num_output_per_event
+.. automethod:: Jetscape.get_sigmaGen
 .. automethod:: Jetscape.particle_species
 .. automethod:: Jetscape.remove_particle_species
 .. automethod:: Jetscape.lower_event_energy_cut
