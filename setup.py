@@ -18,8 +18,8 @@ setup(
     long_description_content_type="text/markdown",
     author='Hendrik Roch, Nils Sass, Niklas Götz',
     author_email="roch@fias.uni-frankfurt.de, nsass@fias.uni-frankfurt.de, goetz@fias.uni-frankfurt.de",
-    url="https://hendrik1704.github.io/sparkx/",
-    download_url="https://github.com/Hendrik1704/sparkx",
+    url="https://smash-transport.github.io/sparkx/",
+    download_url="https://github.com/smash-transport/sparkx",
     license='MIT',
     include_package_data = True
 )
