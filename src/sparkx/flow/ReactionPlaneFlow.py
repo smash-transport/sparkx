@@ -1,4 +1,4 @@
-from . import FlowInterface
+from sparkx.flow import FlowInterface
 import numpy as np
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
