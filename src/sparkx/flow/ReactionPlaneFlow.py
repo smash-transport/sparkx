@@ -25,15 +25,14 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
     Example
     --------
     
-    A demonstration how to calculate flow according to the event plane of a separate particle list.
-    The same particle list can also be used to determine the event plane and the flow.
+    A demonstration how to calculate flow with the reaction plane method.
 
     .. highlight:: python
     .. code-block:: python
         :linenos:
 
         >>> from Jetscape import Jetscape
-        >>> from flow.EventPlaneFlow import EventPlaneFlow
+        >>> from flow.ReactionPlaneFlow import ReactionPlaneFlow
         >>>
         >>> JETSCAPE_FILE_PATH_FLOW = [Jetscape_directory]/particle_lists_flow.dat
        
@@ -44,7 +43,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>> flow2 = ReactionPlaneFlow(n=2)
         >>>
         >>> # Calculate the integrated flow with error
-        >>> v2, v2_error = flow2.integrated_flow(jetscape_flow)
+        >>> v2 = flow2.integrated_flow(jetscape_flow)
  
        
 
