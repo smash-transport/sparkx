@@ -1,8 +1,6 @@
 <div style="float:right; margin:10px;">
-  <img align="right" src="https://github.com/smash-transport/sparkx/assets/90659054/58363f8a-2ed4-4a8f-bbb0-40f71349a338" alt="drawing" width="172"/>
+  <img align="right" src="https://github.com/smash-transport/sparkx/assets/90659054/58363f8a-2ed4-4a8f-bbb0-40f71349a338" alt="drawing" width="125"/>
 </div>
-<br>
-<br>
 <br>
 <br>
 
