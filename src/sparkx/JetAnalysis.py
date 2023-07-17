@@ -2,7 +2,7 @@ import numpy as np
 import fastjet as fj
 import csv
 import warnings
-from Particle import Particle
+from sparkx.Particle import Particle
 
 class JetAnalysis:
     """
