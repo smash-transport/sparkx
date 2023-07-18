@@ -6,7 +6,10 @@ from sparkx.Particle import Particle
 
 class JetAnalysis:
     """
-    This class analyzes simulation output using the fastjet python package.
+    This class analyzes simulation output using the
+    `fastjet <https://fastjet.fr/repo/doxygen-3.4.1/>`__ python package.
+    For further information on the jet finding algorithms please have a look
+    at the documentation.
 
     Attributes
     ----------
@@ -320,12 +323,20 @@ class JetAnalysis:
             Filename for the jet output.
         jet_algorithm: fastjet.JetAlgorithm, optional
             Jet algorithm for jet finding. Default is :code:`fastjet.antikt_algorithm`.
+
+        Notes
+        -----
+        The standard recombination scheme :code:`E_scheme` of the fastjet package is fixed here.
+
         """
         self.__initialize_and_check_parameters(hadron_data, jet_R, jet_eta_range, jet_pt_range)
         for event, hadron_data_event in enumerate(self.hadron_data_):
             new_file = False
             event_PseudoJets = self.create_fastjet_PseudoJets(hadron_data_event)
-            jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_)
+            if jet_algorithm == fj.ee_genkt_algorithm or jet_algorithm == fj.genkt_algorithm:
+                jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_, -1.0)
+            else:
+                jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_)
             jet_selector = fj.SelectorEtaRange(self.jet_eta_range_[0],self.jet_eta_range_[1])
 
             if event == 0:
