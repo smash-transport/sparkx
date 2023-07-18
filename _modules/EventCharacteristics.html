@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventCharacteristics &mdash; sparkx 0.9.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">EventCharacteristics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for EventCharacteristics</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">sparkx.Lattice3D</span> <span class="kn">import</span> <span class="n">Lattice3D</span>
+
+<div class="viewcode-block" id="EventCharacteristics"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics">[docs]</a><span class="k">class</span> <span class="nc">EventCharacteristics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class computes event-by-event characteristics, e.g., eccentricities</span>
+<span class="sd">    or certain densities.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    event_data: list, numpy.ndarray or Lattice3D</span>
+<span class="sd">        List or array containing particle objects for one event, or a lattice containing the relevant densities.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    event_data_: list, numpy.ndarray or Lattice3D</span>
+<span class="sd">        List or array containing particle objects for one event, or a lattice containing the relevant densities.</span>
+<span class="sd">    has_lattice_: bool</span>
+<span class="sd">        Contains information if characteristics are derived from a lattice or particles</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    set_event_data:</span>
+<span class="sd">        Overwrites the event data.</span>
+<span class="sd">    eccentricity:</span>
+<span class="sd">        Computes the spatial eccentricity.</span>
+<span class="sd">    eccentricity_from_particles:</span>
+<span class="sd">        Computes the spatial eccentricity from particles.</span>
+<span class="sd">    eccentricity_from_lattice:</span>
+<span class="sd">        Computes the spatial eccentricity from a 3D lattice.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; from sparkx.Oscar import Oscar</span>
+<span class="sd">        &gt;&gt;&gt; from sparkx.EventCharacteristics import EventCharacteristics</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar object containing all events</span>
+<span class="sd">        &gt;&gt;&gt; oscar = Oscar(OSCAR_FILE_PATH)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; event_characterization = EventCharacteristics(oscar)</span>
+<span class="sd">        &gt;&gt;&gt; event_characterization.eccentricity(2, weight_quantitiy = &quot;number&quot;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_event_data</span><span class="p">(</span><span class="n">event_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EventCharacteristics.set_event_data"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.set_event_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_event_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overwrites the event data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_data : list, numpy.ndarray, or Lattice3D</span>
+<span class="sd">            List or array containing particle objects for one event, or a</span>
+<span class="sd">            lattice containing the relevant densities.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the input is not a list or numpy.ndarray when deriving</span>
+<span class="sd">            characteristics from particles.</span>
+<span class="sd">            If at least one element in the input is not of type Particle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if the input is a Lattice3D object</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">Lattice3D</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span> <span class="o">=</span> <span class="n">event_data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check that the input is a list/numpy.ndarray containing Particle objects</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a list nor a numpy.ndarray.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">Particle</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;At least one element in the input is not a &#39;</span> <span class="o">+</span>
+                                    <span class="s1">&#39;Particle type.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span> <span class="o">=</span> <span class="n">event_data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="nf">eccentricity_from_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the spatial eccentricity from particles.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        harmonic_n : int</span>
+<span class="sd">            The harmonic order for the eccentricity calculation.</span>
+<span class="sd">        weight_quantity : str, optional</span>
+<span class="sd">            The quantity used for particle weighting.</span>
+<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon number&quot;.</span>
+<span class="sd">            Default is &quot;energy&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        complex</span>
+<span class="sd">            The complex-valued eccentricity.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the harmonic order is less than 1.</span>
+<span class="sd">            If the weight quantity is unknown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">real_eps</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">imag_eps</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">norm</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;energy&quot;</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">E</span>
+            <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">charge</span>
+            <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;baryon number&quot;</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown weight for eccentricity&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">y</span>
+            <span class="c1">#Exception for dipole asymmetry</span>
+            <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">real_eps</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">weight</span>
+            <span class="n">imag_eps</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">weight</span>
+            <span class="n">norm</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">weight</span>
+        <span class="k">return</span> <span class="n">real_eps</span><span class="o">/</span><span class="n">norm</span> <span class="o">+</span> <span class="p">(</span><span class="n">imag_eps</span><span class="o">/</span><span class="n">norm</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
+
+    <span class="k">def</span> <span class="nf">eccentricity_from_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the spatial eccentricity from a 3D lattice. Takes all z-values</span>
+<span class="sd">        into account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        harmonic_n : int</span>
+<span class="sd">            The harmonic order for the eccentricity calculation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        complex</span>
+<span class="sd">            The complex-valued eccentricity.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the harmonic order is less than 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">real_eps</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">imag_eps</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">norm</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="c1">#Exception for dipole asymmetry</span>
+            <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lattice_density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="o">.</span><span class="n">get_value_by_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="n">real_eps</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">lattice_density</span>
+            <span class="n">imag_eps</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">harmonic_n</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">lattice_density</span>
+            <span class="n">norm</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">lattice_density</span>
+        <span class="k">return</span> <span class="n">real_eps</span><span class="o">/</span><span class="n">norm</span> <span class="o">+</span> <span class="p">(</span><span class="n">imag_eps</span><span class="o">/</span><span class="n">norm</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
+
+<div class="viewcode-block" id="EventCharacteristics.eccentricity"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.eccentricity">[docs]</a>    <span class="k">def</span> <span class="nf">eccentricity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">,</span><span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the spatial eccentricity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        harmonic_n : int</span>
+<span class="sd">            The harmonic order for the eccentricity calculation.</span>
+<span class="sd">        weight_quantity : str, optional</span>
+<span class="sd">            The quantity used for particle weighting.</span>
+<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon number&quot;.</span>
+<span class="sd">            Default is &quot;energy&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        complex</span>
+<span class="sd">            The complex-valued eccentricity.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the harmonic order is less than 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_lattice</span><span class="p">(</span><span class="n">harmonic_n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_particles</span><span class="p">(</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">weight_quantity</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

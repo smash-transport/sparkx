@@ -64,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -101,7 +102,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Permalink to this definition"></a></dt>
-<dd><p>This class analyzes simulation output using the fastjet python package.</p>
+<dd><p>This class analyzes simulation output using the
+<a class="reference external" href="https://fastjet.fr/repo/doxygen-3.4.1/">fastjet</a> python package.
+For further information on the jet finding algorithms please have a look
+at the documentation.</p>
 <p class="rubric">Notes</p>
 <p>The columns of the output file include the following quantities:</p>
 <table class="docutils align-default">
@@ -252,6 +256,8 @@ and the upper one to <span class="math notranslate nohighlight">\(+\infty\)</spa
 </dl>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The standard recombination scheme <code class="code docutils literal notranslate"><span class="pre">E_scheme</span></code> of the fastjet package is fixed here.</p>
 </dd></dl>
 
 <dl class="py method">
