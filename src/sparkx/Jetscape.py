@@ -348,7 +348,7 @@ class Jetscape:
             line = file.readline()
             if not line:
                 break
-            elif '#' in line and 'weight' in line:
+            elif '#' in line and 'N_hadrons' in line:
                 line_str = line.replace('\n','').replace('\t',' ').split(' ')
                 event = line_str[2]
                 num_output = line_str[8]
@@ -952,7 +952,7 @@ class Jetscape:
         format_jetscape = '%d %d %d %g %g %g %g'
         line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
         header = line_in_initial_file.readline()
-        last_line = self.get_last_line(self.PATH_JETSCAPE_)
+        last_line = self.__get_last_line(self.PATH_JETSCAPE_)
         line_in_initial_file.close()
 
         output = open(output_file, "w")
