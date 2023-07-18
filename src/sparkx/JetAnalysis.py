@@ -2,7 +2,7 @@ import numpy as np
 import fastjet as fj
 import csv
 import warnings
-from Particle import Particle
+from sparkx.Particle import Particle
 
 class JetAnalysis:
     """
@@ -410,4 +410,3 @@ class JetAnalysis:
             associated_particles = jet[1:]
             associated_particles_list.append(associated_particles)
         return associated_particles_list
-
