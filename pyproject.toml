@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sparkx"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
     { name="Hendrik Roch", email="roch@fias.uni-frankfurt.de" },
     { name="Nils Sass", email="nsass@fias.uni-frankfurt.de" },
