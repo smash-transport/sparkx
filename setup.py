@@ -12,7 +12,7 @@ setup(
         "abc-property==1.0"
         "fastjet==3.4.1.2"
     ],
-    version='1.0',
+    version='1.0.1',
     description='Software Package for Analyzing Relativistic Kinematics in Collision eXperiments',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
