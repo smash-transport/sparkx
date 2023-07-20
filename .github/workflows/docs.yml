@@ -2,8 +2,6 @@ name: Build and Deploy Documentation
 
 on:
   push:
-    branches:
-      - main  # adjust the branch name if needed
     tags:
       - 'v**'  # specify the pattern for release tags
 
