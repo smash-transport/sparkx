@@ -281,22 +281,22 @@ class Histogram:
 
             # Case 2.1: histogram contains only 1 instance
             if self.number_of_histograms_ == 1:
-                bin_index = np.digitize(value, self.bin_edges_)-1
-                if bin_index > self.number_of_bins_-1:
+                bin_index = np.digitize(value, self.bin_edges_)
+                if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[bin_index] += 1
-                    self.histograms_raw_count_[bin_index] += 1
+                    self.histograms_[bin_index-1] += 1
+                    self.histograms_raw_count_[bin_index-1] += 1
 
             # Case 2.2: If histogram contains multiple instances,
             #           always add values to the latest histogram
             else:
-                bin_index = np.digitize(value, self.bin_edges_)-1
-                if bin_index > self.number_of_bins_-1:
+                bin_index = np.digitize(value, self.bin_edges_)
+                if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[-1,bin_index] += 1
-                    self.histograms_raw_count_[-1,bin_index] += 1
+                    self.histograms_[-1,bin_index-1] += 1
+                    self.histograms_raw_count_[-1,bin_index-1] += 1
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
@@ -464,16 +464,17 @@ class Histogram:
 
     def print_histogram(self):
         """Print the histograms to the terminal."""
-        print("bin_low,bin_high,bin_value,bin_error")
+        print("bin_low,bin_high,bin_value")
         for hist in range(self.number_of_histograms_):
             print(f"{hist}. histogram:")
             for bin in range(self.number_of_bins_):
                 if self.number_of_histograms_ == 1:
-                    print(f'{self.bin_edges_[bin]},{self.bin_edges_[bin+1]},\
+                    print(f'[{self.bin_edges_[bin]},{self.bin_edges_[bin+1]}):\
                           {self.histograms_[bin]}')
                 else:
-                    print(f'{self.bin_edges_[bin]},{self.bin_edges_[bin+1]},\
+                    print(f'[{self.bin_edges_[bin]},{self.bin_edges_[bin+1]}):\
                           {self.histograms_[hist][bin]}')
+            print("")
 
     def write_to_file(self,filename,label_bin_center,label_bin_low,\
                       label_bin_high,label_distribution,label_error,comment=''):
