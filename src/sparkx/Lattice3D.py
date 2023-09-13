@@ -1026,6 +1026,12 @@ class Lattice3D:
                 k_min = 0
                 k_max = self.num_points_z_
 
+            norm=0
+            for i in range(i_min, i_max):
+                for j in range(j_min, j_max):
+                    for k in range(k_min, k_max):
+                        norm+=kernel.pdf([xi, yj, zk])
+
             for i in range(i_min, i_max):
                 for j in range(j_min, j_max):
                     for k in range(k_min, k_max):
@@ -1037,7 +1043,7 @@ class Lattice3D:
                         value_to_add = value * smearing_factor / self.cell_volume_
 
                         # Add the value to the grid
-                        self.grid_[i, j, k] += value_to_add
+                        self.grid_[i, j, k] += value_to_add/norm
 
 def print_lattice(lattice):
     for i in range(lattice.num_points_x_):
