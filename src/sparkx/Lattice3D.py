@@ -31,6 +31,12 @@ class Lattice3D:
         The number of points along the y-axis.
     num_points_z : int
         The number of points along the z-axis.
+    n_sigma_x : int
+        Number of sigmas to consider in smearing in x direction.
+    n_sigma_y : int
+        Number of sigmas to consider in smearing in y direction.
+    n_sigma_z : int
+        Number of sigmas to consider in smearing in z direction.
 
     Attributes
     ----------
