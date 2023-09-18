@@ -957,6 +957,9 @@ class Lattice3D:
         quantity : str
             The quantity of the particle data to be added. Supported values are 
             'energy density', 'number', 'charge', and 'baryon number'.
+        kernel : str, optional
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'. The default is 'covariant'.
         add : bool, optional
             Specifies whether to add the particle data to the existing lattice 
             values or replace them. If True, the particle data will be added to 
@@ -980,9 +983,10 @@ class Lattice3D:
         The supported quantities for particle data are as follows:
 
         - 'energy density': Uses the particle's energy (`E`) as the value to be added to the lattice.
-        - 'number': Adds a value of 1.0 to each grid point for each particle.
+        - 'number': Adds a value of 1.0 to the grid for each particle.
         - 'charge': Uses the particle's charge as the value to be added to the lattice. 
         - 'baryon number': Uses the particle's baryon number as the value to be added to the lattice.
+        - 'strangeness': Adds a value of 1.0 to the grid for each strange particle.
 
         """
         #delete old data?
@@ -1001,6 +1005,8 @@ class Lattice3D:
                 value = particle.charge
             elif quantity == "baryon number":
                 value = particle.baryon_number
+            elif quantity == "strangeness":
+                value = 1 if particle.is_strange() else 0
             else:
                 raise ValueError("Unknown quantity for lattice.");
 
