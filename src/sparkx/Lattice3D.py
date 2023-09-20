@@ -1050,7 +1050,7 @@ class Lattice3D:
                             smearing_factor = kernel_value.pdf([xi, yj, zk])
                         else:
                             diff_space=np.sqrt((xi-x)**2+(yj-y)**2+(zk-z)**2)
-                            gamma=1.0/np.sqrt(1+particle.p_abs()**2/particle.mass**2)
+                            gamma=np.sqrt(1+particle.p_abs()**2/particle.mass**2)
                             diff_velocity=(particle.px*(xi-x)+particle.py*(yj-y)+particle.pz*(zk-z))/(gamma*particle.mass)
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
                         norm+=smearing_factor
