@@ -1011,8 +1011,7 @@ class Lattice3D:
                 raise ValueError("Unknown quantity for lattice.");
 
             if(kernel == "gaussian"):
-                # Calculate the Gaussian kernel centered at (x, y, z)
-                kernel_value = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+                kernel_value = multivariate_normal([0, 0, 0], cov=sigma**2 * np.eye(3))
             elif(kernel == "covariant"):
                 kernel_value = multivariate_normal([0,0], cov=sigma**2 * np.eye(2))
             else:
@@ -1050,8 +1049,8 @@ class Lattice3D:
                         if(kernel == "gaussian"):
                             smearing_factor = kernel_value.pdf([xi, yj, zk])
                         else:
-                            diff_space=(xi-x)**2+(yj-y)**2+(zk-z)**2
-                            gamma=np.sqrt(1+particle.p_abs()**2/particle.mass**2)
+                            diff_space=np.sqrt((xi-x)**2+(yj-y)**2+(zk-z)**2)
+                            gamma=1.0/np.sqrt(1+particle.p_abs()**2/particle.mass**2)
                             diff_velocity=(particle.px*(xi-x)+particle.py*(yj-y)+particle.pz*(zk-z))/(gamma*particle.mass)
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
                         norm+=smearing_factor
