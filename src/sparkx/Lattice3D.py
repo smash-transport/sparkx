@@ -943,7 +943,7 @@ class Lattice3D:
         for i, j, k in np.ndindex(self.grid_.shape):
             self.grid_[i, j, k]=0
     
-    def add_particle_data(self, particle_data, sigma, quantity, add = False):
+    def add_particle_data(self, particle_data, sigma, quantity, kernel="covariant", add = False):
         """
         Add particle data to the lattice.
 
@@ -957,6 +957,9 @@ class Lattice3D:
         quantity : str
             The quantity of the particle data to be added. Supported values are 
             'energy density', 'number', 'charge', and 'baryon number'.
+        kernel : str, optional
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'. The default is 'covariant'.
         add : bool, optional
             Specifies whether to add the particle data to the existing lattice 
             values or replace them. If True, the particle data will be added to 
@@ -980,9 +983,10 @@ class Lattice3D:
         The supported quantities for particle data are as follows:
 
         - 'energy density': Uses the particle's energy (`E`) as the value to be added to the lattice.
-        - 'number': Adds a value of 1.0 to each grid point for each particle.
+        - 'number': Adds a value of 1.0 to the grid for each particle.
         - 'charge': Uses the particle's charge as the value to be added to the lattice. 
         - 'baryon number': Uses the particle's baryon number as the value to be added to the lattice.
+        - 'strangeness': Adds a value of 1.0 to the grid for each strange particle.
 
         """
         #delete old data?
@@ -1001,11 +1005,19 @@ class Lattice3D:
                 value = particle.charge
             elif quantity == "baryon number":
                 value = particle.baryon_number
+            elif quantity == "strangeness":
+                value = 1 if particle.is_strange() else 0
             else:
                 raise ValueError("Unknown quantity for lattice.");
 
-            # Calculate the Gaussian kernel centered at (x, y, z)
-            kernel = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+            if(kernel == "gaussian"):
+                # Calculate the Gaussian kernel centered at (x, y, z)
+                kernel_value = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+            elif(kernel == "covariant"):
+                kernel_value = multivariate_normal([0,0], cov=sigma**2 * np.eye(2))
+            else:
+                raise ValueError("Unknown kernel type for lattice.")
+            
             # Determine the range of cells within the boundary
             if self.n_sigma_x_ is not None:
                 i_min = max(int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_, 0)
@@ -1026,6 +1038,8 @@ class Lattice3D:
                 k_min = 0
                 k_max = self.num_points_z_
 
+            norm=0
+
             for i in range(i_min, i_max):
                 for j in range(j_min, j_max):
                     for k in range(k_min, k_max):
@@ -1033,11 +1047,23 @@ class Lattice3D:
                         xi, yj, zk = self.get_coordinates(i, j, k)
 
                         # Calculate the value to add to the grid at (i, j, k)
-                        smearing_factor = kernel.pdf([xi, yj, zk])
+                        if(kernel == "gaussian"):
+                            smearing_factor = kernel_value.pdf([xi, yj, zk])
+                        else:
+                            diff_space=(xi-x)**2+(yj-y)**2+(zk-z)**2
+                            gamma=np.sqrt(1+particle.p_abs()**2/particle.mass**2)
+                            diff_velocity=(particle.px*(xi-x)+particle.py*(yj-y)+particle.pz*(zk-z))/(gamma*particle.mass)
+                            smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
+                        norm+=smearing_factor
                         value_to_add = value * smearing_factor / self.cell_volume_
 
                         # Add the value to the grid
                         self.grid_[i, j, k] += value_to_add
+
+            for i in range(i_min, i_max):
+                for j in range(j_min, j_max):
+                    for k in range(k_min, k_max):
+                        self.grid_[i, j, k] /= norm
 
 def print_lattice(lattice):
     for i in range(lattice.num_points_x_):

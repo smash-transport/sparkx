@@ -45,7 +45,7 @@ class Particle:
     proc_id_origin_ : int
         ID for the process the particle stems from.
     proc_type_origin_ : int
-        Thype information for the process the particle stems from.
+        Type information for the process the particle stems from.
     t_last_coll_ : double
         Time of the last collision.
     pdg_mother1_ : int
