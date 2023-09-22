@@ -949,23 +949,39 @@ class Jetscape:
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        format_jetscape = '%d %d %d %g %g %g %g'
         line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
-        header = line_in_initial_file.readline()
-        last_line = self.__get_last_line(self.PATH_JETSCAPE_)
+        header_file = line_in_initial_file.readline()
         line_in_initial_file.close()
 
-        output = open(output_file, "w")
-        output.write(header)
-        output.close()
+        # Open the output file with buffered writing
+        with open(output_file, "w") as f_out:
+            header_file_written = False
+            data_to_write = []
 
-        with open(output_file, "a") as f_out:
             for i in range(self.num_events_):
-                event = self.num_output_per_event_[i,0]
-                num_out = self.num_output_per_event_[i,1]
+                print("Working on event ",i)
+                event = self.num_output_per_event_[i, 0]
+                num_out = self.num_output_per_event_[i, 1]
                 particle_output = np.asarray(self.particle_list()[i])
 
-                f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
-                np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
+                # Write the header if not already written
+                if not header_file_written:
+                    header_file_written = True
+                    data_to_write.append(header_file)
+
+                # Header for each event
+                header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                data_to_write.append(header)
+
+                # Convert particle data to formatted strings
+                particle_lines = [f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+
+                # Append particle data to the list
+                data_to_write.extend(particle_lines)
+
+            # Write all accumulated data to the file
+            f_out.writelines(data_to_write)
+
+            # Write the last line
+            last_line = self.__get_last_line(self.PATH_JETSCAPE_)
             f_out.write(last_line)
-        f_out.close()
