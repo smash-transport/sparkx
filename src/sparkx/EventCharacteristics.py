@@ -94,7 +94,7 @@ class EventCharacteristics:
             The harmonic order for the eccentricity calculation.
         weight_quantity : str, optional
             The quantity used for particle weighting.
-            Valid options are "energy", "number", "charge", or "baryon number".
+            Valid options are "energy", "number", "charge", or "baryon".
             Default is "energy".
 
         Returns
@@ -120,7 +120,7 @@ class EventCharacteristics:
                 weight = 1
             elif weight_quantity == "charge":
                 weight = particle.charge
-            elif weight_quantity == "baryon number":
+            elif weight_quantity == "baryon":
                 weight = particle.baryon_number
             else:
                 raise ValueError("Unknown weight for eccentricity")
@@ -186,7 +186,7 @@ class EventCharacteristics:
             The harmonic order for the eccentricity calculation.
         weight_quantity : str, optional
             The quantity used for particle weighting.
-            Valid options are "energy", "number", "charge", or "baryon number".
+            Valid options are "energy", "number", "charge", or "baryon".
             Default is "energy".
 
         Returns
@@ -211,10 +211,10 @@ class EventCharacteristics:
         strangeness_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
 
         # smear the particles on the 3D lattice
-        energy_density.add_particle_data(self.event_data_, sigma_smear)
-        baryon_density.add_particle_data(self.event_data_, sigma_smear)
-        charge_density.add_particle_data(self.event_data_, sigma_smear)
-        strangeness_density.add_particle_data(self.event_data_, sigma_smear)
+        energy_density.add_particle_data(self.event_data_, sigma_smear,"energy_density")
+        baryon_density.add_particle_data(self.event_data_, sigma_smear,"baryon_density")
+        charge_density.add_particle_data(self.event_data_, sigma_smear,"charge_density")
+        strangeness_density.add_particle_data(self.event_data_, sigma_smear,"strangeness_density")
 
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
@@ -231,10 +231,10 @@ class EventCharacteristics:
                 for y_val in y:
                     for eta_val in eta:
                         z_val = tau * np.sinh(eta_val)
-                        value_energy_density = energy_density.interpolate_to_lattice(x_val,y_val,z_val)
-                        value_baryon_density = baryon_density.interpolate_to_lattice(x_val,y_val,z_val)
-                        value_charge_density = charge_density.interpolate_to_lattice(x_val,y_val,z_val)
-                        value_strangeness_density = strangeness_density.interpolate_to_lattice(x_val,y_val,z_val)
+                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)
+                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)
+                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)
+                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)
 
                         if value_energy_density == None:
                             value_energy_density = 0.
@@ -242,6 +242,4 @@ class EventCharacteristics:
                             value_charge_density = 0.
                             value_strangeness_density = 0.
 
-                        output_file.write(f"{tau} {x_val} {y_val} {eta_val} {value_energy_density} {value_baryon_density} {value_charge_density} {value_strangeness_density}\n")
-
-
+                        output_file.write(f"{tau:g} {x_val:g} {y_val:g} {eta_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")

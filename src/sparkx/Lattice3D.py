@@ -96,16 +96,16 @@ class Lattice3D:
     visualize:
         Visualize the lattice data in a 3D plot.
     extract_slice:
-        Extract a 2D slice from the lattice along the specified axis at the 
+        Extract a 2D slice from the lattice along the specified axis at the
         given index.
     save_slice_to_csv:
-        Save a 2D slice from the lattice along the specified axis and index to 
+        Save a 2D slice from the lattice along the specified axis and index to
         a CSV file.
     interpolate_to_lattice:
-        Interpolate the current lattice data to a new lattice with the specified 
+        Interpolate the current lattice data to a new lattice with the specified
         number of points along each axis.
     interpolate_to_lattice_new_extent:
-        Interpolate the current lattice data to a new lattice with the specified 
+        Interpolate the current lattice data to a new lattice with the specified
         number of points and extent.
     reset:
         Reset the values of all grid points in the lattice to zero.
@@ -130,11 +130,11 @@ class Lattice3D:
         self.z_values_ = np.linspace(z_min, z_max, num_points_z)
 
         self.grid_ = np.zeros((num_points_x, num_points_y, num_points_z))
-        
+
         self.n_sigma_x_ = int(n_sigma_x) if n_sigma_x is not None else None
         self.n_sigma_y_ = int(n_sigma_y) if n_sigma_y is not None else None
         self.n_sigma_z_ = int(n_sigma_z) if n_sigma_z is not None else None
-        
+
         self.spacing_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
         self.spacing_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
         self.spacing_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
@@ -260,7 +260,7 @@ class Lattice3D:
         Returns
         -------
         tuple
-            A tuple containing the indices (i, j, k) corresponding to the given 
+            A tuple containing the indices (i, j, k) corresponding to the given
             coordinates.
 
         Raises
@@ -312,7 +312,7 @@ class Lattice3D:
         Returns
         -------
         int or float or None
-            The value at the specified coordinates. Returns None if any of 
+            The value at the specified coordinates. Returns None if any of
             the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices(x, y, z)
@@ -362,7 +362,7 @@ class Lattice3D:
         Returns
         -------
         tuple
-            A tuple containing the x, y, and z coordinates corresponding to 
+            A tuple containing the x, y, and z coordinates corresponding to
             the given indices.
 
         Raises
@@ -435,7 +435,7 @@ class Lattice3D:
         Returns
         -------
         tuple
-            A tuple of three integers representing the closest indices in the 
+            A tuple of three integers representing the closest indices in the
             lattice for the given coordinates (x, y, z).
 
         """
@@ -446,10 +446,10 @@ class Lattice3D:
         j = self.__find_closest_index(y, self.y_values_)
         k = self.__find_closest_index(z, self.z_values_)
         return i, j, k
-    
+
     def interpolate_value(self, x, y, z):
         """
-        Interpolate the value at the specified position using trilinear 
+        Interpolate the value at the specified position using trilinear
         interpolation.
 
         Parameters
@@ -464,7 +464,7 @@ class Lattice3D:
         Returns
         -------
         float or None
-            The interpolated value at the specified position. If the provided 
+            The interpolated value at the specified position. If the provided
             position is outside the lattice range, None is returned.
 
         """
@@ -480,7 +480,7 @@ class Lattice3D:
         # Perform trilinear interpolation
         xi = [x, y, z]
         return interpn((self.x_values_, self.y_values_, self.z_values_), self.grid_, xi)[0]
-    
+
     def __operate_on_lattice(self, other, operation):
         """
         Apply a binary operation on two Lattice3D objects element-wise.
@@ -495,7 +495,7 @@ class Lattice3D:
         Returns
         -------
         Lattice3D
-            A new Lattice3D object containing the result of the element-wise 
+            A new Lattice3D object containing the result of the element-wise
             operation.
 
         Raises
@@ -591,7 +591,7 @@ class Lattice3D:
 
         """
         return self.__operate_on_lattice(other, lambda x, y: x / y)
-    
+
     def average(self, *lattices):
         """
         Compute the average of multiple Lattice3D objects element-wise.
@@ -629,7 +629,7 @@ class Lattice3D:
         result.grid_ = np.mean([lattice.grid_ for lattice in all_lattices], axis=0)
 
         return result
-    
+
     def rescale(self, factor):
         """
         Rescale the values of the lattice by a specified factor.
@@ -735,7 +735,7 @@ class Lattice3D:
 
     def extract_slice(self, axis, index):
         """
-        Extract a 2D slice from the lattice along the specified axis at the 
+        Extract a 2D slice from the lattice along the specified axis at the
         given index.
 
         Parameters
@@ -789,7 +789,7 @@ class Lattice3D:
 
     def save_slice_to_csv(self, axis, index, filename):
         """
-        Save a 2D slice from the lattice along the specified axis and index to 
+        Save a 2D slice from the lattice along the specified axis and index to
         a CSV file.
 
         Parameters
@@ -832,7 +832,7 @@ class Lattice3D:
 
     def interpolate_to_lattice(self, num_points_x, num_points_y, num_points_z):
         """
-        Interpolate the current lattice data to a new lattice with the specified 
+        Interpolate the current lattice data to a new lattice with the specified
         number of points along each axis.
 
         Parameters
@@ -851,8 +851,8 @@ class Lattice3D:
 
         Notes
         -----
-        This method performs spline interpolation to generate the values for 
-        each grid point of the new lattice. The interpolation is based on the 
+        This method performs spline interpolation to generate the values for
+        each grid point of the new lattice. The interpolation is based on the
         current lattice data and the desired number of points along each axis.
 
         """
@@ -873,10 +873,10 @@ class Lattice3D:
                     new_lattice.set_value_by_index(i, j, k, value)
 
         return new_lattice
-    
+
     def interpolate_to_lattice_new_extent(self, num_points_x, num_points_y, num_points_z, x_min, x_max, y_min, y_max, z_min, z_max):
         """
-        Interpolate the current lattice data to a new lattice with the specified 
+        Interpolate the current lattice data to a new lattice with the specified
         number of points and extent.
 
         Parameters
@@ -907,9 +907,9 @@ class Lattice3D:
 
         Notes
         -----
-        This method performs spline interpolation to generate the values for 
-        each grid point of the new lattice. The interpolation is based on the 
-        current lattice data and the desired number of points and extent along 
+        This method performs spline interpolation to generate the values for
+        each grid point of the new lattice. The interpolation is based on the
+        current lattice data and the desired number of points and extent along
         each axis.
 
         """
@@ -930,19 +930,19 @@ class Lattice3D:
                     new_lattice.set_value_by_index(i, j, k, value)
 
         return new_lattice
-    
+
     def reset(self):
         """
         Reset the values of all grid points in the lattice to zero.
 
         Notes
         -----
-        This method iterates over all grid points in the lattice and sets their 
+        This method iterates over all grid points in the lattice and sets their
         values to zero.
         """
         for i, j, k in np.ndindex(self.grid_.shape):
             self.grid_[i, j, k]=0
-    
+
     def add_particle_data(self, particle_data, sigma, quantity, kernel="covariant", add = False):
         """
         Add particle data to the lattice.
@@ -952,18 +952,18 @@ class Lattice3D:
         particle_data : list
             A list of Particle objects containing the particle data.
         sigma : float
-            The standard deviation of the Gaussian kernel used for smearing the 
+            The standard deviation of the Gaussian kernel used for smearing the
             particle data.
         quantity : str
-            The quantity of the particle data to be added. Supported values are 
+            The quantity of the particle data to be added. Supported values are
             'energy density', 'number', 'charge', and 'baryon number'.
         kernel : str, optional
             The type of kernel to use for smearing the particle data. Supported
             values are 'gaussian' and 'covariant'. The default is 'covariant'.
         add : bool, optional
-            Specifies whether to add the particle data to the existing lattice 
-            values or replace them. If True, the particle data will be added to 
-            the existing lattice values. If False (default), the lattice values 
+            Specifies whether to add the particle data to the existing lattice
+            values or replace them. If True, the particle data will be added to
+            the existing lattice values. If False (default), the lattice values
             will be reset before adding the particle data.
 
         Raises
@@ -973,18 +973,18 @@ class Lattice3D:
 
         Notes
         -----
-        This method calculates the smearing of the particle data using a 
-        Gaussian kernel centered at each particle's coordinates. The smeared 
+        This method calculates the smearing of the particle data using a
+        Gaussian kernel centered at each particle's coordinates. The smeared
         values are added to the corresponding grid points in the lattice.
 
-        The Gaussian kernel is defined by the provided standard deviation 
+        The Gaussian kernel is defined by the provided standard deviation
         `sigma`. The larger the `sigma` value, the smoother the smearing effect.
 
         The supported quantities for particle data are as follows:
 
         - 'energy density': Uses the particle's energy (`E`) as the value to be added to the lattice.
         - 'number': Adds a value of 1.0 to the grid for each particle.
-        - 'charge': Uses the particle's charge as the value to be added to the lattice. 
+        - 'charge': Uses the particle's charge as the value to be added to the lattice.
         - 'baryon number': Uses the particle's baryon number as the value to be added to the lattice.
         - 'strangeness': Adds a value of 1.0 to the grid for each strange particle.
 
@@ -996,16 +996,16 @@ class Lattice3D:
             x = particle.x
             y = particle.y
             z = particle.z
-            
-            if quantity == "energy density":
+
+            if quantity == "energy_density":
                 value = particle.E
-            elif quantity == "number":
+            elif quantity == "number_density":
                 value = 1.0
-            elif quantity == "charge":
+            elif quantity == "charge_density":
                 value = particle.charge
-            elif quantity == "baryon number":
+            elif quantity == "baryon_density":
                 value = particle.baryon_number
-            elif quantity == "strangeness":
+            elif quantity == "strangeness_density":
                 value = 1 if particle.is_strange() else 0
             else:
                 raise ValueError("Unknown quantity for lattice.");
@@ -1017,7 +1017,7 @@ class Lattice3D:
                 kernel_value = multivariate_normal([0,0], cov=sigma**2 * np.eye(2))
             else:
                 raise ValueError("Unknown kernel type for lattice.")
-            
+
             # Determine the range of cells within the boundary
             if self.n_sigma_x_ is not None:
                 i_min = max(int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_) + self.origin_x_, 0)
@@ -1099,4 +1099,3 @@ plt.ylabel('Z')
 plt.title(slice_label)
 plt.show()
 """
-
