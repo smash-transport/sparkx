@@ -204,7 +204,7 @@ class EventCharacteristics:
         else:
             return self.eccentricity_from_particles(harmonic_n, weight_quantity)
 
-    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename):
+    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename):
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -218,25 +218,30 @@ class EventCharacteristics:
 
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
+        # take the x and y coordinates from the lattice and use the set eta range
+        x = energy_density.x_values_
+        y = energy_density.y_values_
+        eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
 
         # print the 3D lattice in Milne coordinates to a file
         # Open the output file for writing
         with open(output_filename, 'w') as output_file:
             output_file.write("tau x y eta energy_density baryon_density charge_density strangeness_density\n")
-            for i in range(energy_density.num_points_x_):
-                for j in range(energy_density.num_points_y_):
-                    for k in range(energy_density.num_points_z_):
-                        x, y, z = energy_density.get_coordinates(i, j, k)
-                        t = np.sqrt(tau**2.-z**2.)
-                        eta = 0.5 * np.log((t+z) / (t-z))
+            for x_val in x:
+                for y_val in y:
+                    for eta_val in eta:
+                        z_val = tau * np.sinh(eta_val)
+                        value_energy_density = energy_density.interpolate_to_lattice(x_val,y_val,z_val)
+                        value_baryon_density = baryon_density.interpolate_to_lattice(x_val,y_val,z_val)
+                        value_charge_density = charge_density.interpolate_to_lattice(x_val,y_val,z_val)
+                        value_strangeness_density = strangeness_density.interpolate_to_lattice(x_val,y_val,z_val)
 
-                        value_energy_density = energy_density.get_value_by_index(i, j, k)
-                        value_baryon_density = baryon_density.get_value_by_index(i, j, k)
-                        value_charge_density = charge_density.get_value_by_index(i, j, k)
-                        value_strangeness_density = strangeness_density.get_value_by_index(i, j, k)
+                        if value_energy_density == None:
+                            value_energy_density = 0.
+                            value_baryon_density = 0.
+                            value_charge_density = 0.
+                            value_strangeness_density = 0.
 
-                        output_file.write(f"{tau} {x} {y} {eta} {value_energy_density} {value_baryon_density} {value_charge_density} {value_strangeness_density}\n")
-
-
+                        output_file.write(f"{tau} {x_val} {y_val} {eta_val} {value_energy_density} {value_baryon_density} {value_charge_density} {value_strangeness_density}\n")
 
 
