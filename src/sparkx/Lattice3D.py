@@ -140,7 +140,6 @@ class Lattice3D:
         self.spacing_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
         self.spacing_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
         self.spacing_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
-        self.origin_x_, self.origin_y_, self.origin_z_ = self.__get_indices(0,0,0)
 
     def __is_valid_index(self, i, j, k):
         """
@@ -965,14 +964,14 @@ class Lattice3D:
         TypeError
             If the operand `other` is not of type `Lattice3D`.
         ValueError
-            If `other` is of wrong spacing or misplaced.
+            If `other` is of wrong spacing.
 
         """
         if not isinstance(other, Lattice3D):
             raise TypeError("Unsupported operand type. The operand must be of type 'Lattice3D'.")
 
-        # Check if one lattice is a continuous subset of the other
-        if ( self.spacing_x_ == other.spacing_x_ and self.spacing_y_ == other.spacing_y_ and self.spacing_z_ == other.spacing_z_):
+        # Check if both lattices have the same spacing
+        if ( abs(self.spacing_x_ - other.spacing_x_)<1e-6 and (self.spacing_y_ - other.spacing_y_)<1e-6 and (self.spacing_z_ - other.spacing_z_)<1e-6):
             for i, j, k in np.ndindex(other.grid_.shape):
                 posx, posy, posz = other.get_coordinates(i,j,k)
                 posx = posx + center_x
@@ -1036,6 +1035,7 @@ class Lattice3D:
         if not add:
              self.reset()
         for particle in particle_data:
+            print(particle.ID)
             x = particle.x
             y = particle.y
             z = particle.z
@@ -1064,21 +1064,21 @@ class Lattice3D:
              # Determine the range of cells within the boundary
             if self.n_sigma_x_ is not None:
                 i_min = int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_)
-                i_max = int((x  + self.n_sigma_x_ * sigma) / self.spacing_x_) + 1 
+                i_max = int((x  + self.n_sigma_x_ * sigma) / self.spacing_x_) 
             else:
                 range_x = max(self.num_points_x_*self.spacing_x_ - x, x)
                 i_min =  - int(range_x / self.spacing_x_)
                 i_max =  int(range_x / self.spacing_x_)
             if self.n_sigma_y_ is not None:
                 j_min = int((y  - self.n_sigma_y_ * sigma) / self.spacing_y_)
-                j_max = int((y  + self.n_sigma_y_ * sigma) / self.spacing_y_) + 1 
+                j_max = int((y  + self.n_sigma_y_ * sigma) / self.spacing_y_) 
             else:
                 range_y = max(self.num_points_y_*self.spacing_y_ - y, y)
                 j_min =  - int(range_y / self.spacing_y_)
                 j_max =  int(range_y / self.spacing_y_)
             if self.n_sigma_z_ is not None:
                 k_min = int((z  - self.n_sigma_z_ * sigma) / self.spacing_z_)
-                k_max = int((z  + self.n_sigma_z_ * sigma) / self.spacing_z_) + 1 
+                k_max = int((z  + self.n_sigma_z_ * sigma) / self.spacing_z_)  
             else:
                 range_z = max(self.num_points_z_*self.spacing_z_ - z, z)
                 k_min =  - int(range_z / self.spacing_z_)
@@ -1087,11 +1087,11 @@ class Lattice3D:
             norm=0
 
             temp_lattice=Lattice3D(i_min*self.spacing_x_, i_max*self.spacing_x_, j_min*self.spacing_y_, j_max*self.spacing_y_, k_min*self.spacing_z_, 
-                                   k_max*self.spacing_z_, abs(i_min) + i_max,abs(j_min) + j_max, abs(k_min) + k_max)
+                                   k_max*self.spacing_z_, i_max - i_min, j_max - j_min, k_max - k_min)
 
-            for i in range(0, i_max + abs(i_min)):
-                for j in range(0, j_max + abs(j_min)):
-                    for k in range(0, k_max + abs(k_min)):
+            for i in range(0, i_max - i_min):
+                for j in range(0, j_max - j_min):
+                    for k in range(0, k_max - k_min):
                         # Get the coordinates of the current grid point
                         xi, yj, zk = temp_lattice.get_coordinates(i, j, k)
 
@@ -1109,9 +1109,9 @@ class Lattice3D:
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
 
-            for i in range(0, i_max + abs(i_min)):
-                for j in range(0, j_max + abs(j_min)):
-                    for k in range(0, k_max + abs(k_min)):
+            for i in range(0, i_max - i_min):
+                for j in range(0, j_max - j_min):
+                    for k in range(0, k_max - k_min):
                         temp_lattice.grid_[i, j, k]/=norm
 
             self.add_same_spaced_grid(temp_lattice, x, y, z)
