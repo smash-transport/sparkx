@@ -1035,7 +1035,6 @@ class Lattice3D:
         if not add:
              self.reset()
         for particle in particle_data:
-            print(particle.ID)
             x = particle.x
             y = particle.y
             z = particle.z
