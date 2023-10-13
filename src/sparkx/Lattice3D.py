@@ -31,11 +31,11 @@ class Lattice3D:
         The number of points along the y-axis.
     num_points_z : int
         The number of points along the z-axis.
-    n_sigma_x : int
+    n_sigma_x : float
         Number of sigmas to consider in smearing in x direction.
-    n_sigma_y : int
+    n_sigma_y : float
         Number of sigmas to consider in smearing in y direction.
-    n_sigma_z : int
+    n_sigma_z : float
         Number of sigmas to consider in smearing in z direction.
 
     Attributes
@@ -58,6 +58,18 @@ class Lattice3D:
         The number of points along the y-axis.
     num_points_z_ : int
         The number of points along the z-axis.
+    spacing_x_ : float
+        The spacing between points along the x-axis.
+    spacing_y_ : float
+        The spacing between points along the y-axis.
+    spacing_z_ : float
+        The spacing between points along the z-axis.
+    density_x_ : float
+        The density of points along the x-axis.
+    density_y_ : float
+        The density of points along the y-axis.
+    density_z_ : float
+        The density of points along the z-axis.
     cell_volume_ : float
         The volume of each cell in the lattice.
     x_values_ : numpy.ndarray
@@ -133,13 +145,16 @@ class Lattice3D:
 
         self.grid_ = np.zeros((num_points_x, num_points_y, num_points_z))
 
-        self.n_sigma_x_ = int(n_sigma_x) if n_sigma_x is not None else None
-        self.n_sigma_y_ = int(n_sigma_y) if n_sigma_y is not None else None
-        self.n_sigma_z_ = int(n_sigma_z) if n_sigma_z is not None else None
+        self.n_sigma_x_ = float(n_sigma_x) if n_sigma_x is not None else None
+        self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else None
+        self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else None
 
-        self.spacing_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
-        self.spacing_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
-        self.spacing_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
+        self.spacing_x_ = self.x_values_[1]-self.x_values_[0] if num_points_x >1 else  None
+        self.spacing_y_ = self.y_values_[1]-self.y_values_[0] if num_points_y >1 else  None
+        self.spacing_z_ = self.z_values_[1]-self.z_values_[0] if num_points_z >1 else  None
+        self.density_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
+        self.density_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
+        self.density_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
 
     def __is_valid_index(self, i, j, k):
         """
@@ -969,9 +984,9 @@ class Lattice3D:
         """
         if not isinstance(other, Lattice3D):
             raise TypeError("Unsupported operand type. The operand must be of type 'Lattice3D'.")
-
         # Check if both lattices have the same spacing
-        if ( abs(self.spacing_x_ - other.spacing_x_)<1e-6 and (self.spacing_y_ - other.spacing_y_)<1e-6 and (self.spacing_z_ - other.spacing_z_)<1e-6):
+        if ( ( other.spacing_x_ == None or abs(self.spacing_x_ - other.spacing_x_)<1e-3) and ( other.spacing_y_ == None or abs(self.spacing_y_ - other.spacing_y_)<1e-3 ) 
+            and (other.spacing_z_ == None or abs(self.spacing_z_ - other.spacing_z_)<1e-3 )):
             for i, j, k in np.ndindex(other.grid_.shape):
                 posx, posy, posz = other.get_coordinates(i,j,k)
                 posx = posx + center_x
@@ -1062,35 +1077,38 @@ class Lattice3D:
 
              # Determine the range of cells within the boundary
             if self.n_sigma_x_ is not None:
-                i_min = int((x  - self.n_sigma_x_ * sigma) / self.spacing_x_)
-                i_max = int((x  + self.n_sigma_x_ * sigma) / self.spacing_x_) 
+                range_x = self.n_sigma_x_ * sigma
+                #print(range_x / self.spacing_x_)
+                num_x = round(range_x / self.spacing_x_)
+                range_x = num_x * self.spacing_x_
             else:
                 range_x = max(self.num_points_x_*self.spacing_x_ - x, x)
-                i_min =  - int(range_x / self.spacing_x_)
-                i_max =  int(range_x / self.spacing_x_)
+                num_x= round(range_x / self.spacing_x_)
+                range_x = num_x * self.spacing_x_
             if self.n_sigma_y_ is not None:
-                j_min = int((y  - self.n_sigma_y_ * sigma) / self.spacing_y_)
-                j_max = int((y  + self.n_sigma_y_ * sigma) / self.spacing_y_) 
+                range_y = self.n_sigma_y_ * sigma
+                num_y = round(range_y / self.spacing_y_)
+                range_y = num_y * self.spacing_y_
             else:
                 range_y = max(self.num_points_y_*self.spacing_y_ - y, y)
-                j_min =  - int(range_y / self.spacing_y_)
-                j_max =  int(range_y / self.spacing_y_)
+                num_y = round(range_x / self.spacing_x_)
+                range_y = num_y * self.spacing_y_
             if self.n_sigma_z_ is not None:
-                k_min = int((z  - self.n_sigma_z_ * sigma) / self.spacing_z_)
-                k_max = int((z  + self.n_sigma_z_ * sigma) / self.spacing_z_)  
+                range_z = self.n_sigma_z_ * sigma
+                num_z = round(range_z / self.spacing_z_)
+                range_z =num_z * self.spacing_z_ 
             else:
                 range_z = max(self.num_points_z_*self.spacing_z_ - z, z)
-                k_min =  - int(range_z / self.spacing_z_)
-                k_max =  int(range_z / self.spacing_z_)
-
+                num_z = round(range_z / self.spacing_z_)
+                range_z = num_z * self.spacing_z_ 
+                
             norm=0
+            #we have now the right spacing, but the lattice points do not coincide
+            temp_lattice=Lattice3D(-range_x, range_x, -range_y, range_y, -range_z, range_z, 2*num_x+1, 2*num_y+1, 2*num_z+1)
 
-            temp_lattice=Lattice3D(i_min*self.spacing_x_, i_max*self.spacing_x_, j_min*self.spacing_y_, j_max*self.spacing_y_, k_min*self.spacing_z_, 
-                                   k_max*self.spacing_z_, i_max - i_min, j_max - j_min, k_max - k_min)
-
-            for i in range(0, i_max - i_min):
-                for j in range(0, j_max - j_min):
-                    for k in range(0, k_max - k_min):
+            for i in range(temp_lattice.num_points_x_):
+                for j in range(temp_lattice.num_points_y_):
+                    for k in range(temp_lattice.num_points_z_):
                         # Get the coordinates of the current grid point
                         xi, yj, zk = temp_lattice.get_coordinates(i, j, k)
 
@@ -1098,9 +1116,9 @@ class Lattice3D:
                         if(kernel == "gaussian"):
                             smearing_factor = kernel_value.pdf([xi, yj, zk])
                         else:
-                            diff_space=(xi-x)**2+(yj-y)**2+(zk-z)**2
+                            diff_space=(xi)**2+(yj)**2+(zk-z)**2
                             gamma=np.sqrt(1+particle.p_abs()**2/particle.mass**2)
-                            diff_velocity=(particle.px*(xi-x)+particle.py*(yj-y)+particle.pz*(zk-z))/(gamma*particle.mass)
+                            diff_velocity=(particle.px*(xi)+particle.py*(yj)+particle.pz*(zk))/(gamma*particle.mass)
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
                         norm+=smearing_factor
                         value_to_add = value * smearing_factor / self.cell_volume_
@@ -1108,12 +1126,14 @@ class Lattice3D:
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
 
-            for i in range(0, i_max - i_min):
-                for j in range(0, j_max - j_min):
-                    for k in range(0, k_max - k_min):
+            for i in range(temp_lattice.num_points_x_):
+                for j in range(temp_lattice.num_points_y_):
+                    for k in range(temp_lattice.num_points_z_):
                         temp_lattice.grid_[i, j, k]/=norm
 
-            self.add_same_spaced_grid(temp_lattice, x, y, z)
+            xi ,yi ,zi = self.find_closest_indices(x, y, z)
+            x_grid, y_grid, z_grid = self.get_coordinates(xi ,yi ,zi)
+            self.add_same_spaced_grid(temp_lattice, x_grid, y_grid, z_grid)
 
 
 def print_lattice(lattice):
