@@ -231,10 +231,10 @@ class EventCharacteristics:
                 for y_val in y:
                     for eta_val in eta:
                         z_val = tau * np.sinh(eta_val)
-                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)
-                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)
-                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)
-                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)
+                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
+                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
+                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
+                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
 
                         if value_energy_density == None:
                             value_energy_density = 0.

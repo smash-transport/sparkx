@@ -493,7 +493,7 @@ class Lattice3D:
         if (x == self.x_values_[i]) and (y == self.y_values_[j]) and (z == self.z_values_[k]):
             return self.grid_[i, j, k]
 
-        # Perform trilinear interpolation
+        # Perform linear interpolation
         xi = [x, y, z]
         return interpn((self.x_values_, self.y_values_, self.z_values_), self.grid_, xi)[0]
 
@@ -961,7 +961,7 @@ class Lattice3D:
 
     def add_same_spaced_grid(self, other, center_x, center_y, center_z):
         """
-        Add the values of grid points of another lattic with same spaceing.
+        Add the values of grid points of another lattice with same spaceing.
 
         Parameters
         ----------
