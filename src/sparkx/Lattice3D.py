@@ -463,7 +463,7 @@ class Lattice3D:
         k = self.__find_closest_index(z, self.z_values_)
         return i, j, k
 
-    def interpolate_value(self, x, y, z):
+    def interpolate_value(self, x, y, z, method='nearest'):
         """
         Interpolate the value at the specified position using trilinear
         interpolation.
@@ -476,6 +476,8 @@ class Lattice3D:
             The y-coordinate.
         z : float
             The z-coordinate.
+        method : str
+            Scipy option for interpolation method. Default is 'nearest'.
 
         Returns
         -------
@@ -493,9 +495,9 @@ class Lattice3D:
         if (x == self.x_values_[i]) and (y == self.y_values_[j]) and (z == self.z_values_[k]):
             return self.grid_[i, j, k]
 
-        # Perform linear interpolation
-        xi = [x, y, z]
-        return interpn((self.x_values_, self.y_values_, self.z_values_), self.grid_, xi)[0]
+        # Perform interpolation 
+        xi = [x,y,z]
+        return interpn((self.x_values_, self.y_values_, self.z_values_), self.grid_, xi, method=method)[0]
 
     def __operate_on_lattice(self, other, operation):
         """

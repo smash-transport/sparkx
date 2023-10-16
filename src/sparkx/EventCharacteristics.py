@@ -222,7 +222,9 @@ class EventCharacteristics:
         x = energy_density.x_values_
         y = energy_density.y_values_
         eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
-
+        if(tau*(np.sinh(eta[-1])-np.sinh(eta[-2])) < (z_max-z_min)/Nz):
+            print("Warning: The grid for z is not fine enough for the requested eta-grid.")
+        
         # print the 3D lattice in Milne coordinates to a file
         # Open the output file for writing
         with open(output_filename, 'w') as output_file:
