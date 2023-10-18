@@ -101,8 +101,8 @@ class Oscar:
         Keep uncharged particles only
     strange_particles:
         Keep strange particles only
-    pt_cut:
-        Apply space cut to all particles
+    spacetime_cut:
+        Apply spacetime cut to all particles
     pt_cut:
         Apply pT cut to all particles
     rapidity_cut:
@@ -864,9 +864,9 @@ class Oscar:
 
         return self
 
-    def space_cut(self, dim, cut_value_tuple):
+    def spacetime_cut(self, dim, cut_value_tuple):
         """
-        Apply space cut to all events by passing an acceptance range by
+        Apply spacetime cut to all events by passing an acceptance range by
         ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
@@ -874,28 +874,33 @@ class Oscar:
         ----------
         dim : string
             String naming the dimension on which to apply the cut.
-            Options: 'x','y','z'
+            Options: 't','x','y','z'
         cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the pT acceptance
-            range :code:`(cut_min, cut_max)`. If one of the limits is not
-            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
-            or :code:`(cut_min, None)`.
+            Tuple with the upper and lower limits of the coordinate space
+            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
+            is not required, set it to :code:`None`, i.e.
+            :code:`(None, cut_max)` or :code:`(cut_min, None)`.
 
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the space cut for all events
+            Containing only particles complying with the spacetime cut for all events
         """
 
         if not isinstance(cut_value_tuple, tuple):
             raise TypeError('Input value must be a tuple')
         elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
             raise ValueError('At least one cut limit must be a number')
-        if dim not in ("x","y","z"):
-            raise ValueError('Only x, y and z are possible dimensions.')
+        elif dim == "t" and cut_value_tuple[0]<0:
+            raise ValueError('Time boundary must be positive or zero.')
+        if dim not in ("x","y","z","t"):
+            raise ValueError('Only "t, x, y and z are possible dimensions.')
 
         if cut_value_tuple[0] is None:
-            lower_cut = float('-inf')
+            if(dim != "t"):
+                lower_cut = float('-inf')
+            else:
+                lower_cut = 0.0
         else:
             lower_cut = cut_value_tuple[0]
         if cut_value_tuple[1] is None:
@@ -904,7 +909,10 @@ class Oscar:
             upper_cut = cut_value_tuple[1]
 
         for i in range(0, self.num_events_):
-            if (dim == "x"):
+            if (dim == "t"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.t <= upper_cut]
+            elif (dim == "x"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                         lower_cut <= elem.x <= upper_cut]
             elif (dim == "y"):
