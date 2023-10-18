@@ -102,6 +102,8 @@ class Oscar:
     strange_particles:
         Keep strange particles only
     pt_cut:
+        Apply space cut to all particles
+    pt_cut:
         Apply pT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
@@ -859,6 +861,60 @@ class Oscar:
             warnings.warn('There are no events left after low energy cut')
             self.particle_list_ = [[]]
             self.num_output_per_event_ = np.asarray([[None, None]])
+
+        return self
+
+    def space_cut(self, dim, cut_value_tuple):
+        """
+        Apply space cut to all events by passing an acceptance range by
+        ::code`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        dim : string
+            String naming the dimension on which to apply the cut.
+            Options: 'x','y','z'
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the pT acceptance
+            range :code:`(cut_min, cut_max)`. If one of the limits is not
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+            or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : Oscar object
+            Containing only particles complying with the space cut for all events
+        """
+
+        if not isinstance(cut_value_tuple, tuple):
+            raise TypeError('Input value must be a tuple')
+        elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
+            raise ValueError('At least one cut limit must be a number')
+        if dim not in ("x","y","z"):
+            raise ValueError('Only x, y and z are possible dimensions.')
+
+        if cut_value_tuple[0] is None:
+            lower_cut = float('-inf')
+        else:
+            lower_cut = cut_value_tuple[0]
+        if cut_value_tuple[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = cut_value_tuple[1]
+
+        for i in range(0, self.num_events_):
+            if (dim == "x"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.x <= upper_cut]
+            elif (dim == "y"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.y <= upper_cut]
+            else:
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.z <= upper_cut]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
 
         return self
 
