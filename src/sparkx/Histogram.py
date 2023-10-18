@@ -336,9 +336,9 @@ class Histogram:
         Average over all histograms.
 
         When this function is called the previously generated histograms are
-        averaged with the same weigths and they are overwritten by the
+        averaged with the unit weigths and they are overwritten by the
         averaged histogram.
-        The standard error of the histograms is computed.
+        The standard error of the averaged histograms is computed.
 
         Returns
         -------
@@ -354,7 +354,8 @@ class Histogram:
         if self.histograms_.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
-            self.error_ = np.sqrt(np.sum(self.histograms_, axis=0))/self.number_of_histograms_
+            self.error_ = np.sqrt(np.sum(self.histograms_, axis=0) / self.number_of_histograms_)
+            self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0))
             self.histograms_ = np.mean(self.histograms_, axis=0)
             self.number_of_histograms_ = 1
             return self
@@ -383,14 +384,18 @@ class Histogram:
         TypeError
             if there is only one histogram
         """
-        #TODO: correct error as in average()
-
         if self.histograms_.ndim == 1:
             raise TypeError('Cannot average an array of dim = 1')
         else:
-            self.error_ = np.std(self.histograms_, axis=0)/np.sqrt(self.number_of_histograms_)
-            self.histograms_ = np.average(self.histograms_, axis=0, weights=weights)
+            average = np.average(self.histograms_, axis=0, weights=weights)
+            variance = np.average((self.histograms_ - average)**2., axis=0, weights=weights)
+            
+            self.histograms_ = average
+            self.error_ = np.sqrt(variance)
+            self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0, weights=weights))
+
             self.number_of_histograms_ = 1
+            
             return self
 
     def standard_error(self):
@@ -407,11 +412,13 @@ class Histogram:
     def statistical_error(self):
         """
         Compute the statistical error of all histogram bins for all histograms.
+        This assumes Poisson distributed counts in each bin and independent draws.
 
         Returns
         -------
         numpy.ndarray
-            2D Array containing the statistical error for each bin and histogram.
+            2D Array containing the statistical error (standard deviation) for 
+            each bin and histogram.
         """
         counter_histogram = 0
         for histogram in self.histogram():
@@ -426,26 +433,37 @@ class Histogram:
         Multiplies the latest histogram by a number or a list/numpy array with a
         scaling factor for each bin.
 
+        The standard deviation of the histogram(s) is also rescaled by the same factor.
+
         Parameters
         ----------
         value: int, float, np.number, list, numpy.ndarray
             Scaling factor for the histogram.
         """
+        if isinstance(value, (int, float, np.number)) and value < 0:
+            raise ValueError("The scaling factor of the histogram cannot be negative")
+        elif isinstance(value, (list, np.ndarray)) and sum(1 for number in value if number < 0) > 0:
+            raise ValueError("The scaling factor of the histogram cannot be negative")
+
         if self.histograms_.ndim == 1:
             if isinstance(value, (int, float, np.number)):
                 self.histograms_ *= value
                 self.scaling_ *= value
+                self.error_ *= value
 
             elif isinstance(value, (list, np.ndarray)):
                 self.histograms_ *= np.asarray(value)
                 self.scaling_ *= np.asarray(value)
+                self.error_ *= value
         else:
             if isinstance(value, (int, float, np.number)):
                 self.histograms_[-1] *= value
                 self.scaling_[-1] *= value
+                self.error_[-1] *= value
 
             elif isinstance(value, (list, np.ndarray)):
                 self.histograms_[-1] *= np.asarray(value)
+                self.scaling_[-1] *= np.asarray(value)
                 self.scaling_[-1] *= np.asarray(value)
 
     def set_error(self,own_error):
@@ -473,7 +491,7 @@ class Histogram:
 
     def set_systematic_error(self,own_error):
         """
-        Sets the systematic histogram error by hand.
+        Sets the systematic histogram error of the last created histogram by hand.
 
         Parameters
         ----------
@@ -605,21 +623,26 @@ class Histogram:
                         hist_labels[idx]['sys_err+'],hist_labels[idx]['sys_err-']]
             writer.writerow(header)
             for i in range(self.number_of_bins_):
-                data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                        self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
-                        self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
+                if self.number_of_histograms_ == 1:
+                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                            self.histograms_[i], self.error_[i], self.error_[i],
+                            self.systematic_error_[i], self.systematic_error_[i]]
+                else:
+                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                            self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
+                            self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
                 writer.writerow(data)
             f.write('\n')
-
 
 hist_labels_multiple = [{'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
                           'distribution': '$1 / Nevt * d^2 N / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
                           'sys_err+': 'sys +', 'sys_err-': 'sys -'}]
-histogram_obj = Histogram(bin_boundaries=(0, 10, 10))
-histogram_obj.add_value([1,1,3,6,4,7])
-histogram_obj.set_systematic_error([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
+histogram_obj = Histogram(bin_boundaries=(0, 5, 5))
+histogram_obj.add_value([0.5,0.5,0.5,0.5,3.5,3.5])
+histogram_obj.set_systematic_error([0.2, 0.1, 0.1, 0.1, 0.1])
 histogram_obj.add_histogram()
-histogram_obj.add_value([2,1,5,6,4,4,9,7])
+histogram_obj.add_value([0.5,0.5,3.5])
 histogram_obj.statistical_error()
-histogram_obj.set_systematic_error([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
+histogram_obj.set_systematic_error([0.1, 0.1, 0.1, 0.1, 0.1])
+histogram_obj.average_weighted([1,1])
 histogram_obj.write_to_file('multiple_histograms.csv', hist_labels_multiple, comment='# This is a test hist.')
