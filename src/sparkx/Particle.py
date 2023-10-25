@@ -147,6 +147,10 @@ class Particle:
         Is the particle a heavy flavor particle?
     weight:
         What is the weight of the particle?
+    j_spin:
+        Total spin :math:`2J + 1` of the particle.
+    J_spin:
+        Total spin :math:`J` of the particle.
 
     Notes
     -----
@@ -1051,3 +1055,25 @@ class Particle:
             return True
         else:
             return False
+        
+    def j_spin(self):
+        """
+        Get the total spin of the particle (:math:`2J + 1`).
+
+        Returns
+        -------
+        int
+            Total spin :math:`2J + 1`
+        """
+        return PDGID(self.pdg).j_spin
+    
+    def J_spin(self):
+        """
+        Get the total spin :math:`J` of the particle.
+
+        Returns
+        -------
+        float
+            Total spin :math:`J`
+        """
+        return PDGID(self.pdg).J
