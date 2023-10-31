@@ -488,7 +488,7 @@ class Lattice3D:
         """
         if not self.__is_within_range(x, y, z):
             warnings.warn("Provided position is outside the lattice range.")
-            return None
+            return 0
 
         # Check if the position falls exactly on a lattice point
         i, j, k = self.__get_indices(x, y, z)
