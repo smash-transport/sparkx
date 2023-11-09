@@ -9,7 +9,9 @@ Lattice3D
 .. automethod:: Lattice3D.set_value_by_index
 .. automethod:: Lattice3D.get_value_by_index
 .. automethod:: Lattice3D.set_value
+.. automethod:: Lattice3D.set_value_nearest_neighbor
 .. automethod:: Lattice3D.get_value
+.. automethod:: Lattice3D.get_value_nearest_neighbor
 .. automethod:: Lattice3D.get_coordinates
 .. automethod:: Lattice3D.find_closest_indices
 .. automethod:: Lattice3D.interpolate_value
@@ -23,4 +25,5 @@ Lattice3D
 .. automethod:: Lattice3D.interpolate_to_lattice
 .. automethod:: Lattice3D.interpolate_to_lattice_new_extent
 .. automethod:: Lattice3D.reset
+.. automethod:: Lattice3D.add_same_spaced_grid
 .. automethod:: Lattice3D.add_particle_data

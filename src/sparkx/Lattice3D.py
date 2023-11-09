@@ -32,11 +32,11 @@ class Lattice3D:
     num_points_z : int
         The number of points along the z-axis.
     n_sigma_x : float
-        Number of sigmas to consider in smearing in x direction.
+        Number of sigmas to consider in smearing in x direction. Default is 3.
     n_sigma_y : float
-        Number of sigmas to consider in smearing in y direction.
+        Number of sigmas to consider in smearing in y direction. Default is 3.
     n_sigma_z : float
-        Number of sigmas to consider in smearing in z direction.
+        Number of sigmas to consider in smearing in z direction. Default is 3.
 
     Attributes
     ----------
@@ -89,8 +89,14 @@ class Lattice3D:
         Get the value at the specified indices in the grid.
     set_value:
         Set the value at the specified coordinates in the lattice.
+    set_value_nearest_neighbor:
+        Set the value at the nearest neighbor of the specified coordinates 
+        within the lattice.
     get_value:
         Get the value at the specified coordinates in the lattice.
+    get_value_nearest_neighbor:
+        Get the value of the nearest neighbor at the specified coordinates 
+        within the lattice.
     get_coordinates:
         Get the coordinates corresponding to the given indices.
     find_closest_indices:
@@ -145,9 +151,9 @@ class Lattice3D:
 
         self.grid_ = np.zeros((num_points_x, num_points_y, num_points_z))
 
-        self.n_sigma_x_ = float(n_sigma_x) if n_sigma_x is not None else None
-        self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else None
-        self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else None
+        self.n_sigma_x_ = float(n_sigma_x) if n_sigma_x is not None else 3
+        self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else 3
+        self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else 3
 
         self.spacing_x_ = self.x_values_[1]-self.x_values_[0] if num_points_x >1 else  None
         self.spacing_y_ = self.y_values_[1]-self.y_values_[0] if num_points_y >1 else  None
@@ -259,6 +265,36 @@ class Lattice3D:
             index -= 1
 
         return index - 1
+    
+    def __get_index_nearest_neighbor(self, value, values):
+        """
+        Get the index corresponding to the nearest neighbor of a given value 
+        within a specified range.
+
+        Parameters
+        ----------
+        value : int or float
+            The value for which the index is to be determined.
+        values : list or numpy.ndarray
+            The list or array containing the range of values.
+
+        Returns
+        -------
+        int
+            The index corresponding to the nearest neighbor of a given value 
+            within the specified range.
+
+        Raises
+        ------
+        ValueError
+            If the value is outside the specified range.
+        """
+        if value < values[0] or value > values[-1]:
+            raise ValueError("Value is outside the specified range.")
+
+        index = np.abs(value - np.array(values)).argmin()
+
+        return index
 
     def __get_indices(self, x, y, z):
         """
@@ -288,6 +324,36 @@ class Lattice3D:
         j = self.__get_index(y, self.y_values_, self.num_points_y_)
         k = self.__get_index(z, self.z_values_, self.num_points_z_)
         return i, j, k
+    
+    def __get_indices_nearest_neighbor(self, x, y, z):
+        """
+        Get the indices corresponding to the nearest neighbor 
+        given coordinates within the lattice.
+
+        Parameters
+        ----------
+        x : int or float
+            The x-coordinate for which the index is to be determined.
+        y : int or float
+            The y-coordinate for which the index is to be determined.
+        z : int or float
+            The z-coordinate for which the index is to be determined.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the indices (i, j, k) of the nearest neighbor
+            corresponding to the given coordinates.
+
+        Raises
+        ------
+        ValueError
+            If any of the coordinates are outside the specified ranges.
+        """
+        i = self.__get_index_nearest_neighbor(x, self.x_values_)
+        j = self.__get_index_nearest_neighbor(y, self.y_values_)
+        k = self.__get_index_nearest_neighbor(z, self.z_values_)
+        return i, j, k
 
     def set_value(self, x, y, z, value):
         """
@@ -312,6 +378,30 @@ class Lattice3D:
         i, j, k = self.__get_indices(x, y, z)
         self.set_value_by_index(i, j, k, value)
 
+    def set_value_nearest_neighbor(self, x, y, z, value):
+        """
+        Set the value at the nearest neighbor of the 
+        specified coordinates within the lattice.
+
+        Parameters
+        ----------
+        x : int or float
+            The x-coordinate where the value is to be set.
+        y : int or float
+            The y-coordinate where the value is to be set.
+        z : int or float
+            The z-coordinate where the value is to be set.
+        value : int or float
+            The value to be set.
+
+        Raises
+        ------
+        ValueError
+            If any of the coordinates are outside their specified ranges.
+        """
+        i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
+        self.set_value_by_index(i, j, k, value)
+
     def get_value(self, x, y, z):
         """
         Get the value at the specified coordinates within the lattice.
@@ -332,6 +422,29 @@ class Lattice3D:
             the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices(x, y, z)
+        return self.get_value_by_index(i, j, k)
+    
+    def get_value_nearest_neighbor(self, x, y, z):
+        """
+        Get the value of the nearest neighbor at the specified coordinates 
+        within the lattice.
+
+        Parameters
+        ----------
+        x : int or float
+            The x-coordinate where the value is to be retrieved.
+        y : int or float
+            The y-coordinate where the value is to be retrieved.
+        z : int or float
+            The z-coordinate where the value is to be retrieved.
+
+        Returns
+        -------
+        int or float or None
+            The value at the specified coordinates. Returns None if any of
+            the coordinates are outside their specified ranges.
+        """
+        i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
         return self.get_value_by_index(i, j, k)
 
     def __get_value(self, index, values, num_points):
@@ -489,11 +602,6 @@ class Lattice3D:
         if not self.__is_within_range(x, y, z):
             warnings.warn("Provided position is outside the lattice range.")
             return 0
-
-        # Check if the position falls exactly on a lattice point
-        i, j, k = self.__get_indices(x, y, z)
-        if (x == self.x_values_[i]) and (y == self.y_values_[j]) and (z == self.z_values_[k]):
-            return self.grid_[i, j, k]
 
         # Perform interpolation 
         xi = [x,y,z]
@@ -959,11 +1067,11 @@ class Lattice3D:
         values to zero.
         """
         for i, j, k in np.ndindex(self.grid_.shape):
-            self.grid_[i, j, k]=0
+            self.grid_[i, j, k] = 0
 
     def add_same_spaced_grid(self, other, center_x, center_y, center_z):
         """
-        Add the values of grid points of another lattice with same spaceing.
+        Add the values of grid points of another lattice with same spacing.
 
         Parameters
         ----------
@@ -994,10 +1102,10 @@ class Lattice3D:
                 posx = posx + center_x
                 posy = posy + center_y
                 posz = posz + center_z
-                if( posx<self.x_min_ or posx > self.x_max_ or posy<self.y_min_ or posy > self.y_max_ or posz<self.z_min_ or posz > self.z_max_):
+                if(posx<self.x_min_ or posx > self.x_max_ or posy<self.y_min_ or posy > self.y_max_ or posz<self.z_min_ or posz > self.z_max_):
                     continue
                 else:
-                    self.set_value(posx,posy,posz,self.get_value(posx,posy,posz) + other.grid_[i,j,k])
+                    self.set_value_nearest_neighbor(posx,posy,posz,self.get_value_nearest_neighbor(posx,posy,posz) + other.grid_[i,j,k])
 
         else:
             raise ValueError("The provided lattices do not have identical spacing.")
@@ -1041,11 +1149,11 @@ class Lattice3D:
 
         The supported quantities for particle data are as follows:
 
-        - 'energy density': Uses the particle's energy (`E`) as the value to be added to the lattice.
-        - 'number': Adds a value of 1.0 to the grid for each particle.
-        - 'charge': Uses the particle's charge as the value to be added to the lattice.
-        - 'baryon number': Uses the particle's baryon number as the value to be added to the lattice.
-        - 'strangeness': Adds a value of 1.0 to the grid for each strange particle.
+        - 'energy_density': Uses the particle's energy (`E`) as the value to be added to the lattice.
+        - 'number_density': Adds a value of 1.0 to the grid for each particle.
+        - 'charge_density': Uses the particle's charge as the value to be added to the lattice.
+        - 'baryon_density': Uses the particle's baryon number as the value to be added to the lattice.
+        - 'strangeness_density': Uses the particle's strangeness as the value to be added to the lattice.
 
         """
         #delete old data?
@@ -1078,33 +1186,19 @@ class Lattice3D:
                 raise ValueError("Unknown kernel type for lattice.")
 
              # Determine the range of cells within the boundary
-            if self.n_sigma_x_ is not None:
-                range_x = self.n_sigma_x_ * sigma
-                #print(range_x / self.spacing_x_)
-                num_x = round(range_x / self.spacing_x_)
-                range_x = num_x * self.spacing_x_
-            else:
-                range_x = max(self.num_points_x_*self.spacing_x_ - x, x)
-                num_x= round(range_x / self.spacing_x_)
-                range_x = num_x * self.spacing_x_
-            if self.n_sigma_y_ is not None:
-                range_y = self.n_sigma_y_ * sigma
-                num_y = round(range_y / self.spacing_y_)
-                range_y = num_y * self.spacing_y_
-            else:
-                range_y = max(self.num_points_y_*self.spacing_y_ - y, y)
-                num_y = round(range_x / self.spacing_x_)
-                range_y = num_y * self.spacing_y_
-            if self.n_sigma_z_ is not None:
-                range_z = self.n_sigma_z_ * sigma
-                num_z = round(range_z / self.spacing_z_)
-                range_z =num_z * self.spacing_z_ 
-            else:
-                range_z = max(self.num_points_z_*self.spacing_z_ - z, z)
-                num_z = round(range_z / self.spacing_z_)
-                range_z = num_z * self.spacing_z_ 
+            range_x = self.n_sigma_x_ * sigma
+            num_x = round(range_x / self.spacing_x_)
+            range_x = num_x * self.spacing_x_
+            
+            range_y = self.n_sigma_y_ * sigma
+            num_y = round(range_y / self.spacing_y_)
+            range_y = num_y * self.spacing_y_
+            
+            range_z = self.n_sigma_z_ * sigma
+            num_z = round(range_z / self.spacing_z_)
+            range_z =num_z * self.spacing_z_ 
                 
-            norm=0
+            norm = 0
             #we have now the right spacing, but the lattice points do not coincide
             temp_lattice=Lattice3D(-range_x, range_x, -range_y, range_y, -range_z, range_z, 2*num_x+1, 2*num_y+1, 2*num_z+1)
 
@@ -1118,11 +1212,11 @@ class Lattice3D:
                         if(kernel == "gaussian"):
                             smearing_factor = kernel_value.pdf([xi, yj, zk])
                         else:
-                            diff_space=(xi)**2+(yj)**2+(zk-z)**2
-                            gamma=np.sqrt(1+particle.p_abs()**2/particle.mass**2)
-                            diff_velocity=(particle.px*(xi)+particle.py*(yj)+particle.pz*(zk))/(gamma*particle.mass)
+                            diff_space = (xi)**2+(yj)**2+(zk)**2
+                            gamma = np.sqrt(1+particle.p_abs()**2/particle.mass**2)
+                            diff_velocity = (particle.px*(xi)+particle.py*(yj)+particle.pz*(zk))/(gamma*particle.mass)
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
-                        norm+=smearing_factor
+                        norm += smearing_factor
                         value_to_add = value * smearing_factor / self.cell_volume_
 
                         # Add the value to the grid
@@ -1131,7 +1225,7 @@ class Lattice3D:
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
                     for k in range(temp_lattice.num_points_z_):
-                        temp_lattice.grid_[i, j, k]/=norm
+                        temp_lattice.grid_[i, j, k] /= norm
 
             xi ,yi ,zi = self.find_closest_indices(x, y, z)
             x_grid, y_grid, z_grid = self.get_coordinates(xi ,yi ,zi)
@@ -1145,30 +1239,3 @@ def print_lattice(lattice):
                 x, y, z = lattice.get_coordinates(i, j, k)
                 value = lattice.get_value_by_index(i, j, k)
                 print(f"Lattice point ({x}, {y}, {z}): {value}")
-
-"""
-latt = Lattice3D(x_min=-5.0, x_max=5.0, y_min=-5.0, y_max=5.0, z_min=-5.0, z_max=5.0, num_points_x=5, num_points_y=5, num_points_z=5)
-
-latt.set_value_by_index(0,0,0,42.42)
-latt.set_value_by_index(3,3,3,-24)
-
-print(latt.get_coordinates(0,0,0))
-print(latt.get_value_by_index(0,0,0))
-
-print(latt.find_closest_indices(-4.8,-4.8,-4.5))
-
-latt.visualize()
-print_lattice(latt)
-
-
-# Extract a slice along the X-axis at index 5
-slice_data, slice_values, slice_label = latt.extract_slice('x', 4)
-
-# Plot the slice
-plt.imshow(slice_data, extent=[slice_values.min(), slice_values.max(), latt.z_min_, latt.z_max_], origin='lower', cmap='jet')
-plt.colorbar(label='Values')
-plt.xlabel('Y')
-plt.ylabel('Z')
-plt.title(slice_label)
-plt.show()
-"""
