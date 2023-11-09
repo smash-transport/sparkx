@@ -1,6 +1,7 @@
 import numpy as np
 from sparkx.Particle import Particle
 from sparkx.Lattice3D import Lattice3D
+import warnings
 
 class EventCharacteristics:
     """
@@ -204,7 +205,7 @@ class EventCharacteristics:
         else:
             return self.eccentricity_from_particles(harmonic_n, weight_quantity)
 
-    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename):
+    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename,IC_info=None):
         """
         Generates energy, baryon, charge, and strangeness densities in Milne coordinates from OSCAR initial conditions.
 
@@ -228,20 +229,26 @@ class EventCharacteristics:
         output_filename : str
             The name of the output file where the densities will be saved.
 
+        IC_info : str
+            A string containing info about the initial condition, e.g., collision energy or centrality.
+
         Returns
         -------
         None
         """
+        if (IC_info is not None) and not isinstance(IC_info,str):
+            warnings.warn("The given IC_info is not a string")
+
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         strangeness_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
 
         # smear the particles on the 3D lattice
-        energy_density.add_particle_data(self.event_data_, sigma_smear,"energy_density")
-        baryon_density.add_particle_data(self.event_data_, sigma_smear,"baryon_density")
-        charge_density.add_particle_data(self.event_data_, sigma_smear,"charge_density")
-        strangeness_density.add_particle_data(self.event_data_, sigma_smear,"strangeness_density")
+        energy_density.add_particle_data(self.event_data_, sigma_smear, "energy_density")
+        baryon_density.add_particle_data(self.event_data_, sigma_smear, "baryon_density")
+        charge_density.add_particle_data(self.event_data_, sigma_smear, "charge_density")
+        strangeness_density.add_particle_data(self.event_data_, sigma_smear, "strangeness_density")
 
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
@@ -252,10 +259,18 @@ class EventCharacteristics:
         if(tau*(np.sinh(eta[-1])-np.sinh(eta[-2])) < (z_max-z_min)/Nz):
             print("Warning: The grid for z is not fine enough for the requested eta-grid.")
         
+        # generate the header for the output file
+        file_header = "# smeared density from SPARKX in Milne coordinates\n# "
+        if IC_info is not None:
+            file_header += IC_info
+        file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
+        file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,Nz,x_min,x_max,y_min,y_max,eta_range[0],eta_range[1])
+        file_header += "# tau [fm], x [fm], y [fm], eta, energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]\n"
+
         # print the 3D lattice in Milne coordinates to a file
         # Open the output file for writing
         with open(output_filename, 'w') as output_file:
-            output_file.write("tau x y eta energy_density baryon_density charge_density strangeness_density\n")
+            output_file.write(file_header)
             for x_val in x:
                 for y_val in y:
                     for eta_val in eta:
@@ -273,7 +288,7 @@ class EventCharacteristics:
 
                         output_file.write(f"{tau:g} {x_val:g} {y_val:g} {eta_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")
 
-    def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename):
+    def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename,IC_info=None):
         """
         Generates energy, baryon, charge, and strangeness densities in Minkowski coordinates from OSCAR initial conditions.
 
@@ -294,10 +309,16 @@ class EventCharacteristics:
         output_filename : str
             The name of the output file where the densities will be saved.
 
+        IC_info : str
+            A string containing info about the initial condition, e.g., collision energy or centrality.
+
         Returns
         -------
         None
         """
+        if (IC_info is not None) and not isinstance(IC_info,str):
+            warnings.warn("The given IC_info is not a string")
+
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -316,10 +337,19 @@ class EventCharacteristics:
         y = energy_density.y_values_
         z = energy_density.z_values_
 
+        # generate the header for the output file
+        file_header = "# smeared density from SPARKX in Milne coordinates\n# "
+        if IC_info is not None:
+            file_header += IC_info
+        file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
+        file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,Nz,x_min,x_max,y_min,y_max,z_min,z_max)
+        file_header += "# tau [fm], x [fm], y [fm], z [fm], energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]\n"
+
+
         # print the 3D lattice in Minkowski coordinates to a file
         # Open the output file for writing
         with open(output_filename, 'w') as output_file:
-            output_file.write("tau x y z energy_density baryon_density charge_density strangeness_density\n")
+            output_file.write(file_header)
             for x_val in x:
                 for y_val in y:
                     for z_val in z:
