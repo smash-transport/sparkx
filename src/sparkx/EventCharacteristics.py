@@ -1,6 +1,8 @@
 import numpy as np
-from sparkx.Particle import Particle
-from sparkx.Lattice3D import Lattice3D
+#from sparkx.Particle import Particle
+#from sparkx.Lattice3D import Lattice3D
+from .Particle import Particle
+from .Lattice3D import Lattice3D
 import warnings
 
 class EventCharacteristics:
@@ -11,14 +13,17 @@ class EventCharacteristics:
     Parameters
     ----------
     event_data: list, numpy.ndarray or Lattice3D
-        List or array containing particle objects for one event, or a lattice containing the relevant densities.
+        List or array containing particle objects for one event, or a lattice 
+        containing the relevant densities.
 
     Attributes
     ----------
     event_data_: list, numpy.ndarray or Lattice3D
-        List or array containing particle objects for one event, or a lattice containing the relevant densities.
+        List or array containing particle objects for one event, or a lattice 
+        containing the relevant densities.
     has_lattice_: bool
-        Contains information if characteristics are derived from a lattice or particles
+        Contains information if characteristics are derived from a lattice or 
+        particles
 
     Methods
     -------
@@ -207,7 +212,11 @@ class EventCharacteristics:
 
     def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename,IC_info=None):
         """
-        Generates energy, baryon, charge, and strangeness densities in Milne coordinates from OSCAR initial conditions.
+        Generates energy, baryon, charge, and strangeness densities in Milne 
+        coordinates from OSCAR initial conditions.
+
+        The total energy in GeV can be obtained by integrating the energy 
+        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.
 
         Parameters
         ----------
@@ -218,19 +227,22 @@ class EventCharacteristics:
             Number of grid points in the x, y, and z directions.
 
         n_sigma_x, n_sigma_y, n_sigma_z : float
-            Width of the smearing in the x, y, and z directions in units of sigma_smear.
+            Width of the smearing in the x, y, and z directions in units of 
+            sigma_smear.
 
         sigma_smear : float
             Smearing parameter for particle data.
 
         eta_range : list, tuple
-            A list containing the minimum and maximum values of spacetime rapidity (eta) and the number of grid points.
+            A list containing the minimum and maximum values of spacetime 
+            rapidity (eta) and the number of grid points.
 
         output_filename : str
             The name of the output file where the densities will be saved.
 
         IC_info : str
-            A string containing info about the initial condition, e.g., collision energy or centrality.
+            A string containing info about the initial condition, e.g., 
+            collision energy or centrality.
 
         Returns
         -------
@@ -275,10 +287,11 @@ class EventCharacteristics:
                 for y_val in y:
                     for eta_val in eta:
                         z_val = tau * np.sinh(eta_val)
-                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
-                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
-                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
-                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)*((z_max-z_min)/Nz)/((eta_range[1]-eta_range[0])/eta_range[2])
+                        milne_conversion = tau*np.cosh(eta_val) # dz = tau * cosh(eta) * deta
+                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
+                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
+                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
+                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
 
                         if value_energy_density == None:
                             value_energy_density = 0.
@@ -290,7 +303,11 @@ class EventCharacteristics:
 
     def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename,IC_info=None):
         """
-        Generates energy, baryon, charge, and strangeness densities in Minkowski coordinates from OSCAR initial conditions.
+        Generates energy, baryon, charge, and strangeness densities in 
+        Minkowski coordinates from OSCAR initial conditions.
+
+        The total energy in GeV can be obtained by integrating the energy 
+        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z`.
 
         Parameters
         ----------
@@ -301,7 +318,8 @@ class EventCharacteristics:
             Number of grid points in the x, y, and z directions.
 
         n_sigma_x, n_sigma_y, n_sigma_z : float
-            Width of the smearing in the x, y, and z directions in units of sigma_smear.
+            Width of the smearing in the x, y, and z directions in units of 
+            sigma_smear.
 
         sigma_smear : float
             Smearing parameter for particle data.
@@ -310,7 +328,8 @@ class EventCharacteristics:
             The name of the output file where the densities will be saved.
 
         IC_info : str
-            A string containing info about the initial condition, e.g., collision energy or centrality.
+            A string containing info about the initial condition, e.g., 
+            collision energy or centrality.
 
         Returns
         -------
