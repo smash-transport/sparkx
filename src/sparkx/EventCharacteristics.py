@@ -1,8 +1,6 @@
 import numpy as np
-#from sparkx.Particle import Particle
-#from sparkx.Lattice3D import Lattice3D
-from .Particle import Particle
-from .Lattice3D import Lattice3D
+from sparkx.Particle import Particle
+from sparkx.Lattice3D import Lattice3D
 import warnings
 
 class EventCharacteristics:
