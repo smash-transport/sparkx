@@ -1173,7 +1173,7 @@ class Lattice3D:
             elif quantity == "baryon_density":
                 value = particle.baryon_number
             elif quantity == "strangeness_density":
-                value = 1 if particle.is_strange() else 0
+                value = particle.strangeness
             else:
                 raise ValueError("Unknown quantity for lattice.");
 

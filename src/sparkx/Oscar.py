@@ -313,6 +313,8 @@ class Oscar:
             if self.oscar_format_ != 'Oscar2013Extended_Photons':
                 if particle.baryon_number != None:
                     particle_list.append(int(particle.baryon_number))
+                if particle.strangeness != None:
+                    particle_list.append(int(particle.strangeness))
             else:
                 if particle.weight != None:
                     particle_list.append(int(particle.weight))
