@@ -1173,7 +1173,7 @@ class Particle:
             charge
         """
         if not self.pdg_valid_:
-            return 0.0
+            return None
         return PDGID(self.pdg).charge
 
     def is_meson(self):
@@ -1245,7 +1245,7 @@ class Particle:
         else:
             return False
      
-     def spin(self):
+    def spin(self):
         """
         Get the total spin :math:`J` of the particle.
 
@@ -1255,7 +1255,7 @@ class Particle:
             Total spin :math:`J`
         """
         if not self.pdg_valid_:
-            return 0.0
+            return None
         return PDGID(self.pdg).J
            
     def spin_degeneracy(self):
@@ -1268,6 +1268,6 @@ class Particle:
             Spin degeneracy :math:`2J + 1`
         """
         if not self.pdg_valid_:
-            return 0.0
+            return None
         return PDGID(self.pdg).j_spin
     
