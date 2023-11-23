@@ -1056,7 +1056,18 @@ class Particle:
             return True
         else:
             return False
-        
+     
+     def spin(self):
+        """
+        Get the total spin :math:`J` of the particle.
+
+        Returns
+        -------
+        float
+            Total spin :math:`J`
+        """
+        return PDGID(self.pdg).J
+           
     def spin_degeneracy(self):
         """
         Get the number of all possible spin projections (:math:`2J + 1`).
@@ -1068,13 +1079,3 @@ class Particle:
         """
         return PDGID(self.pdg).j_spin
     
-    def spin(self):
-        """
-        Get the total spin :math:`J` of the particle.
-
-        Returns
-        -------
-        float
-            Total spin :math:`J`
-        """
-        return PDGID(self.pdg).J
