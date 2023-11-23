@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from particle import PDGID
+import warnings
 
 class Particle:
     """Defines a particle object.
@@ -9,6 +10,8 @@ class Particle:
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
     they stay None to throw an error if one tries to access a non existing
     quantity.
+    If a particle with an unknown PDG is provided, a warning is thrown and and 
+    None is returned for charge, spin, and spin degeneracy.
 
     Attributes
     ----------
@@ -196,6 +199,7 @@ class Particle:
         self.py_ = None
         self.pz_ = None
         self.pdg_ = None
+        self.pdg_valid_ = None
         self.ID_ = None
         self.charge_ = None
 
@@ -362,7 +366,12 @@ class Particle:
                 self.charge_ = self.compute_charge_from_pdg()
         else:
             raise ValueError(f"Unsupported input format '{input_format}' or invalid array length")
+        
+        self.pdg_valid_ = PDGID(self.pdg_).is_valid
 
+        if(not self.pdg_valid_):
+             warnings.warn('The PDG code ' + str(self.pdg_) + ' is not valid. '+
+                           'All properties extracted from the PDG are set to default values.')
 
     @property
     def t(self):
@@ -583,6 +592,11 @@ class Particle:
     @pdg.setter
     def pdg(self,value):
         self.pdg_ = value
+        self.pdg_valid_ = PDGID(self.pdg_).is_valid
+
+        if(not self.pdg_valid_):
+             warnings.warn('The PDG code ' + str(self.pdg_) + ' is not valid. '+
+                           'All properties extracted from the PDG are set to default values.')
 
     @property
     def ID(self):
@@ -1160,6 +1174,8 @@ class Particle:
         float
             charge
         """
+        if not self.pdg_valid_:
+            return None
         return PDGID(self.pdg).charge
 
     def is_meson(self):
@@ -1171,6 +1187,8 @@ class Particle:
         bool
             True, False
         """
+        if not self.pdg_valid_:
+            return False
         return PDGID(self.pdg).is_meson
 
     def is_baryon(self):
@@ -1182,6 +1200,8 @@ class Particle:
         bool
             True, False
         """
+        if not self.pdg_valid_:
+            return False
         return PDGID(self.pdg).is_baryon
 
     def is_hadron(self):
@@ -1193,6 +1213,8 @@ class Particle:
         bool
             True, False
         """
+        if not self.pdg_valid_:
+            return False
         return PDGID(self.pdg).is_hadron
 
     def is_strange(self):
@@ -1204,6 +1226,8 @@ class Particle:
         bool
             True, False
         """
+        if not self.pdg_valid_:
+            return False
         return PDGID(self.pdg).has_strange
 
     def is_heavy_flavor(self):
@@ -1215,13 +1239,15 @@ class Particle:
         bool
             True, False
         """
+        if not self.pdg_valid_:
+            return False
         if PDGID(self.pdg).has_charm or PDGID(self.pdg).has_bottom\
               or PDGID(self.pdg).has_top:
             return True
         else:
             return False
      
-     def spin(self):
+    def spin(self):
         """
         Get the total spin :math:`J` of the particle.
 
@@ -1230,6 +1256,8 @@ class Particle:
         float
             Total spin :math:`J`
         """
+        if not self.pdg_valid_:
+            return None
         return PDGID(self.pdg).J
            
     def spin_degeneracy(self):
@@ -1241,5 +1269,7 @@ class Particle:
         int
             Spin degeneracy :math:`2J + 1`
         """
+        if not self.pdg_valid_:
+            return None
         return PDGID(self.pdg).j_spin
     

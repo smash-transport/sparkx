@@ -5,7 +5,7 @@ setup(
     packages=find_packages(where='src/sparkx'),
     package_dir={'': 'sparkx'},
     install_requires=[
-        "particle==0.22.0"
+        "particle==0.23.0"
         "numpy==1.23.5"
         "scipy==1.10.1"
         "matplotlib==3.7.1"
