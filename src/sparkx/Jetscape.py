@@ -61,9 +61,6 @@ class Jetscape:
     num_events_ : int
         Number of events contained in the Jetscape object (updated when filters
         are applied)
-    list_of_all_valid_pdg_ids_ : list
-        List of all PDG codes contained in the external particle package as
-        int values
 
     Methods
     -------
@@ -163,13 +160,11 @@ class Jetscape:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
 
         self.set_num_output_per_event()
         self.set_particle_list(kwargs)
-        self.set_list_of_all_valid_pdg_ids()
-
+        
     # PRIVATE CLASS METHODS
 
     def __get_num_skip_lines(self):
@@ -262,23 +257,6 @@ class Jetscape:
 
         return particle_list
 
-    def __check_if_pdg_is_valid(self, pdg_list):
-        if isinstance(pdg_list, int):
-            if not pdg_list in self.list_of_all_valid_pdg_ids_:
-                raise ValueError('Invalid PDG ID given according to the following ' +\
-                                 'data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter a valid PDG ID or update database.')
-
-        elif isinstance(pdg_list, np.ndarray):
-            if not all(pdg in self.list_of_all_valid_pdg_ids_ for pdg in pdg_list):
-                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids_)
-                raise ValueError('One or more invalid PDG IDs given. The IDs ' +\
-                                 str(non_valid_elements) +' are not contained in ' +\
-                                 'the data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter valid PDG IDs or update database.')
-        return True
-
-
     # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs):
@@ -359,21 +337,6 @@ class Jetscape:
 
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
-
-    def set_list_of_all_valid_pdg_ids(self):
-        path = particle.data.basepath / "particle2022.csv"
-        valid_pdg_ids = []
-
-        with open(path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            counter_row = 0
-            for row in csv_reader:
-                if counter_row == 0:
-                    valid_pdg_ids.append(row[0])
-                elif 2 <= counter_row:
-                    valid_pdg_ids.append(int(row[0]))
-                counter_row += 1
-        self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
 
     def particle_list(self):
         num_particles = self.num_output_per_event_[:,1]
@@ -517,8 +480,6 @@ class Jetscape:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
 
-            self.__check_if_pdg_is_valid(pdg_list)
-
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) == pdg_list]
@@ -528,7 +489,6 @@ class Jetscape:
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
 
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -570,7 +530,6 @@ class Jetscape:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
 
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -580,8 +539,6 @@ class Jetscape:
 
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
