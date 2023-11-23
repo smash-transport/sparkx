@@ -10,6 +10,8 @@ class Particle:
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
     they stay None to throw an error if one tries to access a non existing
     quantity.
+    If a particle with an unknown PDG is provided, a warning is thrown and and 
+    None is returned for charge, spin, and spin degeneracy.
 
     Attributes
     ----------
