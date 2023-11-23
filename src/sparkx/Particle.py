@@ -212,6 +212,12 @@ class Particle:
         # JETSCAPE unique parameter
         self.status_ = None
 
+        if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
+            raise ValueError("'input_format' or 'particle_array' not given")
+        
+        if (particle_array is not None) and not isinstance(particle_array,np.ndarray):
+            raise TypeError("The 'particle_array' is not a numpy array")        
+
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(input_format,particle_array)
             
