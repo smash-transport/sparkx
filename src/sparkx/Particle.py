@@ -59,6 +59,8 @@ class Particle:
         Status code of the particle.
     baryon_number_ : int
         Baryon number of the particle.
+    strangeness_ : int
+        Strangeness quantum number of the particle.
     weight_ : float
         Weight of the particle.
 
@@ -108,6 +110,8 @@ class Particle:
         Get/set status
     baryon_number:
         Get/set baryon_number
+    strangeness:
+        Get/set strangeness
     print_particle:
         Print the particle as CSV to terminal
     set_quantities_OSCAR2013:
@@ -213,6 +217,7 @@ class Particle:
         self.pdg_mother1_ = None
         self.pdg_mother2_ = None
         self.baryon_number_ = None
+        self.strangeness_ = None
 
         # Oscar2013Extended_Photons additional parameter 
         # instead of baryon_number_
@@ -300,6 +305,7 @@ class Particle:
                 "pdg_mother1_": 18,
                 "pdg_mother2_": 19,
                 "baryon_number_": 20,
+                "strangeness_": 21,
             },
             "Oscar2013Extended_IC": {
                 "t_": 0,
@@ -323,6 +329,7 @@ class Particle:
                 "pdg_mother1_": 18,
                 "pdg_mother2_": 19,
                 "baryon_number_": 20,
+                "strangeness_": 21,
             },
             "Oscar2013Extended_Photons": {
                 "t_": 0,
@@ -867,6 +874,28 @@ class Particle:
         self.baryon_number_ = value
 
     @property
+    def strangeness(self):
+        """Get the strangeness of the particle.
+
+        Returns
+        -------
+        strangeness_ : int
+
+        Raises
+        ------
+        ValueError
+            if strangeness is not set
+        """
+        if self.strangeness_ == None:
+            raise ValueError("strangeness not set")
+        else:
+            return self.strangeness_
+
+    @strangeness.setter
+    def strangeness(self,value):
+        self.strangeness_ = value
+
+    @property
     def weight(self):
         """Get the weight of the particle.
 
@@ -957,7 +986,7 @@ class Particle:
         """
         # check if the line is a list or numpy array
         if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)<=21 and len(line_from_file)>=20:
+              and len(line_from_file)<=22 and len(line_from_file)>=20:
             self.t = float(line_from_file[0])
             self.x = float(line_from_file[1])
             self.y = float(line_from_file[2])
@@ -978,8 +1007,9 @@ class Particle:
             self.t_last_coll = float(line_from_file[17])
             self.pdg_mother1 = int(line_from_file[18])
             self.pdg_mother2 = int(line_from_file[19])
-            if len(line_from_file)==21 and not photon:
+            if len(line_from_file)==22 and not photon:
                 self.baryon_number = int(line_from_file[20])
+                self.strangeness = int(line_from_file[21])
             elif len(line_from_file)==21 and photon:
                 self.weight = float(line_from_file[20])
         else:
