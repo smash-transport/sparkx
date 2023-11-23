@@ -61,9 +61,6 @@ class Jetscape:
     num_events_ : int
         Number of events contained in the Jetscape object (updated when filters
         are applied)
-    list_of_all_valid_pdg_ids_ : list
-        List of all PDG codes contained in the external particle package as
-        int values
 
     Methods
     -------
@@ -163,13 +160,11 @@ class Jetscape:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
 
         self.set_num_output_per_event()
         self.set_particle_list(kwargs)
-        self.set_list_of_all_valid_pdg_ids()
-
+        
     # PRIVATE CLASS METHODS
 
     def __get_num_skip_lines(self):
@@ -262,23 +257,6 @@ class Jetscape:
 
         return particle_list
 
-    def __check_if_pdg_is_valid(self, pdg_list):
-        if isinstance(pdg_list, int):
-            if not pdg_list in self.list_of_all_valid_pdg_ids_:
-                raise ValueError('Invalid PDG ID given according to the following ' +\
-                                 'data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter a valid PDG ID or update database.')
-
-        elif isinstance(pdg_list, np.ndarray):
-            if not all(pdg in self.list_of_all_valid_pdg_ids_ for pdg in pdg_list):
-                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids_)
-                raise ValueError('One or more invalid PDG IDs given. The IDs ' +\
-                                 str(non_valid_elements) +' are not contained in ' +\
-                                 'the data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter valid PDG IDs or update database.')
-        return True
-
-
     # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs):
@@ -359,21 +337,6 @@ class Jetscape:
 
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
-
-    def set_list_of_all_valid_pdg_ids(self):
-        path = particle.data.basepath / "particle2022.csv"
-        valid_pdg_ids = []
-
-        with open(path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            counter_row = 0
-            for row in csv_reader:
-                if counter_row == 0:
-                    valid_pdg_ids.append(row[0])
-                elif 2 <= counter_row:
-                    valid_pdg_ids.append(int(row[0]))
-                counter_row += 1
-        self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
 
     def particle_list(self):
         num_particles = self.num_output_per_event_[:,1]
@@ -517,8 +480,6 @@ class Jetscape:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
 
-            self.__check_if_pdg_is_valid(pdg_list)
-
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) == pdg_list]
@@ -528,7 +489,6 @@ class Jetscape:
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
 
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -570,7 +530,6 @@ class Jetscape:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
 
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -580,8 +539,6 @@ class Jetscape:
 
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-            self.__check_if_pdg_is_valid(pdg_list)
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -949,23 +906,39 @@ class Jetscape:
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        format_jetscape = '%d %d %d %g %g %g %g'
         line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
-        header = line_in_initial_file.readline()
-        last_line = self.__get_last_line(self.PATH_JETSCAPE_)
+        header_file = line_in_initial_file.readline()
         line_in_initial_file.close()
 
-        output = open(output_file, "w")
-        output.write(header)
-        output.close()
+        # Open the output file with buffered writing
+        with open(output_file, "w") as f_out:
+            header_file_written = False
+            data_to_write = []
 
-        with open(output_file, "a") as f_out:
             for i in range(self.num_events_):
-                event = self.num_output_per_event_[i,0]
-                num_out = self.num_output_per_event_[i,1]
+                print("Working on event ",i)
+                event = self.num_output_per_event_[i, 0]
+                num_out = self.num_output_per_event_[i, 1]
                 particle_output = np.asarray(self.particle_list()[i])
 
-                f_out.write(f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n')
-                np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_jetscape)
+                # Write the header if not already written
+                if not header_file_written:
+                    header_file_written = True
+                    data_to_write.append(header_file)
+
+                # Header for each event
+                header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                data_to_write.append(header)
+
+                # Convert particle data to formatted strings
+                particle_lines = [f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+
+                # Append particle data to the list
+                data_to_write.extend(particle_lines)
+
+            # Write all accumulated data to the file
+            f_out.writelines(data_to_write)
+
+            # Write the last line
+            last_line = self.__get_last_line(self.PATH_JETSCAPE_)
             f_out.write(last_line)
-        f_out.close()

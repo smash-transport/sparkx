@@ -65,9 +65,6 @@ class Oscar:
     num_events_ : int
         Number of events contained in the Oscar object (updated when filters
         are applied)
-    list_of_all_valid_pdg_ids_ : list
-        List of all PDG codes contained in the external particle package as
-        int values
     event_end_lines_ : list
         List containing all comment lines at the end of each event as str.
         Needed to print the Oscar object to a file.
@@ -101,6 +98,8 @@ class Oscar:
         Keep uncharged particles only
     strange_particles:
         Keep strange particles only
+    spacetime_cut:
+        Apply spacetime cut to all particles
     pt_cut:
         Apply pT cut to all particles
     rapidity_cut:
@@ -194,7 +193,6 @@ class Oscar:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.list_of_all_valid_pdg_ids_ = None
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
 
@@ -202,7 +200,6 @@ class Oscar:
         self.set_oscar_format()
         self.set_num_events()
         self.set_num_output_per_event_and_event_footers()
-        self.set_list_of_all_valid_pdg_ids()
         self.set_particle_list(kwargs)
 
     # PRIVATE CLASS METHODS
@@ -323,24 +320,6 @@ class Oscar:
             raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
 
         return particle_list
-
-
-    def __check_if_pdg_is_valid(self, pdg_list):
-        if isinstance(pdg_list, int):
-            if not pdg_list in self.list_of_all_valid_pdg_ids_:
-                raise ValueError('Invalid PDG ID given according to the following ' +\
-                                 'data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter a valid PDG ID or update database.')
-
-        elif isinstance(pdg_list, np.ndarray):
-            if not all(pdg in self.list_of_all_valid_pdg_ids_ for pdg in pdg_list):
-                non_valid_elements = np.setdiff1d(pdg_list, self.list_of_all_valid_pdg_ids_)
-                raise ValueError('One or more invalid PDG IDs given. The IDs ' +\
-                                 str(non_valid_elements) +' are not contained in ' +\
-                                 'the data base: ' + self.list_of_all_valid_pdg_ids_[0] +\
-                                 '\n Enter valid PDG IDs or update database.')
-        return True
-
 
     # PUBLIC CLASS METHODS
 
@@ -494,27 +473,6 @@ class Oscar:
             raise TypeError('Input file does not end with a comment line '+\
                             'including the events. File might be incomplete '+\
                             'or corrupted.')
-
-
-    def set_list_of_all_valid_pdg_ids(self):
-        """
-        Sets list_of_all_valid_pdg_ids_ with a list containing all valid pdg
-        ids according to the particle package (2022) as integers.
-        """
-        path = particle.data.basepath / "particle2022.csv"
-        valid_pdg_ids = []
-
-        with open(path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            counter_row = 0
-            for row in csv_reader:
-                if counter_row == 0:
-                    valid_pdg_ids.append(row[0])
-                elif 2 <= counter_row:
-                    valid_pdg_ids.append(int(row[0]))
-                counter_row += 1
-        self.list_of_all_valid_pdg_ids_ = valid_pdg_ids
-
 
     def particle_list(self):
         """
@@ -695,10 +653,7 @@ class Oscar:
 
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
-
-            self.__check_if_pdg_is_valid(pdg_list)
-
-
+            
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) == pdg_list]
@@ -707,9 +662,6 @@ class Oscar:
 
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-            self.__check_if_pdg_is_valid(pdg_list)
-
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -752,9 +704,6 @@ class Oscar:
         elif isinstance(pdg_list, (int, str, np.integer)):
             pdg_list = int(pdg_list)
 
-            self.__check_if_pdg_is_valid(pdg_list)
-
-
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
                                             if int(elem.pdg) != pdg_list]
@@ -763,9 +712,6 @@ class Oscar:
 
         elif isinstance(pdg_list, (list, np.ndarray, tuple)):
             pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-            self.__check_if_pdg_is_valid(pdg_list)
-
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
@@ -861,6 +807,68 @@ class Oscar:
             warnings.warn('There are no events left after low energy cut')
             self.particle_list_ = [[]]
             self.num_output_per_event_ = np.asarray([[None, None]])
+
+        return self
+
+    def spacetime_cut(self, dim, cut_value_tuple):
+        """
+        Apply spacetime cut to all events by passing an acceptance range by
+        ::code`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        dim : string
+            String naming the dimension on which to apply the cut.
+            Options: 't','x','y','z'
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the coordinate space
+            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
+            is not required, set it to :code:`None`, i.e.
+            :code:`(None, cut_max)` or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : Oscar object
+            Containing only particles complying with the spacetime cut for all events
+        """
+
+        if not isinstance(cut_value_tuple, tuple):
+            raise TypeError('Input value must be a tuple')
+        elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
+            raise ValueError('At least one cut limit must be a number')
+        elif dim == "t" and cut_value_tuple[0]<0:
+            raise ValueError('Time boundary must be positive or zero.')
+        if dim not in ("x","y","z","t"):
+            raise ValueError('Only "t, x, y and z are possible dimensions.')
+
+        if cut_value_tuple[0] is None:
+            if(dim != "t"):
+                lower_cut = float('-inf')
+            else:
+                lower_cut = 0.0
+        else:
+            lower_cut = cut_value_tuple[0]
+        if cut_value_tuple[1] is None:
+            upper_cut = float('inf')
+        else:
+            upper_cut = cut_value_tuple[1]
+
+        for i in range(0, self.num_events_):
+            if (dim == "t"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.t <= upper_cut]
+            elif (dim == "x"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.x <= upper_cut]
+            elif (dim == "y"):
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.y <= upper_cut]
+            else:
+                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                        lower_cut <= elem.z <= upper_cut]
+            new_length = len(self.particle_list_[i])
+            self.num_output_per_event_[i, 1] = new_length
 
         return self
 
