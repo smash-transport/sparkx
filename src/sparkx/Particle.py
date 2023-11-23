@@ -1254,6 +1254,8 @@ class Particle:
         float
             Total spin :math:`J`
         """
+        if not self.pdg_valid_:
+            return 0.0
         return PDGID(self.pdg).J
            
     def spin_degeneracy(self):
@@ -1265,5 +1267,7 @@ class Particle:
         int
             Spin degeneracy :math:`2J + 1`
         """
+        if not self.pdg_valid_:
+            return 0.0
         return PDGID(self.pdg).j_spin
     
