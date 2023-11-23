@@ -2,6 +2,7 @@ from .EventCharacteristics import EventCharacteristics
 from .flow.ReactionPlaneFlow import ReactionPlaneFlow
 from .flow.EventPlaneFlow import EventPlaneFlow
 from .flow.ScalarProductFlow import ScalarProductFlow
+from sparkx.flow.LeeYangZerosFlow import LeeYangZerosFlow
 from .flow.GenerateFlow import GenerateFlow
 from .Histogram import Histogram
 from .JetAnalysis import JetAnalysis
