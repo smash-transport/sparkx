@@ -1,5 +1,4 @@
 from sparkx.Particle import Particle
-import particle.data
 import numpy as np
 import csv
 import warnings
@@ -382,9 +381,9 @@ class Oscar:
 
 
     def set_oscar_format(self):
-        first_line = open(self.PATH_OSCAR_,'r')
-        first_line = first_line.readline()
-        first_line = first_line.replace('\n','').split(' ')
+        with open(self.PATH_OSCAR_, 'r') as file:
+            first_line = file.readline()
+            first_line = first_line.replace('\n', '').split(' ')
 
         if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
             self.oscar_format_ = 'Oscar2013'

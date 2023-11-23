@@ -1,5 +1,4 @@
 from sparkx.Particle import Particle
-import particle.data
 import numpy as np
 import csv
 import warnings
