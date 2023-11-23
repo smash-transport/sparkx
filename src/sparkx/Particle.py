@@ -148,12 +148,6 @@ class Particle:
     weight:
         What is the weight of the particle?
 
-    Notes
-    -----
-    To set a value of one of the attributes by hand, please use the
-    corresponding getter methods with parentheses including the value for the
-    attribute of the particle.
-
     Examples
     --------
     To use the particle class a particle has to be created and the attributes
@@ -170,8 +164,23 @@ class Particle:
         >>> print(particle.t)
         1.0
 
+    The class can be used to construct a particle from different input formats.
+    Supported formats include:
+        - "Oscar2013"
+        - "Oscar2013Extended"
+        - "Oscar2013Extended_IC"
+        - "Oscar2013Extended_Photons"
+        - "JETSCAPE"
+    
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+
+        >>> particle_quantity_JETSCAPE = np.array([0,2114,11,2.01351754,1.30688601,-0.422958786,-0.512249773])
+        >>> particle = Particle(input_format="JETSCAPE", particle_array=particle_array_oscar2013)
     """
-    def __init__(self):
+    def __init__(self,input_format=None,particle_array=None):
+        # OSCAR2013 parameters
         self.t_ = None
         self.x_ = None
         self.y_ = None
@@ -184,6 +193,8 @@ class Particle:
         self.pdg_ = None
         self.ID_ = None
         self.charge_ = None
+
+        # OSCAR2013Extended / OSCAR2013Extended_IC parameters
         self.ncoll_ = None
         self.form_time_ = None
         self.xsecfac_ = None
@@ -192,9 +203,161 @@ class Particle:
         self.t_last_coll_ = None
         self.pdg_mother1_ = None
         self.pdg_mother2_ = None
-        self.status_ = None
         self.baryon_number_ = None
+
+        # Oscar2013Extended_Photons additional parameter 
+        # instead of baryon_number_
         self.weight_ = None
+
+        # JETSCAPE unique parameter
+        self.status_ = None
+
+        if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
+            raise ValueError("'input_format' or 'particle_array' not given")
+        
+        if (particle_array is not None) and not isinstance(particle_array,np.ndarray):
+            raise TypeError("The 'particle_array' is not a numpy array")        
+
+        if (input_format is not None) and (particle_array is not None):
+            self.__initialize_from_array(input_format,particle_array)
+            
+        
+    def __initialize_from_array(self,input_format,particle_array):
+        """
+        Initialize instance attributes based on the provided input format and array.
+
+        Parameters
+        ----------
+        input_format : str
+            The format of the input data. Supported formats include:
+            - "Oscar2013"
+            - "Oscar2013Extended"
+            - "Oscar2013Extended_IC"
+            - "Oscar2013Extended_Photons"
+            - "JETSCAPE"
+
+        particle_array : numpy.ndarray
+            An array containing particle information.
+
+        Raises
+        ------
+        ValueError
+            If the input format is unsupported or the array length is invalid.
+
+        Notes
+        -----
+        For each supported input format, this method expects a specific order 
+        of elements in the particle_array and assigns them to the corresponding 
+        attributes of the Particle instance.
+
+        If the input format is "JETSCAPE," additional attributes (mass_ and 
+        charge_) are computed based on energy-momentum and PDG code.
+
+        """
+        attribute_mapping = {
+            "Oscar2013": {
+                "t_": 0,
+                "x_": 1,
+                "y_": 2,
+                "z_": 3,
+                "mass_": 4,
+                "E_": 5,
+                "px_": 6,
+                "py_": 7,
+                "pz_": 8,
+                "pdg_": 9,
+                "ID_": 10,
+                "charge_": 11,
+            },
+            "Oscar2013Extended": {
+                "t_": 0,
+                "x_": 1,
+                "y_": 2,
+                "z_": 3,
+                "mass_": 4,
+                "E_": 5,
+                "px_": 6,
+                "py_": 7,
+                "pz_": 8,
+                "pdg_": 9,
+                "ID_": 10,
+                "charge_": 11,
+                "ncoll_": 12,
+                "form_time_": 13,
+                "xsecfac_": 14,
+                "proc_id_origin_": 15,
+                "proc_type_origin_": 16,
+                "t_last_coll_": 17,
+                "pdg_mother1_": 18,
+                "pdg_mother2_": 19,
+                "baryon_number_": 20,
+            },
+            "Oscar2013Extended_IC": {
+                "t_": 0,
+                "x_": 1,
+                "y_": 2,
+                "z_": 3,
+                "mass_": 4,
+                "E_": 5,
+                "px_": 6,
+                "py_": 7,
+                "pz_": 8,
+                "pdg_": 9,
+                "ID_": 10,
+                "charge_": 11,
+                "ncoll_": 12,
+                "form_time_": 13,
+                "xsecfac_": 14,
+                "proc_id_origin_": 15,
+                "proc_type_origin_": 16,
+                "t_last_coll_": 17,
+                "pdg_mother1_": 18,
+                "pdg_mother2_": 19,
+                "baryon_number_": 20,
+            },
+            "Oscar2013Extended_Photons": {
+                "t_": 0,
+                "x_": 1,
+                "y_": 2,
+                "z_": 3,
+                "mass_": 4,
+                "E_": 5,
+                "px_": 6,
+                "py_": 7,
+                "pz_": 8,
+                "pdg_": 9,
+                "ID_": 10,
+                "charge_": 11,
+                "ncoll_": 12,
+                "form_time_": 13,
+                "xsecfac_": 14,
+                "proc_id_origin_": 15,
+                "proc_type_origin_": 16,
+                "t_last_coll_": 17,
+                "pdg_mother1_": 18,
+                "pdg_mother2_": 19,
+                "weight_": 20,
+            },
+            "JETSCAPE": {
+                "ID_": 0,
+                "pdg_": 1,
+                "status_": 2,
+                "E_": 3,
+                "px_": 4,
+                "py_": 5,
+                "pz_": 6,
+            },
+        }
+        if (input_format in attribute_mapping) and (len(particle_array) == len(attribute_mapping[input_format])):
+            for attribute, index in attribute_mapping[input_format].items():
+                setattr(self, attribute, particle_array[index])
+
+            if input_format == "JETSCAPE":
+                self.mass_ = self.compute_mass_from_energy_momentum()
+                self.charge_ = self.compute_charge_from_pdg()
+        else:
+            raise ValueError(f"Unsupported input format '{input_format}' or invalid array length")
+
 
     @property
     def t(self):
@@ -697,12 +860,14 @@ class Particle:
         ValueError
             if weight is not set
         """
-        return self.weight_
+        if self.weight_ == None:
+            raise ValueError("weight not set")
+        else:
+            return self.weight_
 
     @weight.setter
     def weight(self,value):
         self.weight_ = value
-
 
     def print_particle(self):
         """Print the whole particle information as csv string.
@@ -720,7 +885,6 @@ class Particle:
               {self.proc_id_origin_},{self.proc_type_origin_}\
               ,{self.t_last_coll_},{self.pdg_mother1_},{self.pdg_mother2_},\
               {self.status_},{self.baryon_number_},{self.weight_}')
-
 
     def set_quantities_OSCAR2013(self,line_from_file):
         """
