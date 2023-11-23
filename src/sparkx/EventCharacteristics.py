@@ -33,6 +33,12 @@ class EventCharacteristics:
         Computes the spatial eccentricity from particles.
     eccentricity_from_lattice:
         Computes the spatial eccentricity from a 3D lattice.
+    generate_eBQS_densities_Milne_from_OSCAR_IC:
+        Generates energy, baryon, charge, and strangeness densities in Milne
+        coordinates.
+    generate_eBQS_densities_Minkowski_from_OSCAR_IC:    
+        Generates energy, baryon, charge, and strangeness densities in Minkowski
+        coordinates.
 
     Examples
     --------
