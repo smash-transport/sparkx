@@ -147,10 +147,11 @@ class Particle:
         Is the particle a heavy flavor particle?
     weight:
         What is the weight of the particle?
-    j_spin:
-        Total spin :math:`2J + 1` of the particle.
-    J_spin:
+    spin:
         Total spin :math:`J` of the particle.
+    spin_degeneracy:
+        Total spin :math:`2J + 1` of the particle.
+    
 
     Notes
     -----
@@ -1056,18 +1057,18 @@ class Particle:
         else:
             return False
         
-    def j_spin(self):
+    def spin_degeneracy(self):
         """
-        Get the total spin of the particle (:math:`2J + 1`).
+        Get the number of all possible spin projections (:math:`2J + 1`).
 
         Returns
         -------
         int
-            Total spin :math:`2J + 1`
+            Spin degeneracy :math:`2J + 1`
         """
         return PDGID(self.pdg).j_spin
     
-    def J_spin(self):
+    def spin(self):
         """
         Get the total spin :math:`J` of the particle.
 
