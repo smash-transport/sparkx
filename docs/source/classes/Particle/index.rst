@@ -26,3 +26,5 @@ Particle
 .. automethod:: Particle.is_hadron
 .. automethod:: Particle.is_strange
 .. automethod:: Particle.is_heavy_flavor
+.. automethod:: Particle.spin
+.. automethod:: Particle.spin_degeneracy
