@@ -1,4 +1,4 @@
-.. _Lee_Yang_Zero_flow:
+.. _Lee_Yang_zero_flow:
 
 LeeYangZeroFlow
 ===============
