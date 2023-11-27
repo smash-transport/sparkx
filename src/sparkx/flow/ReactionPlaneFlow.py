@@ -4,7 +4,7 @@ import numpy as np
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
     """
-    This class implements a reaction plane flow analysis algorithm
+    This class implements a reaction plane flow analysis algorithm.
 
     For this method, the flow is calculated under the assumption that the event plane angle is constant
     throughout all events. The flow is calculated as
