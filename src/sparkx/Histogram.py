@@ -633,16 +633,3 @@ class Histogram:
                             self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
                 writer.writerow(data)
             f.write('\n')
-
-hist_labels_multiple = [{'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
-                          'distribution': '$1 / Nevt * d^2 N / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
-                          'sys_err+': 'sys +', 'sys_err-': 'sys -'}]
-histogram_obj = Histogram(bin_boundaries=(0, 5, 5))
-histogram_obj.add_value([0.5,0.5,0.5,0.5,3.5,3.5])
-histogram_obj.set_systematic_error([0.2, 0.1, 0.1, 0.1, 0.1])
-histogram_obj.add_histogram()
-histogram_obj.add_value([0.5,0.5,3.5])
-histogram_obj.statistical_error()
-histogram_obj.set_systematic_error([0.1, 0.1, 0.1, 0.1, 0.1])
-histogram_obj.average_weighted([1,1])
-histogram_obj.write_to_file('multiple_histograms.csv', hist_labels_multiple, comment='# This is a test hist.')
