@@ -435,7 +435,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                             + (4.*n2_corr**2.-n4_corr)*self.__cov_term(2,6,phi,ebe_2p_corr,ebe_6p_corr)
                             - n2_corr*self.__cov_term(4,6,phi,ebe_4p_corr,ebe_6p_corr))
                             )
-            print(avg_vn6_err_sq,np.sqrt(-avg_vn6_err_sq))
+
             # returns <v_n{6}> and s_{<v_n{6}>}, Eq. (C33) Ref. [1]
             return avg_vn6, np.sqrt(avg_vn6_err_sq)
 
