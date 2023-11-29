@@ -877,7 +877,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned. 
         """
         if (self.x == None) or (self.y == None) or (self.z == None)\
@@ -899,7 +899,7 @@ class Particle:
         
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.E == None) or (self.pz == None):
@@ -923,7 +923,7 @@ class Particle:
         
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.px == None) or (self.py == None) or (self.pz == None):
@@ -942,7 +942,7 @@ class Particle:
         
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.px == None) or (self.py == None):
@@ -961,7 +961,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.px == None) or (self.py == None):
@@ -983,7 +983,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.px == None) or (self.py == None) or (self.pz == None):
@@ -1005,7 +1005,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.px == None) or (self.py == None) or (self.pz == None):
@@ -1029,7 +1029,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.t == None) or (self.z == None):
@@ -1051,7 +1051,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.t == None) or (self.z == None):
@@ -1073,7 +1073,7 @@ class Particle:
 
         Notes
         -----
-        If the one of the needed particle quantities is not given, then `None`
+        If one of the needed particle quantities is not given, then `None`
         is returned.
         """
         if (self.E == None) or (self.px == None) or (self.py == None) or (self.pz == None):
