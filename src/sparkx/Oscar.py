@@ -300,7 +300,7 @@ class Oscar:
         if self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
             particle_list.append(int(particle.ncoll))
             particle_list.append(float(particle.form_time))
-            particle_list.append(int(particle.xsecfac))
+            particle_list.append(float(particle.xsecfac))
             particle_list.append(int(particle.proc_id_origin))
             particle_list.append(int(particle.proc_type_origin))
             particle_list.append(float(particle.t_last_coll))
@@ -343,18 +343,7 @@ class Oscar:
                 data = []
             else:
                 data_line = line.replace('\n','').split(' ')
-                particle = Particle()
-
-                if self.oscar_format_ == 'Oscar2013':
-                    particle.set_quantities_OSCAR2013(data_line)
-                elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' :
-                    particle.set_quantities_OSCAR2013Extended(data_line)
-                elif self.oscar_format_ == 'Oscar2013Extended_Photons' :
-                    particle.set_quantities_OSCAR2013Extended(data_line, True)
-
-                # Check for filters by method with a dictionary
-                # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
-
+                particle = Particle(self.oscar_format_, data_line)
                 data.append(particle)
         fname.close()
 
