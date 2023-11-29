@@ -372,7 +372,13 @@ class Particle:
                     if len(particle_array)<index+1:
                         setattr(self,attribute,None)
                         continue
-                    setattr(self, attribute, particle_array[index])
+                    # Type casting for specific attributes
+                    if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
+                        setattr(self, attribute, float(particle_array[index]))
+                    elif attribute in ["pdg_", "ID_", "charge_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "baryon_number_", "strangeness_", "status_"]:
+                        setattr(self, attribute, int(particle_array[index]))
+                    else:
+                        setattr(self, attribute, particle_array[index])
 
                 if input_format == "JETSCAPE":
                     self.mass_ = self.compute_mass_from_energy_momentum()
