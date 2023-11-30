@@ -31,6 +31,7 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 ### Fixed
 
 * Histogram: Correct error handling when reweighting or averaging over histograms
+* JETSCAPE: Fix asymmetric pseudorapidity cut
 
 ### Changed
 
@@ -39,6 +40,7 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 * OSCAR/JETSCAPE: Improved writing to file
 * Particle: Particle construction is now done within the constructor by providing a format and an array of values
 * Particle: Functions using `PDGID` from the `particle` package handle now the case if the PDG ID is unknown to the package
+* Particle: Returns `None` if the quantity is not known or can not be computed
 
 # Removed
 
