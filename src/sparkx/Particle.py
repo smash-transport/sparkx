@@ -228,9 +228,6 @@ class Particle:
 
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
-        
-        if (particle_array is not None) and not isinstance(particle_array,np.ndarray):
-            raise TypeError("The 'particle_array' is not a numpy array")        
 
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(input_format,particle_array)
@@ -364,15 +361,29 @@ class Particle:
                 "pz_": 6,
             },
         }
-        if (input_format in attribute_mapping) and (len(particle_array) == len(attribute_mapping[input_format])):
-            for attribute, index in attribute_mapping[input_format].items():
-                setattr(self, attribute, particle_array[index])
+        if (input_format in attribute_mapping):
+            if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
+                 and len(particle_array) <=  len(attribute_mapping[input_format])\
+                    and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
+                for attribute, index in attribute_mapping[input_format].items():
+                    if len(particle_array)<index+1:
+                        setattr(self,attribute,None)
+                        continue
+                    # Type casting for specific attributes
+                    if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
+                        setattr(self, attribute, float(particle_array[index]))
+                    elif attribute in ["pdg_", "ID_", "charge_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "baryon_number_", "strangeness_", "status_"]:
+                        setattr(self, attribute, int(particle_array[index]))
+                    else:
+                        setattr(self, attribute, particle_array[index])
 
-            if input_format == "JETSCAPE":
-                self.mass_ = self.compute_mass_from_energy_momentum()
-                self.charge_ = self.compute_charge_from_pdg()
+                if input_format == "JETSCAPE":
+                    self.mass_ = self.compute_mass_from_energy_momentum()
+                    self.charge_ = self.compute_charge_from_pdg()
+            else:
+                raise ValueError(f"The input file is corrupted!")
         else:
-            raise ValueError(f"Unsupported input format '{input_format}' or invalid array length")
+            raise ValueError(f"Unsupported input format '{input_format}'")
         
         self.pdg_valid_ = PDGID(self.pdg_).is_valid
 
@@ -865,7 +876,8 @@ class Particle:
             if baryon_number is not set
         """
         if self.baryon_number_ == None:
-            raise ValueError("baryon number not set")
+            warnings.warn("baryon number not set")
+            return None
         else:
             return self.baryon_number_
 
@@ -887,7 +899,8 @@ class Particle:
             if strangeness is not set
         """
         if self.strangeness_ == None:
-            raise ValueError("strangeness not set")
+            warnings.warn("strangeness not set")
+            return None
         else:
             return self.strangeness_
 
@@ -933,125 +946,6 @@ class Particle:
               {self.proc_id_origin_},{self.proc_type_origin_}\
               ,{self.t_last_coll_},{self.pdg_mother1_},{self.pdg_mother2_},\
               {self.status_},{self.baryon_number_},{self.weight_}')
-
-    def set_quantities_OSCAR2013(self,line_from_file):
-        """
-        Sets the particle quantities obtained from OSCAR2013.
-
-        Parameters
-        ----------
-        line_from_file: list, numpy.ndarray
-            Contains the values read from the file.
-
-        Raises
-        ------
-        ValueError
-            if the input line has not the same number of columns as OSCAR2013
-        """
-        # check if the line is a list or numpy array
-        if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)==12:
-            self.t = float(line_from_file[0])
-            self.x = float(line_from_file[1])
-            self.y = float(line_from_file[2])
-            self.z = float(line_from_file[3])
-            self.mass = float(line_from_file[4])
-            self.E = float(line_from_file[5])
-            self.px = float(line_from_file[6])
-            self.py = float(line_from_file[7])
-            self.pz = float(line_from_file[8])
-            self.pdg = int(line_from_file[9])
-            self.ID = int(line_from_file[10])
-            self.charge = int(line_from_file[11])
-        else:
-            error_message = 'The input line does not have the same number of '+\
-                            'columns as the OSCAR2013 format'
-            raise ValueError(error_message)
-
-    def set_quantities_OSCAR2013Extended(self,line_from_file,photon=False):
-        """
-        Sets the particle quantities obtained from OSCAR2013Extended.
-
-        Parameters
-        ----------
-        line_from_file: list, numpy.ndarray
-            Contains the values read from the file.
-        photon: bool
-            Read in the extra field 'weight' for photon output.
-
-        Raises
-        ------
-        ValueError
-            if the input line has not the same number of columns as OSCAR2013Extended
-        """
-        # check if the line is a list or numpy array
-        if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)<=22 and len(line_from_file)>=20:
-            self.t = float(line_from_file[0])
-            self.x = float(line_from_file[1])
-            self.y = float(line_from_file[2])
-            self.z = float(line_from_file[3])
-            self.mass = float(line_from_file[4])
-            self.E = float(line_from_file[5])
-            self.px = float(line_from_file[6])
-            self.py = float(line_from_file[7])
-            self.pz = float(line_from_file[8])
-            self.pdg = int(line_from_file[9])
-            self.ID = int(line_from_file[10])
-            self.charge = int(line_from_file[11])
-            self.ncoll = int(line_from_file[12])
-            self.form_time = float(line_from_file[13])
-            self.xsecfac = float(line_from_file[14])
-            self.proc_id_origin = int(line_from_file[15])
-            self.proc_type_origin = int(line_from_file[16])
-            self.t_last_coll = float(line_from_file[17])
-            self.pdg_mother1 = int(line_from_file[18])
-            self.pdg_mother2 = int(line_from_file[19])
-            if len(line_from_file)==22 and not photon:
-                self.baryon_number = int(line_from_file[20])
-                self.strangeness = int(line_from_file[21])
-            elif len(line_from_file)==21 and photon:
-                self.weight = float(line_from_file[20])
-        else:
-            error_message = 'The input line does not have the same number of '+\
-                            'columns as the OSCAR2013Extended format'
-            raise ValueError(error_message)
-
-    def set_quantities_JETSCAPE(self,line_from_file):
-        """
-        Sets the particle quantities obtained from a JETSCAPE hadron file.
-
-        The JETSCAPE hadron output does not directly contain information about
-        the mass and the charge. Thus, they are computed from the four-momentum
-        and the PDG code respectively.
-
-        Parameters
-        ----------
-        line_from_file: list, numpy.ndarray
-            Contains the values read from the file.
-
-        Raises
-        ------
-        ValueError
-            if the input line has not the same number of columns as JETSCAPE hadron file
-        """
-        # check if the line is a list or numpy array
-        if (type(line_from_file) == list or isinstance(line_from_file, np.ndarray))\
-              and len(line_from_file)==7:
-            self.ID = int(line_from_file[0])
-            self.pdg = int(line_from_file[1])
-            self.status = int(line_from_file[2])
-            self.E = float(line_from_file[3])
-            self.px = float(line_from_file[4])
-            self.py = float(line_from_file[5])
-            self.pz = float(line_from_file[6])
-
-            self.mass = self.compute_mass_from_energy_momentum()
-            self.charge = self.compute_charge_from_pdg()
-        else:
-            error_message = 'The input line does not have the same number of '+\
-                            'columns as the JETSCAPE hadron output format'
-            raise ValueError(error_message)
 
     def angular_momentum(self):
         """Compute the angular momentum :math:`L=r \\times p` of a particle
