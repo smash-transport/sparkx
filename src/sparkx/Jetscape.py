@@ -286,13 +286,7 @@ class Jetscape:
                     data = []
             else:
                 data_line = line.replace('\n','').replace('\t',' ').split(' ')
-                particle = Particle()
-
-                particle.set_quantities_JETSCAPE(data_line)
-
-                # Check for filters by method with a dictionary
-                # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
-
+                particle = Particle("JETSCAPE", data_line)
                 data.append(particle)
         fname.close()
 
