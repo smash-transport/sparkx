@@ -919,7 +919,6 @@ class Jetscape:
             data_to_write = []
 
             for i in range(self.num_events_):
-                print("Working on event ",i)
                 event = self.num_output_per_event_[i, 0]
                 num_out = self.num_output_per_event_[i, 1]
                 particle_output = np.asarray(self.particle_list()[i])
