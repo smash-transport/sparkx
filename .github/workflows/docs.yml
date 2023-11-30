@@ -2,8 +2,8 @@ name: Build and Deploy Documentation
 
 on:
   push:
-    tags:
-      - 'v**'  # specify the pattern for release tags
+    branches:
+      - main
 
 permissions:
   contents: write
