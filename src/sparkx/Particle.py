@@ -114,12 +114,6 @@ class Particle:
         Get/set strangeness
     print_particle:
         Print the particle as CSV to terminal
-    set_quantities_OSCAR2013:
-        Set particle properties OSCAR2013
-    set_quantities_OSCAR2013Extended:
-        Set particle properties OSCAR2013Extended
-    set_quantities_JETSCAPE:
-        Set particle properties JETSCAPE
     angular_momentum:
         Compute angular momentum
     momentum_rapidity_Y:
@@ -196,6 +190,9 @@ class Particle:
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then `None` is returned by default.
     """
+    __slots__ = ['t_', 'x_', 'y_','z_','mass_', 'E_', 'px_', 'py_', 'pz_', 'pdg_', 'ID_', 'charge_', 'ncoll_',\
+                  'pdg_valid_','form_time_', 'xsecfac_', 'proc_id_origin_', 'proc_type_origin_', 't_last_coll_',\
+                      'pdg_mother1_', 'pdg_mother2_', 'status_', 'baryon_number_', 'strangeness_', 'weight_'] 
     def __init__(self,input_format=None,particle_array=None):
         # OSCAR2013 parameters
         self.t_ = None
