@@ -476,19 +476,26 @@ class Oscar:
             Nested list containing the current Oscar data
 
         """
-        num_particles = self.num_output_per_event_[:,1]
         num_events = self.num_events_
+        
+        if num_events == 1:
+            num_particles = self.num_output_per_event_[1]
+        else:
+            num_particles = self.num_output_per_event_[:,1]
 
         particle_array = []
 
-        for i_ev in range(0, num_events):
-            event = []
-
-            for i_part in range(0, num_particles[i_ev]):
-                particle = self.particle_list_[i_ev][i_part]
-                event.append(self.__particle_as_list(particle))
-
-            particle_array.append(event)
+        if num_events == 1:
+            for i_part in range(0, num_particles):
+                particle = self.particle_list_[i_part]
+                particle_array.append(self.__particle_as_list(particle))
+        else:
+            for i_ev in range(0, num_events):
+                event = []
+                for i_part in range(0, num_particles[i_ev]):
+                    particle = self.particle_list_[i_ev][i_part]
+                    event.append(self.__particle_as_list(particle))
+                particle_array.append(event)
 
         return particle_array
 

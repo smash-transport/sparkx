@@ -332,19 +332,39 @@ class Jetscape:
         self.num_events_ = len(event_output)
 
     def particle_list(self):
-        num_particles = self.num_output_per_event_[:,1]
+        """
+        Returns a nested python list containing all quantities from the
+        current Jetscape data as numerical values with the following shape:
+
+            | Single Event:    [output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
+
+        Returns
+        -------
+        list
+            Nested list containing the current Jetscape data
+
+        """
         num_events = self.num_events_
+        
+        if num_events == 1:
+            num_particles = self.num_output_per_event_[1]
+        else:
+            num_particles = self.num_output_per_event_[:,1]
 
         particle_array = []
 
-        for i_ev in range(0, num_events):
-            event = []
-
-            for i_part in range(0, num_particles[i_ev]):
-                particle = self.particle_list_[i_ev][i_part]
-                event.append(self.__particle_as_list(particle))
-
-            particle_array.append(event)
+        if num_events == 1:
+            for i_part in range(0, num_particles):
+                particle = self.particle_list_[i_part]
+                particle_array.append(self.__particle_as_list(particle))
+        else:
+            for i_ev in range(0, num_events):
+                event = []
+                for i_part in range(0, num_particles[i_ev]):
+                    particle = self.particle_list_[i_ev][i_part]
+                    event.append(self.__particle_as_list(particle))
+                particle_array.append(event)
 
         return particle_array
 
