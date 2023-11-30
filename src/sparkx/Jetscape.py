@@ -262,36 +262,35 @@ class Jetscape:
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
-        fname = open(self.PATH_JETSCAPE_, 'r')
-        self.__skip_lines(fname)
-
-        for i in range(0, num_read_lines):
-            line = fname.readline()
-            if not line:
-                raise IndexError('Index out of range of JETSCAPE file')
-            elif '#' in line and 'sigmaGen' in line:
-                particle_list.append(data)
-            elif i == 0 and '#' not in line and 'weight' not in line:
-                raise ValueError('First line of the event is not a comment ' +\
-                                 'line or does not contain "weight"')
-            elif 'Event' in line and 'weight' in line:
-                line = line.replace('\n','').replace('\t',' ').split(' ')
-                first_event_header = 1
-                if 'events' in self.optional_arguments_.keys():
-                    if isinstance(kwargs['events'], int):
-                        first_event_header += int(kwargs['events'])
-                    else:
-                        first_event_header += int(kwargs['events'][0])
-                if int(line[2]) == first_event_header:
-                    continue
-                else:
+        with open(self.PATH_OSCAR_, 'r') as jetscape_file:
+            self.__skip_lines(jetscape_file)
+    
+            for i in range(0, num_read_lines):
+                line = jetscape_file.readline()
+                if not line:
+                    raise IndexError('Index out of range of JETSCAPE file')
+                elif '#' in line and 'sigmaGen' in line:
                     particle_list.append(data)
-                    data = []
-            else:
-                line = line.replace('\n','').replace('\t',' ').split(' ')
-                particle = Particle("JETSCAPE", line)
-                data.append(particle)
-        fname.close()
+                elif i == 0 and '#' not in line and 'weight' not in line:
+                    raise ValueError('First line of the event is not a comment ' +\
+                                     'line or does not contain "weight"')
+                elif 'Event' in line and 'weight' in line:
+                    line = line.replace('\n','').replace('\t',' ').split(' ')
+                    first_event_header = 1
+                    if 'events' in self.optional_arguments_.keys():
+                        if isinstance(kwargs['events'], int):
+                            first_event_header += int(kwargs['events'])
+                        else:
+                            first_event_header += int(kwargs['events'][0])
+                    if int(line[2]) == first_event_header:
+                        continue
+                    else:
+                        particle_list.append(data)
+                        data = []
+                else:
+                    line = line.replace('\n','').replace('\t',' ').split(' ')
+                    particle = Particle("JETSCAPE", line)
+                    data.append(particle)
 
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
@@ -315,21 +314,20 @@ class Jetscape:
             self.particle_list_ = particle_list
 
     def set_num_output_per_event(self):
-        file = open(self.PATH_JETSCAPE_ , 'r')
-        event_output = []
-
-        while True:
-            line = file.readline()
-            if not line:
-                break
-            elif '#' in line and 'N_hadrons' in line:
-                line_str = line.replace('\n','').replace('\t',' ').split(' ')
-                event = line_str[2]
-                num_output = line_str[8]
-                event_output.append([event, num_output])
-            else:
-                continue
-        file.close()
+        with open(self.PATH_OSCAR_, 'r') as jetscape_file:
+            event_output = []
+    
+            while True:
+                line = jetscape_file.readline()
+                if not line:
+                    break
+                elif '#' in line and 'N_hadrons' in line:
+                    line_str = line.replace('\n','').replace('\t',' ').split(' ')
+                    event = line_str[2]
+                    num_output = line_str[8]
+                    event_output.append([event, num_output])
+                else:
+                    continue
 
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
@@ -932,9 +930,8 @@ class Jetscape:
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
-        header_file = line_in_initial_file.readline()
-        line_in_initial_file.close()
+        with open(self.PATH_JETSCAPE_,'r') as jetscape_file:
+            header_file = jetscape_file.readline()
 
         # Open the output file with buffered writing
         with open(output_file, "w") as f_out:

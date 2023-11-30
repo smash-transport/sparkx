@@ -327,25 +327,24 @@ class Oscar:
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
-        fname = open(self.PATH_OSCAR_, 'r')
-        self.__skip_lines(fname)
-        for i in range(0, num_read_lines):
-            line = fname.readline()
-            if not line:
-                raise IndexError('Index out of range of OSCAR file')
-            elif i == 0 and '#' not in line and 'out' not in line:
-                raise ValueError('First line of the event is not a comment ' +\
-                                 'line or does not contain "out"')
-            elif 'event' in line and ('out' in line or 'in ' in line):
-                continue
-            elif '#' in line and 'end' in line:
-                particle_list.append(data)
-                data = []
-            else:
-                line = line.replace('\n','').split(' ')
-                particle = Particle(self.oscar_format_, line)
-                data.append(particle)
-        fname.close()
+        with open(self.PATH_OSCAR_, 'r') as oscar_file:
+            self.__skip_lines(oscar_file)
+            for i in range(0, num_read_lines):
+                line = oscar_file.readline()
+                if not line:
+                    raise IndexError('Index out of range of OSCAR file')
+                elif i == 0 and '#' not in line and 'out' not in line:
+                    raise ValueError('First line of the event is not a comment ' +\
+                                     'line or does not contain "out"')
+                elif 'event' in line and ('out' in line or 'in ' in line):
+                    continue
+                elif '#' in line and 'end' in line:
+                    particle_list.append(data)
+                    data = []
+                else:
+                    line = line.replace('\n','').split(' ')
+                    particle = Particle(self.oscar_format_, line)
+                    data.append(particle)
 
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
@@ -388,62 +387,61 @@ class Oscar:
 
 
     def set_num_output_per_event_and_event_footers(self):
-        file = open(self.PATH_OSCAR_ , 'r')
-        event_output = []
-        if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
-            while True:
-                line = file.readline()
-                if not line:
-                    break
-                elif '#' in line and 'end ' in line:
-                    self.event_end_lines_.append(line)
-                elif '#' in line and 'out' in line:
-                    line_str = line.replace('\n','').split(' ')
-                    event = line_str[2]
-                    num_output = line_str[4]
-                    event_output.append([event, num_output])
-                else:
-                    continue
-        elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
-            line_counter=0
-            event=0
-            while True:
-                line_counter+=1
-                line = file.readline()
-                if not line:
-                    break
-                elif '#' in line and 'end' in line:
-                    self.event_end_lines_.append(line)
-                    event_output.append([event, line_counter-2])
-                elif '#' in line and 'in' in line:
-                    line_str = line.replace('\n','').split(' ')
-                    event = line_str[2]
-                    line_counter=0
-                else:
-                    continue
-
-        elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
-            line_counter=0
-            event=0
-            line_memory=0
-            while True:
-                line_counter+=1
-                line_memory+=1
-                line = file.readline()
-                if not line:
-                    break
-                elif '#' in line and 'end' in line:
-                    if(line_memory==1):
+        with open(self.PATH_OSCAR_, 'r') as oscar_file:
+            event_output = []
+            if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
+                while True:
+                    line = oscar_file.readline()
+                    if not line:
+                        break
+                    elif '#' in line and 'end ' in line:
+                        self.event_end_lines_.append(line)
+                    elif '#' in line and 'out' in line:
+                        line_str = line.replace('\n','').split(' ')
+                        event = line_str[2]
+                        num_output = line_str[4]
+                        event_output.append([event, num_output])
+                    else:
                         continue
-                    self.event_end_lines_.append(line)
-                    line_str = line.replace('\n','').split(' ')
-                    event = line_str[2]
-                    event_output.append([event, line_counter-1])
-                elif '#' in line and 'out' in line:
-                    line_counter=0
-                else:
-                    continue
-        file.close()
+            elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
+                line_counter=0
+                event=0
+                while True:
+                    line_counter+=1
+                    line = oscar_file.readline()
+                    if not line:
+                        break
+                    elif '#' in line and 'end' in line:
+                        self.event_end_lines_.append(line)
+                        event_output.append([event, line_counter-2])
+                    elif '#' in line and 'in' in line:
+                        line_str = line.replace('\n','').split(' ')
+                        event = line_str[2]
+                        line_counter=0
+                    else:
+                        continue
+    
+            elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
+                line_counter=0
+                event=0
+                line_memory=0
+                while True:
+                    line_counter+=1
+                    line_memory+=1
+                    line = oscar_file.readline()
+                    if not line:
+                        break
+                    elif '#' in line and 'end' in line:
+                        if(line_memory==1):
+                            continue
+                        self.event_end_lines_.append(line)
+                        line_str = line.replace('\n','').split(' ')
+                        event = line_str[2]
+                        event_output.append([event, line_counter-1])
+                    elif '#' in line and 'out' in line:
+                        line_counter=0
+                    else:
+                        continue
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
 
 
@@ -1165,30 +1163,28 @@ class Oscar:
         format_oscar2013 = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
         format_oscar2013_extended = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d %d'
 
-        line_in_initial_file = open(self.PATH_OSCAR_,'r')
-        counter_line = 0
-        while True:
-            line = line_in_initial_file.readline()
-            line_splitted = line.replace('\n','').split(' ')
-
-            if counter_line < 3:
-                header.append(line)
-            elif line_splitted[0] == '#' and line_splitted[3] == 'end':
-                event_footer = line
-                break
-            elif counter_line > 1000000:
-                err_msg = 'Unable to find the end of an event in the original' +\
-                          'Oscar file within the first 1000000 lines'
-                raise RuntimeError(err_msg)
-            counter_line += 1
-        line_in_initial_file.close()
+        with open(self.PATH_OSCAR_,'r') as oscar_file:
+            counter_line = 0
+            while True:
+                line = oscar_file.readline()
+                line_splitted = line.replace('\n','').split(' ')
+    
+                if counter_line < 3:
+                    header.append(line)
+                elif line_splitted[0] == '#' and line_splitted[3] == 'end':
+                    event_footer = line
+                    break
+                elif counter_line > 1000000:
+                    err_msg = 'Unable to find the end of an event in the original' +\
+                              'Oscar file within the first 1000000 lines'
+                    raise RuntimeError(err_msg)
+                counter_line += 1
 
         event_footer = event_footer.replace('\n','').split(' ')
 
-        output = open(output_file, "w")
-        for i in range(3):
-            output.write(header[i])
-        output.close()
+        with open(output_file, "w") as output_file:
+            for i in range(3):
+                output_file.write(header[i])
 
         with open(output_file, "a") as f_out:
             for i in range(self.num_events_):
