@@ -275,18 +275,21 @@ class Jetscape:
                 raise ValueError('First line of the event is not a comment ' +\
                                  'line or does not contain "weight"')
             elif 'Event' in line and 'weight' in line:
-                data_line = line.replace('\n','').replace('\t',' ').split(' ')
+                line = line.replace('\n','').replace('\t',' ').split(' ')
                 first_event_header = 1
                 if 'events' in self.optional_arguments_.keys():
-                    first_event_header += int(kwargs['events'][0])
-                if int(data_line[2]) == first_event_header:
+                    if isinstance(kwargs['events'], int):
+                        first_event_header += int(kwargs['events'])
+                    else:
+                        first_event_header += int(kwargs['events'][0])
+                if int(line[2]) == first_event_header:
                     continue
                 else:
                     particle_list.append(data)
                     data = []
             else:
-                data_line = line.replace('\n','').replace('\t',' ').split(' ')
-                particle = Particle("JETSCAPE", data_line)
+                line = line.replace('\n','').replace('\t',' ').split(' ')
+                particle = Particle("JETSCAPE", line)
                 data.append(particle)
         fname.close()
 

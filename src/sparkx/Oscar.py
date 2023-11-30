@@ -342,8 +342,8 @@ class Oscar:
                 particle_list.append(data)
                 data = []
             else:
-                data_line = line.replace('\n','').split(' ')
-                particle = Particle(self.oscar_format_, data_line)
+                line = line.replace('\n','').split(' ')
+                particle = Particle(self.oscar_format_, line)
                 data.append(particle)
         fname.close()
 
