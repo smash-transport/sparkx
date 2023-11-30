@@ -22,6 +22,7 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 
 ### Added
 
+* Import with `from sparkx import *` is now possible
 * EventCharacteristics: Possibility to smear (Gaussian or covariant) energy, baryon, charge and strangeness densities in Milne and Minkowski coordinates with writing to a file for subsequent hydro evolution
 * Histogram: Method to set the systematic error
 * Lattice3D: Add covariant smearing of densities for particles
