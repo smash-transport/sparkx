@@ -273,7 +273,7 @@ class EventCharacteristics:
         y = energy_density.y_values_
         eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
         if(tau*(np.sinh(eta[-1])-np.sinh(eta[-2])) < (z_max-z_min)/Nz):
-            print("Warning: The grid for z is not fine enough for the requested eta-grid.")
+            warnings.warn("Warning: The grid for z is not fine enough for the requested eta-grid.")
         
         # generate the header for the output file
         file_header = "# smeared density from SPARKX in Milne coordinates\n# "
