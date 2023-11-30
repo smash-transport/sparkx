@@ -570,7 +570,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if elem.charge != 0]
+                                        if (elem.charge != 0 and elem.charge != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -589,7 +589,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if elem.charge == 0]
+                                        if (elem.charge == 0 and elem.charge != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -644,7 +644,7 @@ class Oscar:
             
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) == pdg_list]
+                                            if (int(elem.pdg) == pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -653,7 +653,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) in pdg_list]
+                                            if (int(elem.pdg) in pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -694,7 +694,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) != pdg_list]
+                                            if (int(elem.pdg) != pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -703,7 +703,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if not int(elem.pdg) in pdg_list]
+                                            if (not int(elem.pdg) in pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -725,7 +725,8 @@ class Oscar:
         """
 
         for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i] if elem.ncoll != 0]
+            self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
+                                      if (elem.ncoll != 0 and elem.ncoll != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -745,7 +746,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if elem.ncoll == 0 ]
+                                        if (elem.ncoll == 0 and elem.ncoll != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -781,8 +782,7 @@ class Oscar:
 
         updated_particle_list = []
         for event_particles in self.particle_list_:
-            print(len(event_particles))
-            total_energy = sum(particle.E for particle in event_particles)
+            total_energy = sum(particle.E for particle in event_particles if particle.E != None)
             if total_energy >= minimum_event_energy:
                 updated_particle_list.append(event_particles)
         self.particle_list_ = updated_particle_list
@@ -845,16 +845,16 @@ class Oscar:
         for i in range(0, self.num_events_):
             if (dim == "t"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.t <= upper_cut]
+                                        (lower_cut <= elem.t <= upper_cut and elem.t != None)]
             elif (dim == "x"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.x <= upper_cut]
+                                        (lower_cut <= elem.x <= upper_cut and elem.x != None)]
             elif (dim == "y"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.y <= upper_cut]
+                                        (lower_cut <= elem.y <= upper_cut and elem.y != None)]
             else:
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.z <= upper_cut]
+                                        (lower_cut <= elem.z <= upper_cut and elem.z != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -900,7 +900,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.pt_abs() <= upper_cut]
+                                        (lower_cut <= elem.pt_abs() <= upper_cut and elem.pt_abs() != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -947,7 +947,8 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            -limit<=elem.momentum_rapidity_Y()<=limit]
+                                            (-limit<=elem.momentum_rapidity_Y()<=limit 
+                                             and elem.momentum_rapidity_Y() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -957,7 +958,8 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            lim_min<=elem.momentum_rapidity_Y()<=lim_max]
+                                            (-limit<=elem.momentum_rapidity_Y()<=limit 
+                                             and elem.momentum_rapidity_Y() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -1019,13 +1021,15 @@ class Oscar:
 
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.pseudorapidity()<=lim_max]
+                                       (lim_min<=elem.pseudorapidity()<=lim_max
+                                        and elem.pseudorapidity() != None)]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.pseudorapidity()<=lim_max]
+                                              (lim_min<=elem.pseudorapidity()<=lim_max
+                                                and elem.pseudorapidity() != None)]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
 
@@ -1077,7 +1081,8 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            -limit<=elem.spatial_rapidity()<=limit]
+                                            (-limit<=elem.spatial_rapidity()<=limit
+                                             and elem.spatial_rapidity() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -1087,13 +1092,15 @@ class Oscar:
 
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       lim_min<=elem.spatial_rapidity()<=lim_max]
+                                       (lim_min<=elem.spatial_rapidity()<=lim_max
+                                        and elem.spatial_rapidity() != None)]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              lim_min<=elem.spatial_rapidity()<=lim_max]
+                                              (lim_min<=elem.spatial_rapidity()<=lim_max
+                                                and elem.spatial_rapidity() != None)]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
 
