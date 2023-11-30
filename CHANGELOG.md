@@ -32,6 +32,7 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 ### Fixed
 
 * Histogram: Correct error handling when reweighting or averaging over histograms
+* OSCAR/JETSCAPE: Fix bug when reading in a single event from input file
 * JETSCAPE: Fix asymmetric pseudorapidity cut
 
 ### Changed
