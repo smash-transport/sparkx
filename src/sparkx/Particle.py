@@ -1079,7 +1079,7 @@ class Particle:
         if (self.E == None) or (self.px == None) or (self.py == None) or (self.pz == None):
             return None
         else:
-            if np.abs(self.E**2. - self.p_abs()**2.) > 1e-6 and\
+            if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
                   self.E**2. - self.p_abs()**2. > 0.:
                 return np.sqrt(self.E**2.-self.p_abs()**2.)
             else:
