@@ -262,7 +262,7 @@ class Jetscape:
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
-        with open(self.PATH_OSCAR_, 'r') as jetscape_file:
+        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
             self.__skip_lines(jetscape_file)
     
             for i in range(0, num_read_lines):
@@ -314,7 +314,7 @@ class Jetscape:
             self.particle_list_ = particle_list
 
     def set_num_output_per_event(self):
-        with open(self.PATH_OSCAR_, 'r') as jetscape_file:
+        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
             event_output = []
     
             while True:
@@ -932,6 +932,7 @@ class Jetscape:
         """
         with open(self.PATH_JETSCAPE_,'r') as jetscape_file:
             header_file = jetscape_file.readline()
+
 
         # Open the output file with buffered writing
         with open(output_file, "w") as f_out:
