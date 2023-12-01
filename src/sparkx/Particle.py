@@ -756,7 +756,8 @@ class Particle:
               {self.status_},{self.baryon_number_},{self.strangeness_},{self.weight_}')
 
     def angular_momentum(self):
-        """Compute the angular momentum :math:`L=r \\times p` of a particle
+        """
+        Compute the angular momentum :math:`L=r \\times p` of a particle.
 
         Returns
         -------
