@@ -22,6 +22,14 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
     n : int, optional
         The value of the harmonic. Default is 2.
 
+        
+    Methods
+    -------
+    integrated_flow:
+        Computes the integrated flow.
+    differential_flow:
+        Computes the differential flow.
+
     Examples
     --------
 

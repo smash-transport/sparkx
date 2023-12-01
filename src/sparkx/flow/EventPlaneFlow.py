@@ -5,7 +5,6 @@ import scipy.optimize as optimize
 import warnings
 
 class EventPlaneFlow(FlowInterface.FlowInterface):
-
     """
     This class implements a event plane flow analysis algorithm
     `Poskanzer, Arthur M., and Sergei A. Voloshin. "Methods for analyzing anisotropic flow in relativistic nuclear collisions." Physical Review C 58.3 (1998): 1671. <https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws>`__.
@@ -41,6 +40,13 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         The weight used for calculating the flow. Default is "pt2".
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
+
+    Methods
+    -------
+    integrated_flow:
+        Computes the integrated flow.
+    differential_flow:
+        Computes the differential flow.
 
     Examples
     --------
