@@ -31,7 +31,6 @@ extensions = [
     'sphinx.ext.coverage',
     'numpydoc',
     'sphinx.ext.viewcode',
-    'sphinx.ext.autosummary',
     'myst_parser', # for markdown parsing (needs myst-parser package)
     'sphinx_rtd_theme'
 ]
