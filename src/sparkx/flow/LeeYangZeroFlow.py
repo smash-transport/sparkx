@@ -21,6 +21,15 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
     For a practical guide of the implementation we refer to Ref. [3], where all
     relevant equations are given.
 
+    Notes
+    -----
+    If a result contains NaN or Inf, the corresponding value is set to None.
+    
+    A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:
+        - :math:`\\chi > 1`:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.
+        - :math:`0.5 < \\chi < 1`: The method is applicable, but the weights should be optimized to increase :math:`\\chi`. This is not possible with the current implementation of the flow analysis method.
+        - :math:`\\chi < 0.5`: Too large statistical errors, the present method should not be used. Using more events will not help much. Use the cumulant methods instead, which are still applicable if the number of events is large enough.
+
     Parameters
     ----------
     vmin : float
@@ -56,41 +65,16 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         >>> # Calculate the integrated flow with error and resolution parameter
         >>> result = flow_instance.integrated_flow(particle_data)
 
-    Notes
-    -----
-    - If a result contains NaN or Inf, the corresponding value is set to None.
-
-    - A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:
-
-        - :math:`\\chi > 1`:  The statistical error on the flow is not 
-        significantly larger than with the standard method. At the same time 
-        systematic errors due to nonflow effects are much smaller. The present 
-        method should be used, and statistics will not be a problem.
-        
-        - :math:`0.5 < \\chi < 1`: The method is applicable, but the weights 
-        should be optimized to increase :math:`\\chi`. This is not possible with 
-        the current implementation of the flow analysis method.
-        
-        - :math:`\\chi < 0.5`: Too large statistical errors, the present method
-        should not be used. Using more events will not help much. Use the 
-        cumulant methods instead, which are still applicable if the number of
-        events is large enough.
-
     """
     def __init__(self,vmin,vmax,vstep,n=2):
 
         self.j01_ = 2.4048256
-        self.J1rootJ0 = 0.5191147 # J1(j01)
+        self.J1rootJ0_ = 0.5191147 # J1(j01)
 
         if vmin > vmax:
             raise ValueError("'vmin' is larger than 'vmax'")
         if (vmax-vmin) < vstep:
             raise ValueError("'vstep' is larger than the difference between minimum and maximum flow")
-
-        # define the r_space_ such that one achieves the wanted precision vstep
-        number_interpolation_points_r = np.ceil((vmax-vmin)/vstep)
-        self.r_space_ = np.array([self.j01_ / (vmax - vstep * r_i) for r_i in range(int(number_interpolation_points_r))])
-        self.theta_space_ = np.linspace(0.,np.pi,5) # equally spaced between 0 and pi
         
         if not isinstance(n, int):
             raise TypeError('n has to be int')
@@ -98,6 +82,19 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise ValueError('n-th harmonic with value n<=0 can not be computed')
         else:
             self.n_ = n
+
+        # define the r_space_ such that one achieves the wanted precision vstep
+        number_interpolation_points_r = np.ceil((vmax-vmin)/vstep)
+        self.r_space_ = np.array([self.j01_ / (vmax - vstep * r_i) for r_i in range(int(number_interpolation_points_r))])
+        self.theta_space_ = np.linspace(0.,np.pi/self.n_,5) # equally spaced between 0 and pi/n
+
+        self.computed_integrated_flow_ = False
+        self.chi_ = None
+        self.Vntheta_ = None
+        self.r0theta_ = None
+        self.random_event_planes_ = None
+        self.denominator_event_avg_diff_ = None
+        self.numerator_event_avg_diff_ = None
 
 
     def __g_theta(self, n, r, theta, weight_j, phi_j):
@@ -136,7 +133,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         g_theta = 1.0 + 0.0j
         for j in range(len(weight_j)):
-            g_theta *= (1.0 + 1.0j * r * weight_j[j] * np.cos(n * phi_j[j] - theta))
+            g_theta *= (1.0 + 1.0j * r * weight_j[j] * np.cos(n * (phi_j[j] - theta)))
         return g_theta
 
     def __Q_x(self, n, weight_j, phi_j):
@@ -205,7 +202,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Q_y += weight_j[j] * np.sin(n * phi_j[j])
         return Q_y
 
-    def sigma(self,QxSqPQySq,Qx,Qy,VnInfty):
+    def __sigma(self,QxSqPQySq,Qx,Qy,VnInfty):
         """
         Calculate the value of :math:`\\sigma` based on Eq. (7) in Ref. [3].
 
@@ -228,7 +225,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         # Eq. 7 in Ref. [3]
         return np.sqrt(QxSqPQySq - Qx**2. - Qy**2. - VnInfty**2.)
 
-    def chi(self,VnInfty,sigma):
+    def __chi(self,VnInfty,sigma):
         """
         Calculate the resolution parameter :math:`\\chi` based on the 
         given parameters.
@@ -247,7 +244,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         """
         return VnInfty / sigma
 
-    def relative_Vn_fluctuation(self,NEvents,chi):
+    def __relative_Vn_fluctuation(self,NEvents,chi):
         """
         Calculate the relative flow fluctuation based on the given parameters.
         This is based on Eq. (8) in Ref. [3].
@@ -264,8 +261,23 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         float
             The computed relative flow fluctuation based on Eq. (8) in Ref. [3].
         """
-        return (1./(2.*NEvents*self.j01_**2.*self.J1rootJ0**2.)) * (np.exp(self.j01_**2. / (2.*chi*chi)) + np.exp(-self.j01_**2. / (2.*chi**2.)) * (-0.2375362))
+        return (1./(2.*NEvents*self.j01_**2.*self.J1rootJ0_**2.)) * (np.exp(self.j01_**2. / (2.*chi*chi)) + np.exp(-self.j01_**2. / (2.*chi**2.)) * (-0.2375362))
 
+    def __generate_random_event_planes(self,Nevents):
+        """
+        Generates random event planes in radians for a specified number of events.
+
+        Parameters
+        ----------
+        Nevents :
+            Number of events for which random event planes are generated.
+
+        Note:
+        -----
+        The generated event planes are stored in the 'random_event_planes_' attribute
+        of the object for later access.
+        """
+        self.random_event_planes_ = [rd.uniform(0., 2.*np.pi) for _ in range(Nevents)]
 
     def integrated_flow(self, particle_data):
         """
@@ -295,9 +307,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         AvgQxSqPQySq = 0.
 
         G = np.zeros((len(self.theta_space_),len(self.r_space_)),dtype=np.complex_)
+        self.__generate_random_event_planes(len(particle_data))
 
         for event in range(number_events):
-            print("Event:",event)
             event_multiplicity = len(particle_data[event])
             mean_multiplicity +=event_multiplicity
 
@@ -308,8 +320,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 weight_j.append(1./event_multiplicity)
             
             # randomize the event plane
-            rand_event_plane = rd.uniform(0.,2.*np.pi)
-            phi_j = [phi+rand_event_plane for phi in phi_j]
+            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
 
             g = np.zeros((len(self.theta_space_),len(self.r_space_)),dtype=np.complex_)
             for theta in range(len(self.theta_space_)):
@@ -349,16 +360,132 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             vn_inf_theta.append(self.j01_ / min_r0_theta[theta])
         
         vn_inf = np.mean(vn_inf_theta)
-        sigma_value = self.sigma(AvgQxSqPQySq,AvgQx,AvgQy,vn_inf)
-        chi_value = self.chi(vn_inf,sigma_value)
-        # factor 1/2 because the statistical error on Vninf is a factor 2 smaller
-        relative_Vn_fluctuation = (1./2)*self.relative_Vn_fluctuation(number_events,chi_value)
+        sigma_value = self.__sigma(AvgQxSqPQySq,AvgQx,AvgQy,vn_inf)
+        chi_value = self.__chi(vn_inf,sigma_value)
+        relative_Vn_fluctuation = self.__relative_Vn_fluctuation(number_events,chi_value)
+
+        # set the members for the differential flow computation
+        self.computed_integrated_flow_ = True
+        self.chi_ = chi_value
+        self.Vntheta_ = vn_inf_theta
+        self.r0theta_ = min_r0_theta
         
         if np.isnan(vn_inf) or np.isinf(vn_inf):
             return [None, None, None]
         else:
-            return [vn_inf,np.sqrt(vn_inf*relative_Vn_fluctuation),chi_value]
+            # factor 1/2 because the statistical error on Vninf is a factor 2 smaller
+            return [vn_inf,0.5*np.sqrt(vn_inf*relative_Vn_fluctuation),chi_value]
 
+    def __compute_reference_differential_flow(self,particle_data):
+        """
+        This function computes the event average in the denominator of Eq. (9) in Ref. [3].
+        """
+        number_events = len(particle_data)
+        
+        denominator_event_avg = 0.
+        for event in range(number_events):
+            event_multiplicity = len(particle_data[event])
+
+            phi_j = []
+            weight_j = []
+            for particle in particle_data[event]:
+                phi_j.append(particle.phi())
+                weight_j.append(1./event_multiplicity)
+            
+            # randomize the event plane
+            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
+
+            g = np.zeros(len(self.theta_space_),dtype=np.complex_)
+            for theta in range(len(self.theta_space_)):
+                g[theta] = self.__g_theta(self.n_,self.r0theta_[theta],self.theta_space_[theta],weight_j,phi_j)
+
+                sum_j = 0.
+                for p in range(event_multiplicity):
+                    numerator = weight_j[p]*np.cos(self.n_*(phi_j[p]-self.theta_space_[theta]))
+                    denominator = 1.0 + 1.0j * self.r0theta_[theta] * weight_j[p] * np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
+                    sum_j += numerator / denominator
+
+                g[theta] *= sum_j
+
+            denominator_event_avg += g
+        denominator_event_avg /= number_events
+        self.denominator_event_avg_diff_ = denominator_event_avg
+
+    def __vn_differential_uncertainty(self,number_particles_tot):
+        """
+        Calculates the differential flow uncertainty.
+
+        Parameters
+        ----------
+        number_particles_tot : int or float
+            Total number of particles involved in the measurement.
+
+        Returns
+        -------
+        float
+            The calculated differential flow uncertainty.
+        """
+        err_sq = (1./(4.*number_particles_tot**self.J1rootJ0_**2.)) * (np.exp(self.j01_**2. / (2.*self.chi_**2.)) - np.exp(-self.j01_**2. / (2.*self.chi_**2.)) * (-0.2375362))
+        return np.sqrt(err_sq)
+
+    def __compute_differential_flow_bin(self,particle_data_bin):
+        """
+        Computes the differential flow in the given phase space bin with Eq. (9) 
+        in Ref. [3].
+
+        Parameters
+        ----------
+        particle_data_bin : list of lists
+            List containing particle data for each event in a specific bin.
+
+        Returns
+        -------
+        list
+            A list containing the computed values of differential flow 
+            (vn_differential) and its uncertainty (vn_differential_uncertainty).
+        """
+        number_events = len(particle_data_bin)
+        
+        number_particles_tot = 0.
+        numerator_particle_avg = 0.
+        for event in range(number_events):
+            event_multiplicity = len(particle_data_bin[event])
+            number_particles_tot += event_multiplicity
+
+            phi_j = []
+            weight_j = []
+            for particle in particle_data_bin[event]:
+                phi_j.append(particle.phi())
+                weight_j.append(1./event_multiplicity)
+            
+            # randomize the event plane
+            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
+
+            g = np.zeros(len(self.theta_space_),dtype=np.complex_)
+            for theta in range(len(self.theta_space_)):
+                g[theta] = self.__g_theta(self.n_,self.r0theta_[theta],self.theta_space_[theta],weight_j,phi_j)
+
+                sum_j = 0.
+                for p in range(event_multiplicity):
+                    numerator = np.cos(self.n_*(phi_j[p]-self.theta_space_[theta]))
+                    denominator = 1.0 + 1.0j * self.r0theta_[theta] * weight_j[p] * np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
+                    sum_j += numerator / denominator
+                
+                g[theta] *= sum_j
+
+            numerator_particle_avg += g
+
+        numerator_particle_avg /= number_particles_tot
+        self.numerator_event_avg_diff_ = numerator_particle_avg
+
+        vn_theta = []
+        for theta in range(len(self.theta_space_)):
+            vn_theta.append(self.Vntheta_[theta] * np.real(self.numerator_event_avg_diff_[theta]/self.denominator_event_avg_diff_[theta]))
+        
+        vn_differential = np.mean(vn_theta)
+        # factor 1/2 because the statistical error on Vninf is a factor 2 smaller
+        vn_differential_uncertainty = 0.5*self.__vn_differential_uncertainty(number_particles_tot)
+        return [vn_differential, vn_differential_uncertainty]
 
     def differential_flow(self,particle_data,bins,flow_as_function_of):
         """
@@ -376,12 +503,11 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         Returns
         -------
         list
-            A list containing the integrated flow for each bin. 
+            A list containing the differential flow for each bin. 
             Each element in the list corresponds to a bin and contains:
 
-            - vn_inf (float): Integrated flow magnitude for the bin.
-            - vn_inf_error (float): Error on the integrated flow magnitude for the bin.
-            - chi_value (float): Computed value of :math:`\\chi` for the bin.
+            - vn_inf (float): Differential flow magnitude for the bin.
+            - vn_inf_error (float): Error on the differential flow magnitude for the bin.
             
         If a bin has no events, the corresponding element in the result list is set to None.
         """
@@ -391,6 +517,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
+        
+        # differential flow needs the integrated flow as reference
+        if self.computed_integrated_flow_ == False:
+            integrated_flow = self.integrated_flow(particle_data)
 
         particle_data_bin = []
         for bin in range(len(bins)-1):
@@ -405,17 +535,18 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                        print(val)
                     if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle)
                 if len(particles_event) > 0:
                     events_bin.extend([particles_event])
             particle_data_bin.extend([events_bin])
 
+        self.__compute_reference_differential_flow(particle_data)
+
         flow_bins = []
         for bin in range(len(particle_data_bin)):
             if len(particle_data_bin[bin]) > 0:
-                flow_bins.append(self.integrated_flow(particle_data_bin[bin]))
+                flow_bins.append(self.__compute_differential_flow_bin(particle_data_bin[bin]))
             else:
                 flow_bins.append(None)
         return flow_bins
