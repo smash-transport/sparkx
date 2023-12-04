@@ -485,7 +485,11 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         vn_differential = np.mean(vn_theta)
         # factor 1/2 because the statistical error on Vninf is a factor 2 smaller
         vn_differential_uncertainty = 0.5*self.__vn_differential_uncertainty(number_particles_tot)
-        return [vn_differential, vn_differential_uncertainty]
+
+        if np.isnan(vn_differential) or np.isinf(vn_differential_uncertainty):
+            return [None, None]
+        else:
+            return [vn_differential,vn_differential_uncertainty]
 
     def differential_flow(self,particle_data,bins,flow_as_function_of):
         """
