@@ -15,142 +15,161 @@ class Particle:
 
     Attributes
     ----------
-    t_ : float
+    t : float
         The time of the particle.
-    x_ : float
+    x : float
         The x coordinate of the position.
-    y_ : float
+    y : float
         The y coordinate of the position.
-    z_ : float
+    z : float
         The z coordinate of the position.
-    mass_ : float
+    mass : float
         The mass of the particle.
-    E_ : float
+    E : float
         The energy of the particle.
-    px_ : float
+    px : float
         The x component of the momentum.
-    py_ : float
+    py : float
         The y component of the momentum.
-    pz_ : float
+    pz : float
         The z component of the momentum.
-    pdg_ : int
+    pdg : int
         The PDG code of the particle.
-    ID_ : int
+    pdg_is_valid : short
+        Is the PDG code valid?
+    ID : int
         The ID of the particle (unique label of each particle in an event).
-    charge_ : int
+    charge : short
         Electric charge of the particle.
-    ncoll_ : int
+    ncoll : int
         Number of collisions undergone by the particle.
-    form_time_ : double
+    form_time : double
         Formation time of the particle.
-    xsecfac_ : double
+    xsecfac : double
         Scaling factor of the cross section.
-    proc_id_origin_ : int
+    proc_id_origin : int
         ID for the process the particle stems from.
-    proc_type_origin_ : int
+    proc_type_origin : int
         Type information for the process the particle stems from.
-    t_last_coll_ : double
+    t_last_coll : double
         Time of the last collision.
-    pdg_mother1_ : int
+    pdg_mother1 : int
         PDG code of the mother particle 1.
-    pdg_mother2_ : int
+    pdg_mother2 : int
         PDG code of the mother particle 2.
-    status_ : int
+    status : int
         Status code of the particle.
-    baryon_number_ : int
+    baryon_number : short
         Baryon number of the particle.
-    strangeness_ : int
+    strangeness : short
         Strangeness quantum number of the particle.
-    weight_ : float
+    weight : float
         Weight of the particle.
+
+    These attributes are saved in following data structure:
+
+    Data
+    -----
+
+    data_float_ :
+        The float data values in following order:
+        t, x, y, z, mass, E, px, py, pz, form_time, xsecfac, t_last_coll, weight
+    data_int_ :
+        The int data values in following order:
+        pdg, ID, ncoll, proc_id_orgin, pdg_mother1, pdg_mother2, status 
+    data_short_ :
+        The short data values in following order:
+        pdg_valid, charge, baryon_number, strangeness
+
+
 
     Methods
     -------
-    t:
+    t :
         Get/set t
-    x:
+    x :
         Get/set x
-    y:
+    y :
         Get/set y
-    z:
+    z :
         Get/set z
-    mass:
+    mass :
         Get/set mass
-    E:
+    E :
         Get/set E
-    px:
+    px :
         Get/set px
-    py:
+    py :
         Get/set py
-    pz:
+    pz :
         Get/set pz
-    pdg:
+    pdg :
         Get/set pdg
-    ID:
+    ID :
         Get/set ID
-    charge:
+    charge :
         Get/set charge
-    ncoll:
+    ncoll :
         Get/set ncoll
-    form_time:
+    form_time :
         Get/set form_time
-    xsecfac:
+    xsecfac :
         Get/set xsecfactor
-    proc_id_origin:
+    proc_id_origin :
         Get/set proc_id_origin
-    proc_type_origin:
+    proc_type_origin :
         Get/set proc_type_origin
-    t_last_coll:
+    t_last_coll :
         Get/set t_last_coll
-    pdg_mother1:
+    pdg_mother1 :
         Get/set pdg_mother1
-    pdg_mother2:
+    pdg_mother2 :
         Get/set pdg_mother2
-    status:
+    status :
         Get/set status
-    baryon_number:
+    baryon_number :
         Get/set baryon_number
-    strangeness:
+    strangeness :
         Get/set strangeness
-    print_particle:
+    print_particle :
         Print the particle as CSV to terminal
-    angular_momentum:
+    angular_momentum :
         Compute angular momentum
-    momentum_rapidity_Y:
+    momentum_rapidity_Y :
         Compute momentum rapidity
-    p_abs:
+    p_abs :
         Compute absolute momentum
-    pt_abs:
+    pt_abs :
         Compute absolute value of transverse momentum
-    phi:
+    phi :
         Compute azimuthal angle
-    theta:
+    theta :
         Compute polar angle
-    pseudorapidity:
+    pseudorapidity :
         Compute pseudorapidity
-    spatial_rapidity:
+    spatial_rapidity :
         Compute spatial rapidity
-    proper_time:
+    proper_time :
         Compute proper time
-    compute_mass_from_energy_momentum:
+    compute_mass_from_energy_momentum :
         Compute mass from energy momentum relation
-    compute_charge_from_pdg:
+    compute_charge_from_pdg :
         Compute charge from PDG code
-    is_meson:
+    is_meson :
         Is the particle a meson?
-    is_baryon:
+    is_baryon :
         Is the particle a baryon?
-    is_hadron:
+    is_hadron :
         Is the particle a hadron?
-    is_strange:
+    is_strange :
         Is the particle a strange particle?
-    is_heavy_flavor:
+    is_heavy_flavor :
         Is the particle a heavy flavor particle?
-    weight:
+    weight :
         What is the weight of the particle?
-    spin:
+    spin :
         Total spin :math:`J` of the particle.
-    spin_degeneracy:
+    spin_degeneracy :
         Total spin :math:`2J + 1` of the particle.
     
 
@@ -190,43 +209,14 @@ class Particle:
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then `None` is returned by default.
     """
-    __slots__ = ['t_', 'x_', 'y_','z_','mass_', 'E_', 'px_', 'py_', 'pz_', 'pdg_', 'ID_', 'charge_', 'ncoll_',\
-                  'pdg_valid_','form_time_', 'xsecfac_', 'proc_id_origin_', 'proc_type_origin_', 't_last_coll_',\
-                      'pdg_mother1_', 'pdg_mother2_', 'status_', 'baryon_number_', 'strangeness_', 'weight_'] 
+    __slots__ = ['data_float_','data_int_', 'data_short_'] 
     def __init__(self,input_format=None,particle_array=None):
-        # OSCAR2013 parameters
-        self.t_ = None
-        self.x_ = None
-        self.y_ = None
-        self.z_ = None
-        self.mass_ = None
-        self.E_ = None
-        self.px_ = None
-        self.py_ = None
-        self.pz_ = None
-        self.pdg_ = None
-        self.pdg_valid_ = None
-        self.ID_ = None
-        self.charge_ = None
-
-        # OSCAR2013Extended / OSCAR2013Extended_IC parameters
-        self.ncoll_ = None
-        self.form_time_ = None
-        self.xsecfac_ = None
-        self.proc_id_origin_ = None
-        self.proc_type_origin_ = None
-        self.t_last_coll_ = None
-        self.pdg_mother1_ = None
-        self.pdg_mother2_ = None
-        self.baryon_number_ = None
-        self.strangeness_ = None
-
-        # Oscar2013Extended_Photons additional parameter 
-        # instead of baryon_number_
-        self.weight_ = None
-
-        # JETSCAPE unique parameter
-        self.status_ = None
+        # t, x, y, z, mass, E, px, py, pz, form_time_, xsecfac_, t_last_coll_, weight_
+        self.data_float_ = np.array(13*[None],dtype = float)
+        # pdg, ID, ncoll, proc_id_orgin, pdg_mother1, pdg_mother2, status 
+        self.data_int_ = np.array(7*[None], dtype = int)
+        # pdg_valid, charge, baryon_number, strangeness
+        self.data_short_ = np.array(4*[None], dtype = short) 
 
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
@@ -267,100 +257,102 @@ class Particle:
         charge_) are computed based on energy-momentum and PDG code.
 
         """
+        #first entry: index in data array
+        #second entry: index in line
         attribute_mapping = {
             "Oscar2013": {
-                "t_": 0,
-                "x_": 1,
-                "y_": 2,
-                "z_": 3,
-                "mass_": 4,
-                "E_": 5,
-                "px_": 6,
-                "py_": 7,
-                "pz_": 8,
-                "pdg_": 9,
-                "ID_": 10,
-                "charge_": 11,
+                "t_": [0,0],
+                "x_": [1,1],
+                "y_": [2,2],
+                "z_": [3,3],
+                "mass_": [4,4],
+                "E_": [5,5],
+                "px_": [6,6],
+                "py_": [7,7],
+                "pz_": [8,8],
+                "pdg_": [0,9],
+                "ID_": [1,10],
+                "charge_": [1,11],
             },
             "Oscar2013Extended": {
-                "t_": 0,
-                "x_": 1,
-                "y_": 2,
-                "z_": 3,
-                "mass_": 4,
-                "E_": 5,
-                "px_": 6,
-                "py_": 7,
-                "pz_": 8,
-                "pdg_": 9,
-                "ID_": 10,
-                "charge_": 11,
-                "ncoll_": 12,
-                "form_time_": 13,
-                "xsecfac_": 14,
-                "proc_id_origin_": 15,
-                "proc_type_origin_": 16,
-                "t_last_coll_": 17,
-                "pdg_mother1_": 18,
-                "pdg_mother2_": 19,
-                "baryon_number_": 20,
-                "strangeness_": 21,
+                "t_": [0,0],
+                "x_": [1,1],
+                "y_": [2,2],
+                "z_": [3,3],
+                "mass_": [4,4],
+                "E_": [5,5],
+                "px_": [6,6],
+                "py_": [7,7],
+                "pz_": [8,8],
+                "pdg_": [0,9],
+                "ID_": [1,10],
+                "charge_": [1,11],
+                "ncoll_": [2,12],
+                "form_time_": [9,11],
+                "xsecfac_": [10,14],
+                "proc_id_origin_": [3,15],
+                "proc_type_origin_": [4,16],
+                "t_last_coll_": [11,17],
+                "pdg_mother1_": [4,18],
+                "pdg_mother2_": [5,19],
+                "baryon_number_": [2,20],
+                "strangeness_": [3,21],
             },
             "Oscar2013Extended_IC": {
-                "t_": 0,
-                "x_": 1,
-                "y_": 2,
-                "z_": 3,
-                "mass_": 4,
-                "E_": 5,
-                "px_": 6,
-                "py_": 7,
-                "pz_": 8,
-                "pdg_": 9,
-                "ID_": 10,
-                "charge_": 11,
-                "ncoll_": 12,
-                "form_time_": 13,
-                "xsecfac_": 14,
-                "proc_id_origin_": 15,
-                "proc_type_origin_": 16,
-                "t_last_coll_": 17,
-                "pdg_mother1_": 18,
-                "pdg_mother2_": 19,
-                "baryon_number_": 20,
-                "strangeness_": 21,
+                "t_": [0,0],
+                "x_": [1,1],
+                "y_": [2,2],
+                "z_": [3,3],
+                "mass_": [4,4],
+                "E_": [5,5],
+                "px_": [6,6],
+                "py_": [7,7],
+                "pz_": [8,8],
+                "pdg_": [0,9],
+                "ID_": [1,10],
+                "charge_": [1,11],
+                "ncoll_": [2,12],
+                "form_time_": [9,11],
+                "xsecfac_": [10,14],
+                "proc_id_origin_": [3,15],
+                "proc_type_origin_": [4,16],
+                "t_last_coll_": [11,17],
+                "pdg_mother1_": [4,18],
+                "pdg_mother2_": [5,19],
+                "baryon_number_": [2,20],
+                "strangeness_": [3,21],
             },
             "Oscar2013Extended_Photons": {
-                "t_": 0,
-                "x_": 1,
-                "y_": 2,
-                "z_": 3,
-                "mass_": 4,
-                "E_": 5,
-                "px_": 6,
-                "py_": 7,
-                "pz_": 8,
-                "pdg_": 9,
-                "ID_": 10,
-                "charge_": 11,
-                "ncoll_": 12,
-                "form_time_": 13,
-                "xsecfac_": 14,
-                "proc_id_origin_": 15,
-                "proc_type_origin_": 16,
-                "t_last_coll_": 17,
-                "pdg_mother1_": 18,
-                "pdg_mother2_": 19,
-                "weight_": 20,
+                "t_": [0,0],
+                "x_": [1,1],
+                "y_": [2,2],
+                "z_": [3,3],
+                "mass_": [4,4],
+                "E_": [5,5],
+                "px_": [6,6],
+                "py_": [7,7],
+                "pz_": [8,8],
+                "pdg_": [0,9],
+                "ID_": [1,10],
+                "charge_": [1,11],
+                "ncoll_": [2,12],
+                "form_time_": [9,11],
+                "xsecfac_": [10,14],
+                "proc_id_origin_": [3,15],
+                "proc_type_origin_": [4,16],
+                "t_last_coll_": [11,17],
+                "pdg_mother1_": [4,18],
+                "pdg_mother2_": [5,19],
+                "weight_": [12,20],
             },
             "JETSCAPE": {
-                "ID_": 0,
-                "pdg_": 1,
-                "status_": 2,
-                "E_": 3,
-                "px_": 4,
-                "py_": 5,
-                "pz_": 6,
+                "ID_": [1,10],
+                "pdg_": [0,9],
+                "status_": [6,2],
+                "E_": [5,3],
+                "px_": [6,4],
+                "py_": [7,5],
+                "pz_": [8,6],
             },
         }
         if (input_format in attribute_mapping):
@@ -368,16 +360,16 @@ class Particle:
                  and len(particle_array) <=  len(attribute_mapping[input_format])\
                     and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
-                    if len(particle_array)<index+1:
+                    if len(particle_array)<index[1]+1:
                         setattr(self,attribute,None)
                         continue
                     # Type casting for specific attributes
                     if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
-                        setattr(self, attribute, float(particle_array[index]))
-                    elif attribute in ["pdg_", "ID_", "charge_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "baryon_number_", "strangeness_", "status_"]:
-                        setattr(self, attribute, int(particle_array[index]))
+                        self.data_float_[index[0]] = float(particle_array[index[1]])
+                    elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
+                        self.data_int_[index[0]] = int(particle_array[index[1]])
                     else:
-                        setattr(self, attribute, particle_array[index])
+                        self.data_short_[index[0]] = int(particle_array[index[1]])
 
                 if input_format == "JETSCAPE":
                     self.mass_ = self.compute_mass_from_energy_momentum()
@@ -401,11 +393,11 @@ class Particle:
         -------
         t_ : float
         """
-        return self.t_
+        return self.data_float_[0]
 
     @t.setter
     def t(self,value):
-        self.t_ = value
+        self.data_float_[0] = value
 
     @property
     def x(self):
@@ -415,11 +407,11 @@ class Particle:
         -------
         x_ : float
         """
-        return self.x_
+        return self.data_float_[1]
 
     @x.setter
     def x(self,value):
-        self.x_ = value
+        self.data_float_[1] = value
 
     @property
     def y(self):
@@ -429,11 +421,11 @@ class Particle:
         -------
         y_ : float
         """
-        return self.y_
+        return self.data_float_[2]
 
     @y.setter
     def y(self,value):
-        self.y_ = value
+        self.data_float_[2] = value
 
     @property
     def z(self):
@@ -443,11 +435,10 @@ class Particle:
         -------
         z_ : float
         """
-        return self.z_
-
+        return self.data_float_[3]
     @z.setter
     def z(self,value):
-        self.z_ = value
+        self.data_float_[4] = value
 
     @property
     def mass(self):
@@ -457,11 +448,11 @@ class Particle:
         -------
         mass_ : float
         """
-        return self.mass_
+        return self.data_float_[5]
 
     @mass.setter
     def mass(self,value):
-        self.mass_ = value
+        self.data_float_[5] = value
 
     @property
     def E(self):
@@ -471,11 +462,11 @@ class Particle:
         -------
         E_ : float
         """
-        return self.E_
+        return self.data_float_[6]
 
     @E.setter
     def E(self,value):
-        self.E_ = value
+        self.data_float_[6] = value
 
     @property
     def px(self):
@@ -485,11 +476,11 @@ class Particle:
         -------
         px_ : float
         """
-        return self.px_
+        return self.data_float_[7]
 
     @px.setter
     def px(self,value):
-        self.px_ = value
+        self.data_float_[7] = value
 
     @property
     def py(self):
@@ -499,11 +490,11 @@ class Particle:
         -------
         py_ : float
         """
-        return self.py_
+        return self.data_float_[8]
 
     @py.setter
     def py(self,value):
-        self.py_ = value
+        self.data_float_[8] = value
 
     @property
     def pz(self):
@@ -513,11 +504,11 @@ class Particle:
         -------
         pz_ : float
         """
-        return self.pz_
+        return self.data_float_[9]
 
     @pz.setter
     def pz(self,value):
-        self.pz_ = value
+        self.data_float_[9] = value
 
     @property
     def pdg(self):
@@ -527,15 +518,15 @@ class Particle:
         -------
         pdg_ : int
         """
-        return self.pdg_
+        return self.data_int_[0]
 
     @pdg.setter
     def pdg(self,value):
-        self.pdg_ = value
-        self.pdg_valid_ = PDGID(self.pdg_).is_valid
+        self.data_int_[0] = value
+        self.data_short_[0] = PDGID(self.pdg).is_valid
 
-        if(not self.pdg_valid_):
-             warnings.warn('The PDG code ' + str(self.pdg_) + ' is not valid. '+
+        if(not self.pdg_valid):
+             warnings.warn('The PDG code ' + str(self.pdg) + ' is not valid. '+
                            'All properties extracted from the PDG are set to None.')
 
     @property
@@ -548,11 +539,11 @@ class Particle:
         -------
         ID_ : int
         """
-        return self.ID_
+        return self.data_int_[1]
 
     @ID.setter
     def ID(self,value):
-        self.ID_ = value
+        self.data_int_[1] = value
 
     @property
     def charge(self):
@@ -560,13 +551,13 @@ class Particle:
 
         Returns
         -------
-        charge_ : int
+        charge_ : short
         """
-        return self.charge_
+        return self.data_short_[1]
 
     @charge.setter
     def charge(self,value):
-        self.charge_ = value
+        self.data_short_[1] = value
 
     @property
     def ncoll(self):
@@ -576,11 +567,11 @@ class Particle:
         -------
         ncoll_ : int
         """
-        return self.ncoll_
+        return self.data_int_[2] 
 
     @ncoll.setter
     def ncoll(self,value):
-        self.ncoll_ = value
+        self.data_int_[2]  = value
 
     @property
     def form_time(self):
@@ -590,11 +581,11 @@ class Particle:
         -------
         form_time_ : float
         """
-        return self.form_time_
+        return self.data_float_[9] 
 
     @form_time.setter
     def form_time(self,value):
-        self.form_time_ = value
+        self.data_float_[9]  = value
 
     @property
     def xsecfac(self):
@@ -604,11 +595,11 @@ class Particle:
         -------
         xsecfac_ : float
         """
-        return self.xsecfac_
+        return self.data_float_[10] 
 
     @xsecfac.setter
     def xsecfac(self,value):
-        self.xsecfac_ = value
+        self.data_float_[10]  = value
 
     @property
     def proc_id_origin(self):
@@ -618,11 +609,11 @@ class Particle:
         -------
         proc_id_origin_ : int
         """
-        return self.proc_id_origin_
+        return self.data_int_[3]
 
     @proc_id_origin.setter
     def proc_id_origin(self,value):
-        self.proc_id_origin_ = value
+        self.data_int_[3] = value
 
     @property
     def proc_type_origin(self):
@@ -632,11 +623,11 @@ class Particle:
         -------
         proc_type_origin_ : int
         """
-        return self.proc_type_origin_
+        return self.data_int_[4]
 
     @proc_type_origin.setter
     def proc_type_origin(self,value):
-        self.proc_type_origin_ = value
+        self.data_int_[4] = value
 
     @property
     def t_last_coll(self):
@@ -646,11 +637,11 @@ class Particle:
         -------
         t_last_coll_ : float
         """
-        return self.t_last_coll_
+        return self.data_float_[11]
 
     @t_last_coll.setter
     def t_last_coll(self,value):
-        self.t_last_coll_ = value
+        self.data_float_[11] = value
 
     @property
     def pdg_mother1(self):
@@ -660,11 +651,11 @@ class Particle:
         -------
         pdg_mother1_ : int
         """
-        return self.pdg_mother1_
+        return self.data_int_[5]
 
     @pdg_mother1.setter
     def pdg_mother1(self,value):
-        self.pdg_mother1_ = value
+        self.data_int_[5] = value
 
     @property
     def pdg_mother2(self):
@@ -674,11 +665,11 @@ class Particle:
         -------
         pdg_mother2_ : int
         """
-        return self.pdg_mother2_
+        return self.data_int_[6]
 
     @pdg_mother2.setter
     def pdg_mother2(self,value):
-        self.pdg_mother2_ = value
+        self.data_int_[6] = value
 
     @property
     def status(self):
@@ -690,11 +681,11 @@ class Particle:
         -------
         status_ : int
         """
-        return self.status_
+        return self.data_int_[7]
 
     @status.setter
     def status(self,value):
-        self.status_ = value
+        self.data_int_[7] = value
 
     @property
     def baryon_number(self):
@@ -702,13 +693,13 @@ class Particle:
 
         Returns
         -------
-        baryon_number_ : int
+        baryon_number_ : short
         """
-        return self.baryon_number_
+        return self.data_short_[2]
  
     @baryon_number.setter
     def baryon_number(self,value):
-        self.baryon_number_ = value
+        self.data_short_[2] = value
 
     @property
     def strangeness(self):
@@ -716,13 +707,13 @@ class Particle:
 
         Returns
         -------
-        strangeness_ : int
+        strangeness_ : short
         """
-        return self.strangeness_
+        return self.data_short_[3]
 
     @strangeness.setter
     def strangeness(self,value):
-        self.strangeness_ = value
+        self.data_short_[3] = value
 
     @property
     def weight(self):
@@ -732,11 +723,11 @@ class Particle:
         -------
         weight_ : float
         """
-        return self.weight_
+        return self.data_float_[12]
 
     @weight.setter
     def weight(self,value):
-        self.weight_ = value
+        self.data_float_[12] = value
 
     def print_particle(self):
         """Print the whole particle information as csv string.
@@ -748,12 +739,12 @@ class Particle:
         print('t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
               proc_id_origin,proc_type_origin,t_last_coll,pdg_mother1,\
               pdg_mother2,status,baryon_number,strangeness,weight')
-        print(f'{self.t_},{self.x_},{self.y_},{self.z_},{self.mass_},{self.E_},\
-              {self.px_},{self.py_},{self.pz_},{self.pdg_},{self.ID_},\
-              {self.charge_},{self.ncoll_},{self.form_time_},{self.xsecfac_},\
-              {self.proc_id_origin_},{self.proc_type_origin_}\
-              ,{self.t_last_coll_},{self.pdg_mother1_},{self.pdg_mother2_},\
-              {self.status_},{self.baryon_number_},{self.strangeness_},{self.weight_}')
+        print(f'{self.t},{self.x},{self.y},{self.z},{self.mass},{self.E},\
+              {self.px},{self.py},{self.pz},{self.pdg},{self.ID},\
+              {self.charge},{self.ncoll},{self.form_time},{self.xsecfac},\
+              {self.proc_id_origin},{self.proc_type_origin}\
+              ,{self.t_last_coll},{self.pdg_mother1},{self.pdg_mother2},\
+              {self.status},{self.baryon_number},{self.strangeness},{self.weight}')
 
     def angular_momentum(self):
         """
