@@ -7,6 +7,10 @@ rd.seed(42)
 
 class QCumulantFlow(FlowInterface.FlowInterface):
     """
+    **Attention**: This is a beta version of the QCumulantFlow analysis class 
+    for testing purposes. We do not recommend using this class for production 
+    runs yet. There is only the integrated flow implemented at the moment.
+
     This class implements the Q-cumulant method for anisotropic flow analysis.
 
     References:
@@ -452,10 +456,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         -------
         None
         """
-        angles = []
-        for i in range(events):
-            angles.append(rd.random()*2.*np.pi)
-        self.rand_reaction_planes_ = angles
+        self.rand_reaction_planes_ = [rd.uniform(0., 2.*np.pi) for _ in range(events)]
 
     def integrated_flow(self,particle_data):
         """
@@ -489,6 +490,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def differential_flow(self, particle_data, bins, flow_as_function_of):
         """
+        **Attention**: This feature is not yet available.
+
         Compute the differential flow.
 
         Parameters
@@ -503,7 +506,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         Returns
         -------
         list of tuples
-            A list of tuples containing a flow values and their corresponding uncertainty.
+            A list of tuples containing flow values and their corresponding uncertainty.
         """
         warnings.warn("This feature is not yet available.")
         return None

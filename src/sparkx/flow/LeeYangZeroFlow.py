@@ -7,6 +7,10 @@ rd.seed(42)
 
 class LeeYangZeroFlow(FlowInterface.FlowInterface):
     """
+    **Attention**: This is a beta version of the LeeYangZeroFlow analysis class 
+    for testing purposes. We do not recommend using this class for production 
+    runs yet.
+
     Compute integrated and differential anisotropic flow using the Lee-Yang 
     zero method from
 
@@ -92,7 +96,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         self.chi_ = None
         self.Vntheta_ = None
         self.r0theta_ = None
-        self.random_event_planes_ = None
+        self.rand_reaction_planes_ = None
         self.denominator_event_avg_diff_ = None
         self.numerator_event_avg_diff_ = None
 
@@ -263,21 +267,20 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         """
         return (1./(2.*NEvents*self.j01_**2.*self.J1rootJ0_**2.)) * (np.exp(self.j01_**2. / (2.*chi*chi)) + np.exp(-self.j01_**2. / (2.*chi**2.)) * (-0.2375362))
 
-    def __generate_random_event_planes(self,Nevents):
+    def __sample_random_reaction_planes(self, events):
         """
-        Generates random event planes in radians for a specified number of events.
+        Sample random reaction planes for a specified number of events.
 
         Parameters
         ----------
-        Nevents :
-            Number of events for which random event planes are generated.
+        events : int
+            The number of events for which random reaction planes are sampled.
 
-        Note:
-        -----
-        The generated event planes are stored in the 'random_event_planes_' attribute
-        of the object for later access.
+        Returns
+        -------
+        None
         """
-        self.random_event_planes_ = [rd.uniform(0., 2.*np.pi) for _ in range(Nevents)]
+        self.rand_reaction_planes_ = [rd.uniform(0., 2.*np.pi) for _ in range(events)]
 
     def integrated_flow(self, particle_data):
         """
@@ -307,7 +310,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         AvgQxSqPQySq = 0.
 
         G = np.zeros((len(self.theta_space_),len(self.r_space_)),dtype=np.complex_)
-        self.__generate_random_event_planes(len(particle_data))
+        self.__sample_random_reaction_planes(len(particle_data))
 
         for event in range(number_events):
             event_multiplicity = len(particle_data[event])
@@ -320,7 +323,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 weight_j.append(1./event_multiplicity)
             
             # randomize the event plane
-            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
+            phi_j = [phi+self.rand_reaction_planes_[event] for phi in phi_j]
 
             g = np.zeros((len(self.theta_space_),len(self.r_space_)),dtype=np.complex_)
             for theta in range(len(self.theta_space_)):
@@ -393,7 +396,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 weight_j.append(1./event_multiplicity)
             
             # randomize the event plane
-            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
+            phi_j = [phi+self.rand_reaction_planes_[event] for phi in phi_j]
 
             g = np.zeros(len(self.theta_space_),dtype=np.complex_)
             for theta in range(len(self.theta_space_)):
@@ -459,7 +462,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 weight_j.append(1./event_multiplicity)
             
             # randomize the event plane
-            phi_j = [phi+self.random_event_planes_[event] for phi in phi_j]
+            phi_j = [phi+self.rand_reaction_planes_[event] for phi in phi_j]
 
             g = np.zeros(len(self.theta_space_),dtype=np.complex_)
             for theta in range(len(self.theta_space_)):
