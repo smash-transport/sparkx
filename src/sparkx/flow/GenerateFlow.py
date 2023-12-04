@@ -549,7 +549,7 @@ class GenerateFlow:
                     reaction_plane_angle = 2.*np.pi*rd.random()
                 else:
                     reaction_plane_angle = 0.
-                self.generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+                self.__generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
 
                 output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
                 for particle in range(multiplicity):
