@@ -262,39 +262,35 @@ class Jetscape:
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
-        fname = open(self.PATH_JETSCAPE_, 'r')
-        self.__skip_lines(fname)
-
-        for i in range(0, num_read_lines):
-            line = fname.readline()
-            if not line:
-                raise IndexError('Index out of range of JETSCAPE file')
-            elif '#' in line and 'sigmaGen' in line:
-                particle_list.append(data)
-            elif i == 0 and '#' not in line and 'weight' not in line:
-                raise ValueError('First line of the event is not a comment ' +\
-                                 'line or does not contain "weight"')
-            elif 'Event' in line and 'weight' in line:
-                data_line = line.replace('\n','').replace('\t',' ').split(' ')
-                first_event_header = 1
-                if 'events' in self.optional_arguments_.keys():
-                    first_event_header += int(kwargs['events'][0])
-                if int(data_line[2]) == first_event_header:
-                    continue
-                else:
+        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
+            self.__skip_lines(jetscape_file)
+    
+            for i in range(0, num_read_lines):
+                line = jetscape_file.readline()
+                if not line:
+                    raise IndexError('Index out of range of JETSCAPE file')
+                elif '#' in line and 'sigmaGen' in line:
                     particle_list.append(data)
-                    data = []
-            else:
-                data_line = line.replace('\n','').replace('\t',' ').split(' ')
-                particle = Particle()
-
-                particle.set_quantities_JETSCAPE(data_line)
-
-                # Check for filters by method with a dictionary
-                # and do not append if empty (Method: WantToKeep(particle, filter) -> True/False)
-
-                data.append(particle)
-        fname.close()
+                elif i == 0 and '#' not in line and 'weight' not in line:
+                    raise ValueError('First line of the event is not a comment ' +\
+                                     'line or does not contain "weight"')
+                elif 'Event' in line and 'weight' in line:
+                    line = line.replace('\n','').replace('\t',' ').split(' ')
+                    first_event_header = 1
+                    if 'events' in self.optional_arguments_.keys():
+                        if isinstance(kwargs['events'], int):
+                            first_event_header += int(kwargs['events'])
+                        else:
+                            first_event_header += int(kwargs['events'][0])
+                    if int(line[2]) == first_event_header:
+                        continue
+                    else:
+                        particle_list.append(data)
+                        data = []
+                else:
+                    line = line.replace('\n','').replace('\t',' ').split(' ')
+                    particle = Particle("JETSCAPE", line)
+                    data.append(particle)
 
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
@@ -318,39 +314,58 @@ class Jetscape:
             self.particle_list_ = particle_list
 
     def set_num_output_per_event(self):
-        file = open(self.PATH_JETSCAPE_ , 'r')
-        event_output = []
-
-        while True:
-            line = file.readline()
-            if not line:
-                break
-            elif '#' in line and 'N_hadrons' in line:
-                line_str = line.replace('\n','').replace('\t',' ').split(' ')
-                event = line_str[2]
-                num_output = line_str[8]
-                event_output.append([event, num_output])
-            else:
-                continue
-        file.close()
+        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
+            event_output = []
+    
+            while True:
+                line = jetscape_file.readline()
+                if not line:
+                    break
+                elif '#' in line and 'N_hadrons' in line:
+                    line_str = line.replace('\n','').replace('\t',' ').split(' ')
+                    event = line_str[2]
+                    num_output = line_str[8]
+                    event_output.append([event, num_output])
+                else:
+                    continue
 
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
 
     def particle_list(self):
-        num_particles = self.num_output_per_event_[:,1]
+        """
+        Returns a nested python list containing all quantities from the
+        current Jetscape data as numerical values with the following shape:
+
+            | Single Event:    [output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
+
+        Returns
+        -------
+        list
+            Nested list containing the current Jetscape data
+
+        """
         num_events = self.num_events_
+        
+        if num_events == 1:
+            num_particles = self.num_output_per_event_[1]
+        else:
+            num_particles = self.num_output_per_event_[:,1]
 
         particle_array = []
 
-        for i_ev in range(0, num_events):
-            event = []
-
-            for i_part in range(0, num_particles[i_ev]):
-                particle = self.particle_list_[i_ev][i_part]
-                event.append(self.__particle_as_list(particle))
-
-            particle_array.append(event)
+        if num_events == 1:
+            for i_part in range(0, num_particles):
+                particle = self.particle_list_[i_part]
+                particle_array.append(self.__particle_as_list(particle))
+        else:
+            for i_ev in range(0, num_events):
+                event = []
+                for i_part in range(0, num_particles[i_ev]):
+                    particle = self.particle_list_[i_ev][i_part]
+                    event.append(self.__particle_as_list(particle))
+                particle_array.append(event)
 
         return particle_array
 
@@ -412,7 +427,7 @@ class Jetscape:
         """
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if elem.charge != 0]
+                                        if (elem.charge != 0 and elem.charge != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -429,7 +444,7 @@ class Jetscape:
         """
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if elem.charge == 0]
+                                        if (elem.charge == 0 and elem.charge != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -481,7 +496,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) == pdg_list]
+                                            if (int(elem.pdg) == pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -491,7 +506,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) in pdg_list]
+                                            if (int(elem.pdg) in pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -532,7 +547,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.pdg) != pdg_list]
+                                            if (int(elem.pdg) != pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -541,7 +556,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if not int(elem.pdg) in pdg_list]
+                                            if (not int(elem.pdg) in pdg_list and elem.pdg != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -581,7 +596,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.status) == status_list]
+                                            if (int(elem.status) == status_list and elem.status != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -590,7 +605,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if int(elem.status) in status_list]
+                                            if (int(elem.status) in status_list and elem.status != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -630,8 +645,7 @@ class Jetscape:
 
         updated_particle_list = []
         for event_particles in self.particle_list_:
-            print(len(event_particles))
-            total_energy = sum(particle.E for particle in event_particles)
+            total_energy = sum(particle.E for particle in event_particles if particle.E != None)
             if total_energy >= minimum_event_energy:
                 updated_particle_list.append(event_particles)
         self.particle_list_ = updated_particle_list
@@ -687,7 +701,7 @@ class Jetscape:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        lower_cut <= elem.pt_abs() <= upper_cut]
+                                        (lower_cut <= elem.pt_abs() <= upper_cut and elem.pt_abs() != None)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -736,7 +750,8 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            -limit<=elem.momentum_rapidity_Y()<=limit]
+                                            (-limit<=elem.momentum_rapidity_Y()<=limit 
+                                             and elem.momentum_rapidity_Y() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -746,7 +761,8 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            lim_min<=elem.momentum_rapidity_Y()<=lim_max]
+                                            (lim_min<=elem.momentum_rapidity_Y()<=lim_max
+                                             and elem.momentum_rapidity_Y() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -797,7 +813,8 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            -limit<=elem.pseudorapidity()<=limit]
+                                            (-limit<=elem.pseudorapidity()<=limit
+                                             and elem.pseudorapidity() != None)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -805,11 +822,19 @@ class Jetscape:
             lim_max = max(cut_value[0], cut_value[1])
             lim_min = min(cut_value[0], cut_value[1])
 
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            lim_min<=elem.pseudorapidity()<=lim_max]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
+            if self.num_events_ == 1:
+                self.particle_list_ = [elem for elem in self.particle_list_ if
+                                       (lim_min<=elem.pseudorapidity()<=lim_max
+                                        and elem.pseudorapidity() != None)]
+                new_length = len(self.particle_list_)
+                self.num_output_per_event_[1] = new_length
+            else:
+                for i in range(0, self.num_events_):
+                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
+                                              (lim_min<=elem.pseudorapidity()<=lim_max
+                                                and elem.pseudorapidity() != None)]
+                    new_length = len(self.particle_list_[i])
+                    self.num_output_per_event_[i, 1] = new_length
 
         else:
             raise TypeError('Input value must be a number or a tuple ' +\
@@ -905,9 +930,9 @@ class Jetscape:
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        line_in_initial_file = open(self.PATH_JETSCAPE_,'r')
-        header_file = line_in_initial_file.readline()
-        line_in_initial_file.close()
+        with open(self.PATH_JETSCAPE_,'r') as jetscape_file:
+            header_file = jetscape_file.readline()
+
 
         # Open the output file with buffered writing
         with open(output_file, "w") as f_out:
@@ -915,7 +940,6 @@ class Jetscape:
             data_to_write = []
 
             for i in range(self.num_events_):
-                print("Working on event ",i)
                 event = self.num_output_per_event_[i, 0]
                 num_out = self.num_output_per_event_[i, 1]
                 particle_output = np.asarray(self.particle_list()[i])
