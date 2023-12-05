@@ -45,8 +45,9 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 * Oscar/Jetscape: Handling of PDG id's which are not present in the `particle` package is moved to the Particle class
 * Oscar/Jetscape: Improved writing to file
 * Particle: Particle construction is now done within the constructor by providing a format and an array of values
+* Particle: Internal structure is now a numpy float array
 * Particle: Functions using `PDGID` from the `particle` package handle now the case if the PDG ID is unknown to the package
-* Particle: Returns `None` if the quantity is not known or can not be computed
+* Particle: Returns `nan` if the quantity is not known or can not be computed
 
 # Removed
 
