@@ -69,7 +69,7 @@ class Particle:
     These attributes are saved in following data structure:
 
     Data
-    -----
+    ----
 
     data_ :
         The data values given in the order before.
@@ -285,7 +285,7 @@ class Particle:
                 "strangeness_": [23,21],
             },
             "Oscar2013Extended_IC": {
-                 "t_": [0,0],
+                "t_": [0,0],
                 "x_": [1,1],
                 "y_": [2,2],
                 "z_": [3,3],
@@ -716,7 +716,7 @@ class Particle:
 
     @property
     def pdg_valid(self):
-        """Get the weight of the particle.
+        """Get the validity of the PDG code of the particle.
 
         Returns
         -------
