@@ -427,7 +427,7 @@ class Jetscape:
         """
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge != 0 and elem.charge != None)]
+                                        if (elem.charge != 0 and elem.charge != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -444,7 +444,7 @@ class Jetscape:
         """
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge == 0 and elem.charge != None)]
+                                        if (elem.charge == 0 and elem.charge != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -496,7 +496,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) == pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) == pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -506,7 +506,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) in pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -547,7 +547,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) != pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) != pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -556,7 +556,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (not int(elem.pdg) in pdg_list and elem.pdg != None)]
+                                            if (not int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -596,7 +596,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.status) == status_list and elem.status != None)]
+                                            if (int(elem.status) == status_list and elem.status != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -605,7 +605,7 @@ class Jetscape:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.status) in status_list and elem.status != None)]
+                                            if (int(elem.status) in status_list and elem.status != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -645,7 +645,7 @@ class Jetscape:
 
         updated_particle_list = []
         for event_particles in self.particle_list_:
-            total_energy = sum(particle.E for particle in event_particles if particle.E != None)
+            total_energy = sum(particle.E for particle in event_particles if particle.E != np.nan)
             if total_energy >= minimum_event_energy:
                 updated_particle_list.append(event_particles)
         self.particle_list_ = updated_particle_list
@@ -751,7 +751,7 @@ class Jetscape:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (-limit<=elem.momentum_rapidity_Y()<=limit 
-                                             and elem.momentum_rapidity_Y() != None)]
+                                             and elem.momentum_rapidity_Y() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -762,7 +762,7 @@ class Jetscape:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (lim_min<=elem.momentum_rapidity_Y()<=lim_max
-                                             and elem.momentum_rapidity_Y() != None)]
+                                             and elem.momentum_rapidity_Y() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -814,7 +814,7 @@ class Jetscape:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (-limit<=elem.pseudorapidity()<=limit
-                                             and elem.pseudorapidity() != None)]
+                                             and elem.pseudorapidity() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -825,14 +825,14 @@ class Jetscape:
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
                                        (lim_min<=elem.pseudorapidity()<=lim_max
-                                        and elem.pseudorapidity() != None)]
+                                        and elem.pseudorapidity() != np.nan)]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                               (lim_min<=elem.pseudorapidity()<=lim_max
-                                                and elem.pseudorapidity() != None)]
+                                                and elem.pseudorapidity() != np.nan)]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
 

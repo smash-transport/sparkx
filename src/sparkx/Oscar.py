@@ -307,12 +307,12 @@ class Oscar:
             particle_list.append(int(particle.pdg_mother1))
             particle_list.append(int(particle.pdg_mother2))
             if self.oscar_format_ != 'Oscar2013Extended_Photons':
-                if particle.baryon_number != None:
+                if particle.baryon_number != np.nan:
                     particle_list.append(int(particle.baryon_number))
-                if particle.strangeness != None:
+                if particle.strangeness != np.nan:
                     particle_list.append(int(particle.strangeness))
             else:
-                if particle.weight != None:
+                if particle.weight != np.nan:
                     particle_list.append(int(particle.weight))
 
         elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
@@ -575,7 +575,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge != 0 and elem.charge != None)]
+                                        if (elem.charge != 0 and elem.charge != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -594,7 +594,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge == 0 and elem.charge != None)]
+                                        if (elem.charge == 0 and elem.charge != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -649,7 +649,7 @@ class Oscar:
             
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) == pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) == pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -658,7 +658,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) in pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -699,7 +699,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) != pdg_list and elem.pdg != None)]
+                                            if (int(elem.pdg) != pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -708,7 +708,7 @@ class Oscar:
 
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (not int(elem.pdg) in pdg_list and elem.pdg != None)]
+                                            if (not int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -731,7 +731,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i] 
-                                      if (elem.ncoll != 0 and elem.ncoll != None)]
+                                      if (elem.ncoll != 0 and elem.ncoll != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -751,7 +751,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.ncoll == 0 and elem.ncoll != None)]
+                                        if (elem.ncoll == 0 and elem.ncoll != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -783,11 +783,11 @@ class Oscar:
             raise TypeError('Input value for lower event energy cut has not ' +\
                             'one of the following types: int, float')
         if minimum_event_energy <= 0.:
-            raise ValueError('The lower event energ cut value should be positive')
+            raise ValueError('The lower event energy cut value should be positive')
 
         updated_particle_list = []
         for event_particles in self.particle_list_:
-            total_energy = sum(particle.E for particle in event_particles if particle.E != None)
+            total_energy = sum(particle.E for particle in event_particles if particle.E != np.nan)
             if total_energy >= minimum_event_energy:
                 updated_particle_list.append(event_particles)
         self.particle_list_ = updated_particle_list
@@ -850,16 +850,16 @@ class Oscar:
         for i in range(0, self.num_events_):
             if (dim == "t"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.t <= upper_cut and elem.t != None)]
+                                        (lower_cut <= elem.t <= upper_cut and elem.t != np.nan)]
             elif (dim == "x"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.x <= upper_cut and elem.x != None)]
+                                        (lower_cut <= elem.x <= upper_cut and elem.x != np.nan)]
             elif (dim == "y"):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.y <= upper_cut and elem.y != None)]
+                                        (lower_cut <= elem.y <= upper_cut and elem.y != np.nan)]
             else:
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.z <= upper_cut and elem.z != None)]
+                                        (lower_cut <= elem.z <= upper_cut and elem.z != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -905,7 +905,7 @@ class Oscar:
 
         for i in range(0, self.num_events_):
             self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.pt_abs() <= upper_cut and elem.pt_abs() != None)]
+                                        (lower_cut <= elem.pt_abs() <= upper_cut and elem.pt_abs() != np.nan)]
             new_length = len(self.particle_list_[i])
             self.num_output_per_event_[i, 1] = new_length
 
@@ -953,7 +953,7 @@ class Oscar:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (-limit<=elem.momentum_rapidity_Y()<=limit 
-                                             and elem.momentum_rapidity_Y() != None)]
+                                             and elem.momentum_rapidity_Y() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -964,7 +964,7 @@ class Oscar:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (-limit<=elem.momentum_rapidity_Y()<=limit 
-                                             and elem.momentum_rapidity_Y() != None)]
+                                             and elem.momentum_rapidity_Y() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -1027,14 +1027,14 @@ class Oscar:
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
                                        (lim_min<=elem.pseudorapidity()<=lim_max
-                                        and elem.pseudorapidity() != None)]
+                                        and elem.pseudorapidity() != np.nan)]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                               (lim_min<=elem.pseudorapidity()<=lim_max
-                                                and elem.pseudorapidity() != None)]
+                                                and elem.pseudorapidity() != np.nan)]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
 
@@ -1087,7 +1087,7 @@ class Oscar:
             for i in range(0, self.num_events_):
                 self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                             (-limit<=elem.spatial_rapidity()<=limit
-                                             and elem.spatial_rapidity() != None)]
+                                             and elem.spatial_rapidity() != np.nan)]
                 new_length = len(self.particle_list_[i])
                 self.num_output_per_event_[i, 1] = new_length
 
@@ -1098,14 +1098,14 @@ class Oscar:
             if self.num_events_ == 1:
                 self.particle_list_ = [elem for elem in self.particle_list_ if
                                        (lim_min<=elem.spatial_rapidity()<=lim_max
-                                        and elem.spatial_rapidity() != None)]
+                                        and elem.spatial_rapidity() != np.nan)]
                 new_length = len(self.particle_list_)
                 self.num_output_per_event_[1] = new_length
             else:
                 for i in range(0, self.num_events_):
                     self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
                                               (lim_min<=elem.spatial_rapidity()<=lim_max
-                                                and elem.spatial_rapidity() != None)]
+                                                and elem.spatial_rapidity() != np.nan)]
                     new_length = len(self.particle_list_[i])
                     self.num_output_per_event_[i, 1] = new_length
 
