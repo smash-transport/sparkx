@@ -71,7 +71,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         if not isinstance(k, int):
             raise TypeError('k has to be int')
         elif k not in [2,4,6]:
-            raise ValueError(f"{k} particle cumulant is not implemented, choose from [2,4]")
+            raise ValueError(f"{k} particle cumulant is not implemented, choose from [2,4,6]")
         else:
             self.k_ = k
 
