@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The versioning of the codebase is inpired by [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with a version number `X.Y.Z`, where
+The versioning of the codebase is inspired by [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with a version number `X.Y.Z`, where
 
 * `X` is incremented for major changes (e.g. large backwards incompatible updates),
 * `Y` is incremented for minor changes (e.g. external pull-request that adds one feature) and
@@ -16,7 +16,7 @@ The main categories for changes in this file are:
 * `Fixed` for any bug fixes;
 * `Removed` for now removed features.
 
-A `Depracted` section could be added if needed for soon-to-be removed features.
+A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## Unreleased
 
@@ -45,8 +45,9 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 * Oscar/Jetscape: Handling of PDG id's which are not present in the `particle` package is moved to the Particle class
 * Oscar/Jetscape: Improved writing to file
 * Particle: Particle construction is now done within the constructor by providing a format and an array of values
+* Particle: Internal structure is now a numpy float array
 * Particle: Functions using `PDGID` from the `particle` package handle now the case if the PDG ID is unknown to the package
-* Particle: Returns `None` if the quantity is not known or can not be computed
+* Particle: Returns `nan` if the quantity is not known or can not be computed
 
 # Removed
 
