@@ -32,6 +32,7 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 * GenerateFlow: Add functionality to generate flow with k-particle correlations
 * LeeYangZeroFlow: Add beta version of integrated and differential flow analysis with the Lee-Yang zero method
 * QCumulantFlow: Add beta version of integrated flow analysis with the Q-Cumulant method
+* PCAFlow: Add flow analysis with PCA method
 
 ### Fixed
 
