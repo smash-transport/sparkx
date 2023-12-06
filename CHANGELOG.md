@@ -28,6 +28,7 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 * Lattice3D: Add covariant smearing of densities for particles
 * Oscar: Add spacetime cut
 * Particle: Add strangeness, spin and spin_degeneracy functions 
+* Tests: Add tests for the Particle class
 * GenerateFlow: Add functionality to generate flow with k-particle correlations
 * LeeYangZeroFlow: Add beta version of integrated and differential flow analysis with the Lee-Yang zero method
 * QCumulantFlow: Add beta version of integrated flow analysis with the Q-Cumulant method
