@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The versioning of the codebase is inpired by [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with a version number `X.Y.Z`, where
+The versioning of the codebase is inspired by [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with a version number `X.Y.Z`, where
 
 * `X` is incremented for major changes (e.g. large backwards incompatible updates),
 * `Y` is incremented for minor changes (e.g. external pull-request that adds one feature) and
@@ -16,7 +16,7 @@ The main categories for changes in this file are:
 * `Fixed` for any bug fixes;
 * `Removed` for now removed features.
 
-A `Depracted` section could be added if needed for soon-to-be removed features.
+A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## Unreleased
 
@@ -26,23 +26,28 @@ A `Depracted` section could be added if needed for soon-to-be removed features.
 * EventCharacteristics: Possibility to smear (Gaussian or covariant) energy, baryon, charge and strangeness densities in Milne and Minkowski coordinates with writing to a file for subsequent hydro evolution
 * Histogram: Method to set the systematic error
 * Lattice3D: Add covariant smearing of densities for particles
-* OSCAR: Add spacetime cut
+* Oscar: Add spacetime cut
 * Particle: Add strangeness, spin and spin_degeneracy functions 
+* Tests: Add tests for the Particle class
+* GenerateFlow: Add functionality to generate flow with k-particle correlations
+* LeeYangZeroFlow: Add beta version of integrated and differential flow analysis with the Lee-Yang zero method
+* QCumulantFlow: Add beta version of integrated flow analysis with the Q-Cumulant method
 
 ### Fixed
 
 * Histogram: Correct error handling when reweighting or averaging over histograms
-* OSCAR/JETSCAPE: Fix bug when reading in a single event from input file
-* JETSCAPE: Fix asymmetric pseudorapidity cut
+* Oscar/Jetscape: Fix bug when reading in a single event from input file
+* Jetscape: Fix asymmetric pseudorapidity cut
 
 ### Changed
 
 * Histogram: Can write multiple histograms to file now
-* OSCAR/JETSCAPE: Handling of PDG id's which are not present in the `particle` package is moved to the Particle class
-* OSCAR/JETSCAPE: Improved writing to file
+* Oscar/Jetscape: Handling of PDG id's which are not present in the `particle` package is moved to the Particle class
+* Oscar/Jetscape: Improved writing to file
 * Particle: Particle construction is now done within the constructor by providing a format and an array of values
+* Particle: Internal structure is now a numpy float array
 * Particle: Functions using `PDGID` from the `particle` package handle now the case if the PDG ID is unknown to the package
-* Particle: Returns `None` if the quantity is not known or can not be computed
+* Particle: Returns `nan` if the quantity is not known or can not be computed
 
 # Removed
 
@@ -81,7 +86,7 @@ Date: 2023-06-14
 
 ### Added
 
-* SMASH / JETSCAPE particle data read in and processing
+* SMASH / Jetscape particle data read in and processing
 * Anisotropic flow analysis (reaction plane, event plane, scalar product methods)
 * Jet analysis (wrapper for fastjet)
 * Initial state characterization via eccentricities

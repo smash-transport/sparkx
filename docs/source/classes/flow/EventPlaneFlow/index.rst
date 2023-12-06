@@ -1,7 +1,7 @@
 .. _event_plane_flow:
 
 EventPlaneFlow
-=================
+==============
 
 .. currentmodule:: EventPlaneFlow
 .. autoclass:: EventPlaneFlow

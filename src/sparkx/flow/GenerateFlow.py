@@ -31,11 +31,27 @@ class GenerateFlow:
     generate_dummy_JETSCAPE_file_realistic_pt_shape:
         Generate a dummy JETSCAPE file with particles having flow with a more
         realistic transverse momentum distribution.
+    generate_dummy_JETSCAPE_file_multi_particle_correlations:
+        Generate a dummy JETSCAPE file with random particle momenta resulting in
+        the same flow for all transverse momenta. With this function multi-particle
+        correlations can be introduced.
+    generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations:
+        Generate a dummy JETSCAPE file with particles having flow with a more
+        realistic transverse momentum distribution. With this function multi-particle
+        correlations can be introduced.
     generate_dummy_OSCAR_file:
         Generate dummy flow data in OSCAR format.
     generate_dummy_OSCAR_file_realistic_pt_shape:
         Generate a dummy OSCAR2013 file with particles having flow with a more
         realistic transverse momentum distribution.
+    generate_dummy_OSCAR_file_multi_particle_correlations:
+        Generate a dummy OSCAR2013 file with random particle momenta resulting in
+        the same flow for all transverse momenta. With this function multi-particle
+        correlations can be introduced.
+    generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations:
+        Generate a dummy OSCAR2013 file with particles having flow with a more
+        realistic transverse momentum distribution. With this function multi-particle
+        correlations can be introduced.
 
     Examples
     --------
@@ -338,7 +354,47 @@ class GenerateFlow:
 
         return f_harmonic / f_norm
 
-    def generate_flow_realistic_pt_distribution(self, multiplicity, reaction_plane_angle):
+    def __create_k_particle_correlations(self, multiplicity, k_particle_correlation, correlation_fraction):
+        """
+        Generate momentum components with k-particle correlations.
+
+        Parameters
+        ----------
+        multiplicity : int
+            The desired multiplicity of the event.
+        k_particle_correlation : int
+            The number of particles to be correlated.
+        correlation_fraction : float
+            The fraction of particles to be correlated.
+
+        Returns
+        -------
+        None
+            Updates the internal arrays (px_, py_, pz_) with the 
+            generated correlated momenta.
+        """
+        px = []
+        py = []
+        pz = []
+        idx = 0
+        while len(px) <= multiplicity:
+            if rd.random() <= correlation_fraction:
+                for k in range(k_particle_correlation):
+                    px.append(self.px_[idx])
+                    py.append(self.py_[idx])
+                    pz.append(self.pz_[idx])
+                idx += 1
+            else:
+                px.append(self.px_[idx])
+                py.append(self.py_[idx])
+                pz.append(self.pz_[idx])
+                idx += 1
+
+        self.px_ = px
+        self.py_ = py
+        self.pz_ = pz
+
+    def __generate_flow_realistic_pt_distribution(self, multiplicity, reaction_plane_angle):
         pTmax = 4.5
         pTmin = 0.1
         pT0 = 0.5
@@ -403,6 +459,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        
         rd.seed(seed)
         temperature = 0.140
         mass = 0.138
@@ -458,6 +525,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        
         rd.seed(seed)
         mass = 0.138
         pdg = 211
@@ -471,7 +549,168 @@ class GenerateFlow:
                     reaction_plane_angle = 2.*np.pi*rd.random()
                 else:
                     reaction_plane_angle = 0.
-                self.generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+                self.__generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+
+                output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%d %d %d %g %g %g %g\n"
+                                 %(particle,pdg,status,energy,self.px_[particle],
+                                   self.py_[particle],self.pz_[particle]))
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+            output.write("#	sigmaGen	0.0	sigmaErr	0.0")
+
+    def generate_dummy_JETSCAPE_file_multi_particle_correlations(self,output_path,number_events,multiplicity,seed,k_particle_correlation,correlation_fraction):
+        """
+        Generate a dummy JETSCAPE file with random particle momenta resulting in
+        the same flow for all transverse momenta. A fraction of k-particle
+        correlations can be introduced.
+
+        For simplicity we generate :math:`\\pi^+` particles with a mass of
+        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a
+        temperature of :math:`T=0.140` GeV.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            k_particle_correlation: int
+                The order of k-particle correlations.
+            correlation_fraction:
+                The fraction of correlated particles.
+
+        Returns
+        -------
+            None
+        """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        if not isinstance(k_particle_correlation,int):
+            raise TypeError("'k_particle_correlation' is not int")
+        if not isinstance(correlation_fraction,float):
+            raise TypeError("'correlation_fraction' is not float")
+        if k_particle_correlation < 2:
+            raise ValueError("'k_particle_correlation' must be at least 2")
+        if correlation_fraction < 0. or correlation_fraction > 1.:
+            raise ValueError("'correlation_fraction' must be between 0 and 1")
+    
+        rd.seed(seed)
+        temperature = 0.140
+        mass = 0.138
+        pdg = 211
+        status = 27
+
+        with open(output_path, "w") as output:
+            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+
+            for event in range(number_events):
+                self.__sample_angles(multiplicity)
+                self.__sample_momenta_thermal(multiplicity, temperature, mass)
+                self.__create_k_particle_correlations(multiplicity,k_particle_correlation,correlation_fraction)
+
+                output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%d %d %d %g %g %g %g\n"
+                                 %(particle,pdg,status,energy,self.px_[particle],
+                                   self.py_[particle],self.pz_[particle]))
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+            output.write("#	sigmaGen	0.0	sigmaErr	0.0")
+
+    def generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations(self,output_path,number_events,multiplicity,seed,k_particle_correlation,correlation_fraction,random_reaction_plane=True):
+        """
+        Generate a dummy JETSCAPE file with particles having flow with a more
+        realistic transverse momentum distribution. A fraction of k-particle
+        correlations can be introduced.
+
+        For more details on the chosen parameters have a look at the source code.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            k_particle_correlation: int
+                The order of k-particle correlations.
+            correlation_fraction:
+                The fraction of correlated particles.
+            random_reaction_plane: bool
+                Switch for random reaction plane angle. Default is `True`.
+                Should be switched off for testing ReactionPlaneFlow.
+
+        Returns
+        -------
+            None
+        """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        if not isinstance(k_particle_correlation,int):
+            raise TypeError("'k_particle_correlation' is not int")
+        if not isinstance(correlation_fraction,float):
+            raise TypeError("'correlation_fraction' is not float")
+        if k_particle_correlation < 2:
+            raise ValueError("'k_particle_correlation' must be at least 2")
+        if correlation_fraction < 0. or correlation_fraction > 1.:
+            raise ValueError("'correlation_fraction' must be between 0 and 1")
+        
+        rd.seed(seed)
+        mass = 0.138
+        pdg = 211
+        status = 27
+
+        with open(output_path, "w") as output:
+            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+
+            for event in range(number_events):
+                if random_reaction_plane:
+                    reaction_plane_angle = 2.*np.pi*rd.random()
+                else:
+                    reaction_plane_angle = 0.
+                self.__generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+                self.__create_k_particle_correlations(multiplicity,k_particle_correlation,correlation_fraction)
 
                 output.write(f"# Event {event + 1} weight 1 EPangle 0 N_hadrons {multiplicity}\n")
                 for particle in range(multiplicity):
@@ -514,6 +753,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        
         rd.seed(seed)
         temperature = 0.140
         mass = 0.138
@@ -571,6 +821,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        
         rd.seed(seed)
         mass = 0.138
         pdg = 211
@@ -585,7 +846,172 @@ class GenerateFlow:
                     reaction_plane_angle = 2.*np.pi*rd.random()
                 else:
                     reaction_plane_angle = 0.
-                self.generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+                self.__generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+
+                output.write(f"# event {event} out {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%g %g %g %g %g %g %g %g %g %d %d %d\n"
+                                %(1,1,1,1,mass, energy,self.px_[particle],
+                                self.py_[particle],self.pz_[particle],pdg, particle, 1))
+
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")
+
+    def generate_dummy_OSCAR_file_multi_particle_correlations(self,output_path,number_events,multiplicity,seed,k_particle_correlation,correlation_fraction):
+        """
+        Generate a dummy OSCAR2013 file with random particle momenta
+        resulting in the same flow for all transverse momenta. A fraction of 
+        k-particle correlations can be introduced.
+
+        For simplicity we generate :math:`\\pi^+` particles with a mass of
+        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a
+        temperature of :math:`T=0.140` GeV.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            k_particle_correlation: int
+                The order of k-particle correlations.
+            correlation_fraction:
+                The fraction of correlated particles.
+
+        Returns
+        -------
+            None
+        """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        if not isinstance(k_particle_correlation,int):
+            raise TypeError("'k_particle_correlation' is not int")
+        if not isinstance(correlation_fraction,float):
+            raise TypeError("'correlation_fraction' is not float")
+        if k_particle_correlation < 2:
+            raise ValueError("'k_particle_correlation' must be at least 2")
+        if correlation_fraction < 0. or correlation_fraction > 1.:
+            raise ValueError("'correlation_fraction' must be between 0 and 1")
+        
+        rd.seed(seed)
+        temperature = 0.140
+        mass = 0.138
+        pdg = 211
+
+        with open(output_path, "w") as output:
+            output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
+            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write("# SMASH-2.2\n")
+
+            for event in range(number_events):
+                self.__sample_angles(multiplicity)
+                self.__sample_momenta_thermal(multiplicity, temperature, mass)
+                self.__create_k_particle_correlations(multiplicity,k_particle_correlation,correlation_fraction)
+
+                output.write(f"# event {event} out {multiplicity}\n")
+                for particle in range(multiplicity):
+                    energy = np.sqrt(
+                        self.px_[particle] ** 2.
+                        + self.py_[particle] ** 2.
+                        + self.pz_[particle] ** 2.
+                        + mass ** 2.
+                    )
+                    output.write("%g %g %g %g %g %g %g %g %g %d %d %d\n"
+                                %(1,1,1,1,mass, energy,self.px_[particle],
+                                self.py_[particle],self.pz_[particle],pdg, particle, 1))
+
+                self.px_.clear()
+                self.py_.clear()
+                self.pz_.clear()
+
+                output.write(f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")
+
+    def generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations(self,output_path,number_events,multiplicity,seed,k_particle_correlation,correlation_fraction,random_reaction_plane=True):
+        """
+        Generate a dummy OSCAR2013 file with particles having flow with a more
+        realistic transverse momentum distribution. A fraction of k-particle 
+        correlations can be introduced.
+
+        For more details on the chosen parameters have a look at the source code.
+
+        Parameters
+        ----------
+            output_path: str
+                The output file path.
+            number_events: int
+                The number of events to generate.
+            multiplicity: int
+                The number of particles per event.
+            seed: int
+                The random seed for reproducibility.
+            k_particle_correlation: int
+                The order of k-particle correlations.
+            correlation_fraction:
+                The fraction of correlated particles.
+            random_reaction_plane: bool
+                Switch for random reaction plane angle. Default is `True`.
+                Should be switched off for testing ReactionPlaneFlow.
+
+        Returns
+        -------
+            None
+        """
+        if not isinstance(output_path,str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events,int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity,int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed,int):
+            raise TypeError("'seed' is not int")
+        if number_events < 1 or multiplicity < 1:
+            raise ValueError("'number_events' and/or 'multiplicity' must be larger than 0")
+        if not isinstance(k_particle_correlation,int):
+            raise TypeError("'k_particle_correlation' is not int")
+        if not isinstance(correlation_fraction,float):
+            raise TypeError("'correlation_fraction' is not float")
+        if k_particle_correlation < 2:
+            raise ValueError("'k_particle_correlation' must be at least 2")
+        if correlation_fraction < 0. or correlation_fraction > 1.:
+            raise ValueError("'correlation_fraction' must be between 0 and 1")
+        
+        rd.seed(seed)
+        mass = 0.138
+        pdg = 211
+
+        with open(output_path, "w") as output:
+            output.write("#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n")
+            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write("# SMASH-2.2\n")
+
+            for event in range(number_events):
+                if random_reaction_plane:
+                    reaction_plane_angle = 2.*np.pi*rd.random()
+                else:
+                    reaction_plane_angle = 0.
+                self.__generate_flow_realistic_pt_distribution(multiplicity,reaction_plane_angle)
+                self.__create_k_particle_correlations(multiplicity,k_particle_correlation,correlation_fraction)
 
                 output.write(f"# event {event} out {multiplicity}\n")
                 for particle in range(multiplicity):
