@@ -54,7 +54,6 @@ def test_pdg():
     # check valid particle
     p = Particle()
     p.pdg = 211
-    print(p.pdg)
     assert p.pdg == 211
     assert p.pdg_valid == True
 
