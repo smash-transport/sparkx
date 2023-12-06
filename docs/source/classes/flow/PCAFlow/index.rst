@@ -7,3 +7,4 @@ PCAFlow
 .. autoclass:: PCAFlow
 
 .. automethod:: PCAFlow.differential_flow
+.. automethod:: PCAFlow.Pearson_correlation

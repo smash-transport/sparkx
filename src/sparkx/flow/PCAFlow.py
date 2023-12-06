@@ -36,6 +36,9 @@ class PCAFlow(FlowInterface.FlowInterface):
     -------
     differential_flow:
         Computes the differential flow.
+    Pearson_correlation:
+        Returns the Pearson coefficient and its uncertainty if the flow is 
+        already computed.
 
     Attributes
     ----------
@@ -77,6 +80,8 @@ class PCAFlow(FlowInterface.FlowInterface):
         An array containing the uncertainty of the flow.
     Pearson_r_ : None or numpy.ndarray
         An array containing the Pearson correlation between two bins.
+    Pearson_r_uncertainty_ : None or numpy.ndarray
+        An array containing the Pearson correlation uncertainty between two bins.
 
     Raises
     ------
@@ -131,6 +136,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.FlowUncertainty_ = None
 
         self.Pearson_r_ = None
+        self.Pearson_r_uncertainty_ = None
 
 
     def integrated_flow(self, particle_data):
@@ -328,7 +334,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         for sub in range(self.number_subcalc_):
             for bin in range(number_bins):
                 for alpha in range(self.alpha_):
-                    self.FlowUncertainty_[bin][alpha] += (self.FlowSubCalc_[sub][bin][alpha]-self.Flow_[bin][alpha])**2./(self.number_subcalc_-1)
+                    self.FlowUncertainty_[bin][alpha] += (self.FlowSubCalc_[sub][bin][alpha]-self.Flow_[bin][alpha])**2. / (self.number_subcalc_-1)
 
         # take the sqrt to obtain the standard deviation
         for bin in range(number_bins):
@@ -343,6 +349,19 @@ class PCAFlow(FlowInterface.FlowInterface):
                     self.Flow_[bin][alpha] = np.nan
 
     def __compute_factorization_breaking(self,bins):
+        """
+        Compute the factorization breaking using the Pearson correlation 
+        coefficient Eq. (12), Ref. [1].
+
+        Parameters
+        ----------
+        bins : list or np.ndarray
+            Bins used for the flow calculation.
+
+        Returns
+        -------
+        None
+        """
         # compute the Pearson coefficient Eq. (12), Ref. [1]
         number_bins = len(bins)-1
         r = np.zeros((number_bins,number_bins))
@@ -351,6 +370,27 @@ class PCAFlow(FlowInterface.FlowInterface):
                 r[a][b] = self.VnDelta_total_[a][b] / np.sqrt(self.VnDelta_total_[a][a]*self.VnDelta_total_[b][b])
 
         self.Pearson_r_ = r
+
+        # do this for each sub calculation
+        r_sub = np.zeros((number_bins,number_bins,self.number_subcalc_))
+        for sub in range(self.number_subcalc_):
+            for a in range(number_bins):
+                for b in range(number_bins):
+                    r_sub[a][b][sub] = self.SigmaVnDelta_total_[a][b][sub] / np.sqrt(self.SigmaVnDelta_total_[a][a][sub]*self.SigmaVnDelta_total_[b][b][sub])
+
+        r_err = np.zeros((number_bins,number_bins))
+        # sum the squared deviation from the mean
+        for sub in range(self.number_subcalc_):
+            for a in range(number_bins):
+                for b in range(number_bins):
+                    r_err[a][b] += (r_sub[a][b][sub]-r[a][b])**2. / (self.number_subcalc_-1)
+
+        # take the sqrt to obtain the standard deviation
+        for a in range(number_bins):
+            for b in range(number_bins):
+                r_err[a][b] = np.sqrt(r_err[a][b])
+
+        self.Pearson_r_uncertainty_ = r_err
 
     def differential_flow(self, particle_data, bins, flow_as_function_of):
         """
@@ -397,4 +437,23 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.__compute_uncertainty(bins)
         self.__compute_factorization_breaking(bins)
 
-        return [self.Flow_, self.FlowUncertainty_]    
+        return [self.Flow_, self.FlowUncertainty_]
+    
+    def Pearson_correlation(self):
+        """
+        Retrieve the Pearson correlation coefficient and its uncertainty
+        (Eq. (12), Ref. [1]).
+
+        Returns
+        -------
+        list
+            A list containing the Pearson correlation coefficient and its uncertainty.
+
+        - Pearson_r (numpy.ndarray): The Pearson correlation coefficient for factorization breaking between each pair of bins.
+        - Pearson_r_uncertainty (numpy.ndarray): The uncertainty of the Pearson correlation coefficient for factorization breaking between each pair of bins.
+
+        Notes
+        -----
+        The values in the list can be accessed by name[bin1][bin2].
+        """
+        return [self.Pearson_r_, self.Pearson_r_uncertainty_]

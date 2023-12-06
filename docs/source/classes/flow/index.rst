@@ -9,7 +9,6 @@ Flow
    ReactionPlaneFlow/index
    ScalarProductFlow/index
    EventPlaneFlow/index
-   ReactionPlaneFlow/index
    LeeYangZeroFlow/index
    QCumulantFlow/index
    PCAFlow/index
