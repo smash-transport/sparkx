@@ -9,5 +9,6 @@ Flow
    ScalarProductFlow/index
    EventPlaneFlow/index
    ReactionPlaneFlow/index
+   PCAFlow/index
    GenerateFlow/index
    
