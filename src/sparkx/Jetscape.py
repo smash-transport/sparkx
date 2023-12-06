@@ -641,7 +641,7 @@ class Jetscape:
             raise TypeError('Input value for lower event energy cut has not ' +\
                             'one of the following types: int, float')
         if minimum_event_energy <= 0.:
-            raise ValueError('The lower event energ cut value should be positive')
+            raise ValueError('The lower event energy cut value should be positive')
 
         updated_particle_list = []
         for event_particles in self.particle_list_:

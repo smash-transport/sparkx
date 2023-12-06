@@ -348,7 +348,8 @@ class Particle:
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array)<index[1]+1:
                         continue
-                    # Type casting for specific attributes
+                    # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
+                    # to ensure similar behaving as if we were reading in data into ints.
                     if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
                         self.data_[index[0]] = float(particle_array[index[1]])
                     elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
