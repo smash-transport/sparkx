@@ -202,7 +202,7 @@ class Particle:
     """
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):
-        self.data_ = np.array(25*[np.nan],dtype=np.float)
+        self.data_ = np.array(25*[np.nan],dtype=float)
         
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
@@ -274,7 +274,7 @@ class Particle:
                 "ID_": [11,10],
                 "charge_": [12,11],
                 "ncoll_": [13,12],
-                "form_time_": [14,11],
+                "form_time_": [14,13],
                 "xsecfac_": [15,14],
                 "proc_id_origin_": [16,15],
                 "proc_type_origin_": [17,16],
@@ -298,7 +298,7 @@ class Particle:
                 "ID_": [11,10],
                 "charge_": [12,11],
                 "ncoll_": [13,12],
-                "form_time_": [14,11],
+                "form_time_": [14,13],
                 "xsecfac_": [15,14],
                 "proc_id_origin_": [16,15],
                 "proc_type_origin_": [17,16],
@@ -322,7 +322,7 @@ class Particle:
                 "ID_": [11,10],
                 "charge_": [12,11],
                 "ncoll_": [13,12],
-                "form_time_": [14,11],
+                "form_time_": [14,13],
                 "xsecfac_": [15,14],
                 "proc_id_origin_": [16,15],
                 "proc_type_origin_": [17,16],
@@ -368,7 +368,7 @@ class Particle:
         self.pdg_valid = PDGID(self.pdg).is_valid
 
         if(not self.pdg_valid):
-             warnings.warn('The PDG code ' + str(self.pdg) + ' is not valid. '+
+             warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
                            'All properties extracted from the PDG are set to default values.')
 
     @property
@@ -509,10 +509,10 @@ class Particle:
     @pdg.setter
     def pdg(self,value):
         self.data_[9] = value
-        self.data_[10] = PDGID(self.pdg).is_valid
-
+        self.pdg_valid = PDGID(self.pdg).is_valid
+        
         if(not self.pdg_valid):
-             warnings.warn('The PDG code ' + str(self.pdg) + ' is not valid. '+
+             warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
                            'All properties extracted from the PDG are set to None.')
 
     @property
@@ -723,9 +723,9 @@ class Particle:
         -------
         pdg_valid : int
         """
-        return self.data_[10]
+        return bool(self.data_[10])
 
-    @weight.setter
+    @pdg_valid.setter
     def pdg_valid(self,value):
         self.data_[10] = value
 

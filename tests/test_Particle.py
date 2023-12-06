@@ -54,8 +54,9 @@ def test_pdg():
     # check valid particle
     p = Particle()
     p.pdg = 211
+    print(p.pdg)
     assert p.pdg == 211
-    assert p.pdg_valid_ == True
+    assert p.pdg_valid == True
 
     # check invalid particle
     with warnings.catch_warnings():
@@ -64,7 +65,7 @@ def test_pdg():
         q = Particle()
         q.pdg = 99999999
         assert q.pdg == 99999999
-        assert q.pdg_valid_ is False
+        assert q.pdg_valid is False
 
     # Check if a warning is issued
     with pytest.warns(UserWarning, match=r'The PDG code 99999999 is not valid. All properties extracted from the PDG are set to None.'):
@@ -266,4 +267,4 @@ def test_initialize_from_array_warning_invalid_pdg():
     with pytest.warns(UserWarning, match=r"The PDG code 99999999 is not valid."):
         p1 = Particle(input_format=format1, particle_array=array1)
 
-    assert p1.pdg_valid_ is False
+    assert p1.pdg_valid is False
