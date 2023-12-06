@@ -75,6 +75,8 @@ class PCAFlow(FlowInterface.FlowInterface):
         An array containing the flow magnitude.
     FlowUncertainty_ : None or numpy.ndarray
         An array containing the uncertainty of the flow.
+    Pearson_r_ : None or numpy.ndarray
+        An array containing the Pearson correlation between two bins.
 
     Raises
     ------
@@ -127,6 +129,8 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.FlowSubCalc_ = None
         self.Flow_ = None
         self.FlowUncertainty_ = None
+
+        self.Pearson_r_ = None
 
 
     def integrated_flow(self, particle_data):
@@ -338,6 +342,16 @@ class PCAFlow(FlowInterface.FlowInterface):
                 if np.isnan(self.FlowUncertainty_[bin][alpha]):
                     self.Flow_[bin][alpha] = np.nan
 
+    def __compute_factorization_breaking(self,bins):
+        # compute the Pearson coefficient Eq. (12), Ref. [1]
+        number_bins = len(bins)-1
+        r = np.zeros((number_bins,number_bins))
+        for a in range(number_bins):
+            for b in range(number_bins):
+                r[a][b] = self.VnDelta_total_[a][b] / np.sqrt(self.VnDelta_total_[a][a]*self.VnDelta_total_[b][b])
+
+        self.Pearson_r_ = r
+
     def differential_flow(self, particle_data, bins, flow_as_function_of):
         """
         Compute the differential flow.
@@ -381,5 +395,6 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         self.__compute_flow_PCA(bins)
         self.__compute_uncertainty(bins)
+        self.__compute_factorization_breaking(bins)
 
-        return [self.Flow_, self.FlowUncertainty_]
+        return [self.Flow_, self.FlowUncertainty_]    
