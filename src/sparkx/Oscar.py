@@ -491,7 +491,7 @@ class Oscar:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[1]
+            num_particles = self.num_output_per_event_[0,1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -499,7 +499,7 @@ class Oscar:
 
         if num_events == 1:
             for i_part in range(0, num_particles):
-                particle = self.particle_list_[i_part]
+                particle = self.particle_list_[0][i_part]
                 particle_array.append(self.__particle_as_list(particle))
         else:
             for i_ev in range(0, num_events):
@@ -1206,11 +1206,22 @@ class Oscar:
                 f_out.write(header[i])
 
         with open(output_file, "a") as f_out:
-            for i in range(self.num_events_):
-                event = self.num_output_per_event_[i,0]
-                num_out = self.num_output_per_event_[i,1]
-                particle_output = np.asarray(self.particle_list()[i])
+            if(self.num_events_>1):
+                for i in range(self.num_events_):
+                    event = self.num_output_per_event_[i,0]
+                    num_out = self.num_output_per_event_[i,1]
+                    particle_output = np.asarray(self.particle_list()[i])
 
+                    f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                    if self.oscar_format_ == 'Oscar2013':
+                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
+                    elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
+                    f_out.write(self.event_end_lines_[event])
+            else:
+                event = 0
+                num_out = self.num_output_per_event_
+                particle_output = np.asarray(self.particle_list())
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_format_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)

@@ -363,7 +363,7 @@ class Jetscape:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[1]
+            num_particles = self.num_output_per_event_[0,1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -371,7 +371,7 @@ class Jetscape:
 
         if num_events == 1:
             for i_part in range(0, num_particles):
-                particle = self.particle_list_[i_part]
+                particle = self.particle_list_[0][i_part]
                 particle_array.append(self.__particle_as_list(particle))
         else:
             for i_ev in range(0, num_events):
@@ -953,11 +953,30 @@ class Jetscape:
             header_file_written = False
             data_to_write = []
 
-            for i in range(self.num_events_):
-                event = self.num_output_per_event_[i, 0]
-                num_out = self.num_output_per_event_[i, 1]
-                particle_output = np.asarray(self.particle_list()[i])
+            if(self.num_events_>1):
+                for i in range(self.num_events_):
+                    event = self.num_output_per_event_[i, 0]
+                    num_out = self.num_output_per_event_[i, 1]
+                    particle_output = np.asarray(self.particle_list()[i])
+  
+                    # Write the header if not already written
+                    if not header_file_written:
+                        header_file_written = True
+                        data_to_write.append(header_file)
 
+                    # Header for each event
+                    header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                    data_to_write.append(header)
+
+                    # Convert particle data to formatted strings
+                    particle_lines = [f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+
+                    # Append particle data to the list
+                    data_to_write.extend(particle_lines)
+            else:
+                event = 0
+                num_out = self.num_output_per_event_
+                particle_output = np.asarray(self.particle_list())
                 # Write the header if not already written
                 if not header_file_written:
                     header_file_written = True
