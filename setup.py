@@ -6,18 +6,18 @@ setup(
     package_dir={'': 'sparkx'},
     install_requires=[
         "particle==0.23.0"
-        "numpy==1.23.5"
-        "scipy==1.10.1"
-        "matplotlib==3.7.1"
+        "numpy>=1.23.5"
+        "scipy>=1.10.1"
         "abc-property==1.0"
-        "fastjet==3.4.1.2"
+        "fastjet==3.4.1.3"
+        "matplotlib>=3.7.1"
     ],
     version='1.0.2',
     description='Software Package for Analyzing Relativistic Kinematics in Collision eXperiments',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author='Hendrik Roch, Nils Sass, Niklas Götz',
-    author_email="roch@fias.uni-frankfurt.de, nsass@fias.uni-frankfurt.de, goetz@fias.uni-frankfurt.de",
+    author='Niklas Götz, Hendrik Roch, Nils Sass',
+    author_email="goetz@fias.uni-frankfurt.de, roch@fias.uni-frankfurt.de, nsass@fias.uni-frankfurt.de",
     url="https://smash-transport.github.io/sparkx/",
     download_url="https://github.com/smash-transport/sparkx",
     license='MIT',
