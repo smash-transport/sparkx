@@ -1,4 +1,5 @@
 from sparkx.Particle import Particle
+from sparkx.Filter import *
 import numpy as np
 import csv
 import warnings
@@ -15,7 +16,7 @@ class Jetscape:
     (e.g. multiplicity, pseudo/rapidity, pT).
     Once these filters are applied, the new data set can be saved 1) as a nested
     list containing all quantities of the Jetscape format 2) as a list containing
-    Particle objects from the ParticleClass or it can be printed to a file
+    Particle objects from the Particle or it can be printed to a file
     complying with the input format.
 
     Parameters
@@ -44,6 +45,12 @@ class Jetscape:
                 given by the tuple :code:`(first_event, last_event)` |br|
                 by specifying :code:`events=(first_event, last_event)` |br|
                 where last_event is included.
+            * - :code:`filters` (dict)
+              - Apply filters on an event-by-event basis to directly filter the |br|
+                particles after the read in of one event. This method saves |br|
+                memory. The names of the filters are the same as the names of |br|
+                the filter methods. All filters are applied in the order in |br|
+                which they appear in the dictionary.
 
         .. |br| raw:: html
 
@@ -134,7 +141,7 @@ class Jetscape:
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape("path_to_file")
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH)
         >>>
         >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
         >>>
@@ -147,6 +154,25 @@ class Jetscape:
         >>> # print the pions to an Jetscape file
         >>> pions.print_particle_lists_to_file('./particle_lists.dat')
 
+    **3. Constructor cuts**
+
+    Cuts can be performed directly in the constructor by passing a dictionary. This
+    has the advantage that memory is saved because the cuts are applied after reading
+    each single event. This is achieved by the keyword argument :code:`filters`, which 
+    contains the filter dictionary. Filters are applied in the order in which they appear.
+    Let's assume we only want to keep pions in events with a
+    multiplicity > 500:
+
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>>
+        >>> # print the pions to a jetscape file
+        >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
+
+    Notes
+    -----
+    All filters with the keyword argument :code:`filters` need the usual 
+    parameters for the filter functions in the dictionary.
+    All filter functions without arguments need a :code:`True` in the dictionary.
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
         if '.dat' in JETSCAPE_FILE:
@@ -265,6 +291,46 @@ class Jetscape:
 
         return particle_list
 
+    def __update_num_output_per_event_after_filter(self):
+        for event in range(0, len(self.particle_list_)):
+            self.num_output_per_event_[event][1]=len(self.particle_list_[event])
+            
+    def __apply_kwargs_filters(self, event, filters_dict):
+        if not isinstance(filters_dict, dict) or len(filters_dict.keys()) == 0:
+            return event
+        for i in filters_dict.keys():
+            if i == 'charged_particles':
+                if filters_dict['charged_particles']:
+                    event = charged_particles(event)
+            elif i == 'uncharged_particles':
+                if filters_dict['uncharged_particles']:
+                    event = uncharged_particles(event)
+            elif i == 'strange_particles':
+                if filters_dict['strange_particles']:
+                    event = strange_particles(event)
+            elif i == 'particle_species':
+                event = particle_species(event, filters_dict['particle_species'])
+            elif i == 'remove_particle_species':
+                event = remove_particle_species (event, filters_dict['remove_particle_species'])
+            elif i == 'lower_event_energy_cut':
+                event = lower_event_energy_cut(event, filters_dict['lower_event_energy_cut'])
+            elif i == 'pt_cut':
+                event = pt_cut(event, filters_dict['pt_cut'])
+            elif i == 'rapidity_cut':
+                event = rapidity_cut(event, filters_dict['rapidity_cut'])
+            elif i == 'pseudorapidity_cut':
+                event = pseudorapidity_cut(event, filters_dict['pseudorapidity_cut'])
+            elif i == 'spatial_rapidity_cut':
+                event = spatial_rapidity_cut(event, filters_dict['spatial_rapidity_cut'])
+            elif i == 'multiplicity_cut':
+                event = multiplicity_cut(event, filters_dict['multiplicity_cut'])
+            elif i == 'particle_status':
+                event = particle_status(event, filters_dict['particle_status'])
+            else:
+                raise ValueError('The cut is unkown!')
+
+        return event
+
     # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs):
@@ -280,8 +346,6 @@ class Jetscape:
                     raise IndexError('Index out of range of JETSCAPE file')
                 elif '#' in line and 'sigmaGen' in line:
                     particle_list.append(data)
-                elif '#' in line:
-                    raise ValueError('Comment line unexpectedly found: '+line)
                 elif i == 0 and '#' not in line and 'weight' not in line:
                     raise ValueError('First line of the event is not a comment ' +\
                                      'line or does not contain "weight"')
@@ -296,6 +360,9 @@ class Jetscape:
                     if int(line[2]) == first_event_header:
                         continue
                     else:
+                        if 'filters' in kwargs.keys():
+                            data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
+                            self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
                         particle_list.append(data)
                         data = []
                 else:
@@ -308,10 +375,10 @@ class Jetscape:
             if len(particle_list) != self.num_events_:
                 raise IndexError('Number of events in Jetscape file does not match the '+\
                                  'number of events specified by the comments in the '+\
-                                    'Jetscape file!')
+                                 'Jetscape file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
-            self.num_output_per_event_ = update
+            self.num_output_per_event_ = [update]
             self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
@@ -323,7 +390,7 @@ class Jetscape:
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
         elif isinstance(kwargs['events'], int):
-            self.particle_list_ = particle_list[0]
+            self.particle_list_ = particle_list
         else:
             self.particle_list_ = particle_list
 
@@ -351,7 +418,7 @@ class Jetscape:
         Returns a nested python list containing all quantities from the
         current Jetscape data as numerical values with the following shape:
 
-            | Single Event:    [output_line][particle_quantity]
+            | Single Event:    [event][output_line][particle_quantity]
             | Multiple Events: [event][output_line][particle_quantity]
 
         Returns
@@ -363,7 +430,7 @@ class Jetscape:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[0,1]
+            num_particles = self.num_output_per_event_[0][1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -439,11 +506,8 @@ class Jetscape:
         self : Jetscape object
             Containing charged particles in every event only
         """
-        for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge != 0 and elem.charge != np.nan)]
-            new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length
+        self.particle_list_ = charged_particles(self.particle_list_)
+        self.__update_num_output_per_event_after_filter()
 
         return self
 
@@ -456,11 +520,8 @@ class Jetscape:
         self : Jetscape object
             Containing uncharged particles in every event only
         """
-        for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge == 0 and elem.charge != np.nan)]
-            new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length
+        self.particle_list_ = uncharged_particles(self.particle_list_)
+        self.__update_num_output_per_event_after_filter()
 
         return self
 
@@ -473,11 +534,8 @@ class Jetscape:
         self : Jetscape object
             Containing strange particles in every event only
         """
-        for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.strangeness != 0 and elem.strangeness != np.nan)]
-            new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length
+        self.particle_list_ = strange_particles(self.particle_list_)
+        self.__update_num_output_per_event_after_filter()
 
         return self
 
@@ -500,34 +558,9 @@ class Jetscape:
             Containing only particle species specified by pdg_list for every event
 
         """
-        if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
-            raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, list of float, np.ndarray, tuple')
+        self.particle_list_ = particle_species(self.particle_list_, pdg_list)
+        self.__update_num_output_per_event_after_filter()
 
-        elif isinstance(pdg_list, (int, float, str, np.integer)):
-            pdg_list = int(pdg_list)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) == pdg_list and elem.pdg != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        elif isinstance(pdg_list, (list, np.ndarray, tuple)):
-            pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        else:
-            raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, list of float, np.ndarray, tuple')
         return self
 
     def remove_particle_species(self, pdg_list):
@@ -550,34 +583,9 @@ class Jetscape:
             Containing all but the specified particle species in every event
 
         """
-        if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
-            raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, list of float, np.ndarray, tuple')
+        self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
+        self.__update_num_output_per_event_after_filter()
 
-        elif isinstance(pdg_list, (int, float, str, np.integer)):
-            pdg_list = int(pdg_list)
-
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.pdg) != pdg_list and elem.pdg != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        elif isinstance(pdg_list, (list, np.ndarray, tuple)):
-            pdg_list = np.asarray(pdg_list, dtype=np.int64)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (not int(elem.pdg) in pdg_list and elem.pdg != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        else:
-            raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, float, np.ndarray, tuple')
         return self
 
     def particle_status(self, status_list):
@@ -600,33 +608,9 @@ class Jetscape:
             every event
 
         """
-        if not isinstance(status_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
-            raise TypeError('Input value for status codes has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, list of float, np.ndarray, tuple')
-
-        elif isinstance(status_list, (int, float, str, np.integer)):
-            status_list = int(status_list)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.status) == status_list and elem.status != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        elif isinstance(status_list, (list, np.ndarray, tuple)):
-            status_list = np.asarray(status_list, dtype=np.int64)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                            if (int(elem.status) in status_list and elem.status != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        else:
-            raise TypeError('Input value for status flag has not one of the ' +\
-                            'following types: str, int, float, np.integer, list ' +\
-                            'of str, list of int, list of float, np.ndarray, tuple')
+        self.particle_list_ = particle_status(self.particle_list_, status_list)
+        self.__update_num_output_per_event_after_filter()
+        
         return self
 
     def lower_event_energy_cut(self,minimum_event_energy):
@@ -651,27 +635,8 @@ class Jetscape:
         ValueError
             If the minimum_event_energy parameter is less than or equal to 0.
         """
-        if not isinstance(minimum_event_energy, (int, float)):
-            raise TypeError('Input value for lower event energy cut has not ' +\
-                            'one of the following types: int, float')
-        if minimum_event_energy <= 0.:
-            raise ValueError('The lower event energy cut value should be positive')
-
-        updated_particle_list = []
-        for event_particles in self.particle_list_:
-            total_energy = sum(particle.E for particle in event_particles if particle.E != np.nan)
-            if total_energy >= minimum_event_energy:
-                updated_particle_list.append(event_particles)
-        self.particle_list_ = updated_particle_list
-        self.num_output_per_event_ = np.array([[i+1, len(event_particles)] \
-                    for i, event_particles in enumerate(updated_particle_list)],\
-                    dtype=np.int32)
-        self.num_events_ = len(updated_particle_list)
-
-        if self.num_events_ == 0:
-            warnings.warn('There are no events left after low energy cut')
-            self.particle_list_ = [[]]
-            self.num_output_per_event_ = np.asarray([[None, None]])
+        self.particle_list_ = lower_event_energy_cut(self.particle_list_, minimum_event_energy)
+        self.__update_num_output_per_event_after_filter()
 
         return self
 
@@ -694,33 +659,10 @@ class Jetscape:
         self : Jetscape object
             Containing only particles complying with the p_t cut for all events
         """
-
-        if not isinstance(cut_value_tuple, tuple):
-            raise TypeError('Input value must be a tuple containing either '+\
-                            'positive numbers or None')
-        elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
-             (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
-                 raise ValueError('The cut limits must be positive or None')
-        elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
-            raise ValueError('At least one cut limit must be a number')
-
-        if cut_value_tuple[0] is None:
-            lower_cut = 0.0
-        else:
-            lower_cut = cut_value_tuple[0]
-        if cut_value_tuple[1] is None:
-            upper_cut = float('inf')
-        else:
-            upper_cut = cut_value_tuple[1]
-
-        for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                        (lower_cut <= elem.pt_abs() <= upper_cut and elem.pt_abs() != None)]
-            new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length
+        self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
+        self.__update_num_output_per_event_after_filter()
 
         return self
-
 
     def rapidity_cut(self, cut_value):
         """
@@ -745,44 +687,9 @@ class Jetscape:
             Containing only particles complying with the rapidity cut
             for all events
         """
-        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
-            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
-                        str(cut_value[1])+'. Switched order is assumed in ' +\
-                       'the following.'
-            warnings.warn(warn_msg)
-
-        if not isinstance(cut_value, (int, float, tuple)):
-            raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')
-
-        elif isinstance(cut_value, tuple) and len(cut_value) != 2:
-            raise TypeError('The tuple of cut limits must contain 2 values')
-
-        elif isinstance(cut_value, (int, float)):
-            # cut symmetrically around 0
-            limit = np.abs(cut_value)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            (-limit<=elem.momentum_rapidity_Y()<=limit 
-                                             and elem.momentum_rapidity_Y() != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        elif isinstance(cut_value, tuple):
-            lim_max = max(cut_value[0], cut_value[1])
-            lim_min = min(cut_value[0], cut_value[1])
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            (lim_min<=elem.momentum_rapidity_Y()<=lim_max
-                                             and elem.momentum_rapidity_Y() != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        else:
-            raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')
+        self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
+        self.__update_num_output_per_event_after_filter()
+        
         return self
 
     def pseudorapidity_cut(self, cut_value):
@@ -808,51 +715,9 @@ class Jetscape:
             Containing only particles complying with the pseudo-rapidity cut
             for all events
         """
-        if isinstance(cut_value, tuple) and cut_value[0] > cut_value[1]:
-            warn_msg = 'Cut limits in wrong order: '+str(cut_value[0])+' > '+\
-                        str(cut_value[1])+'. Switched order is assumed in ' +\
-                       'the following.'
-            warnings.warn(warn_msg)
+        self.particle_list_ = pseudorapidity_cut(self.particle_list_, cut_value)
+        self.__update_num_output_per_event_after_filter()
 
-        if not isinstance(cut_value, (int, float, tuple)):
-            raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')
-
-        elif isinstance(cut_value, tuple) and len(cut_value) != 2:
-            raise TypeError('The tuple of cut limits must contain 2 values')
-
-        elif isinstance(cut_value, (int, float)):
-            # cut symmetrically around 0
-            limit = np.abs(cut_value)
-
-            for i in range(0, self.num_events_):
-                self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                            (-limit<=elem.pseudorapidity()<=limit
-                                             and elem.pseudorapidity() != np.nan)]
-                new_length = len(self.particle_list_[i])
-                self.num_output_per_event_[i, 1] = new_length
-
-        elif isinstance(cut_value, tuple):
-            lim_max = max(cut_value[0], cut_value[1])
-            lim_min = min(cut_value[0], cut_value[1])
-
-            if self.num_events_ == 1:
-                self.particle_list_ = [elem for elem in self.particle_list_ if
-                                       (lim_min<=elem.pseudorapidity()<=lim_max
-                                        and elem.pseudorapidity() != np.nan)]
-                new_length = len(self.particle_list_)
-                self.num_output_per_event_[1] = new_length
-            else:
-                for i in range(0, self.num_events_):
-                    self.particle_list_[i] = [elem for elem in self.particle_list_[i] if
-                                              (lim_min<=elem.pseudorapidity()<=lim_max
-                                                and elem.pseudorapidity() != np.nan)]
-                    new_length = len(self.particle_list_[i])
-                    self.num_output_per_event_[i, 1] = new_length
-
-        else:
-            raise TypeError('Input value must be a number or a tuple ' +\
-                            'with the cut limits (cut_min, cut_max)')
         return self
 
     def multiplicity_cut(self,min_multiplicity):
@@ -862,7 +727,7 @@ class Jetscape:
 
         Parameters
         ----------
-        min_multiplicity : float
+        min_multiplicity : int
             Lower bound for multiplicity. If the multiplicity of an event is
             lower than min_multiplicity, this event is discarded.
 
@@ -871,20 +736,8 @@ class Jetscape:
         self : Jetscape object
             Containing only events with a multiplicity >= min_multiplicity
         """
-        if not isinstance(min_multiplicity, int):
-            raise TypeError('Input value for multiplicity cut must be an int')
-        if min_multiplicity < 0:
-            raise ValueError('Minimum multiplicity must >= 0')
-
-        idx_keep_event = []
-        for idx, multiplicity in enumerate(self.num_output_per_event_[:, 1]):
-            if multiplicity >= min_multiplicity:
-                idx_keep_event.append(idx)
-
-        self.particle_list_ = [self.particle_list_[idx] for idx in idx_keep_event]
-        self.num_output_per_event_ = np.asarray([self.num_output_per_event_[idx] for idx in idx_keep_event])
-        number_deleted_events = self.num_events_- len(idx_keep_event)
-        self.num_events_ -= number_deleted_events
+        self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
+        self.__update_num_output_per_event_after_filter()
 
         return self
 
@@ -975,7 +828,7 @@ class Jetscape:
                     data_to_write.extend(particle_lines)
             else:
                 event = 0
-                num_out = self.num_output_per_event_
+                num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
                 # Write the header if not already written
                 if not header_file_written:

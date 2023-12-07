@@ -21,4 +21,5 @@ Jetscape
 .. automethod:: Jetscape.rapidity_cut
 .. automethod:: Jetscape.pseudorapidity_cut
 .. automethod:: Jetscape.multiplicity_cut
+.. automethod:: Jetscape.particle_status
 .. automethod:: Jetscape.print_particle_lists_to_file
