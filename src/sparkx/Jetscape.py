@@ -862,7 +862,7 @@ class Jetscape:
 
         Parameters
         ----------
-        min_multiplicity : float
+        min_multiplicity : int
             Lower bound for multiplicity. If the multiplicity of an event is
             lower than min_multiplicity, this event is discarded.
 

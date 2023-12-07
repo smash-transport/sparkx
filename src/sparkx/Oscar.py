@@ -1,4 +1,5 @@
 from sparkx.Particle import Particle
+from sparkx.Filter import *
 import numpy as np
 import csv
 import warnings
@@ -179,8 +180,7 @@ class Oscar:
 
         Returns
         -------
-        None.
-
+        None
         """
 
         if not '.oscar' in OSCAR_FILE:
@@ -326,6 +326,24 @@ class Oscar:
 
         return particle_list
 
+    def __apply_kwargs_filters(self, event, filters_dict):
+        for i in filters_dict.keys():
+            if i == 'charged_particles':
+                if filters_dict['charged_particles']:
+                    event=charged_particles(event)
+                    # do something
+            #elif
+              #other filters
+                
+
+            # Check if user given key is contained in allowed keys
+            #'charged_particles, uncharged_particles, strange_particles, particle_species (int,tuple/list/array),'
+            #'remove_particle_species (int,tuple/list/array), participants, spectators,'
+            #'lower_event_energy_cut (int,float), spacetime_cut (tuple), pt_cut (tuple),'
+            #'rapidity_cut (float,tuple), pseudorapidity_cut (float,tuple), spatial_rapidity_cut (float,tuple)'
+            #'multiplicity_cut (int)'
+        return event
+
     # PUBLIC CLASS METHODS
 
 
@@ -347,6 +365,8 @@ class Oscar:
                 elif 'event' in line and ('out' in line or 'in ' in line):
                     continue
                 elif '#' in line and 'end' in line:
+                    if kwargs['filters']:
+                        data[0] = self.__apply_kwargs_filters([data],kwargs['filters'])
                     particle_list.append(data)
                     data = []
                 elif '#' in line:
@@ -1141,7 +1161,7 @@ class Oscar:
 
         Parameters
         ----------
-        min_multiplicity : float
+        min_multiplicity : int
             Lower bound for multiplicity. If the multiplicity of an event is
             lower than min_multiplicity, this event is discarded.
 
