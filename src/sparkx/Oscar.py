@@ -424,7 +424,7 @@ class Oscar:
                                     'OSCAR file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
-            self.num_output_per_event_ = [1,update]
+            self.num_output_per_event_ = [update]
             self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
@@ -551,7 +551,7 @@ class Oscar:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[1][1]
+            num_particles = self.num_output_per_event_[0][1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -1327,7 +1327,7 @@ class Oscar:
                     f_out.write(self.event_end_lines_[event])
             else:
                 event = 0
-                num_out = self.num_output_per_event_[1][1]
+                num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_format_ == 'Oscar2013':
