@@ -11,4 +11,5 @@ from sparkx.Jetscape import Jetscape
 from sparkx.Lattice3D import Lattice3D
 from sparkx.Oscar import Oscar
 from sparkx.Particle import Particle
+from sparkx.CentralityClasses import CentralityClasses
 from sparkx.Utilities import pdg_to_latex
