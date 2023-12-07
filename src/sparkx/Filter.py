@@ -1,5 +1,5 @@
 import numpy as np
-from sparkx.Particle import Particle#
+from sparkx.Particle import Particle
 import warnings
 
 def charged_particles(particle_list):
