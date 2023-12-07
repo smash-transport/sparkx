@@ -362,7 +362,8 @@ class Particle:
                     self.mass = self.compute_mass_from_energy_momentum()
                     self.charge = self.compute_charge_from_pdg()
             else:
-                raise ValueError(f"The input file is corrupted!")
+                raise ValueError("The input file is corrupted! " +\
+                                 "A line with wrong number of columns "+str(len(particle_array))+" was found.")
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
         
