@@ -4,7 +4,7 @@ import numpy as np
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
     """
-    This class implements a reaction plane flow analysis algorithm
+    This class implements a reaction plane flow analysis algorithm.
 
     For this method, the flow is calculated under the assumption that the event plane angle is constant
     throughout all events. The flow is calculated as
@@ -21,6 +21,14 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
     ----------
     n : int, optional
         The value of the harmonic. Default is 2.
+
+        
+    Methods
+    -------
+    integrated_flow:
+        Computes the integrated flow.
+    differential_flow:
+        Computes the differential flow.
 
     Examples
     --------
@@ -131,7 +139,6 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                        print(val)
                     if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle)
                 events_bin.extend([particles_event])

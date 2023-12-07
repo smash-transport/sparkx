@@ -31,6 +31,13 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.
 
+    Methods
+    -------
+    integrated_flow:
+        Computes the integrated flow.
+    differential_flow:
+        Computes the differential flow.
+
     Examples
     --------
 

@@ -20,6 +20,7 @@ Histogram
 .. automethod:: Histogram.average_weighted
 .. automethod:: Histogram.standard_error
 .. automethod:: Histogram.statistical_error
+.. automethod:: Histogram.set_systematic_error
 .. automethod:: Histogram.scale_histogram
 .. automethod:: Histogram.set_error
 .. automethod:: Histogram.print_histogram

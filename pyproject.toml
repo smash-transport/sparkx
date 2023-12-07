@@ -4,15 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sparkx"
-version = "1.0.2"
+version = "1.1.0"
 authors = [
+    { name="Niklas Götz", email="goetz@fias.uni-frankfurt.de"},
     { name="Hendrik Roch", email="roch@fias.uni-frankfurt.de" },
-    { name="Nils Sass", email="nsass@fias.uni-frankfurt.de" },
-    { name="Niklas Götz", email="goetz@fias.uni-frankfurt.de"}
+    { name="Nils Sass", email="nsass@fias.uni-frankfurt.de" }
 ]
 description = "Software Package for Analyzing Relativistic Kinematics in Collision eXperiments"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Intended Audience :: Developers",
@@ -23,12 +23,12 @@ classifiers = [
 ]
 
 dependencies = [
-    "particle==0.22.0",
-    "numpy==1.23.5",
-    "scipy==1.10.1",
-    "matplotlib==3.7.1",
+    "particle==0.23.0",
+    "numpy>=1.23.5",
+    "scipy>=1.10.1",
     "abc-property==1.0",
-    "fastjet==3.4.1.2"
+    "fastjet==3.4.1.3",
+    "matplotlib>=3.7.1"
 ]
 
 
