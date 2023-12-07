@@ -366,8 +366,9 @@ class Oscar:
                     continue
                 elif '#' in line and 'end' in line:
                     if kwargs['filters']:
-                        data[0] = self.__apply_kwargs_filters([data],kwargs['filters'])
-                    particle_list.append(data)
+                        data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
+                        self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
+                        particle_list.append(data)
                     data = []
                 elif '#' in line:
                     raise ValueError('Comment line unexpectedly found: '+line)
@@ -597,23 +598,23 @@ class Oscar:
         return self.num_events_
 
 
-    def charged_particles(self):
-        """
-        Keep only charged particles in particle_list
+    # def charged_particles(self):
+    #     """
+    #     Keep only charged particles in particle_list
 
-        Returns
-        -------
-        self : Oscar object
-            Containing charged particles in every event only
-        """
+    #     Returns
+    #     -------
+    #     self : Oscar object
+    #         Containing charged particles in every event only
+    #     """
 
-        for i in range(0, self.num_events_):
-            self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-                                        if (elem.charge != 0 and elem.charge != np.nan)]
-            new_length = len(self.particle_list_[i])
-            self.num_output_per_event_[i, 1] = new_length
+    #     for i in range(0, self.num_events_):
+    #         self.particle_list_[i] = [elem for elem in self.particle_list_[i]
+    #                                     if (elem.charge != 0 and elem.charge != np.nan)]
+    #         new_length = len(self.particle_list_[i])
+    #         self.num_output_per_event_[i, 1] = new_length
 
-        return self
+    #     return self
 
 
     def uncharged_particles(self):
