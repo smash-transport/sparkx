@@ -325,12 +325,12 @@ class Oscar:
             particle_list.append(int(particle.pdg_mother1))
             particle_list.append(int(particle.pdg_mother2))
             if self.oscar_format_ != 'Oscar2013Extended_Photons':
-                if particle.baryon_number != np.nan:
+                if not np.isnan(particle.baryon_number):
                     particle_list.append(int(particle.baryon_number))
-                if particle.strangeness != np.nan:
+                if not np.isnan(particle.strangeness):
                     particle_list.append(int(particle.strangeness))
             else:
-                if particle.weight != np.nan:
+                if not np.isnan(particle.weight):
                     particle_list.append(int(particle.weight))
 
         elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
