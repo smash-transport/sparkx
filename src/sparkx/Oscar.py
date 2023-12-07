@@ -341,8 +341,6 @@ class Oscar:
     def __update_num_output_per_event_after_filter(self):
         for event in range(0, len(self.particle_list_)):
             self.num_output_per_event_[event][1]=len(self.particle_list_[event])
-            
-
 
     def __apply_kwargs_filters(self, event, filters_dict):
         if not isinstance(filters_dict, dict) or len(filters_dict.keys()) == 0:
@@ -383,13 +381,7 @@ class Oscar:
                 event = multiplicity_cut(event, filters_dict['multiplicity_cut'])
             else:
                 raise ValueError('The cut is unkown!')
-            
-            # Check if user given key is contained in allowed keys
-            #'charged_particles, uncharged_particles, strange_particles, particle_species (int,tuple/list/array),'
-            #'remove_particle_species (int,tuple/list/array), participants, spectators,'
-            #'lower_event_energy_cut (int,float), spacetime_cut (tuple), pt_cut (tuple),'
-            #'rapidity_cut (float,tuple), pseudorapidity_cut (float,tuple), spatial_rapidity_cut (float,tuple)'
-            #'multiplicity_cut (int)'
+
         return event
 
     # PUBLIC CLASS METHODS

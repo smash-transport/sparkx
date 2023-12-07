@@ -573,3 +573,49 @@ def multiplicity_cut(particle_list, min_multiplicity):
     particle_list_ = [particle_list_[idx] for idx in idx_keep_event]
 
     return particle_list
+
+def particle_status(particle_list, status_list):
+    """
+    Keep only particles with a given particle status.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    status_list : int
+        To keep a particles with a single status only, pass a single status
+
+    status_list : tuple/list/array
+        To keep hadrons with different hadron status, pass a tuple or list
+        or array
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    if not isinstance(status_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
+        raise TypeError('Input value for status codes has not one of the ' +\
+                        'following types: str, int, float, np.integer, list ' +\
+                        'of str, list of int, list of float, np.ndarray, tuple')
+
+    elif isinstance(status_list, (int, float, str, np.integer)):
+        status_list = int(status_list)
+
+        for i in range(0, len(particle_list)):
+            particle_list[i] = [elem for elem in particle_list[i]
+                                        if (int(elem.status) == status_list and elem.status != np.nan)]
+
+    elif isinstance(status_list, (list, np.ndarray, tuple)):
+        status_list = np.asarray(status_list, dtype=np.int64)
+
+        for i in range(0, len(particle_list)):
+            particle_list[i] = [elem for elem in particle_list[i]
+                                        if (int(elem.status) in status_list and elem.status != np.nan)]
+
+    else:
+        raise TypeError('Input value for status flag has not one of the ' +\
+                        'following types: str, int, float, np.integer, list ' +\
+                        'of str, list of int, list of float, np.ndarray, tuple')
+    return particle_list
