@@ -16,7 +16,7 @@ class Jetscape:
     (e.g. multiplicity, pseudo/rapidity, pT).
     Once these filters are applied, the new data set can be saved 1) as a nested
     list containing all quantities of the Jetscape format 2) as a list containing
-    Particle objects from the ParticleClass or it can be printed to a file
+    Particle objects from the Particle or it can be printed to a file
     complying with the input format.
 
     Parameters
@@ -46,10 +46,10 @@ class Jetscape:
                 by specifying :code:`events=(first_event, last_event)` |br|
                 where last_event is included.
             * - :code:`filters` (dict)
-              - Apply filters on an event-by-event basis to directly filter the
-                particles after the read in of one event. This method saves 
-                memory. The names of the filters are the same as the names of 
-                the filter methods. All filters are applied in the order in 
+              - Apply filters on an event-by-event basis to directly filter the |br|
+                particles after the read in of one event. This method saves |br|
+                memory. The names of the filters are the same as the names of |br|
+                the filter methods. All filters are applied in the order in |br|
                 which they appear in the dictionary.
 
         .. |br| raw:: html
@@ -141,7 +141,7 @@ class Jetscape:
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape("path_to_file")
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH)
         >>>
         >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
         >>>
@@ -154,12 +154,25 @@ class Jetscape:
         >>> # print the pions to an Jetscape file
         >>> pions.print_particle_lists_to_file('./particle_lists.dat')
 
+    **3. Constructor cuts**
+
+    Cuts can be performed directly in the constructor by passing a dictionary. This
+    has the advantage that memory is saved because the cuts are applied after reading
+    each single event. This is achieved by the keyword argument :code:`filters`, which 
+    contains the filter dictionary. Filters are applied in the order in which they appear.
+    Let's assume we only want to keep pions in events with a
+    multiplicity > 500:
+
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>>
+        >>> # print the pions to a jetscape file
+        >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
+
     Notes
     -----
-    If the `filters` keyword with the `spacetime_cut` is used, then a list with
-    the `dim` parameter and the `cut_value_tuple` is needed. All other filters
-    need the usual parameters for the filter functions in the dictionary.
-    All filter functions without arguments need a `True` in the dictionary.
+    All filters with the keyword argument :code:`filters` need the usual 
+    parameters for the filter functions in the dictionary.
+    All filter functions without arguments need a :code:`True` in the dictionary.
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
         if '.dat' in JETSCAPE_FILE:

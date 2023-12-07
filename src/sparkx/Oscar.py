@@ -17,7 +17,7 @@ class Oscar:
     Once these filters are applied, the new data set can be saved as a
 
     1) nested list containing all quantities of the Oscar format
-    2) list containing Particle objects from the ParticleClass
+    2) list containing Particle objects from the Particle class
 
     or it may be printed to a file complying with the input format.
 
@@ -180,7 +180,7 @@ class Oscar:
         >>> oscar = Oscar(OSCAR_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)}})
         >>>
         >>> # print the pions to an oscar file
-        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+        >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')
 
     Notes
     -----
