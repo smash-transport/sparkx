@@ -975,7 +975,7 @@ class Jetscape:
                     data_to_write.extend(particle_lines)
             else:
                 event = 0
-                num_out = self.num_output_per_event_
+                num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
                 # Write the header if not already written
                 if not header_file_written:

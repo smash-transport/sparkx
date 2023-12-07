@@ -1220,7 +1220,7 @@ class Oscar:
                     f_out.write(self.event_end_lines_[event])
             else:
                 event = 0
-                num_out = self.num_output_per_event_
+                num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_format_ == 'Oscar2013':
