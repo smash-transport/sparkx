@@ -66,101 +66,94 @@ class Particle:
     weight : float
         Weight of the particle.
 
-    These attributes are saved in following data structure:
-
-    Data
-    ----
-
-    data_ :
-        The data values given in the order before.
 
     Methods
     -------
-    t :
+    t:
         Get/set t
-    x :
+    x:
         Get/set x
-    y :
+    y:
         Get/set y
-    z :
+    z:
         Get/set z
-    mass :
+    mass:
         Get/set mass
-    E :
+    E:
         Get/set E
-    px :
+    px:
         Get/set px
-    py :
+    py:
         Get/set py
-    pz :
+    pz:
         Get/set pz
-    pdg :
+    pdg:
         Get/set pdg
-    ID :
+    ID:
         Get/set ID
-    charge :
+    charge:
         Get/set charge
-    ncoll :
+    ncoll:
         Get/set ncoll
-    form_time :
+    form_time:
         Get/set form_time
-    xsecfac :
+    xsecfac:
         Get/set xsecfactor
-    proc_id_origin :
+    proc_id_origin:
         Get/set proc_id_origin
-    proc_type_origin :
+    proc_type_origin:
         Get/set proc_type_origin
-    t_last_coll :
+    t_last_coll:
         Get/set t_last_coll
-    pdg_mother1 :
+    pdg_mother1:
         Get/set pdg_mother1
-    pdg_mother2 :
+    pdg_mother2:
         Get/set pdg_mother2
-    status :
+    status:
         Get/set status
-    baryon_number :
+    baryon_number:
         Get/set baryon_number
-    strangeness :
+    strangeness:
         Get/set strangeness
-    print_particle :
+    print_particle:
         Print the particle as CSV to terminal
-    angular_momentum :
+    angular_momentum:
         Compute angular momentum
-    momentum_rapidity_Y :
+    momentum_rapidity_Y:
         Compute momentum rapidity
-    p_abs :
+    p_abs:
         Compute absolute momentum
-    pt_abs :
+    pt_abs:
         Compute absolute value of transverse momentum
-    phi :
+    phi:
         Compute azimuthal angle
-    theta :
+    theta:
         Compute polar angle
-    pseudorapidity :
+    pseudorapidity:
         Compute pseudorapidity
-    spatial_rapidity :
+    spatial_rapidity:
         Compute spatial rapidity
-    proper_time :
+    proper_time:
         Compute proper time
-    compute_mass_from_energy_momentum :
+    compute_mass_from_energy_momentum:
         Compute mass from energy momentum relation
-    compute_charge_from_pdg :
+    compute_charge_from_pdg:
         Compute charge from PDG code
-    is_meson :
+    is_meson:
         Is the particle a meson?
-    is_baryon :
+    is_baryon:
         Is the particle a baryon?
-    is_hadron :
+    is_hadron:
         Is the particle a hadron?
-    is_strange :
+    is_strange:
         Is the particle a strange particle?
-    is_heavy_flavor :
+    is_heavy_flavor:
         Is the particle a heavy flavor particle?
-    weight :
+    weight:
         What is the weight of the particle?
-    spin :
+    spin:
         Total spin :math:`J` of the particle.
-    spin_degeneracy :
+    spin_degeneracy:
         Total spin :math:`2J + 1` of the particle.
     
 
@@ -182,11 +175,16 @@ class Particle:
 
     The class can be used to construct a particle from different input formats.
     Supported formats include:
-        - "Oscar2013"
-        - "Oscar2013Extended"
-        - "Oscar2013Extended_IC"
-        - "Oscar2013Extended_Photons"
-        - "JETSCAPE"
+
+    * "Oscar2013"
+
+    * "Oscar2013Extended"
+
+    * "Oscar2013Extended_IC"
+
+    * "Oscar2013Extended_Photons"
+    
+    * "JETSCAPE"
     
     .. highlight:: python
     .. code-block:: python
@@ -199,6 +197,9 @@ class Particle:
     -----
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then `NaN` is returned by default.
+    All quantities are saved in a numpy array member variable `data_`. The datatype
+    of this array is float, therefore casting is required when int or bool values are 
+    required.
     """
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):
