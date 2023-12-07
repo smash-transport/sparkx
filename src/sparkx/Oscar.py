@@ -424,7 +424,7 @@ class Oscar:
                                     'OSCAR file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
-            self.num_output_per_event_ = update
+            self.num_output_per_event_ = [1,update]
             self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
@@ -436,7 +436,7 @@ class Oscar:
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
         elif isinstance(kwargs['events'], int):
-            self.particle_list_ = particle_list[0]
+            self.particle_list_ = particle_list
         else:
             self.particle_list_ = particle_list
             
@@ -539,7 +539,7 @@ class Oscar:
         Returns a nested python list containing all quantities from the
         current Oscar data as numerical values with the following shape:
 
-            | Single Event:    [output_line][particle_quantity]
+            | Single Event:    [[output_line][particle_quantity]]
             | Multiple Events: [event][output_line][particle_quantity]
 
         Returns
@@ -551,7 +551,7 @@ class Oscar:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[0,1]
+            num_particles = self.num_output_per_event_[1][1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -1327,7 +1327,7 @@ class Oscar:
                     f_out.write(self.event_end_lines_[event])
             else:
                 event = 0
-                num_out = self.num_output_per_event_
+                num_out = self.num_output_per_event_[1][1]
                 particle_output = np.asarray(self.particle_list())
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
                 if self.oscar_format_ == 'Oscar2013':
