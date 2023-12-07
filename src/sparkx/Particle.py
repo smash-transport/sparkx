@@ -182,11 +182,11 @@ class Particle:
 
     The class can be used to construct a particle from different input formats.
     Supported formats include:
-        - "Oscar2013"
-        - "Oscar2013Extended"
-        - "Oscar2013Extended_IC"
-        - "Oscar2013Extended_Photons"
-        - "JETSCAPE"
+    - "Oscar2013"
+    - "Oscar2013Extended"
+    - "Oscar2013Extended_IC"
+    - "Oscar2013Extended_Photons"
+    - "JETSCAPE"
     
     .. highlight:: python
     .. code-block:: python
