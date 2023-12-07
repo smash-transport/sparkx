@@ -161,6 +161,15 @@ class Jetscape:
         self.particle_list_ = None
         self.optional_arguments_ = kwargs
 
+        if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
+            if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
+                raise ValueError('First value of event number tuple must be smaller than second value')
+            elif self.optional_arguments_['events'][0] <0 or self.optional_arguments_['events'][1] < 0:
+                raise ValueError('Event numbers must be positive')
+        elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
+            if self.optional_arguments_['events'] < 0:
+                raise ValueError('Event number must be positive')
+
         self.set_num_output_per_event()
         self.set_particle_list(kwargs)
         
@@ -271,6 +280,8 @@ class Jetscape:
                     raise IndexError('Index out of range of JETSCAPE file')
                 elif '#' in line and 'sigmaGen' in line:
                     particle_list.append(data)
+                elif '#' in line:
+                    raise ValueError('Comment line unexpectedly found: '+line)
                 elif i == 0 and '#' not in line and 'weight' not in line:
                     raise ValueError('First line of the event is not a comment ' +\
                                      'line or does not contain "weight"')
@@ -294,7 +305,10 @@ class Jetscape:
 
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
-            None
+            if len(particle_list) != self.num_events_:
+                raise IndexError('Number of events in Jetscape file does not match the '+\
+                                 'number of events specified by the comments in the '+\
+                                    'Jetscape file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
             self.num_output_per_event_ = update
@@ -349,7 +363,7 @@ class Jetscape:
         num_events = self.num_events_
         
         if num_events == 1:
-            num_particles = self.num_output_per_event_[1]
+            num_particles = self.num_output_per_event_[0,1]
         else:
             num_particles = self.num_output_per_event_[:,1]
 
@@ -357,7 +371,7 @@ class Jetscape:
 
         if num_events == 1:
             for i_part in range(0, num_particles):
-                particle = self.particle_list_[i_part]
+                particle = self.particle_list_[0][i_part]
                 particle_array.append(self.__particle_as_list(particle))
         else:
             for i_ev in range(0, num_events):
@@ -486,12 +500,12 @@ class Jetscape:
             Containing only particle species specified by pdg_list for every event
 
         """
-        if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
+        if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, list of float, np.ndarray, tuple')
 
-        elif isinstance(pdg_list, (int, str, np.integer)):
+        elif isinstance(pdg_list, (int, float, str, np.integer)):
             pdg_list = int(pdg_list)
 
             for i in range(0, self.num_events_):
@@ -512,8 +526,8 @@ class Jetscape:
 
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, list of float, np.ndarray, tuple')
         return self
 
     def remove_particle_species(self, pdg_list):
@@ -536,12 +550,12 @@ class Jetscape:
             Containing all but the specified particle species in every event
 
         """
-        if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple)):
+        if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, list of float, np.ndarray, tuple')
 
-        elif isinstance(pdg_list, (int, str, np.integer)):
+        elif isinstance(pdg_list, (int, float, str, np.integer)):
             pdg_list = int(pdg_list)
 
 
@@ -562,8 +576,8 @@ class Jetscape:
 
         else:
             raise TypeError('Input value for pgd codes has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, float, np.ndarray, tuple')
         return self
 
     def particle_status(self, status_list):
@@ -586,12 +600,12 @@ class Jetscape:
             every event
 
         """
-        if not isinstance(status_list, (str, int, list, np.integer, np.ndarray, tuple)):
+        if not isinstance(status_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
             raise TypeError('Input value for status codes has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, list of float, np.ndarray, tuple')
 
-        elif isinstance(status_list, (int, str, np.integer)):
+        elif isinstance(status_list, (int, float, str, np.integer)):
             status_list = int(status_list)
 
             for i in range(0, self.num_events_):
@@ -611,8 +625,8 @@ class Jetscape:
 
         else:
             raise TypeError('Input value for status flag has not one of the ' +\
-                            'following types: str, int, np.integer, list ' +\
-                            'of str, list of int, np.ndarray, tuple')
+                            'following types: str, int, float, np.integer, list ' +\
+                            'of str, list of int, list of float, np.ndarray, tuple')
         return self
 
     def lower_event_energy_cut(self,minimum_event_energy):
@@ -686,7 +700,7 @@ class Jetscape:
                             'positive numbers or None')
         elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
              (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
-                 raise ValueError('The cut limits must be positiv or None')
+                 raise ValueError('The cut limits must be positive or None')
         elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
             raise ValueError('At least one cut limit must be a number')
 
@@ -939,11 +953,30 @@ class Jetscape:
             header_file_written = False
             data_to_write = []
 
-            for i in range(self.num_events_):
-                event = self.num_output_per_event_[i, 0]
-                num_out = self.num_output_per_event_[i, 1]
-                particle_output = np.asarray(self.particle_list()[i])
+            if(self.num_events_>1):
+                for i in range(self.num_events_):
+                    event = self.num_output_per_event_[i, 0]
+                    num_out = self.num_output_per_event_[i, 1]
+                    particle_output = np.asarray(self.particle_list()[i])
+  
+                    # Write the header if not already written
+                    if not header_file_written:
+                        header_file_written = True
+                        data_to_write.append(header_file)
 
+                    # Header for each event
+                    header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                    data_to_write.append(header)
+
+                    # Convert particle data to formatted strings
+                    particle_lines = [f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+
+                    # Append particle data to the list
+                    data_to_write.extend(particle_lines)
+            else:
+                event = 0
+                num_out = self.num_output_per_event_
+                particle_output = np.asarray(self.particle_list())
                 # Write the header if not already written
                 if not header_file_written:
                     header_file_written = True
