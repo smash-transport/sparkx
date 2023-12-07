@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EventPlaneFlow &mdash; sparkx 0.9.0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ReactionPlaneFlow" href="../ReactionPlaneFlow/index.html" />
+    <link rel="next" title="LeeYangZeroFlow" href="../LeeYangZeroFlow/index.html" />
     <link rel="prev" title="ScalarProductFlow" href="../ScalarProductFlow/index.html" /> 
 </head>
 
@@ -52,17 +54,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">EventPlaneFlow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#EventPlaneFlow.EventPlaneFlow"><code class="docutils literal notranslate"><span class="pre">EventPlaneFlow</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -97,10 +103,10 @@
            <div itemprop="articleBody">
              
   <section id="eventplaneflow">
-<span id="event-plane-flow"></span><h1>EventPlaneFlow<a class="headerlink" href="#eventplaneflow" title="Permalink to this heading"></a></h1>
+<span id="event-plane-flow"></span><h1>EventPlaneFlow<a class="headerlink" href="#eventplaneflow" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="EventPlaneFlow.EventPlaneFlow">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">EventPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">EventPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a event plane flow analysis algorithm
 <a class="reference external" href="https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws">Poskanzer, Arthur M., and Sergei A. Voloshin. “Methods for analyzing anisotropic flow in relativistic nuclear collisions.” Physical Review C 58.3 (1998): 1671.</a>.</p>
 <p>For this method, the flow is calcuated by calculating the nth harmonic of the angle the event plane <span class="math notranslate nohighlight">\(Q\)</span>, relative
@@ -153,13 +159,13 @@ The same particle list can also be used to determine the event plane and the flo
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#EventPlaneFlow.EventPlaneFlow.differential_flow" title="EventPlaneFlow.EventPlaneFlow.differential_flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">differential_flow</span></code></a>(particle_data, bins, ...)</p></td>
-<td><p>Compute the differential flow.</p></td>
+<tr class="row-odd"><td><p><strong>integrated_flow:</strong></p></td>
+<td><p>Computes the integrated flow.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#EventPlaneFlow.EventPlaneFlow.integrated_flow" title="EventPlaneFlow.EventPlaneFlow.integrated_flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integrated_flow</span></code></a>(particle_data, ...[, self_corr])</p></td>
-<td><p>Compute the integrated flow.</p></td>
+<tr class="row-even"><td><p><strong>differential_flow:</strong></p></td>
+<td><p>Computes the differential flow.</p></td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +173,7 @@ The same particle list can also be used to determine the event plane and the flo
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventPlaneFlow.EventPlaneFlow.integrated_flow">
-<span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow.integrated_flow" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow.integrated_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the integrated flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -191,7 +197,7 @@ The same particle list can also be used to determine the event plane and the flo
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventPlaneFlow.EventPlaneFlow.differential_flow">
-<span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow.differential_flow" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow.differential_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the differential flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -224,7 +230,7 @@ The same particle list can also be used to determine the event plane and the flo
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../ScalarProductFlow/index.html" class="btn btn-neutral float-left" title="ScalarProductFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../ReactionPlaneFlow/index.html" class="btn btn-neutral float-right" title="ReactionPlaneFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../LeeYangZeroFlow/index.html" class="btn btn-neutral float-right" title="LeeYangZeroFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

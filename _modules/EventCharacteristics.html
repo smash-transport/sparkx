@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EventCharacteristics &mdash; sparkx 0.9.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -75,8 +77,11 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">sparkx.Lattice3D</span> <span class="kn">import</span> <span class="n">Lattice3D</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
-<div class="viewcode-block" id="EventCharacteristics"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics">[docs]</a><span class="k">class</span> <span class="nc">EventCharacteristics</span><span class="p">:</span>
+<div class="viewcode-block" id="EventCharacteristics">
+<a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics">[docs]</a>
+<span class="k">class</span> <span class="nc">EventCharacteristics</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class computes event-by-event characteristics, e.g., eccentricities</span>
 <span class="sd">    or certain densities.</span>
@@ -84,14 +89,17 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    event_data: list, numpy.ndarray or Lattice3D</span>
-<span class="sd">        List or array containing particle objects for one event, or a lattice containing the relevant densities.</span>
+<span class="sd">        List or array containing particle objects for one event, or a lattice </span>
+<span class="sd">        containing the relevant densities.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    event_data_: list, numpy.ndarray or Lattice3D</span>
-<span class="sd">        List or array containing particle objects for one event, or a lattice containing the relevant densities.</span>
+<span class="sd">        List or array containing particle objects for one event, or a lattice </span>
+<span class="sd">        containing the relevant densities.</span>
 <span class="sd">    has_lattice_: bool</span>
-<span class="sd">        Contains information if characteristics are derived from a lattice or particles</span>
+<span class="sd">        Contains information if characteristics are derived from a lattice or </span>
+<span class="sd">        particles</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -103,6 +111,12 @@
 <span class="sd">        Computes the spatial eccentricity from particles.</span>
 <span class="sd">    eccentricity_from_lattice:</span>
 <span class="sd">        Computes the spatial eccentricity from a 3D lattice.</span>
+<span class="sd">    generate_eBQS_densities_Milne_from_OSCAR_IC:</span>
+<span class="sd">        Generates energy, baryon, charge, and strangeness densities in Milne</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    generate_eBQS_densities_Minkowski_from_OSCAR_IC:    </span>
+<span class="sd">        Generates energy, baryon, charge, and strangeness densities in Minkowski</span>
+<span class="sd">        coordinates.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -126,7 +140,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_event_data</span><span class="p">(</span><span class="n">event_data</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EventCharacteristics.set_event_data"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.set_event_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_event_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
+<div class="viewcode-block" id="EventCharacteristics.set_event_data">
+<a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.set_event_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_event_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the event data.</span>
 
@@ -158,6 +174,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span> <span class="o">=</span> <span class="n">event_data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span> <span class="o">=</span> <span class="kc">False</span></div>
 
+
     <span class="k">def</span> <span class="nf">eccentricity_from_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the spatial eccentricity from particles.</span>
@@ -168,7 +185,7 @@
 <span class="sd">            The harmonic order for the eccentricity calculation.</span>
 <span class="sd">        weight_quantity : str, optional</span>
 <span class="sd">            The quantity used for particle weighting.</span>
-<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon number&quot;.</span>
+<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon&quot;.</span>
 <span class="sd">            Default is &quot;energy&quot;.</span>
 
 <span class="sd">        Returns</span>
@@ -194,7 +211,7 @@
                 <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">charge</span>
-            <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;baryon number&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;baryon&quot;</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown weight for eccentricity&quot;</span><span class="p">)</span>
@@ -250,7 +267,9 @@
             <span class="n">norm</span> <span class="o">+=</span> <span class="n">rn</span><span class="o">*</span><span class="n">lattice_density</span>
         <span class="k">return</span> <span class="n">real_eps</span><span class="o">/</span><span class="n">norm</span> <span class="o">+</span> <span class="p">(</span><span class="n">imag_eps</span><span class="o">/</span><span class="n">norm</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
 
-<div class="viewcode-block" id="EventCharacteristics.eccentricity"><a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.eccentricity">[docs]</a>    <span class="k">def</span> <span class="nf">eccentricity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">,</span><span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="EventCharacteristics.eccentricity">
+<a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.eccentricity">[docs]</a>
+    <span class="k">def</span> <span class="nf">eccentricity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">harmonic_n</span><span class="p">,</span><span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the spatial eccentricity.</span>
 
@@ -260,7 +279,7 @@
 <span class="sd">            The harmonic order for the eccentricity calculation.</span>
 <span class="sd">        weight_quantity : str, optional</span>
 <span class="sd">            The quantity used for particle weighting.</span>
-<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon number&quot;.</span>
+<span class="sd">            Valid options are &quot;energy&quot;, &quot;number&quot;, &quot;charge&quot;, or &quot;baryon&quot;.</span>
 <span class="sd">            Default is &quot;energy&quot;.</span>
 
 <span class="sd">        Returns</span>
@@ -276,7 +295,190 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_lattice</span><span class="p">(</span><span class="n">harmonic_n</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_particles</span><span class="p">(</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">weight_quantity</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_particles</span><span class="p">(</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">weight_quantity</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC">
+<a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_eBQS_densities_Milne_from_OSCAR_IC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">,</span><span class="n">y_min</span><span class="p">,</span><span class="n">y_max</span><span class="p">,</span><span class="n">z_min</span><span class="p">,</span><span class="n">z_max</span><span class="p">,</span><span class="n">Nx</span><span class="p">,</span><span class="n">Ny</span><span class="p">,</span><span class="n">Nz</span><span class="p">,</span><span class="n">n_sigma_x</span><span class="p">,</span><span class="n">n_sigma_y</span><span class="p">,</span><span class="n">n_sigma_z</span><span class="p">,</span><span class="n">sigma_smear</span><span class="p">,</span><span class="n">eta_range</span><span class="p">,</span><span class="n">output_filename</span><span class="p">,</span><span class="n">IC_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates energy, baryon, charge, and strangeness densities in Milne </span>
+<span class="sd">        coordinates from OSCAR initial conditions.</span>
+
+<span class="sd">        The total energy in GeV can be obtained by integrating the energy </span>
+<span class="sd">        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float</span>
+<span class="sd">            Minimum and maximum coordinates in the x, y, and z directions.</span>
+
+<span class="sd">        Nx, Ny, Nz : int</span>
+<span class="sd">            Number of grid points in the x, y, and z directions.</span>
+
+<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float</span>
+<span class="sd">            Width of the smearing in the x, y, and z directions in units of </span>
+<span class="sd">            sigma_smear.</span>
+
+<span class="sd">        sigma_smear : float</span>
+<span class="sd">            Smearing parameter for particle data.</span>
+
+<span class="sd">        eta_range : list, tuple</span>
+<span class="sd">            A list containing the minimum and maximum values of spacetime </span>
+<span class="sd">            rapidity (eta) and the number of grid points.</span>
+
+<span class="sd">        output_filename : str</span>
+<span class="sd">            The name of the output file where the densities will be saved.</span>
+
+<span class="sd">        IC_info : str</span>
+<span class="sd">            A string containing info about the initial condition, e.g., </span>
+<span class="sd">            collision energy or centrality.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">IC_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IC_info</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The given IC_info is not a string&quot;</span><span class="p">)</span>
+
+        <span class="n">energy_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">baryon_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">charge_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">strangeness_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+
+        <span class="c1"># smear the particles on the 3D lattice</span>
+        <span class="n">energy_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">)</span>
+        <span class="n">baryon_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;baryon_density&quot;</span><span class="p">)</span>
+        <span class="n">charge_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">)</span>
+        <span class="n">strangeness_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">)</span>
+
+        <span class="c1"># get the proper time of one of the particles from the iso-tau surface</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">proper_time</span><span class="p">()</span>
+        <span class="c1"># take the x and y coordinates from the lattice and use the set eta range</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">x_values_</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">y_values_</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">tau</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">z_max</span><span class="o">-</span><span class="n">z_min</span><span class="p">)</span><span class="o">/</span><span class="n">Nz</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Warning: The grid for z is not fine enough for the requested eta-grid.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># generate the header for the output file</span>
+        <span class="n">file_header</span> <span class="o">=</span> <span class="s2">&quot;# smeared density from SPARKX in Milne coordinates</span><span class="se">\n</span><span class="s2"># &quot;</span>
+        <span class="k">if</span> <span class="n">IC_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_header</span> <span class="o">+=</span> <span class="n">IC_info</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max</span><span class="se">\n</span><span class="s2"># &quot;</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span><span class="n">Ny</span><span class="p">,</span><span class="n">Nz</span><span class="p">,</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">,</span><span class="n">y_min</span><span class="p">,</span><span class="n">y_max</span><span class="p">,</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;# tau [fm], x [fm], y [fm], eta, energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="c1"># print the 3D lattice in Milne coordinates to a file</span>
+        <span class="c1"># Open the output file for writing</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_header</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x_val</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">y_val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">eta_val</span> <span class="ow">in</span> <span class="n">eta</span><span class="p">:</span>
+                        <span class="n">z_val</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta_val</span><span class="p">)</span>
+                        <span class="n">milne_conversion</span> <span class="o">=</span> <span class="n">tau</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">eta_val</span><span class="p">)</span> <span class="c1"># dz = tau * cosh(eta) * deta</span>
+                        <span class="n">value_energy_density</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="n">baryon_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="n">value_charge_density</span> <span class="o">=</span> <span class="n">charge_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
+
+                        <span class="k">if</span> <span class="n">value_energy_density</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.</span>
+
+                        <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eta_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC">
+<a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_eBQS_densities_Minkowski_from_OSCAR_IC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">,</span><span class="n">y_min</span><span class="p">,</span><span class="n">y_max</span><span class="p">,</span><span class="n">z_min</span><span class="p">,</span><span class="n">z_max</span><span class="p">,</span><span class="n">Nx</span><span class="p">,</span><span class="n">Ny</span><span class="p">,</span><span class="n">Nz</span><span class="p">,</span><span class="n">n_sigma_x</span><span class="p">,</span><span class="n">n_sigma_y</span><span class="p">,</span><span class="n">n_sigma_z</span><span class="p">,</span><span class="n">sigma_smear</span><span class="p">,</span><span class="n">output_filename</span><span class="p">,</span><span class="n">IC_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates energy, baryon, charge, and strangeness densities in </span>
+<span class="sd">        Minkowski coordinates from OSCAR initial conditions.</span>
+
+<span class="sd">        The total energy in GeV can be obtained by integrating the energy </span>
+<span class="sd">        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float</span>
+<span class="sd">            Minimum and maximum coordinates in the x, y, and z directions.</span>
+
+<span class="sd">        Nx, Ny, Nz : int</span>
+<span class="sd">            Number of grid points in the x, y, and z directions.</span>
+
+<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float</span>
+<span class="sd">            Width of the smearing in the x, y, and z directions in units of </span>
+<span class="sd">            sigma_smear.</span>
+
+<span class="sd">        sigma_smear : float</span>
+<span class="sd">            Smearing parameter for particle data.</span>
+
+<span class="sd">        output_filename : str</span>
+<span class="sd">            The name of the output file where the densities will be saved.</span>
+
+<span class="sd">        IC_info : str</span>
+<span class="sd">            A string containing info about the initial condition, e.g., </span>
+<span class="sd">            collision energy or centrality.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">IC_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IC_info</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The given IC_info is not a string&quot;</span><span class="p">)</span>
+
+        <span class="n">energy_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">baryon_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">charge_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+        <span class="n">strangeness_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">)</span>
+
+        <span class="c1"># smear the particles on the 3D lattice</span>
+        <span class="n">energy_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span><span class="s2">&quot;energy_density&quot;</span><span class="p">)</span>
+        <span class="n">baryon_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span><span class="s2">&quot;baryon_density&quot;</span><span class="p">)</span>
+        <span class="n">charge_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span><span class="s2">&quot;charge_density&quot;</span><span class="p">)</span>
+        <span class="n">strangeness_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span><span class="s2">&quot;strangeness_density&quot;</span><span class="p">)</span>
+
+        <span class="c1"># get the proper time of one of the particles from the iso-tau surface</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">proper_time</span><span class="p">()</span>
+        <span class="c1"># take the x, y and z coordinates from the lattice</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">x_values_</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">y_values_</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">z_values_</span>
+
+        <span class="c1"># generate the header for the output file</span>
+        <span class="n">file_header</span> <span class="o">=</span> <span class="s2">&quot;# smeared density from SPARKX in Milne coordinates</span><span class="se">\n</span><span class="s2"># &quot;</span>
+        <span class="k">if</span> <span class="n">IC_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_header</span> <span class="o">+=</span> <span class="n">IC_info</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max</span><span class="se">\n</span><span class="s2"># &quot;</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span><span class="n">Ny</span><span class="p">,</span><span class="n">Nz</span><span class="p">,</span><span class="n">x_min</span><span class="p">,</span><span class="n">x_max</span><span class="p">,</span><span class="n">y_min</span><span class="p">,</span><span class="n">y_max</span><span class="p">,</span><span class="n">z_min</span><span class="p">,</span><span class="n">z_max</span><span class="p">)</span>
+        <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;# tau [fm], x [fm], y [fm], z [fm], energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+
+        <span class="c1"># print the 3D lattice in Minkowski coordinates to a file</span>
+        <span class="c1"># Open the output file for writing</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_header</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x_val</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">y_val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">z_val</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
+                        <span class="n">value_energy_density</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span>
+                        <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="n">baryon_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span>
+                        <span class="n">value_charge_density</span> <span class="o">=</span> <span class="n">charge_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span>
+                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="n">y_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">value_energy_density</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.</span>
+
+                        <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

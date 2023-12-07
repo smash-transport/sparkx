@@ -7,9 +7,6 @@ Particle
 .. autoclass:: Particle
 
 .. automethod:: Particle.print_particle
-.. automethod:: Particle.set_quantities_OSCAR2013
-.. automethod:: Particle.set_quantities_OSCAR2013Extended
-.. automethod:: Particle.set_quantities_JETSCAPE
 .. automethod:: Particle.angular_momentum
 .. automethod:: Particle.momentum_rapidity_Y
 .. automethod:: Particle.p_abs
@@ -26,3 +23,5 @@ Particle
 .. automethod:: Particle.is_hadron
 .. automethod:: Particle.is_strange
 .. automethod:: Particle.is_heavy_flavor
+.. automethod:: Particle.spin
+.. automethod:: Particle.spin_degeneracy

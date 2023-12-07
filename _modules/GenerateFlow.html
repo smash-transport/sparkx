@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GenerateFlow &mdash; sparkx 0.9.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -75,7 +77,9 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
 
-<div class="viewcode-block" id="GenerateFlow"><a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow">[docs]</a><span class="k">class</span> <span class="nc">GenerateFlow</span><span class="p">:</span>
+<div class="viewcode-block" id="GenerateFlow">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow">[docs]</a>
+<span class="k">class</span> <span class="nc">GenerateFlow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate particle data with anisotropic flow for testing.</span>
 
@@ -105,11 +109,27 @@
 <span class="sd">    generate_dummy_JETSCAPE_file_realistic_pt_shape:</span>
 <span class="sd">        Generate a dummy JETSCAPE file with particles having flow with a more</span>
 <span class="sd">        realistic transverse momentum distribution.</span>
+<span class="sd">    generate_dummy_JETSCAPE_file_multi_particle_correlations:</span>
+<span class="sd">        Generate a dummy JETSCAPE file with random particle momenta resulting in</span>
+<span class="sd">        the same flow for all transverse momenta. With this function multi-particle</span>
+<span class="sd">        correlations can be introduced.</span>
+<span class="sd">    generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations:</span>
+<span class="sd">        Generate a dummy JETSCAPE file with particles having flow with a more</span>
+<span class="sd">        realistic transverse momentum distribution. With this function multi-particle</span>
+<span class="sd">        correlations can be introduced.</span>
 <span class="sd">    generate_dummy_OSCAR_file:</span>
 <span class="sd">        Generate dummy flow data in OSCAR format.</span>
 <span class="sd">    generate_dummy_OSCAR_file_realistic_pt_shape:</span>
 <span class="sd">        Generate a dummy OSCAR2013 file with particles having flow with a more</span>
 <span class="sd">        realistic transverse momentum distribution.</span>
+<span class="sd">    generate_dummy_OSCAR_file_multi_particle_correlations:</span>
+<span class="sd">        Generate a dummy OSCAR2013 file with random particle momenta resulting in</span>
+<span class="sd">        the same flow for all transverse momenta. With this function multi-particle</span>
+<span class="sd">        correlations can be introduced.</span>
+<span class="sd">    generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations:</span>
+<span class="sd">        Generate a dummy OSCAR2013 file with particles having flow with a more</span>
+<span class="sd">        realistic transverse momentum distribution. With this function multi-particle</span>
+<span class="sd">        correlations can be introduced.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -412,7 +432,47 @@
 
         <span class="k">return</span> <span class="n">f_harmonic</span> <span class="o">/</span> <span class="n">f_norm</span>
 
-    <span class="k">def</span> <span class="nf">generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">,</span> <span class="n">reaction_plane_angle</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__create_k_particle_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">,</span> <span class="n">k_particle_correlation</span><span class="p">,</span> <span class="n">correlation_fraction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate momentum components with k-particle correlations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        multiplicity : int</span>
+<span class="sd">            The desired multiplicity of the event.</span>
+<span class="sd">        k_particle_correlation : int</span>
+<span class="sd">            The number of particles to be correlated.</span>
+<span class="sd">        correlation_fraction : float</span>
+<span class="sd">            The fraction of particles to be correlated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            Updates the internal arrays (px_, py_, pz_) with the </span>
+<span class="sd">            generated correlated momenta.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">px</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pz</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">px</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">multiplicity</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">correlation_fraction</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_particle_correlation</span><span class="p">):</span>
+                    <span class="n">px</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                    <span class="n">py</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                    <span class="n">pz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">px</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">py</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">pz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">px_</span> <span class="o">=</span> <span class="n">px</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">py_</span> <span class="o">=</span> <span class="n">py</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span> <span class="o">=</span> <span class="n">pz</span>
+
+    <span class="k">def</span> <span class="nf">__generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">,</span> <span class="n">reaction_plane_angle</span><span class="p">):</span>
         <span class="n">pTmax</span> <span class="o">=</span> <span class="mf">4.5</span>
         <span class="n">pTmin</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">pT0</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -453,7 +513,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pT_chosen</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_chosen</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rd</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">pTmax</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file"><a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file">[docs]</a>    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">):</span>
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a dummy JETSCAPE file with random particle momenta resulting in</span>
 <span class="sd">        the same flow for all transverse momenta.</span>
@@ -477,6 +539,17 @@
 <span class="sd">        -------</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.140</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
@@ -507,7 +580,10 @@
 
             <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	sigmaGen	0.0	sigmaErr	0.0&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape"><a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape">[docs]</a>    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_realistic_pt_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_realistic_pt_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a dummy JETSCAPE file with particles having flow with a more</span>
 <span class="sd">        realistic transverse momentum distribution.</span>
@@ -532,6 +608,17 @@
 <span class="sd">        -------</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
         <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
@@ -545,7 +632,7 @@
                     <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">0.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
 
                 <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Event </span><span class="si">{</span><span class="n">event</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> weight 1 EPangle 0 N_hadrons </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
@@ -564,7 +651,177 @@
 
             <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	sigmaGen	0.0	sigmaErr	0.0&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file"><a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file">[docs]</a>    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_multi_particle_correlations">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_multi_particle_correlations">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_multi_particle_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a dummy JETSCAPE file with random particle momenta resulting in</span>
+<span class="sd">        the same flow for all transverse momenta. A fraction of k-particle</span>
+<span class="sd">        correlations can be introduced.</span>
+
+<span class="sd">        For simplicity we generate :math:`\\pi^+` particles with a mass of</span>
+<span class="sd">        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a</span>
+<span class="sd">        temperature of :math:`T=0.140` GeV.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            output_path: str</span>
+<span class="sd">                The output file path.</span>
+<span class="sd">            number_events: int</span>
+<span class="sd">                The number of events to generate.</span>
+<span class="sd">            multiplicity: int</span>
+<span class="sd">                The number of particles per event.</span>
+<span class="sd">            seed: int</span>
+<span class="sd">                The random seed for reproducibility.</span>
+<span class="sd">            k_particle_correlation: int</span>
+<span class="sd">                The order of k-particle correlations.</span>
+<span class="sd">            correlation_fraction:</span>
+<span class="sd">                The fraction of correlated particles.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; is not float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k_particle_correlation</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; must be at least 2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">correlation_fraction</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">correlation_fraction</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; must be between 0 and 1&quot;</span><span class="p">)</span>
+    
+        <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.140</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
+        <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="mi">27</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__sample_angles</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__sample_momenta_thermal</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__create_k_particle_correlations</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">)</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Event </span><span class="si">{</span><span class="n">event</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> weight 1 EPangle 0 N_hadrons </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
+                    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="n">mass</span> <span class="o">**</span> <span class="mf">2.</span>
+                    <span class="p">)</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                 <span class="o">%</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">pdg</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	sigmaGen	0.0	sigmaErr	0.0&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a dummy JETSCAPE file with particles having flow with a more</span>
+<span class="sd">        realistic transverse momentum distribution. A fraction of k-particle</span>
+<span class="sd">        correlations can be introduced.</span>
+
+<span class="sd">        For more details on the chosen parameters have a look at the source code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            output_path: str</span>
+<span class="sd">                The output file path.</span>
+<span class="sd">            number_events: int</span>
+<span class="sd">                The number of events to generate.</span>
+<span class="sd">            multiplicity: int</span>
+<span class="sd">                The number of particles per event.</span>
+<span class="sd">            seed: int</span>
+<span class="sd">                The random seed for reproducibility.</span>
+<span class="sd">            k_particle_correlation: int</span>
+<span class="sd">                The order of k-particle correlations.</span>
+<span class="sd">            correlation_fraction:</span>
+<span class="sd">                The fraction of correlated particles.</span>
+<span class="sd">            random_reaction_plane: bool</span>
+<span class="sd">                Switch for random reaction plane angle. Default is `True`.</span>
+<span class="sd">                Should be switched off for testing ReactionPlaneFlow.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; is not float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k_particle_correlation</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; must be at least 2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">correlation_fraction</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">correlation_fraction</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; must be between 0 and 1&quot;</span><span class="p">)</span>
+        
+        <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
+        <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="mi">27</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">random_reaction_plane</span><span class="p">:</span>
+                    <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__create_k_particle_correlations</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">)</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Event </span><span class="si">{</span><span class="n">event</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> weight 1 EPangle 0 N_hadrons </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
+                    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="n">mass</span> <span class="o">**</span> <span class="mf">2.</span>
+                    <span class="p">)</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                 <span class="o">%</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="n">pdg</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#	sigmaGen	0.0	sigmaErr	0.0&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a dummy OSCAR2013 file with random particle momenta</span>
 <span class="sd">        resulting in the same flow for all transverse momenta.</span>
@@ -588,6 +845,17 @@
 <span class="sd">        -------</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.140</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
@@ -620,7 +888,10 @@
 
                 <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> end 0 impact  -1.000 scattering_projectile_target no</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape"><a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape">[docs]</a>    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_realistic_pt_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_realistic_pt_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a dummy OSCAR2013 file with particles having flow with a more</span>
 <span class="sd">        realistic transverse momentum distribution.</span>
@@ -645,6 +916,17 @@
 <span class="sd">        -------</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
         <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
@@ -659,7 +941,7 @@
                     <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">0.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
 
                 <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> out </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
@@ -677,7 +959,180 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> end 0 impact  -1.000 scattering_projectile_target no</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> end 0 impact  -1.000 scattering_projectile_target no</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_multi_particle_correlations">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_multi_particle_correlations">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_multi_particle_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a dummy OSCAR2013 file with random particle momenta</span>
+<span class="sd">        resulting in the same flow for all transverse momenta. A fraction of </span>
+<span class="sd">        k-particle correlations can be introduced.</span>
+
+<span class="sd">        For simplicity we generate :math:`\\pi^+` particles with a mass of</span>
+<span class="sd">        :math:`m_{\\pi^+}=0.138` GeV from a thermal distribution with a</span>
+<span class="sd">        temperature of :math:`T=0.140` GeV.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            output_path: str</span>
+<span class="sd">                The output file path.</span>
+<span class="sd">            number_events: int</span>
+<span class="sd">                The number of events to generate.</span>
+<span class="sd">            multiplicity: int</span>
+<span class="sd">                The number of particles per event.</span>
+<span class="sd">            seed: int</span>
+<span class="sd">                The random seed for reproducibility.</span>
+<span class="sd">            k_particle_correlation: int</span>
+<span class="sd">                The order of k-particle correlations.</span>
+<span class="sd">            correlation_fraction:</span>
+<span class="sd">                The fraction of correlated particles.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; is not float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k_particle_correlation</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; must be at least 2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">correlation_fraction</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">correlation_fraction</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; must be between 0 and 1&quot;</span><span class="p">)</span>
+        
+        <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.140</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
+        <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# SMASH-2.2</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__sample_angles</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__sample_momenta_thermal</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__create_k_particle_correlations</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">)</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> out </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
+                    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="n">mass</span> <span class="o">**</span> <span class="mf">2.</span>
+                    <span class="p">)</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="o">%</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="n">pdg</span><span class="p">,</span> <span class="n">particle</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> end 0 impact  -1.000 scattering_projectile_target no</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations">
+<a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_path</span><span class="p">,</span><span class="n">number_events</span><span class="p">,</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">seed</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="n">random_reaction_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a dummy OSCAR2013 file with particles having flow with a more</span>
+<span class="sd">        realistic transverse momentum distribution. A fraction of k-particle </span>
+<span class="sd">        correlations can be introduced.</span>
+
+<span class="sd">        For more details on the chosen parameters have a look at the source code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            output_path: str</span>
+<span class="sd">                The output file path.</span>
+<span class="sd">            number_events: int</span>
+<span class="sd">                The number of events to generate.</span>
+<span class="sd">            multiplicity: int</span>
+<span class="sd">                The number of particles per event.</span>
+<span class="sd">            seed: int</span>
+<span class="sd">                The random seed for reproducibility.</span>
+<span class="sd">            k_particle_correlation: int</span>
+<span class="sd">                The order of k-particle correlations.</span>
+<span class="sd">            correlation_fraction:</span>
+<span class="sd">                The fraction of correlated particles.</span>
+<span class="sd">            random_reaction_plane: bool</span>
+<span class="sd">                Switch for random reaction plane angle. Default is `True`.</span>
+<span class="sd">                Should be switched off for testing ReactionPlaneFlow.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;output_path&#39; is not a str&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;multiplicity&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;seed&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_events</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;number_events&#39; and/or &#39;multiplicity&#39; must be larger than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; is not int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">correlation_fraction</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; is not float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k_particle_correlation</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;k_particle_correlation&#39; must be at least 2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">correlation_fraction</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">correlation_fraction</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;correlation_fraction&#39; must be between 0 and 1&quot;</span><span class="p">)</span>
+        
+        <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="mf">0.138</span>
+        <span class="n">pdg</span> <span class="o">=</span> <span class="mi">211</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# SMASH-2.2</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">random_reaction_plane</span><span class="p">:</span>
+                    <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">reaction_plane_angle</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generate_flow_realistic_pt_distribution</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">reaction_plane_angle</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__create_k_particle_correlations</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">,</span><span class="n">k_particle_correlation</span><span class="p">,</span><span class="n">correlation_fraction</span><span class="p">)</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> out </span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">):</span>
+                    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.</span>
+                        <span class="o">+</span> <span class="n">mass</span> <span class="o">**</span> <span class="mf">2.</span>
+                    <span class="p">)</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="o">%</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">[</span><span class="n">particle</span><span class="p">],</span><span class="n">pdg</span><span class="p">,</span> <span class="n">particle</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">px_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> end 0 impact  -1.000 scattering_projectile_target no</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

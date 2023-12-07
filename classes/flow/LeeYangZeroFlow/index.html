@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeeYangZeroFlow &mdash; sparkx 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="QCumulantFlow" href="../QCumulantFlow/index.html" />
+    <link rel="prev" title="EventPlaneFlow" href="../EventPlaneFlow/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../EventPlaneFlow/index.html">EventPlaneFlow</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LeeYangZeroFlow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#LeeYangZeroFlow.LeeYangZeroFlow"><code class="docutils literal notranslate"><span class="pre">LeeYangZeroFlow</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Classes</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Flow</a></li>
+      <li class="breadcrumb-item active">LeeYangZeroFlow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/flow/LeeYangZeroFlow/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="leeyangzeroflow">
+<span id="lee-yang-zero-flow"></span><h1>LeeYangZeroFlow<a class="headerlink" href="#leeyangzeroflow" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">LeeYangZeroFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow" title="Link to this definition"></a></dt>
+<dd><p><strong>Attention</strong>: This is a beta version of the LeeYangZeroFlow analysis class 
+for testing purposes. We do not recommend using this class for production 
+runs yet.</p>
+<p>Compute integrated and differential anisotropic flow using the Lee-Yang 
+zero method from</p>
+<ul class="simple">
+<li><p>[1] <a class="reference external" href="https://inspirehep.net/literature/622649">Phys. Lett. B 580 (2004) 157  [nucl-th/0307018]</a></p></li>
+<li><p>[2] <a class="reference external" href="https://inspirehep.net/literature/629783">Nucl. Phys. A 727 (2003) 373  [nucl-th/0310016]</a></p></li>
+<li><p>[3] <a class="reference external" href="https://inspirehep.net/literature/644572">J. Phys. G: Nucl. Part. Phys. 30 (2004) S1213  [nucl-th/0402053]</a></p></li>
+</ul>
+<p>For the computation of the anisotropic flow it is important to have an 
+estimate on how large the anisotropic flow will be. To set up the correct
+range of radial values along which the generating function is calculated.</p>
+<p>For a practical guide of the implementation we refer to Ref. [3], where all
+relevant equations are given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>vmin</strong><span class="classifier">float</span></dt><dd><p>Minimum flow value.</p>
+</dd>
+<dt><strong>vmax</strong><span class="classifier">float</span></dt><dd><p>Maximum flow value.</p>
+</dd>
+<dt><strong>vstep</strong><span class="classifier">float</span></dt><dd><p>Step size for the flow values.</p>
+</dd>
+<dt><strong>n</strong><span class="classifier">int, optional</span></dt><dd><p>The harmonic order. Default is 2.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If a result contains NaN or Inf, the corresponding value is set to None.</p>
+<dl class="simple">
+<dt>A few remarks from Ref. [2] about the applicability of the method and the resolution parameter <span class="math notranslate nohighlight">\(\chi\)</span>:</dt><dd><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\chi &gt; 1\)</span>:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.</p></li>
+<li><p><span class="math notranslate nohighlight">\(0.5 &lt; \chi &lt; 1\)</span>: The method is applicable, but the weights should be optimized to increase <span class="math notranslate nohighlight">\(\chi\)</span>. This is not possible with the current implementation of the flow analysis method.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\chi &lt; 0.5\)</span>: Too large statistical errors, the present method should not be used. Using more events will not help much. Use the cumulant methods instead, which are still applicable if the number of events is large enough.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A demonstration of how to use the LeeYangZerosFlow class to calculate flow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.LeeYangZerosFlow</span> <span class="kn">import</span> <span class="n">LeeYangZerosFlow</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a LeeYangZerosFlow object</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow_instance</span> <span class="o">=</span> <span class="n">LeeYangZerosFlow</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">vstep</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error and resolution parameter</span>
+<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">flow_instance</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>integrated_flow:</strong></p></td>
+<td><p>Computes the integrated flow.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>differential_flow:</strong></p></td>
+<td><p>Computes the differential flow.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow.integrated_flow">
+<span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow.integrated_flow" title="Link to this definition"></a></dt>
+<dd><p>Computes the integrated flow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_data</strong><span class="classifier">list</span></dt><dd><p>List of particle data for multiple events.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>A list containing the following values:</p>
+<ul class="simple">
+<li><p>vn_inf (float): Integrated flow magnitude.</p></li>
+<li><p>vn_inf_error (float): Standard error on the integrated flow magnitude.</p></li>
+<li><p>chi_value (float): Resolution parameter <span class="math notranslate nohighlight">\(\chi\)</span>.</p></li>
+</ul>
+</dd>
+<dt>If vn_inf is NaN or Inf, the method returns [None, None, None].</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow.differential_flow">
+<span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow" title="Link to this definition"></a></dt>
+<dd><p>Compute the differential flow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_data</strong><span class="classifier">list</span></dt><dd><p>List of particle data for multiple events.</p>
+</dd>
+<dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
+</dd>
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”, or “pseudorapidity”).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>A list containing the differential flow for each bin. 
+Each element in the list corresponds to a bin and contains:</p>
+<ul class="simple">
+<li><p>vn_inf (float): Differential flow magnitude for the bin.</p></li>
+<li><p>vn_inf_error (float): Error on the differential flow magnitude for the bin.</p></li>
+</ul>
+</dd>
+<dt>If a bin has no events, the corresponding element in the result list is set to None.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../EventPlaneFlow/index.html" class="btn btn-neutral float-left" title="EventPlaneFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../QCumulantFlow/index.html" class="btn btn-neutral float-right" title="QCumulantFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
