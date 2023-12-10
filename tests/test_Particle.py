@@ -2,6 +2,8 @@ from sparkx.Particle import Particle
 import warnings
 import numpy as np
 import pytest
+import math
+from particle import PDGID
 
 # test the getter and setter functions in the case a particle object is created
 # by the user
@@ -267,3 +269,487 @@ def test_initialize_from_array_warning_invalid_pdg():
         p1 = Particle(input_format=format1, particle_array=array1)
 
     assert p1.pdg_valid is False
+
+def test_angular_momentum_valid_values():
+    p = Particle()
+    p.x = 1.0
+    p.y = 2.0
+    p.z = 3.0
+    p.px = 0.1
+    p.py = 0.2
+    p.pz = 0.3
+
+    result = p.angular_momentum()
+
+    expected_result = np.cross([1.0, 2.0, 3.0], [0.1, 0.2, 0.3])
+
+    assert np.array_equal(result, expected_result)
+
+def test_angular_momentum_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.angular_momentum()
+
+    assert np.isnan(result).all()
+
+def test_angular_momentum_partial_missing_values():
+    p = Particle()
+    p.x = 1.0
+    p.y = 2.0
+    p.z = 3.0
+    # Leave momentum values as np.nan
+
+    result = p.angular_momentum()
+
+    assert np.isnan(result).all()
+
+def test_angular_momentum_zero_momentum():
+    p = Particle()
+    p.x = 1.0
+    p.y = 2.0
+    p.z = 3.0
+    p.px = 0.0
+    p.py = 0.0
+    p.pz = 0.0
+
+    result = p.angular_momentum()
+
+    assert np.array_equal(result, [0.0, 0.0, 0.0])
+
+def test_angular_momentum_zero_position():
+    p = Particle()
+    p.x = 0.0
+    p.y = 0.0
+    p.z = 0.0
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 3.0
+
+    result = p.angular_momentum()
+
+    assert np.array_equal(result, [0.0, 0.0, 0.0])
+
+def test_momentum_rapidity_Y_valid_values():
+    p = Particle()
+    p.E = 10.0
+    p.pz = 5.0
+
+    result = p.momentum_rapidity_Y()
+
+    expected_result = 0.5 * np.log((10.0 + 5.0) / (10.0 - 5.0))
+
+    assert np.isclose(result, expected_result)
+
+def test_momentum_rapidity_Y_zero_denominator():
+    p = Particle()
+    p.E = 5.0
+    p.pz = 5.0  # E == pz, should add a small positive value
+
+    result = p.momentum_rapidity_Y()
+    expected_result = 0.5 * np.log((5.0 + 5.0) / (1e-10))
+
+    assert np.isclose(result, expected_result)
+
+def test_momentum_rapidity_Y_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.momentum_rapidity_Y()
+
+    assert np.isnan(result)
+
+def test_p_abs_valid_values():
+    p = Particle()
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 3.0
+
+    result = p.p_abs()
+
+    expected_result = np.sqrt(1.0**2 + 2.0**2 + 3.0**2)
+
+    assert np.isclose(result, expected_result)
+
+def test_p_abs_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.p_abs()
+
+    assert np.isnan(result)
+
+def test_p_abs_zero_momentum():
+    p = Particle()
+    p.px = 0.0
+    p.py = 0.0
+    p.pz = 0.0
+
+    result = p.p_abs()
+
+    assert np.isclose(result, 0.0)
+
+def test_pt_abs_valid_values():
+    p = Particle()
+    p.px = 1.0
+    p.py = 2.0
+
+    result = p.pt_abs()
+
+    expected_result = np.sqrt(1.0**2 + 2.0**2)
+
+    assert np.isclose(result, expected_result)
+
+def test_pt_abs_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.pt_abs()
+
+    assert np.isnan(result)
+
+def test_pt_abs_zero_transverse_momentum():
+    p = Particle()
+    p.px = 0.0
+    p.py = 0.0
+
+    result = p.pt_abs()
+
+    assert np.isclose(result, 0.0)
+
+def test_phi_valid_values():
+    p = Particle()
+    p.px = 1.0
+    p.py = 2.0
+
+    result = p.phi()
+
+    expected_result = math.atan2(2.0, 1.0)
+
+    assert np.isclose(result, expected_result)
+
+def test_phi_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.phi()
+
+    assert np.isnan(result)
+
+def test_phi_zero_transverse_momentum():
+    p = Particle()
+    p.px = 0.0
+    p.py = 0.0
+
+    result = p.phi()
+
+    assert np.isclose(result, 0.0)
+
+def test_phi_small_transverse_momentum():
+    p = Particle()
+    p.px = 1e-7
+    p.py = 1e-7
+
+    result = p.phi()
+
+    assert np.isclose(result, 0.0)
+
+def test_theta_valid_values():
+    p = Particle()
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 3.0
+
+    result = p.theta()
+
+    expected_result = np.arccos(3.0 / np.sqrt(1.0**2 + 2.0**2 + 3.0**2))
+
+    assert np.isclose(result, expected_result)
+
+def test_theta_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.theta()
+
+    assert np.isnan(result)
+
+def test_theta_zero_momentum():
+    p = Particle()
+    p.px = 0.0
+    p.py = 0.0
+    p.pz = 0.0
+
+    result = p.theta()
+
+    assert np.isclose(result, 0.0)
+
+def test_pseudorapidity_valid_values():
+    p = Particle()
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 3.0
+
+    result = p.pseudorapidity()
+
+    expected_result = 0.5 * np.log((np.sqrt(1.0**2 + 2.0**2 + 3.0**2) + 3.0) / (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) - 3.0))
+
+    assert np.isclose(result, expected_result)
+
+def test_pseudorapidity_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.pseudorapidity()
+
+    assert np.isnan(result)
+
+def test_pseudorapidity_zero_momentum():
+    p = Particle()
+    p.px = 0.0
+    p.py = 0.0
+    p.pz = 1.0
+
+    result = p.pseudorapidity()
+    expected_result = 0.5 * np.log(2./1e-10)
+
+    assert np.isclose(result, expected_result)
+
+def test_spatial_rapidity_valid_values():
+    p = Particle()
+    p.t = 5.0
+    p.z = 3.0
+
+    result = p.spatial_rapidity()
+
+    expected_result = 0.5 * np.log((5.0 + 3.0) / (5.0 - 3.0))
+
+    assert np.isclose(result, expected_result)
+
+def test_spatial_rapidity_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.spatial_rapidity()
+
+    assert np.isnan(result)
+
+def test_spatial_rapidity_invalid_values():
+    p = Particle()
+    p.t = 3.0
+    p.z = 5.0
+
+    with pytest.raises(ValueError, match=r"|z| < t not fulfilled"):
+        p.spatial_rapidity()
+
+def test_proper_time_valid_values():
+    p = Particle()
+    p.t = 5.0
+    p.z = 3.0
+
+    result = p.proper_time()
+
+    expected_result = np.sqrt(5.0**2 - 3.0**2)
+
+    assert np.isclose(result, expected_result)
+
+def test_proper_time_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.proper_time()
+
+    assert np.isnan(result)
+
+def test_proper_time_invalid_values():
+    p = Particle()
+    p.t = 3.0
+    p.z = 5.0
+
+    with pytest.raises(ValueError, match=r"|z| < t not fulfilled"):
+        p.proper_time()
+
+def test_compute_mass_from_energy_momentum_valid_values():
+    p = Particle()
+    p.E = 3.0
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 2.0
+
+    result = p.compute_mass_from_energy_momentum()
+
+    expected_result = np.sqrt(3.0**2 - (1.0**2 + 2.0**2 + 2.0**2))
+
+    assert np.isclose(result, expected_result)
+
+def test_compute_mass_from_energy_momentum_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.compute_mass_from_energy_momentum()
+
+    assert np.isnan(result)
+
+def test_compute_mass_from_energy_momentum_zero_energy():
+    p = Particle()
+    p.E = 0.0
+    p.px = 0.0
+    p.py = 0.0
+    p.pz = 0.0
+
+    result = p.compute_mass_from_energy_momentum()
+
+    assert np.isclose(result, 0.0)
+
+def test_compute_charge_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.compute_charge_from_pdg()
+
+    expected_result = PDGID(211).charge
+
+    assert result == expected_result
+
+def test_compute_charge_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.compute_charge_from_pdg()
+
+    assert np.isnan(result)
+
+def test_is_meson_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.is_meson()
+
+    expected_result = PDGID(211).is_meson
+
+    assert result == expected_result
+
+def test_is_meson_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_meson()
+
+    assert np.isnan(result)
+
+def test_is_baryon_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.is_baryon()
+
+    expected_result = PDGID(211).is_baryon
+
+    assert result == expected_result
+
+def test_is_baryon_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_baryon()
+
+    assert np.isnan(result)
+
+def test_is_hadron_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.is_hadron()
+
+    expected_result = PDGID(211).is_hadron
+
+    assert result == expected_result
+
+def test_is_hadron_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_hadron()
+
+    assert np.isnan(result)
+
+def test_is_strange_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.is_strange()
+
+    expected_result = PDGID(211).has_strange
+
+    assert result == expected_result
+
+def test_is_strange_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_strange()
+
+    assert np.isnan(result)
+
+def test_is_heavy_flavor_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.is_heavy_flavor()
+
+    expected_result = PDGID(211).has_charm or PDGID(211).has_bottom\
+          or PDGID(211).has_top
+
+    assert result == expected_result
+
+def test_is_heavy_flavor_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_heavy_flavor()
+
+    assert np.isnan(result)
+
+def test_spin_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.spin()
+
+    expected_result = PDGID(211).J
+
+    assert result == expected_result
+
+def test_spin_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.spin()
+
+    assert np.isnan(result)
+
+def test_spin_degeneracy_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.spin_degeneracy()
+
+    expected_result = PDGID(211).j_spin
+
+    assert result == expected_result
+
+def test_spin_degeneracy_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.spin_degeneracy()
+
+    assert np.isnan(result)

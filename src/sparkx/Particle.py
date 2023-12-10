@@ -768,8 +768,8 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned. 
         """
-        if (self.x == np.nan) or (self.y == np.nan) or (self.z == np.nan)\
-            (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.x) or np.isnan(self.y) or np.isnan(self.z)\
+            or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             r = [self.x, self.y, self.z]
@@ -790,7 +790,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.E == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         else:
             if abs(self.E - self.pz) < 1e-10:
@@ -814,7 +814,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             return np.sqrt(self.px**2.+self.py**2.+self.pz**2.)
@@ -833,7 +833,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
             return np.sqrt(self.px**2.+self.py**2.)
@@ -852,7 +852,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
             if (np.abs(self.px) < 1e-6) and (np.abs(self.py) < 1e-6):
@@ -874,10 +874,10 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            if self.p_abs() == 0:
+            if self.p_abs() == 0.0:
                 return 0.
             else:
                 return np.arccos(self.pz / self.p_abs())
@@ -896,7 +896,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             if abs(self.p_abs() - self.pz) < 1e-10:
@@ -920,7 +920,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.t == np.nan) or (self.z == np.nan):
+        if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
             if self.t > np.abs(self.z):
@@ -942,7 +942,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.t == np.nan) or (self.z == np.nan):
+        if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
             if self.t > np.abs(self.z):
@@ -954,6 +954,8 @@ class Particle:
         """
         Compute the mass from the energy momentum relation.
 
+        This function is called automatically if a JETSCAPE file is read in.
+
         Returns
         -------
         float
@@ -964,7 +966,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.E == np.nan) or (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.E) or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
@@ -977,8 +979,7 @@ class Particle:
         """
         Compute the charge from the PDG code.
 
-        This function is called automatically if a JETSCAPE file is read in with
-        the :meth:`ParticleClass.Particle.set_quantities_JETSCAPE` function.
+        This function is called automatically if a JETSCAPE file is read in.
 
         Returns
         -------
