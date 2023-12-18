@@ -11,46 +11,55 @@ def test_t():
     p = Particle()
     p.t = 1.0
     assert p.t == 1.0
+    assert isinstance(p.t, float)
 
 def test_x():
     p = Particle()
     p.x = 1.0
     assert p.x == 1.0
+    assert isinstance(p.x, float)
 
 def test_y():
     p = Particle()
     p.y = 1.0
     assert p.y == 1.0
+    assert isinstance(p.y, float)
 
 def test_z():
     p = Particle()
     p.z = 1.0
     assert p.z == 1.0
+    assert isinstance(p.z, float)
 
 def test_mass():
     p = Particle()
     p.mass = 0.138
     assert p.mass == 0.138
+    assert isinstance(p.mass, float)
 
 def test_E():
     p = Particle()
     p.E = 1.0
     assert p.E == 1.0
+    assert isinstance(p.E, float)
 
 def test_px():
     p = Particle()
     p.px = 1.0
     assert p.px == 1.0
+    assert isinstance(p.px, float)
 
 def test_py():
     p = Particle()
     p.py = 1.0
     assert p.py == 1.0
+    assert isinstance(p.py, float)
 
 def test_pz():
     p = Particle()
     p.pz = 1.0
     assert p.pz == 1.0
+    assert isinstance(p.pz, float)
 
 def test_pdg():
     # check valid particle
@@ -58,6 +67,7 @@ def test_pdg():
     p.pdg = 211
     assert p.pdg == 211
     assert p.pdg_valid == True
+    assert isinstance(p.pdg, int)
 
     # check invalid particle
     with warnings.catch_warnings():
@@ -76,71 +86,85 @@ def test_ID():
     p = Particle()
     p.ID = 1
     assert p.ID == 1
+    assert isinstance(p.ID, int)
 
 def test_charge():
     p = Particle()
     p.charge = 1
     assert p.charge == 1
+    assert isinstance(p.charge, int)
 
 def test_ncoll():
     p = Particle()
     p.ncoll = 10
     assert p.ncoll == 10
+    assert isinstance(p.ncoll, int)
 
 def test_form_time():
     p = Particle()
     p.form_time = 1.0
     assert p.form_time == 1.0
+    assert isinstance(p.form_time, float)
 
 def test_xsecfac():
     p = Particle()
     p.xsecfac = 1.0
     assert p.xsecfac == 1.0
+    assert isinstance(p.xsecfac, float)
 
 def test_proc_id_origin():
     p = Particle()
     p.proc_id_origin = 1
     assert p.proc_id_origin == 1
+    assert isinstance(p.proc_id_origin, int)
 
 def test_proc_type_origin():
     p = Particle()
-    p.proc_id_origin = 1
-    assert p.proc_id_origin == 1
+    p.proc_type_origin = 1
+    assert p.proc_type_origin == 1
+    assert isinstance(p.proc_type_origin, int)
 
 def test_t_last_coll():
     p = Particle()
     p.t_last_coll = 10.0
     assert p.t_last_coll == 10.0
+    assert isinstance(p.t_last_coll, float)
 
 def test_pdg_mother1():
     p = Particle()
     p.pdg_mother1 = 211
     assert p.pdg_mother1 == 211
+    assert isinstance(p.pdg_mother1, int)
 
 def test_pdg_mother2():
     p = Particle()
     p.pdg_mother2 = 211
     assert p.pdg_mother2 == 211
+    assert isinstance(p.pdg_mother2, int)
 
 def test_baryon_number():
     p = Particle()
     p.baryon_number = 1
     assert p.baryon_number == 1
+    assert isinstance(p.baryon_number, int)
 
 def test_strangeness():
     p = Particle()
     p.strangeness = 1
     assert p.strangeness == 1
+    assert isinstance(p.strangeness, int)
 
 def test_weight():
     p = Particle()
     p.weight = 1.0
     assert p.weight == 1.0
+    assert isinstance(p.weight, float)
 
 def test_status():
     p = Particle()
     p.status = 27
     assert p.status == 27
+    assert isinstance(p.status, int)
 
 def test_initialize_from_array_valid_formats():
     format1 = "JETSCAPE"

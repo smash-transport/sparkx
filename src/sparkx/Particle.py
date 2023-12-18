@@ -35,7 +35,7 @@ class Particle:
         The z component of the momentum.
     pdg : int
         The PDG code of the particle.
-    pdg_is_valid : short
+    pdg_valid : short
         Is the PDG code valid?
     ID : int
         The ID of the particle (unique label of each particle in an event).
@@ -506,7 +506,7 @@ class Particle:
         -------
         pdg : int
         """
-        return self.data_[9]
+        return int(self.data_[9])
 
     @pdg.setter
     def pdg(self,value):
@@ -527,7 +527,7 @@ class Particle:
         -------
         ID : int
         """
-        return self.data_[11]
+        return int(self.data_[11])
 
     @ID.setter
     def ID(self,value):
@@ -541,7 +541,7 @@ class Particle:
         -------
         charge : int
         """
-        return self.data_[12]
+        return int(self.data_[12])
 
     @charge.setter
     def charge(self,value):
@@ -555,7 +555,7 @@ class Particle:
         -------
         ncoll : int
         """
-        return self.data_[13] 
+        return int(self.data_[13]) 
 
     @ncoll.setter
     def ncoll(self,value):
@@ -597,7 +597,7 @@ class Particle:
         -------
         proc_id_origin : int
         """
-        return self.data_[16]
+        return int(self.data_[16])
 
     @proc_id_origin.setter
     def proc_id_origin(self,value):
@@ -611,7 +611,7 @@ class Particle:
         -------
         proc_type_origin : int
         """
-        return self.data_[17]
+        return int(self.data_[17])
 
     @proc_type_origin.setter
     def proc_type_origin(self,value):
@@ -639,7 +639,7 @@ class Particle:
         -------
         pdg_mother1 : int
         """
-        return self.data_[19]
+        return int(self.data_[19])
 
     @pdg_mother1.setter
     def pdg_mother1(self,value):
@@ -653,7 +653,7 @@ class Particle:
         -------
         pdg_mother2 : int
         """
-        return self.data_[20]
+        return int(self.data_[20])
 
     @pdg_mother2.setter
     def pdg_mother2(self,value):
@@ -669,7 +669,7 @@ class Particle:
         -------
         status : int
         """
-        return self.data_[21]
+        return int(self.data_[21])
 
     @status.setter
     def status(self,value):
@@ -683,7 +683,7 @@ class Particle:
         -------
         baryon_number : int
         """
-        return self.data_[22]
+        return int(self.data_[22])
  
     @baryon_number.setter
     def baryon_number(self,value):
@@ -697,7 +697,7 @@ class Particle:
         -------
         strangeness : int
         """
-        return self.data_[23]
+        return int(self.data_[23])
 
     @strangeness.setter
     def strangeness(self,value):
@@ -723,7 +723,7 @@ class Particle:
 
         Returns
         -------
-        pdg_valid : int
+        pdg_valid : short
         """
         return bool(self.data_[10])
 
