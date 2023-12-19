@@ -23,7 +23,7 @@ It contains multiple classes to read in the simulation outputs in OSCAR2013/OSCA
    classes/index
    utilities/index
    license
-   credits
+   credits.md
 
 
 Indices and tables
