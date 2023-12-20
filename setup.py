@@ -12,7 +12,7 @@ setup(
         "fastjet==3.4.1.3",
         "matplotlib>=3.7.1",
     ],
-    version='1.1.0',
+    version='1.1.1',
     description='Software Package for Analyzing Relativistic Kinematics in Collision eXperiments',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
