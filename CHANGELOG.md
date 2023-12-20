@@ -18,7 +18,22 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v1.1.1-Newton
+Date: 2023-12-20
+
+### Added
+
+* Tests: Add tests for Particle class
+
+### Fixed
+
+* Particle: Fix bug in tests for `nan` values
+* Particle: Casts to `int` and `short` types added, which fixes the crash of `read_jet_data` in JetAnalysis (issue #174)
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.0...v1.1.1)
+
 ## v1.1.0-Newton
+Date: 2023-12-07
 
 ### Added
 
@@ -52,8 +67,7 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 * Particle: Functions using `PDGID` from the `particle` package handle now the case if the PDG ID is unknown to the package
 * Particle: Returns `nan` if the quantity is not known or can not be computed
 
-# Removed
-
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.0.2...v1.1.0)
 
 ## v1.0.2-Newton
 Date: 2023-06-26

@@ -1,9 +1,0 @@
-particle
-numpy
-scipy
-fastjet
-sphinx
-numpydoc
-myst-parser
-sphinx-rtd-theme
-abc-property

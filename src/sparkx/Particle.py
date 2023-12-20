@@ -35,11 +35,11 @@ class Particle:
         The z component of the momentum.
     pdg : int
         The PDG code of the particle.
-    pdg_is_valid : short
+    pdg_valid : bool
         Is the PDG code valid?
     ID : int
         The ID of the particle (unique label of each particle in an event).
-    charge : short
+    charge : int
         Electric charge of the particle.
     ncoll : int
         Number of collisions undergone by the particle.
@@ -59,9 +59,9 @@ class Particle:
         PDG code of the mother particle 2.
     status : int
         Status code of the particle.
-    baryon_number : short
+    baryon_number : int
         Baryon number of the particle.
-    strangeness : short
+    strangeness : int
         Strangeness quantum number of the particle.
     weight : float
         Weight of the particle.
@@ -506,7 +506,7 @@ class Particle:
         -------
         pdg : int
         """
-        return self.data_[9]
+        return int(self.data_[9])
 
     @pdg.setter
     def pdg(self,value):
@@ -527,7 +527,7 @@ class Particle:
         -------
         ID : int
         """
-        return self.data_[11]
+        return int(self.data_[11])
 
     @ID.setter
     def ID(self,value):
@@ -541,7 +541,7 @@ class Particle:
         -------
         charge : int
         """
-        return self.data_[12]
+        return int(self.data_[12])
 
     @charge.setter
     def charge(self,value):
@@ -555,7 +555,7 @@ class Particle:
         -------
         ncoll : int
         """
-        return self.data_[13] 
+        return int(self.data_[13]) 
 
     @ncoll.setter
     def ncoll(self,value):
@@ -597,7 +597,7 @@ class Particle:
         -------
         proc_id_origin : int
         """
-        return self.data_[16]
+        return int(self.data_[16])
 
     @proc_id_origin.setter
     def proc_id_origin(self,value):
@@ -611,7 +611,7 @@ class Particle:
         -------
         proc_type_origin : int
         """
-        return self.data_[17]
+        return int(self.data_[17])
 
     @proc_type_origin.setter
     def proc_type_origin(self,value):
@@ -639,7 +639,7 @@ class Particle:
         -------
         pdg_mother1 : int
         """
-        return self.data_[19]
+        return int(self.data_[19])
 
     @pdg_mother1.setter
     def pdg_mother1(self,value):
@@ -653,7 +653,7 @@ class Particle:
         -------
         pdg_mother2 : int
         """
-        return self.data_[20]
+        return int(self.data_[20])
 
     @pdg_mother2.setter
     def pdg_mother2(self,value):
@@ -669,7 +669,7 @@ class Particle:
         -------
         status : int
         """
-        return self.data_[21]
+        return int(self.data_[21])
 
     @status.setter
     def status(self,value):
@@ -683,7 +683,7 @@ class Particle:
         -------
         baryon_number : int
         """
-        return self.data_[22]
+        return int(self.data_[22])
  
     @baryon_number.setter
     def baryon_number(self,value):
@@ -697,7 +697,7 @@ class Particle:
         -------
         strangeness : int
         """
-        return self.data_[23]
+        return int(self.data_[23])
 
     @strangeness.setter
     def strangeness(self,value):
@@ -723,7 +723,7 @@ class Particle:
 
         Returns
         -------
-        pdg_valid : int
+        pdg_valid : bool
         """
         return bool(self.data_[10])
 
@@ -768,8 +768,8 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned. 
         """
-        if (self.x == np.nan) or (self.y == np.nan) or (self.z == np.nan)\
-            (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.x) or np.isnan(self.y) or np.isnan(self.z)\
+            or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             r = [self.x, self.y, self.z]
@@ -790,7 +790,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.E == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         else:
             if abs(self.E - self.pz) < 1e-10:
@@ -814,7 +814,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             return np.sqrt(self.px**2.+self.py**2.+self.pz**2.)
@@ -833,7 +833,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
             return np.sqrt(self.px**2.+self.py**2.)
@@ -852,7 +852,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
             if (np.abs(self.px) < 1e-6) and (np.abs(self.py) < 1e-6):
@@ -874,10 +874,10 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            if self.p_abs() == 0:
+            if self.p_abs() == 0.0:
                 return 0.
             else:
                 return np.arccos(self.pz / self.p_abs())
@@ -896,7 +896,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             if abs(self.p_abs() - self.pz) < 1e-10:
@@ -920,7 +920,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.t == np.nan) or (self.z == np.nan):
+        if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
             if self.t > np.abs(self.z):
@@ -942,7 +942,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.t == np.nan) or (self.z == np.nan):
+        if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
             if self.t > np.abs(self.z):
@@ -954,6 +954,8 @@ class Particle:
         """
         Compute the mass from the energy momentum relation.
 
+        This function is called automatically if a JETSCAPE file is read in.
+
         Returns
         -------
         float
@@ -964,7 +966,7 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if (self.E == np.nan) or (self.px == np.nan) or (self.py == np.nan) or (self.pz == np.nan):
+        if np.isnan(self.E) or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
@@ -977,8 +979,7 @@ class Particle:
         """
         Compute the charge from the PDG code.
 
-        This function is called automatically if a JETSCAPE file is read in with
-        the :meth:`ParticleClass.Particle.set_quantities_JETSCAPE` function.
+        This function is called automatically if a JETSCAPE file is read in.
 
         Returns
         -------
