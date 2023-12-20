@@ -35,11 +35,11 @@ class Particle:
         The z component of the momentum.
     pdg : int
         The PDG code of the particle.
-    pdg_valid : short
+    pdg_valid : bool
         Is the PDG code valid?
     ID : int
         The ID of the particle (unique label of each particle in an event).
-    charge : short
+    charge : int
         Electric charge of the particle.
     ncoll : int
         Number of collisions undergone by the particle.
@@ -59,9 +59,9 @@ class Particle:
         PDG code of the mother particle 2.
     status : int
         Status code of the particle.
-    baryon_number : short
+    baryon_number : int
         Baryon number of the particle.
-    strangeness : short
+    strangeness : int
         Strangeness quantum number of the particle.
     weight : float
         Weight of the particle.
@@ -723,7 +723,7 @@ class Particle:
 
         Returns
         -------
-        pdg_valid : short
+        pdg_valid : bool
         """
         return bool(self.data_[10])
 
