@@ -19,6 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v1.1.1-Newton
+Date: 2023-12-20
 
 ### Added
 
@@ -32,6 +33,7 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.0...v1.1.1)
 
 ## v1.1.0-Newton
+Date: 2023-12-07
 
 ### Added
 
