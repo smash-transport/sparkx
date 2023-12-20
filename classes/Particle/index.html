@@ -178,11 +178,11 @@ Supported formats include:</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdg</span></code><span class="classifier">int</span></dt><dd><p>Get or set the PDG code of the particle.</p>
 </dd>
-<dt><strong>pdg_is_valid</strong><span class="classifier">short</span></dt><dd><p>Is the PDG code valid?</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdg_valid</span></code><span class="classifier">bool</span></dt><dd><p>Get the validity of the PDG code of the particle.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code><span class="classifier">int</span></dt><dd><p>Get or set the ID of the particle.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">charge</span></code><span class="classifier">short</span></dt><dd><p>Get or set the electrical charge of the particle.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">charge</span></code><span class="classifier">int</span></dt><dd><p>Get or set the electrical charge of the particle.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ncoll</span></code><span class="classifier">int</span></dt><dd><p>Get or set the number of collisions of the particle.</p>
 </dd>
@@ -202,9 +202,9 @@ Supported formats include:</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span></code><span class="classifier">int</span></dt><dd><p>Get the hadron status (stores information on the module origin of a JETSCAPE hadron).</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">baryon_number</span></code><span class="classifier">short</span></dt><dd><p>Get the baryon number of the particle.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">baryon_number</span></code><span class="classifier">int</span></dt><dd><p>Get the baryon number of the particle.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">strangeness</span></code><span class="classifier">short</span></dt><dd><p>Get the strangeness of the particle.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">strangeness</span></code><span class="classifier">int</span></dt><dd><p>Get the strangeness of the particle.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code><span class="classifier">float</span></dt><dd><p>Get the weight of the particle.</p>
 </dd>
@@ -514,6 +514,7 @@ is returned.</p>
 <dt class="sig sig-object py" id="Particle.Particle.compute_mass_from_energy_momentum">
 <span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">compute_mass_from_energy_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.compute_mass_from_energy_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.compute_mass_from_energy_momentum" title="Link to this definition"></a></dt>
 <dd><p>Compute the mass from the energy momentum relation.</p>
+<p>This function is called automatically if a JETSCAPE file is read in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -531,8 +532,7 @@ is returned.</p>
 <dt class="sig sig-object py" id="Particle.Particle.compute_charge_from_pdg">
 <span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">compute_charge_from_pdg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.compute_charge_from_pdg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.compute_charge_from_pdg" title="Link to this definition"></a></dt>
 <dd><p>Compute the charge from the PDG code.</p>
-<p>This function is called automatically if a JETSCAPE file is read in with
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ParticleClass.Particle.set_quantities_JETSCAPE()</span></code> function.</p>
+<p>This function is called automatically if a JETSCAPE file is read in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
