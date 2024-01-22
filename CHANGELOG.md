@@ -18,6 +18,15 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v1.2.0-Newton
+Date:
+
+### Added
+
+* Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
+
 ## v1.1.1-Newton
 Date: 2023-12-20
 
