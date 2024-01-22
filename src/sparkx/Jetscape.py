@@ -54,7 +54,7 @@ class Jetscape:
             * - :code:`particletype` (str)
               - This parameter allows to switch from the standard hadron file |br|
                 to the parton output of JETSCAPE. The parameter can be set to |br|
-                :code:`particletype='hadrons'` (default) or :code:`particletype='partons'`.
+                :code:`particletype='hadron'` (default) or :code:`particletype='parton'`.
 
         .. |br| raw:: html
 
@@ -189,7 +189,7 @@ class Jetscape:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.particle_type_ = 'hadrons'
+        self.particle_type_ = 'hadron'
         self.optional_arguments_ = kwargs
 
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
@@ -202,12 +202,14 @@ class Jetscape:
                 raise ValueError('Event number must be positive')
         
         if 'particletype' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['particletype'], str):
-            if (self.optional_arguments_['particletype'] == 'hadrons') or (self.optional_arguments_['particletype'] == 'partons'):
+            if (self.optional_arguments_['particletype'] == 'hadron') or (self.optional_arguments_['particletype'] == 'parton'):
                 self.particle_type_ = self.optional_arguments_['particletype']
-        else:
+            else:
+                raise ValueError("'particletype' has to be 'hadron' or 'parton'")
+        elif 'particletype' in self.optional_arguments_.keys() and not isinstance(self.optional_arguments_['particletype'], str):
             raise TypeError("'particletype' is not given as a string value") 
 
-        if self.particle_type_ == 'hadrons':
+        if self.particle_type_ == 'hadron':
             self.particle_type_defining_string_ = 'N_hadrons'
         else:
             self.particle_type_defining_string_ = 'N_partons'
