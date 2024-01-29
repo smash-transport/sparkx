@@ -25,6 +25,10 @@ Date:
 
 * Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
 
+### Fixed
+
+* Oscar/Jetscape: Fixed bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)
+
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 
 ## v1.1.1-Newton
