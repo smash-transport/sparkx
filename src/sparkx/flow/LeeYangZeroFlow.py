@@ -7,10 +7,6 @@ rd.seed(42)
 
 class LeeYangZeroFlow(FlowInterface.FlowInterface):
     """
-    **Attention**: This is a beta version of the LeeYangZeroFlow analysis class 
-    for testing purposes. We do not recommend using this class for production 
-    runs yet.
-
     Compute integrated and differential anisotropic flow using the Lee-Yang 
     zero method from
 
