@@ -444,6 +444,8 @@ class Histogram:
             raise ValueError("The scaling factor of the histogram cannot be negative")
         elif isinstance(value, (list, np.ndarray)) and sum(1 for number in value if number < 0) > 0:
             raise ValueError("The scaling factor of the histogram cannot be negative")
+        elif isinstance(value, (list, np.ndarray)) and len(value) != self.number_of_bins_:
+            raise ValueError("The length of list/array not compatible with number_of_bins_ of the histogram")
 
         if self.histograms_.ndim == 1:
             if isinstance(value, (int, float, np.number)):
@@ -498,7 +500,7 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the systematic uncertainties of the individual bins.
         """
-        if len(own_error) != self.number_of_bins_ and\
+        if len(own_error) != self.number_of_bins_ or\
               not isinstance(own_error, (list,np.ndarray)):
             error_message = "The input error has a different length than the"\
                  + " number of histogram bins or it is not a list/numpy.ndarray"
