@@ -7,10 +7,6 @@ rd.seed(42)
 
 class LeeYangZeroFlow(FlowInterface.FlowInterface):
     """
-    **Attention**: This is a beta version of the LeeYangZeroFlow analysis class 
-    for testing purposes. We do not recommend using this class for production 
-    runs yet.
-
     Compute integrated and differential anisotropic flow using the Lee-Yang 
     zero method from
 
@@ -517,6 +513,13 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf_error (float): Error on the differential flow magnitude for the bin.
             
         If a bin has no events, the corresponding element in the result list is set to None.
+
+        Notes
+        -----
+        This method will call the `integrated_flow` method if it was not called
+        before and computes the integrated flow for the given `particle_data`.
+        Make sure that the same `particle_data` is used. Otherwise this could
+        lead to wrong results.
         """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
