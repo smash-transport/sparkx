@@ -479,7 +479,7 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the uncertainties of the individual bins.
         """
-        if len(own_error) != self.number_of_bins_ and\
+        if len(own_error) != self.number_of_bins_ or\
               not isinstance(own_error, (list,np.ndarray)):
             error_message = "The input error has a different length than the"\
                  + " number of histogram bins or it is not a list/numpy.ndarray"
