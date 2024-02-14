@@ -4,6 +4,7 @@ import numpy as np
 import csv
 import warnings
 import os
+import struct
 
 class Oscar:
     """
@@ -53,6 +54,8 @@ class Oscar:
                 memory. The names of the filters are the same as the names of |br|
                 the filter methods. All filters are applied in the order in |br|
                 which they appear in the dictionary.
+            * - :code:`binary` (bool)
+              - If the input file is in binary format, set this flag to True |br|
 
         .. |br| raw:: html
 
@@ -209,15 +212,13 @@ class Oscar:
         None
         """
 
-        if not '.oscar' in OSCAR_FILE:
-            raise TypeError('Input file is not in the OSCAR format. Input '
-                            'file must have the ending .oscar')
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
+        self.binary_ = False
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
 
@@ -229,11 +230,20 @@ class Oscar:
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
                 raise ValueError('Event number must be positive')
+            
+        if 'binary' in self.optional_arguments.keys() and self.optional_arguments['binary']:
+            self.binary_ = True
+            self.set_binary_format()
+            self.set_num_events()
+        else:
+            if not '.oscar' in OSCAR_FILE:
+                raise TypeError('Input file is not in the OSCAR format. Input '
+                                'file must have the ending .oscar')
 
-        self.set_oscar_format()
-        self.set_num_events()
-        self.set_num_output_per_event_and_event_footers()
-        self.set_particle_list(kwargs)
+            self.set_oscar_format()
+            self.set_num_events()
+            self.set_num_output_per_event_and_event_footers()
+            self.set_particle_list(kwargs)
 
     # PRIVATE CLASS METHODS
 
@@ -455,7 +465,6 @@ class Oscar:
             self.particle_list_ = particle_list
             
 
-
     def set_oscar_format(self):
         with open(self.PATH_OSCAR_, 'r') as file:
             first_line = file.readline()
@@ -472,81 +481,115 @@ class Oscar:
         else:
             raise TypeError('Input file must follow the Oscar2013, '+\
                             'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
+        
+    def set_binary_format(self):
+        with open(self.PATH_OSCAR_, 'rb') as file:
+            magic, format_version, format_extended, length = struct.unpack('=4sHHi', file.read(12))
+            magic = magic.decode('utf-8')
+            if magic != "SMSH":
+                raise TypeError('SMASH binary file is corrupted, magic number could not be read.')
+            if format_version.decode('utf-8') != 8:
+                raise TypeError('Currently only binary format 8 is supported. The file is in format '+str(format_version)+'.')
+            if format_extended.decode('utf-8') == 1:
+                self.oscar_format_ = 'Oscar2013Extended'
+            else:
+                self.oscar_format_ = 'Oscar2013'
 
 
     def set_num_output_per_event_and_event_footers(self):
-        with open(self.PATH_OSCAR_, 'r') as oscar_file:
-            event_output = []
-            if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
-                while True:
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif '#' in line and 'end ' in line:
-                        self.event_end_lines_.append(line)
-                    elif '#' in line and 'out' in line:
-                        line_str = line.replace('\n','').split(' ')
-                        event = line_str[2]
-                        num_output = line_str[4]
-                        event_output.append([event, num_output])
-                    else:
-                        continue
-            elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
-                line_counter=0
-                event=0
-                while True:
-                    line_counter+=1
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif '#' in line and 'end' in line:
-                        self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter-2])
-                    elif '#' in line and 'in' in line:
-                        line_str = line.replace('\n','').split(' ')
-                        event = line_str[2]
-                        line_counter=0
-                    else:
-                        continue
-    
-            elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
-                line_counter=0
-                event=0
-                line_memory=0
-                while True:
-                    line_counter+=1
-                    line_memory+=1
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif '#' in line and 'end' in line:
-                        if(line_memory==1):
+        if not self.binary_:
+            with open(self.PATH_OSCAR_, 'r') as oscar_file:
+                event_output = []
+                if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
+                    while True:
+                        line = oscar_file.readline()
+                        if not line:
+                            break
+                        elif '#' in line and 'end ' in line:
+                            self.event_end_lines_.append(line)
+                        elif '#' in line and 'out' in line:
+                            line_str = line.replace('\n','').split(' ')
+                            event = line_str[2]
+                            num_output = line_str[4]
+                            event_output.append([event, num_output])
+                        else:
                             continue
-                        self.event_end_lines_.append(line)
-                        line_str = line.replace('\n','').split(' ')
-                        event = line_str[2]
-                        event_output.append([event, line_counter-1])
-                    elif '#' in line and 'out' in line:
-                        line_counter=0
-                    else:
-                        continue
+                elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
+                    line_counter=0
+                    event=0
+                    while True:
+                        line_counter+=1
+                        line = oscar_file.readline()
+                        if not line:
+                            break
+                        elif '#' in line and 'end' in line:
+                            self.event_end_lines_.append(line)
+                            event_output.append([event, line_counter-2])
+                        elif '#' in line and 'in' in line:
+                            line_str = line.replace('\n','').split(' ')
+                            event = line_str[2]
+                            line_counter=0
+                        else:
+                            continue
+        
+                elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
+                    line_counter=0
+                    event=0
+                    line_memory=0
+                    while True:
+                        line_counter+=1
+                        line_memory+=1
+                        line = oscar_file.readline()
+                        if not line:
+                            break
+                        elif '#' in line and 'end' in line:
+                            if(line_memory==1):
+                                continue
+                            self.event_end_lines_.append(line)
+                            line_str = line.replace('\n','').split(' ')
+                            event = line_str[2]
+                            event_output.append([event, line_counter-1])
+                        elif '#' in line and 'out' in line:
+                            line_counter=0
+                        else:
+                            continue
+        else:
+            with open(self.PATH_OSCAR_, 'rb') as file:
+                file.read(12)
+                event_output = []
+                event_count=0
+                while event_count < self.num_events_:
+                    block_type = file.read(1).decode('utf-8')
+                    if (block_type != 'p'):
+                        raise TypeError('SMASH binary file is not a file output, block type is not a particle block!')
+                    event_count+=1
+                    num_particles  = file.read(4).decode('utf-8')
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
 
 
     def set_num_events(self):
         # Read the file in binary mode to search for last line. In this way one
         # does not need to loop through the whole file
-        with open(self.PATH_OSCAR_, "rb") as file:
-            file.seek(-2, os.SEEK_END)
-            while file.read(1) != b'\n':
-                file.seek(-2, os.SEEK_CUR)
-            last_line = file.readline().decode().split(' ')
-        if last_line[0] == '#' and 'event' in last_line:
-            self.num_events_ = int(last_line[2]) + 1
+        if not self.binary_:
+            with open(self.PATH_OSCAR_, "rb") as file:
+                file.seek(-2, os.SEEK_END)
+                while file.read(1) != b'\n':
+                    file.seek(-2, os.SEEK_CUR)
+                last_line = file.readline().decode().split(' ')
+            if last_line[0] == '#' and 'event' in last_line:
+                self.num_events_ = int(last_line[2]) + 1
+            else:
+                raise TypeError('Input file does not end with a comment line '+\
+                                'including the events. File might be incomplete '+\
+                                'or corrupted.')
         else:
-            raise TypeError('Input file does not end with a comment line '+\
-                            'including the events. File might be incomplete '+\
-                            'or corrupted.')
+            with open(self.PATH_OSCAR_, "rb") as file:
+                file.seek(-14, os.SEEK_END)
+                line_tag, event_number = struct.unpack('=4sHHi', file.read(5))
+                if line_tag.decode('utf-8') != 'f':
+                    raise TypeError('SMASH binary file is corrupted, last line is not an event end line!')
+                else:
+                    self.num_events_ = event_number.decode('utf-8') + 1
 
     def particle_list(self):
         """
