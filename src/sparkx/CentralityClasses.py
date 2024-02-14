@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 
 
 class CentralityClasses:
@@ -58,8 +59,32 @@ class CentralityClasses:
         if not isinstance(centrality_bins, (list,np.ndarray)):
             raise TypeError("'centrality_bins' is not list or numpy.ndarray")
         
+        # Check if centrality_bins is sorted
+        if not all(centrality_bins[i] <= centrality_bins[i+1] for i in range(len(centrality_bins)-1)):
+            warnings.warn("'centrality_bins' is not sorted. Sorting automatically.")
+            centrality_bins.sort()
+        
+        # Check for uniqueness of values
+        # Remove duplicates from the list
+        unique_bins = []
+        seen = set()
+        multiple_same_entries = False
+        for item in centrality_bins:
+            if item not in seen:
+                unique_bins.append(item)
+                seen.add(item)
+            else:
+                multiple_same_entries = True
+
+        if multiple_same_entries:
+            warnings.warn("'centrality_bins' contains duplicate values. They are removed automatically.")
+        
+        # Check for negative values and values greater than 100
+        if any(value < 0.0 or value > 100.0 for value in centrality_bins):
+            raise ValueError("'centrality_bins' contains values less than 0 or greater than 100.")
+        
         self.events_multiplicity_ = events_multiplicity
-        self.centrality_bins_ = centrality_bins
+        self.centrality_bins_ = unique_bins
 
         self.dNchdetaMin_ = []
         self.dNchdetaMax_ = []

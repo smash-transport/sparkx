@@ -17,6 +17,16 @@ def test_init_with_invalid_input():
     with pytest.raises(TypeError):
         CentralityClasses(events_multiplicity=[0,10,20,30,40,50,60,70,80,90,100], 
                           centrality_bins=0)
+    
+    numbers_sequence = range(1,101)
+    multiplicities = [num for num in numbers_sequence for _ in range(100)]
+    with pytest.raises(ValueError):
+        CentralityClasses(events_multiplicity=multiplicities,centrality_bins=[0,10,20,30,40,50,60,70,80,90,100,110])
+    with pytest.raises(ValueError):
+        CentralityClasses(events_multiplicity=multiplicities,centrality_bins=[-10,0,10,20,30,40,50,60,70,80,90,100])
+    with pytest.warns(UserWarning, match=r"'centrality_bins' contains duplicate values. They are removed automatically."):
+        a = CentralityClasses(events_multiplicity=multiplicities,centrality_bins=[0,10,20,30,40,40,50,60,70,80,90,100])
+        assert a.centrality_bins_ == [0,10,20,30,40,50,60,70,80,90,100]
 
 def test_create_centrality_classes(centrality_obj): 
     # Assuming there are 10 bins, so there should be 10 minimum values

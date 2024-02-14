@@ -78,9 +78,6 @@ def test_write_to_file(tmp_path):
     filename = tmp_path / "test_histograms.csv"
     hist.write_to_file(filename, hist_labels)
 
-    print(hist.histogram())
-    print(hist.error_)
-
     # Check if the file exists
     assert filename.is_file()
 
