@@ -140,7 +140,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         Qn_sq_sum = np.vdot(Qn,Qn).real # |Q_n|^2
 
         if k == 2:
-            # this implements Eq. (16) from Ref. [1]
+            # this implements Eq. (16) from Ref. [2]
             corr = (Qn_sq_sum - sum_mult) / (sum_mult_squared - sum_mult)
             
             W2 = mult*(mult-1)
@@ -160,7 +160,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             return corr, corr_err, ebe_2p_corr
         
         if k == 4:
-            # this implements Eq. (18) from Ref. [1]
+            # this implements Eq. (18) from Ref. [2]
             Q2n = self.__Qn(phi,2.*self.n_)
             Q2n_sq_sum = np.vdot(Q2n,Q2n).real
             Qn_sq = np.square(Qn.real) + np.square(Qn.imag)
@@ -180,19 +180,19 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # ebe difference from mean: <4>_i - <<4>>
             ebe_4p_corr = (np.real(Qn*Qn*Qn.conj()*Qn.conj()) + np.real(Q2n*Q2n.conj()) 
                            - 2.* np.real(Q2n*Qn.conj()*Qn.conj())
-                           - 2.*(2.*(mult-2)*np.real(Q2n*Q2n.conj()) - mult*(mult-3))) / W4
+                           - 2.*(2.*(mult-2)*np.real(Qn*Qn.conj()) - mult*(mult-3))) / W4
             difference = ebe_4p_corr - corr
             # weighted variance
             variance = np.sum(W4*np.square(difference)) / sum_W4
             # unbiased variance^2
             variance_sq = variance / (1. - sum_W4_sq/(sum_W4**2.))
             # error of <<4>>, Eq. (C18) Ref. [1]
-            corr_err = np.sqrt(sum_W4_sq*variance_sq)/sum_W4   
+            corr_err = np.sqrt(sum_W4_sq*variance_sq)/sum_W4
 
             return corr, corr_err, ebe_4p_corr
         
         if k == 6:
-            # this implements Eq. (A10) from Ref. [1]
+            # this implements Eq. (A10) from Ref. [2]
             Q2n = self.__Qn(phi,2.*self.n_)
             Q2n_sq_sum = np.vdot(Q2n,Q2n).real
             Qn_sq = np.square(Qn.real) + np.square(Qn.imag)
@@ -300,7 +300,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def __cov_term(self,k1,k2,phi,ebe_corr1,ebe_corr2):
         """
-        Compute the covariance term for the last term in Eq. (C29) from Ref. [1].
+        Compute the covariance term in Eqs. (C29) and (C32) of Ref. [1].
 
         Parameters
         ----------
@@ -399,11 +399,11 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         if self.k_ == 2:
             n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi,k=2)
 
-            # returns <v_n{2}> and s_{<v_n{2}>}, Eqs. (C22),(C24) Ref. [1]
+            # returns <v_n{2}> and s_{<v_n{2}>}, Eqs. (C22),(C23) Ref. [1]
             avg_vn2 = self.__flow_from_cumulant(n2_corr)
-            avg_v2_err = (1./(2.*avg_vn2))*n2_corr_err
+            avg_vn2_err_sq = (1./(4.*n2_corr))*n2_corr_err**2.
             
-            return avg_vn2, avg_v2_err
+            return avg_vn2, np.sqrt(avg_vn2_err_sq)
         
         elif self.k_ == 4:
             n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi,k=2)
@@ -432,7 +432,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
             # compute Eq. (C32) Ref. [1]
             avg_vn6_err_sq = ((1./(2.*2.**(2./3.))) * (1./(QC6)**(5./3.)) 
-                              * ((9./4.)*(4.*n2_corr**2.-n4_corr)**2.*n2_corr_err**2.
+                              * ((9./2.)*(4.*n2_corr**2.-n4_corr)**2.*n2_corr_err**2.
                             + (9./2.)*n2_corr**2.*n4_corr_err**2.
                             + (1./18.)*n6_corr_err**2.
                             - 9.*n2_corr*(4.*n2_corr**2.-n4_corr)*self.__cov_term(2,4,phi,ebe_2p_corr,ebe_4p_corr)
