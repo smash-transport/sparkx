@@ -142,7 +142,7 @@ def remove_particle_species(particle_list, pdg_list):
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.pdg) != pdg_list #
+                                        if (int(elem.pdg) != pdg_list 
                                             and not np.isnan(elem.pdg))]
 
     elif isinstance(pdg_list, (list, np.ndarray, tuple)):
