@@ -418,7 +418,7 @@ class Lattice3D:
         Returns
         -------
         int or float or None
-            The value at the specified coordinates. Returns None if any of
+            The value at the specified coordinates. Raises ValueError if any of
             the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices(x, y, z)
@@ -441,7 +441,7 @@ class Lattice3D:
         Returns
         -------
         int or float or None
-            The value at the specified coordinates. Returns None if any of
+            The value at the specified coordinates. Raises ValueError if any of
             the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
