@@ -18,7 +18,8 @@ def charged_particles(particle_list):
     """
     for i in range(0, len(particle_list)):
         particle_list[i] = [elem for elem in particle_list[i]
-                                    if (elem.charge != 0 and not np.isnan(elem.charge))]
+                                    if (elem.charge != 0 and 
+                                        not np.isnan(elem.charge))]
     return particle_list
 
 def uncharged_particles(particle_list):
@@ -37,7 +38,8 @@ def uncharged_particles(particle_list):
     """
     for i in range(0, len(particle_list)):
         particle_list[i] = [elem for elem in particle_list[i]
-                                    if (elem.charge == 0 and not np.isnan(elem.charge))]
+                                    if (elem.charge == 0 and 
+                                        not np.isnan(elem.charge))]
     return particle_list
 
 def strange_particles(particle_list):
@@ -56,7 +58,8 @@ def strange_particles(particle_list):
     """
     for i in range(0, len(particle_list)):
         particle_list[i] = [elem for elem in particle_list[i]
-                                    if elem.is_strange() and not np.isnan(elem.is_strange())]
+                                    if elem.is_strange() and 
+                                    not np.isnan(elem.is_strange())]
     return particle_list
 
 def particle_species(particle_list, pdg_list):
@@ -90,14 +93,16 @@ def particle_species(particle_list, pdg_list):
         
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.pdg) == pdg_list and not np.isnan(elem.pdg))]
+                                        if (int(elem.pdg) == pdg_list 
+                                            and not np.isnan(elem.pdg))]
 
     elif isinstance(pdg_list, (list, np.ndarray, tuple)):
         pdg_list = np.asarray(pdg_list, dtype=np.int64)
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.pdg) in pdg_list and not np.isnan(elem.pdg))]
+                                        if (int(elem.pdg) in pdg_list 
+                                            and not np.isnan(elem.pdg))]
 
     else:
         raise TypeError('Input value for pgd codes has not one of the ' +\
@@ -137,19 +142,21 @@ def remove_particle_species(particle_list, pdg_list):
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.pdg) != pdg_list and not np.isnan(elem.pdg))]
+                                        if (int(elem.pdg) != pdg_list 
+                                            and not np.isnan(elem.pdg))]
 
     elif isinstance(pdg_list, (list, np.ndarray, tuple)):
         pdg_list = np.asarray(pdg_list, dtype=np.int64)
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (not int(elem.pdg) in pdg_list and not np.isnan(elem.pdg))]
+                                        if (not int(elem.pdg) in pdg_list 
+                                            and not np.isnan(elem.pdg))]
 
     else:
         raise TypeError('Input value for pgd codes has not one of the ' +\
                         'following types: str, int, float, np.integer, list ' +\
-                        'of str, list of int, llst of float, np.ndarray, tuple')
+                        'of str, list of int, list of float, np.ndarray, tuple')
     return particle_list
 
 def participants(particle_list):
@@ -225,7 +232,8 @@ def lower_event_energy_cut(particle_list,minimum_event_energy):
 
     updated_particle_list = []
     for event_particles in particle_list:
-        total_energy = sum(particle.E for particle in event_particles if not np.isnan(particle.E))
+        total_energy = sum(particle.E for particle in event_particles if 
+                           not np.isnan(particle.E))
         if total_energy >= minimum_event_energy:
             updated_particle_list.append(event_particles)
     particle_list = updated_particle_list
@@ -328,7 +336,7 @@ def pt_cut(particle_list, cut_value_tuple):
                         'positive numbers or None')
     elif (cut_value_tuple[0] is not None and cut_value_tuple[0]<0) or \
             (cut_value_tuple[1] is not None and cut_value_tuple[1]<0):
-                raise ValueError('The cut limits must be positiv or None')
+                raise ValueError('The cut limits must be positive or None')
     elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
         raise ValueError('At least one cut limit must be a number')
 
@@ -346,7 +354,8 @@ def pt_cut(particle_list, cut_value_tuple):
 
     for i in range(0, len(particle_list)):
         particle_list[i] = [elem for elem in particle_list[i] if
-                                    (lower_cut <= elem.pt_abs() <= upper_cut and not np.isnan(elem.pt_abs()))]
+                                    (lower_cut <= elem.pt_abs() <= upper_cut 
+                                     and not np.isnan(elem.pt_abs()))]
 
     return particle_list
 
@@ -393,7 +402,7 @@ def rapidity_cut(particle_list, cut_value):
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i] if
                                         (-limit<=elem.momentum_rapidity_Y()<=limit 
-                                            and not np.isnan(elem.momentum_rapidity_Y()))]
+                                        and not np.isnan(elem.momentum_rapidity_Y()))]
 
     elif isinstance(cut_value, tuple):
         lim_max = max(cut_value[0], cut_value[1])
@@ -402,7 +411,7 @@ def rapidity_cut(particle_list, cut_value):
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i] if
                                         (-lim_min<=elem.momentum_rapidity_Y()<=lim_max 
-                                            and not np.isnan(elem.momentum_rapidity_Y()))]
+                                        and not np.isnan(elem.momentum_rapidity_Y()))]
 
     else:
         raise TypeError('Input value must be a number or a tuple ' +\
@@ -421,7 +430,7 @@ def pseudorapidity_cut(particle_list, cut_value):
         List with lists containing particle objects for the events
 
     cut_value : float
-        If a single value is passed, the cut is applyed symmetrically
+        If a single value is passed, the cut is applied symmetrically
         around 0.
         For example, if cut_value = 1, only particles with pseudo-rapidity
         in [-1.0, 1.0] are kept.
@@ -454,7 +463,8 @@ def pseudorapidity_cut(particle_list, cut_value):
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i] if
-                                        -limit<=elem.pseudorapidity()<=limit]
+                                        (-limit<=elem.pseudorapidity()<=limit
+                                        and not np.isnan(elem.pseudorapidity()))]
 
     elif isinstance(cut_value, tuple):
         lim_max = max(cut_value[0], cut_value[1])
@@ -521,7 +531,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i] if
                                         (-limit<=elem.spatial_rapidity()<=limit
-                                            and not np.isnan(elem.spatial_rapidity()))]
+                                        and not np.isnan(elem.spatial_rapidity()))]
             
     elif isinstance(cut_value, tuple):
         lim_max = max(cut_value[0], cut_value[1])
@@ -605,14 +615,16 @@ def particle_status(particle_list, status_list):
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.status) == status_list and not np.isnan(elem.status))]
+                                        if (int(elem.status) == status_list 
+                                            and not np.isnan(elem.status))]
 
     elif isinstance(status_list, (list, np.ndarray, tuple)):
         status_list = np.asarray(status_list, dtype=np.int64)
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
-                                        if (int(elem.status) in status_list and not np.isnan(elem.status))]
+                                        if (int(elem.status) in status_list 
+                                            and not np.isnan(elem.status))]
 
     else:
         raise TypeError('Input value for status flag has not one of the ' +\
