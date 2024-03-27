@@ -89,7 +89,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         for event in range(len(particle_data)):
             flow_event = 0. + 0.j
             for particle in range(len(particle_data[event])):
-                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
+                weight = 1. if np.isnan(particle_data[event][particle].weight) else particle_data[event][particle].weight
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
                 flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
@@ -154,7 +154,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             for event in range(len(binned_particle_data[bin])):
                 flow_event = 0. + 0.j
                 for particle in range(len(binned_particle_data[bin][event])):
-                    weight = 1. if binned_particle_data[bin][event][particle].weight is None else binned_particle_data[bin][event][particle].weight
+                    weight = 1. if np.isnan(binned_particle_data[bin][event][particle].weight) else binned_particle_data[bin][event][particle].weight
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
                     flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
