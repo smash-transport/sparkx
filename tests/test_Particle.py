@@ -79,7 +79,7 @@ def test_pdg():
         assert q.pdg_valid is False
 
     # Check if a warning is issued
-    with pytest.warns(UserWarning, match=r'The PDG code 99999999 is not valid. All properties extracted from the PDG are set to None.'):
+    with pytest.warns(UserWarning, match=r'The PDG code 99999999 is not valid. All properties extracted from the PDG are set to nan.'):
         q.pdg = 99999999
 
 def test_ID():
