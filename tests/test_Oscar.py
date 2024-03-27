@@ -3,8 +3,6 @@ import numpy as np
 import pytest
 import os
 
-OSCAR_EXTENDED_FILE = "./test_files/particle_lists_extended.oscar"
-
 @pytest.fixture
 def oscar_file_path():
     # Assuming your test file is in the same directory as test_files/
