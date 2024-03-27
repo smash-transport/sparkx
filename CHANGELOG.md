@@ -21,6 +21,10 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 ## v1.2.0-Newton
 Date:
 
+### Added
+
+* Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
+
 ### Fixed
 
 * Oscar/Jetscape: Fixed bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)

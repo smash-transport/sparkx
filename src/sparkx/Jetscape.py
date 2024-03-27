@@ -51,6 +51,10 @@ class Jetscape:
                 memory. The names of the filters are the same as the names of |br|
                 the filter methods. All filters are applied in the order in |br|
                 which they appear in the dictionary.
+            * - :code:`particletype` (str)
+              - This parameter allows to switch from the standard hadron file |br|
+                to the parton output of JETSCAPE. The parameter can be set to |br|
+                :code:`particletype='hadron'` (default) or :code:`particletype='parton'`.
 
         .. |br| raw:: html
 
@@ -185,6 +189,7 @@ class Jetscape:
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
+        self.particle_type_ = 'hadron'
         self.optional_arguments_ = kwargs
 
         for keys in self.optional_arguments_.keys():
@@ -200,6 +205,19 @@ class Jetscape:
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
                 raise ValueError('Event number must be positive')
+        
+        if 'particletype' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['particletype'], str):
+            if (self.optional_arguments_['particletype'] == 'hadron') or (self.optional_arguments_['particletype'] == 'parton'):
+                self.particle_type_ = self.optional_arguments_['particletype']
+            else:
+                raise ValueError("'particletype' has to be 'hadron' or 'parton'")
+        elif 'particletype' in self.optional_arguments_.keys() and not isinstance(self.optional_arguments_['particletype'], str):
+            raise TypeError("'particletype' is not given as a string value") 
+
+        if self.particle_type_ == 'hadron':
+            self.particle_type_defining_string_ = 'N_hadrons'
+        else:
+            self.particle_type_defining_string_ = 'N_partons'
 
         self.set_num_output_per_event()
         self.set_particle_list(kwargs)
@@ -423,7 +441,7 @@ class Jetscape:
                 line = jetscape_file.readline()
                 if not line:
                     break
-                elif '#' in line and 'N_hadrons' in line:
+                elif '#' in line and self.particle_type_defining_string_ in line:
                     line_str = line.replace('\n','').replace('\t',' ').split(' ')
                     event = line_str[2]
                     num_output = line_str[8]
@@ -839,7 +857,7 @@ class Jetscape:
                         data_to_write.append(header_file)
 
                     # Header for each event
-                    header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                    header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n'
                     data_to_write.append(header)
 
                     # Convert particle data to formatted strings
@@ -857,7 +875,7 @@ class Jetscape:
                     data_to_write.append(header_file)
 
                 # Header for each event
-                header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\tN_hadrons\t{num_out}\n'
+                header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n'
                 data_to_write.append(header)
 
                 # Convert particle data to formatted strings
