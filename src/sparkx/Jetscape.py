@@ -364,7 +364,7 @@ class Jetscape:
                     if int(line[2]) == first_event_header:
                         continue
                     else:
-                        if 'filters' in kwargs.keys():
+                        if 'filters' in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
                             self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
                         particle_list.append(data)
