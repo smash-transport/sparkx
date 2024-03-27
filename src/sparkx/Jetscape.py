@@ -163,7 +163,7 @@ class Jetscape:
     Let's assume we only want to keep pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
         >>>
         >>> # print the pions to a jetscape file
         >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
@@ -186,6 +186,10 @@ class Jetscape:
         self.num_events_ = None
         self.particle_list_ = None
         self.optional_arguments_ = kwargs
+
+        for keys in self.optional_arguments_.keys():
+            if keys not in ['events', 'filters']:
+                raise ValueError('Unknown keyword argument used in constructor')
 
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
             if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
@@ -360,7 +364,7 @@ class Jetscape:
                     if int(line[2]) == first_event_header:
                         continue
                     else:
-                        if 'filters' in kwargs.keys():
+                        if 'filters' in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
                             self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
                         particle_list.append(data)
