@@ -6,15 +6,17 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
     """
     This class implements a reaction plane flow analysis algorithm.
 
-    For this method, the flow is calculated under the assumption that the event plane angle is constant
-    throughout all events. The flow is calculated as
+    For this method, the flow is calculated under the assumption that the event 
+    plane angle is constant throughout all events. The flow is calculated as
 
     .. math::
 
-        v_n = \\left\\langle p_{\\mathrm{T}}^n \\exp{\\frac{in\\phi_i}{p_{\\mathrm{T}}^n}}\\right\\rangle
+        v_n = \\left\\langle \\exp{in\\phi_i}\\right\\rangle
 
-    where we average over all particles of all events. We return complex numbers, which contain the information
-    about the position of the event plane.
+    where we average over all particles of all events. We return complex numbers, 
+    which contain the information about the position of the event plane.
+    If a weight is set for the particles in the `Particle` objects, then this 
+    is used in the flow calculation.
 
 
     Parameters
@@ -52,6 +54,10 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>>
         >>> # Calculate the integrated flow with error
         >>> v2 = flow2.integrated_flow(jetscape_flow)
+        >>>
+        >>> # Calculate the differential flow with error
+        >>> pt_bins = [0.0,0.5,1.0,2.0,3.0,4.0]
+        >>> v2_differential = flow2.integrated_flow(jetscape_flow,pt_bins,'pt')
 
     """
     def __init__(self,n=2):
@@ -89,10 +95,10 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         for event in range(len(particle_data)):
             flow_event = 0. + 0.j
             for particle in range(len(particle_data[event])):
-                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
+                weight = 1. if np.isnan(particle_data[event][particle].weight) else particle_data[event][particle].weight
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
-                flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                flow_event += weight*np.exp(1j*self.n_*phi)
                 number_particles += weight
             if number_particles != 0.:
                 flow_event_average += flow_event
@@ -154,10 +160,10 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             for event in range(len(binned_particle_data[bin])):
                 flow_event = 0. + 0.j
                 for particle in range(len(binned_particle_data[bin][event])):
-                    weight = 1. if binned_particle_data[bin][event][particle].weight is None else binned_particle_data[bin][event][particle].weight
+                    weight = 1. if np.isnan(binned_particle_data[bin][event][particle].weight) else binned_particle_data[bin][event][particle].weight
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
-                    flow_event += weight*(pt**self.n_ * np.exp(1j*self.n_*phi) / pt**self.n_)
+                    flow_event += weight*np.exp(1j*self.n_*phi)
                     number_particles += weight
                 flow_event_average += flow_event
             if number_particles != 0.:
