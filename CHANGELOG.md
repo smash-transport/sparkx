@@ -21,10 +21,17 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 ## v1.2.0-Newton
 Date:
 
+### Added
+
+* QCumulantFlow: Differential flow for two and four particle cumulants
+* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar
+
 ### Fixed
 
-* Oscar/Jetscape: Fixed bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)
-* Oscar/Jetscape: Fixed bug in `pseudorapidity_cut` filter function if only one cut value is given (issue #188)
+* Oscar/Jetscape: Fix bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)
+* Oscar/Jetscape: Fix bug in `pseudorapidity_cut` filter function if only one cut value is given (issue #188)
+* Oscar/Jetscape: Fix bug in keyword argument parsing
+* ReactionPlaneFlow: Fix bug in particle weight
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 
