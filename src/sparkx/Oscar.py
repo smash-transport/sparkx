@@ -245,6 +245,11 @@ class Oscar:
         """
         Check if all elements inside the event tuple are integers.
 
+        Parameters
+        ----------
+        events_tuple : tuple
+            Tuple containing event boundary events for read in.
+
         Raises
         ------
         TypeError
