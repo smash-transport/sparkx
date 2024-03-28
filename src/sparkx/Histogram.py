@@ -72,6 +72,8 @@ class Histogram:
         Add one or multiple values to the latest histogram.
     add_histogram:
         Add a new histogram.
+    make_density:
+        Create probability density from last histogram.
     average:
         Averages over all histograms.
     average_weighted:
@@ -182,7 +184,8 @@ class Histogram:
     def histogram_raw_counts(self):
         """
         Get the raw bin counts of the histogram(s), even after the original
-        histograms are scaled or averaged.
+        histograms are scaled or averaged. If weights are used, then they
+        affect the raw counts histogram.
 
         Returns
         -------
@@ -257,7 +260,7 @@ class Histogram:
         """
         return np.asarray(self.bin_edges_)
 
-    def add_value(self, value):
+    def add_value(self, value, weight=None):
         """
         Add value(s) to the latest histogram.
 
@@ -268,12 +271,25 @@ class Histogram:
         ----------
         value: int, float, np.number, list, numpy.ndarray
             Value(s) which are supposed to be added to the histogram instance.
+        weight: int, float, np.number, list, numpy.ndarray, optional
+            Weight(s) associated with the value(s). If provided, it should have 
+            the same length as the value parameter.
 
         Raises
         ------
         TypeError
             if the input is not a number or numpy.ndarray or list
+        ValueError
+            if the input `weight` has not the same dimension as `value`
         """
+        # Check if weight has the same length as value
+        if weight is not None:
+            if isinstance(weight, (int, float, np.number)):
+                if not isinstance(value, (int, float, np.number)):
+                    raise ValueError("Value must be numeric when weight is scalar.")
+            elif len(weight) != np.atleast_1d(value).shape[0]:
+                raise ValueError("Weight must have the same length as value.")
+
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
 
@@ -290,8 +306,12 @@ class Histogram:
                 if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[bin_index-1] += 1
-                    self.histograms_raw_count_[bin_index-1] += 1
+                    if weight is not None:
+                        self.histograms_[bin_index-1] += weight
+                        self.histograms_raw_count_[bin_index-1] += weight
+                    else:
+                        self.histograms_[bin_index-1] += 1
+                        self.histograms_raw_count_[bin_index-1] += 1
 
             # Case 2.2: If histogram contains multiple instances,
             #           always add values to the latest histogram
@@ -300,19 +320,66 @@ class Histogram:
                 if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[-1,bin_index-1] += 1
-                    self.histograms_raw_count_[-1,bin_index-1] += 1
+                    if weight is not None:
+                        self.histograms_[-1,bin_index-1] += weight
+                        self.histograms_raw_count_[-1,bin_index-1] += weight
+                    else:
+                        self.histograms_[-1,bin_index-1] += 1
+                        self.histograms_raw_count_[-1,bin_index-1] += 1
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
-            for element in value:
-                self.add_value(element)
+            if weight is not None:
+                for element, w in zip(value, weight):
+                    self.add_value(element, weight=w)
+            else:
+                for element in value:
+                    self.add_value(element)
 
         # Case 1.3: value has an invalid input type
         else:
             err_msg = 'Invalid input type! Input value must have one of the '+\
                       'following types: (int, float, np.number, list, np.ndarray)'
             raise TypeError(err_msg)
+
+    def make_density(self):
+        """
+        Make a probability density from the last histogram.
+        The result represents the probability density function in a given bin. 
+        It is normalized such that the integral over the whole histogram 
+        yields 1. This behavior is similar to the one of numpy histograms.
+
+        Notes
+        -----
+        If this function is used, then the routines to compute uncertainties 
+        should not be used.
+
+        Raises
+        ------
+        ValueError
+            if there is no histogram available
+        ValueError
+            if the integral over the histogram is zero
+        """
+        if self.number_of_histograms_ == 0:
+            raise ValueError("No histograms available to compute density.")
+
+        if self.number_of_histograms_ == 1:
+            last_histogram = self.histograms_
+        else:
+            last_histogram = self.histograms_[-1]
+
+        bin_widths = self.bin_width()
+        density = last_histogram / bin_widths
+        integral = np.sum(density * bin_widths)
+        if integral == 0:
+            raise ValueError("Integral over the histogram is zero.")
+        density /= integral
+
+        if self.number_of_histograms_ == 1:
+            self.histograms_ = density
+        else:
+            self.histograms_[-1] = density
 
     def add_histogram(self):
         """

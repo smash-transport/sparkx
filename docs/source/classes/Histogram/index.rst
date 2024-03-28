@@ -16,6 +16,7 @@ Histogram
 .. automethod:: Histogram.bin_boundaries
 .. automethod:: Histogram.add_value
 .. automethod:: Histogram.add_histogram
+.. automethod:: Histogram.make_density
 .. automethod:: Histogram.average
 .. automethod:: Histogram.average_weighted
 .. automethod:: Histogram.standard_error
