@@ -11,6 +11,11 @@ class JetAnalysis:
     For further information on the jet finding algorithms please have a look
     at the documentation.
 
+    **Attention**: For a proper jet hole subtraction the `status` of the 
+    particles has to be set. This is only given for read in from Jetscape
+    output. With Oscar read in this has to be set by hand before doing the 
+    jet finding.
+
     Attributes
     ----------
     hadron_data_: list
@@ -236,6 +241,8 @@ class JetAnalysis:
         """
         associated_hadrons = []
         for hadron in self.hadron_data_[event]:
+            if np.isnan(hadron.status):
+                raise ValueError("Hadron status not set")
             if (status_selection == 'negative' and hadron.status >= 0) or \
                 (status_selection == 'positive' and hadron.status < 0) or \
                 (only_charged and hadron.charge == 0):

@@ -7,10 +7,6 @@ rd.seed(42)
 
 class QCumulantFlow(FlowInterface.FlowInterface):
     """
-    **Attention**: This is a beta version of the QCumulantFlow analysis class 
-    for testing purposes. We do not recommend using this class for production 
-    runs yet. There is only the integrated flow implemented at the moment.
-
     This class implements the Q-cumulant method for anisotropic flow analysis.
 
     References:
@@ -703,9 +699,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def differential_flow(self, particle_data, bins, flow_as_function_of, poi_pdg=None):
         """
-        **Attention**: This feature is not yet available.
-
-        Compute the differential flow.
+        Compute the differential flow. The cumulants of second and fourth order
+        are implemented.
 
         Parameters
         ----------
