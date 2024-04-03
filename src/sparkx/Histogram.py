@@ -280,18 +280,29 @@ class Histogram:
         TypeError
             if the input is not a number or numpy.ndarray or list
         ValueError
+            if an input `value` is NaN
+        ValueError
             if the input `weight` has not the same dimension as `value`
+        ValueError
+            if a `weight` value is NaN 
         """
         # Check if weight has the same length as value
         if weight is not None:
             if isinstance(weight, (int, float, np.number)):
                 if not isinstance(value, (int, float, np.number)):
                     raise ValueError("Value must be numeric when weight is scalar.")
+                if np.isnan(weight):
+                    raise ValueError("Value cannot be NaN when weight is scalar.")
             elif len(weight) != np.atleast_1d(value).shape[0]:
                 raise ValueError("Weight must have the same length as value.")
+            else:
+                if np.isnan(value).any():
+                    raise ValueError("Value cannot contain NaN when weight is not scalar.")
 
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
+            if np.isnan(value):
+                raise ValueError("Input value in add_value is NaN.")
 
             counter_warnings = 0
             if (value < self.bin_edges_[0] or value > self.bin_edges_[-1]) and counter_warnings == 0:
@@ -329,6 +340,8 @@ class Histogram:
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
+            if np.isnan(value).any():
+                raise ValueError("At least one input value in add_value is NaN.")
             if weight is not None:
                 for element, w in zip(value, weight):
                     self.add_value(element, weight=w)
@@ -374,12 +387,10 @@ class Histogram:
         integral = np.sum(density * bin_widths)
         if integral == 0:
             raise ValueError("Integral over the histogram is zero.")
-        density /= integral
+        scale_factor = 1. / integral
 
-        if self.number_of_histograms_ == 1:
-            self.histograms_ = density
-        else:
-            self.histograms_[-1] = density
+        self.statistical_error()
+        self.scale_histogram(scale_factor)
 
     def add_histogram(self):
         """
@@ -403,7 +414,7 @@ class Histogram:
         Average over all histograms.
 
         When this function is called the previously generated histograms are
-        averaged with the unit weigths and they are overwritten by the
+        averaged with the unit weights and they are overwritten by the
         averaged histogram.
         The standard error of the averaged histograms is computed.
 
@@ -432,7 +443,7 @@ class Histogram:
         Weighted average over all histograms.
 
         When this function is called the previously generated histograms are
-        averaged with the given weigths and they are overwritten by the
+        averaged with the given weights and they are overwritten by the
         averaged histogram.
         The standard error of the histograms is computed.
 
