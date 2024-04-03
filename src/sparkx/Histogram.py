@@ -362,11 +362,6 @@ class Histogram:
         It is normalized such that the integral over the whole histogram 
         yields 1. This behavior is similar to the one of numpy histograms.
 
-        Notes
-        -----
-        If this function is used, then the routines to compute uncertainties 
-        should not be used.
-
         Raises
         ------
         ValueError
