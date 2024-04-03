@@ -35,7 +35,7 @@ Date:
 * Oscar/Jetscape: Fix bug in `pseudorapidity_cut` filter function if only one cut value is given (issue #188)
 * Oscar/Jetscape: Fix bug in keyword argument parsing
 * ReactionPlaneFlow: Fix bug in particle weight
-
+* Oscar: Fix various bugs in printout
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 
 ## v1.1.1-Newton
