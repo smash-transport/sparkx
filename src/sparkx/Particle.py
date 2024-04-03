@@ -347,7 +347,7 @@ class Particle:
                  and len(particle_array) <=  len(attribute_mapping[input_format])\
                     and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
-                    if len(particle_array)<index[1]+1:
+                    if len(particle_array)<=(index[1]):
                         continue
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
                     # to ensure similar behaving as if we were reading in data into ints.
@@ -683,6 +683,8 @@ class Particle:
         -------
         baryon_number : int
         """
+        if np.isnan(self.data_[22]):
+            return np.nan
         return int(self.data_[22])
  
     @baryon_number.setter
@@ -697,6 +699,8 @@ class Particle:
         -------
         strangeness : int
         """
+        if np.isnan(self.data_[23]):
+            return np.nan
         return int(self.data_[23])
 
     @strangeness.setter
