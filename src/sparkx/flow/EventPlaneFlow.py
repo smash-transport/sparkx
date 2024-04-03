@@ -282,7 +282,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         flowvalue_squared = 0.0
         for event in range(len(flow_particle_list)):
             for particle in range(len(flow_particle_list[event])):
-                weight = 1. if particle_data[event][particle].weight is None else particle_data[event][particle].weight
+                weight = 1. if np.isnan(particle_data[event][particle].weight) else particle_data[event][particle].weight
                 number_of_particles += weight
                 flowvalue += flow_particle_list[event][particle]*weight
                 flowvalue_squared += flow_particle_list[event][particle]**2.*weight**2.

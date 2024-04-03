@@ -515,7 +515,7 @@ class Particle:
         
         if(not self.pdg_valid):
              warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
-                           'All properties extracted from the PDG are set to None.')
+                           'All properties extracted from the PDG are set to nan.')
 
     @property
     def ID(self):

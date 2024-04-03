@@ -490,7 +490,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         else:
             return [vn_differential,vn_differential_uncertainty]
 
-    def differential_flow(self,particle_data,bins,flow_as_function_of):
+    def differential_flow(self,particle_data,bins,flow_as_function_of, poi_pdg=None):
         """
         Compute the differential flow.
 
@@ -502,6 +502,8 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Bins used for the differential flow calculation.
         flow_as_function_of : str
             Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+        poi_pdg : list
+            List of PDG id for identified particle differential flow.
 
         Returns
         -------
@@ -525,6 +527,8 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
             raise TypeError('flow_as_function_of is not a string')
+        if poi_pdg != None and not isinstance(poi_pdg, (list,np.ndarray)):
+            raise TypeError('poi_pdg has to be list or np.ndarray')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
         
@@ -545,7 +549,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                    if val >= bins[bin] and val < bins[bin+1]:
+                    if val >= bins[bin] and val < bins[bin+1] and particle.pdg in poi_pdg:
                         particles_event.append(particle)
                 if len(particles_event) > 0:
                     events_bin.extend([particles_event])

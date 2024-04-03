@@ -58,6 +58,115 @@ def test_add_value_list():
     hist.add_value([1, 3, 5, 7, 9])
     assert np.allclose(hist.histogram(), np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]))
 
+def test_add_value_single_number_to_existing_histogram():
+    # Test adding a single number to an existing histogram
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.add_value(5.5)
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 1, 1, 0, 0, 0, 0]))
+
+def test_add_value_single_number_to_multiple_histograms():
+    # Test adding a single number to multiple histograms
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.add_histogram()
+    hist.add_value(5.5)
+    assert np.allclose(hist.histogram(), np.array([[0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]]))
+
+def test_add_value_with_weight():
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5, weight=0.5)
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0]))
+
+def test_add_value_with_weight_NaN():
+    with pytest.raises(ValueError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value(4.5, weight=np.nan)
+
+def test_add_value_with_two_weights():
+    with pytest.raises(ValueError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value(4.5, weight=[1., 1.])
+
+def test_add_value_list_weigths():
+    hist = Histogram((0, 10, 10))
+    hist.add_value([4.5,5.5], weight=[0.5, 0.5])
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0]))
+
+def test_add_value_list_weigths_error_length():
+    with pytest.raises(ValueError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value([4.5,5.5], weight=0.5)
+
+def test_add_value_nan():
+    with pytest.raises(ValueError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value(np.nan)
+
+def test_add_value_nan():
+    with pytest.raises(ValueError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value([1., 2., np.nan])
+
+def test_add_value_invalid_input_type():
+    with pytest.raises(TypeError):
+        hist = Histogram((0, 10, 10))
+        hist.add_value((1., 2., np.nan))
+
+def test_make_density_no_histogram_available():
+    # Test case when make_density is called without any histogram available
+    hist = Histogram((0, 10, 10))
+    with pytest.raises(ValueError):
+        hist.make_density()
+
+def test_make_density_zero_integral():
+    # Set up Histogram object with a histogram having zero integral
+    histogram = Histogram((0.,10.,10))
+    histogram.histograms_ = [np.zeros(4)]  # Histogram with zero values
+    histogram.number_of_histograms_ = 1
+    
+    # Ensure ValueError is raised when integral is zero
+    with pytest.raises(ValueError):
+        histogram.make_density()
+
+def test_make_density():
+    # Initialize Histogram object
+    hist = Histogram((0.,10.,10))
+    hist.add_value(4.5)
+    hist.add_value(5.5)
+    
+    # Call make_density method
+    hist.make_density()
+    
+    # Check if the result is a numpy array
+    assert isinstance(hist.histograms_, np.ndarray)
+    
+    # Check if the result is normalized
+    integral = np.sum(hist.histograms_ * hist.bin_width())
+    assert integral == pytest.approx(1.0, abs=1e-5)
+
+def test_make_density_with_two_histograms():
+    # Initialize Histogram object
+    hist = Histogram((0., 10., 10))
+    hist.add_value(4.5)
+    hist.add_value(5.5)
+
+    hist.make_density()
+    integral1 = np.sum(hist.histograms_ * hist.bin_width())
+    assert integral1 == pytest.approx(1.0, abs=1e-5)
+    
+    # Add another histogram
+    hist.add_histogram()
+    hist.add_value(6.5)
+    hist.add_value(9.)
+    hist.add_value(3.)
+    hist.make_density()
+    
+    # Check if the result is a numpy array
+    assert isinstance(hist.histograms_[-1], np.ndarray)
+    integral2 = np.sum(hist.histograms_[-1] * hist.bin_width())
+    assert integral2 == pytest.approx(1.0, abs=1e-5)
+
 def test_average():
     # Test averaging histograms
     hist = Histogram((0, 10, 10))

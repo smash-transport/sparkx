@@ -177,7 +177,7 @@ class Oscar:
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
 
-        >>> oscar = Oscar(OSCAR_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)}})
+        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)})
         >>>
         >>> # print the pions to an oscar file
         >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')
@@ -210,8 +210,8 @@ class Oscar:
         """
 
         if not '.oscar' in OSCAR_FILE:
-            raise TypeError('Input file is not in the OSCAR format. Input '
-                            'file must have the ending .oscar')
+            raise FileNotFoundError('Input file is not in the OSCAR format. Input '
+                                    'file must have the ending .oscar')
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
@@ -221,10 +221,15 @@ class Oscar:
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
 
+        for keys in self.optional_arguments_.keys():
+            if keys not in ['events', 'filters']:
+                raise ValueError('Unknown keyword argument used in constructor')
+
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
+            self.__check_that_tuple_contains_integers_only(self.optional_arguments_['events'])
             if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
                 raise ValueError('First value of event number tuple must be smaller than second value')
-            elif self.optional_arguments_['events'][0] <0 or self.optional_arguments_['events'][1] < 0:
+            elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
                 raise ValueError('Event numbers must be positive')
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
@@ -236,6 +241,22 @@ class Oscar:
         self.set_particle_list(kwargs)
 
     # PRIVATE CLASS METHODS
+    def __check_that_tuple_contains_integers_only(self, events_tuple):
+        """
+        Check if all elements inside the event tuple are integers.
+
+        Parameters
+        ----------
+        events_tuple : tuple
+            Tuple containing event boundary events for read in.
+
+        Raises
+        ------
+        TypeError
+            If one or more elements inside the event tuple are not integers.
+        """
+        if not all(isinstance(event, int) for event in events_tuple):
+            raise TypeError("All elements inside the event tuple must be integers.")
 
     def __get_num_skip_lines(self):
         """
@@ -418,7 +439,7 @@ class Oscar:
                 elif 'event' in line and ('out' in line or 'in ' in line):
                     continue
                 elif '#' in line and 'end' in line:
-                    if 'filters' in kwargs.keys():
+                    if 'filters' in self.optional_arguments_.keys():
                         data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
                         self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
                     particle_list.append(data)
