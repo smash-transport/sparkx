@@ -204,6 +204,7 @@ class Particle:
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):
         self.data_ = np.array(25*[np.nan],dtype=float)
+        self.pdg_valid = False
         
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
@@ -506,7 +507,10 @@ class Particle:
         -------
         pdg : int
         """
-        return int(self.data_[9])
+        if np.isnan(self.data_[9]):
+            return np.nan
+        else:
+            return int(self.data_[9])
 
     @pdg.setter
     def pdg(self,value):
@@ -527,7 +531,10 @@ class Particle:
         -------
         ID : int
         """
-        return int(self.data_[11])
+        if np.isnan(self.data_[11]):
+            return np.nan
+        else:
+            return int(self.data_[11])
 
     @ID.setter
     def ID(self,value):
@@ -541,7 +548,10 @@ class Particle:
         -------
         charge : int
         """
-        return int(self.data_[12])
+        if np.isnan(self.data_[12]):
+            return np.nan
+        else:
+            return int(self.data_[12])
 
     @charge.setter
     def charge(self,value):
@@ -555,7 +565,10 @@ class Particle:
         -------
         ncoll : int
         """
-        return int(self.data_[13]) 
+        if np.isnan(self.data_[13]):
+            return np.nan
+        else:
+            return int(self.data_[13]) 
 
     @ncoll.setter
     def ncoll(self,value):
@@ -597,7 +610,10 @@ class Particle:
         -------
         proc_id_origin : int
         """
-        return int(self.data_[16])
+        if np.isnan(self.data_[16]):
+            return np.nan
+        else:
+            return int(self.data_[16])
 
     @proc_id_origin.setter
     def proc_id_origin(self,value):
@@ -611,7 +627,10 @@ class Particle:
         -------
         proc_type_origin : int
         """
-        return int(self.data_[17])
+        if np.isnan(self.data_[17]):
+            return np.nan
+        else:
+            return int(self.data_[17])
 
     @proc_type_origin.setter
     def proc_type_origin(self,value):
@@ -639,7 +658,10 @@ class Particle:
         -------
         pdg_mother1 : int
         """
-        return int(self.data_[19])
+        if np.isnan(self.data_[19]):
+            return np.nan
+        else:
+            return int(self.data_[19])
 
     @pdg_mother1.setter
     def pdg_mother1(self,value):
@@ -653,7 +675,10 @@ class Particle:
         -------
         pdg_mother2 : int
         """
-        return int(self.data_[20])
+        if np.isnan(self.data_[20]):
+            return np.nan
+        else:
+            return int(self.data_[20])
 
     @pdg_mother2.setter
     def pdg_mother2(self,value):
@@ -669,7 +694,10 @@ class Particle:
         -------
         status : int
         """
-        return int(self.data_[21])
+        if np.isnan(self.data_[21]):
+            return np.nan
+        else:
+            return int(self.data_[21])
 
     @status.setter
     def status(self,value):
