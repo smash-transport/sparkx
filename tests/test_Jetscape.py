@@ -67,7 +67,7 @@ def create_temporary_jetscape_file(path, num_events, output_per_event_list=None)
             for _ in range(num_outputs):
                 f.write(particle_line)
 
-            # Write ending comment line
+        # Write ending comment line
         ending_comment_line = f"#	sigmaGen	0.000314633	sigmaErr	6.06164e-07\n"
         f.write(ending_comment_line)
 
