@@ -390,5 +390,23 @@ def particle_list_status():
         p = Particle()
         p.status = 1
         particle_list.append(p)
+        q = Particle()
+        q.status = 0
+        particle_list.append(q)
     return [particle_list]
 
+def test_particle_status(particle_list_status):
+    # Test for single status
+    result = particle_status(particle_list_status, status_list=1)
+    assert all(p.status == 1 for event in result for p in event)
+
+    # Test for multiple statuses
+    result = particle_status(particle_list_status, status_list=[0, 1])
+    assert all(p.status in [0, 1] for event in result for p in event)
+
+    # Test for invalid input
+    with pytest.raises(TypeError):
+        particle_status(particle_list_status, status_list='invalid')
+
+    with pytest.raises(TypeError):
+        particle_status(particle_list_status, status_list=[0, 'invalid'])
