@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 import pytest
 from sparkx.Filter import *
 from sparkx.Particle import Particle
@@ -55,24 +56,24 @@ def test_strange_particles(particle_nan_quantities,particle_list_strange):
     return_list = strange_particles(particle_list_strange)
     assert(len(return_list[0]) == 5)
 
-def test_particle_species_filter(particle_list_strange):
-    return_list = particle_species(particle_list_strange,'321')
+def test_particle_species_filter(particle_list_strange): 
+    return_list = particle_species(copy.deepcopy(particle_list_strange),'321')
     assert(len(return_list[0]) == 5)
     
-    return_list = particle_species(particle_list_strange,321)
+    return_list = particle_species(copy.deepcopy(particle_list_strange),211)
     assert(len(return_list[0]) == 5)
 
-    return_list = particle_species(particle_list_strange,321.0)
+    return_list = particle_species(copy.deepcopy(particle_list_strange),321.0)
     assert(len(return_list[0]) == 5)
 
-    return_list = particle_species(particle_list_strange,[211,321])
-    assert(len(return_list[0]) == 5)
+    return_list = particle_species(copy.deepcopy(particle_list_strange),[211,321])
+    assert(len(return_list[0]) == 10)
 
-    return_list = particle_species(particle_list_strange,np.array([211,321]))
-    assert(len(return_list[0]) == 5)
+    return_list = particle_species(copy.deepcopy(particle_list_strange),np.array([211,321]))
+    assert(len(return_list[0]) == 10)
 
-    return_list = particle_species(particle_list_strange,(211,321))
-    assert(len(return_list[0]) == 5)
+    return_list = particle_species(copy.deepcopy(particle_list_strange),(211,321))
+    assert(len(return_list[0]) == 10)
 
     with pytest.raises(ValueError):
         return_list = particle_species(particle_list_strange,np.nan)
@@ -80,25 +81,24 @@ def test_particle_species_filter(particle_list_strange):
     with pytest.raises(ValueError):
         return_list = particle_species(particle_list_strange,[np.nan,211])
 
-# CHECK: This gives an assertion error as soon as a list/array/tuple is given
-'''
+
 def test_remove_particle_species_filter(particle_list_strange):
-    return_list = remove_particle_species(particle_list_strange,'321')
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),'321')
     assert(len(return_list[0]) == 5)
     
-    return_list = remove_particle_species(particle_list_strange,321)
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),321)
     assert(len(return_list[0]) == 5)
 
-    return_list = remove_particle_species(particle_list_strange,321.0)
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),321.0)
     assert(len(return_list[0]) == 5)
 
-    return_list = remove_particle_species(particle_list_strange,[211,321])
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),[211,321])
     assert(len(return_list[0]) == 0)
 
-    return_list = remove_particle_species(particle_list_strange,np.array([211,321]))
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),np.array([211,321]))
     assert(len(return_list[0]) == 0)
 
-    return_list = remove_particle_species(particle_list_strange,(211,321))
+    return_list = remove_particle_species(copy.deepcopy(particle_list_strange),(211,321))
     assert(len(return_list[0]) == 0)
 
     with pytest.raises(ValueError):
@@ -106,7 +106,7 @@ def test_remove_particle_species_filter(particle_list_strange):
     
     with pytest.raises(ValueError):
         return_list = remove_particle_species(particle_list_strange,[np.nan,211])
-'''
+
 @pytest.fixture
 def particle_list_ncoll():
     particle_list = []
@@ -146,9 +146,6 @@ def particle_list_energies():
     final_list.extend([particle_list2])
     return final_list
 
-# CHECK: Confirm that this is what we want. At the moment only the events with 
-# energy larger than value are returned, there are no empty event lists in
-# return list
 def test_lower_event_energy_cut(particle_nan_quantities,particle_list_energies):
     return_list = lower_event_energy_cut(particle_nan_quantities, 1.0)
     assert(len(return_list[0]) == 0)
@@ -162,6 +159,9 @@ def test_lower_event_energy_cut(particle_nan_quantities,particle_list_energies):
     with pytest.raises(TypeError):
         lower_event_energy_cut(particle_nan_quantities, '1.0')
 
+    with pytest.raises(ValueError):
+        return_list = lower_event_energy_cut(particle_list_energies, -1.0)
+    
     return_list = lower_event_energy_cut(particle_list_energies, 8.0)
     assert(len(return_list[0]) == 5)
     assert(len(return_list) == 1)

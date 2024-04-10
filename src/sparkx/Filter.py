@@ -96,7 +96,7 @@ def particle_species(particle_list, pdg_list):
         if np.isnan(pdg_list).any():
             raise ValueError('Input value for PDG codes contains NaN values')
 
-    elif isinstance(pdg_list, (int, float, str, np.integer)):
+    if isinstance(pdg_list, (int, float, str, np.integer)):
         pdg_list = int(pdg_list)
         
         for i in range(0, len(particle_list)):
@@ -153,7 +153,7 @@ def remove_particle_species(particle_list, pdg_list):
         if np.isnan(pdg_list).any():
             raise ValueError('Input value for PDG codes contains NaN values')
 
-    elif isinstance(pdg_list, (int, float, str, np.integer)):
+    if isinstance(pdg_list, (int, float, str, np.integer)):
         pdg_list = int(pdg_list)
 
         for i in range(0, len(particle_list)):
@@ -165,12 +165,10 @@ def remove_particle_species(particle_list, pdg_list):
         pdg_list = np.asarray(pdg_list, dtype=np.int64)
         print(pdg_list)
 
-        print("Particle list before filtering:", particle_list[i])
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
                                         if (int(elem.pdg) not in pdg_list 
                                             and not np.isnan(elem.pdg))]
-        print("Particle list after filtering:", particle_list[i])
 
     else:
         raise TypeError('Input value for pgd codes has not one of the ' +\
@@ -222,6 +220,7 @@ def spectators(particle_list):
 def lower_event_energy_cut(particle_list,minimum_event_energy):
     """
     Filters out events with total energy lower than a threshold.
+    Events with smaller energies are removed and not kept as empty events.
 
     Parameters
     ----------
