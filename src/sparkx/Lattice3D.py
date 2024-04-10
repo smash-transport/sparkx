@@ -1246,14 +1246,17 @@ class Lattice3D:
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
                         norm += smearing_factor
                         value_to_add = value * smearing_factor / self.cell_volume_
-
+                        
+                        if np.isnan(value_to_add):
+                            value_to_add=0.
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
 
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
                     for k in range(temp_lattice.num_points_z_):
-                        temp_lattice.grid_[i, j, k] /= norm
+                        if abs(norm)>1e-15:
+                            temp_lattice.grid_[i, j, k] /= norm
 
             xi ,yi ,zi = self.find_closest_indices(x, y, z)
             x_grid, y_grid, z_grid = self.get_coordinates(xi ,yi ,zi)

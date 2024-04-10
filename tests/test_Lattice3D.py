@@ -2,7 +2,8 @@ import pytest
 import csv
 import numpy as np
 import copy
-from sparkx.Lattice3D import Lattice3D
+from sparkx.Lattice3D import Lattice3D, print_lattice
+from sparkx.Particle import Particle
 
 @pytest.fixture
 def sample_lattice():
@@ -275,4 +276,127 @@ def test_interpolate_to_lattice(sample_lattice):
                     continue
                 posx, posy, posz=lattice.get_coordinates(int(i/2), int(j/2), int(k/2))
                 assert np.isclose(new_lattice.get_value_by_index(i, j, k), lattice.interpolate_value(posx,posy,posz))
+
+def test_interpolate_to_lattice_to_new_extent(sample_lattice):
+    # Create a Lattice3D object
+    lattice = sample_lattice
+
+    # Assume set_value_by_index and interpolate_value methods are properly defined
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                lattice.set_value_by_index(i, j, k, i + j + k)
+
+    # Call interpolate_to_lattice
+    new_lattice = lattice.interpolate_to_lattice_new_extent(20, 20, 20, -1,1,-1,1,-1,1)
+
+    # Check that the values in the new lattice are as expected
+    for i in range(20):
+        for j in range(20):
+            for k in range(20):
+                if(i<=10 or j<=10 or k<=10):
+                    continue
+                posx, posy, posz=lattice.get_coordinates(i-10, j-10, k-10)
+                assert np.isclose(new_lattice.get_value_by_index(i,j,k), lattice.interpolate_value(posx,posy,posz))
+
+    new_lattice = lattice.interpolate_to_lattice_new_extent(10, 10, 10, 0,0.5,0,0.5,0,0.5)
+
+    # Check that the values in the new lattice are as expected
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                if(i%2==1 or j%2==1 or k%2==1):
+                    continue
+                posx, posy, posz=lattice.get_coordinates(int(i/2), int(j/2), int(k/2))
+                assert np.isclose(new_lattice.get_value_by_index(i,j,k), lattice.interpolate_value(posx,posy,posz))
                 
+def test_reset(sample_lattice):
+    sample_lattice.reset()
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                assert sample_lattice.get_value_by_index(i, j, k) == 0
+
+def test_add_same_spaced_grid(sample_lattice):
+    sample_lattice.reset()
+    sample_lattice.set_value_by_index(1, 2, 3, 5)
+
+    with pytest.raises(TypeError):
+        sample_lattice.add_same_spaced_grid("a", 1,1,1)
+
+    wrong_lattice = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, z_max=1,
+                     num_points_x=15, num_points_y=15, num_points_z=15)
+    
+    with pytest.raises(ValueError):
+        sample_lattice.add_same_spaced_grid(wrong_lattice, 1,1,1)
+        
+    second_lattice=copy.deepcopy(sample_lattice)
+    sample_lattice.add_same_spaced_grid(second_lattice, 0,0,0)
+    assert sample_lattice.grid_[1, 2, 3] == 10
+
+    big_lattice = Lattice3D(x_min=0, x_max=2, y_min=0, y_max=2, z_min=0, z_max=2,
+                     num_points_x=19, num_points_y=19, num_points_z=19)
+    big_lattice.set_value_by_index(1, 2, 3, 10)
+    sample_lattice.add_same_spaced_grid(big_lattice, 0,0,0)
+    assert sample_lattice.grid_[1, 2, 3] == 20
+
+    sample_lattice.add_same_spaced_grid(sample_lattice, 0.1111,0.11111,0.11111)
+    assert sample_lattice.grid_[1, 2, 3] == 20
+    assert sample_lattice.grid_[2, 3, 4] == 20
+
+@pytest.fixture
+def particle_list_strange():
+    particle_list = []
+    for i in range(1):
+        p = Particle()
+        p.pdg = 321
+        particle_list.append(p)
+        p.x = 0.
+        p.y = 0.
+        p.z = 0.
+        p.E =1.
+    for i in range(1):
+        p = Particle()
+        p.pdg = 211
+        particle_list.append(p)
+        p.x = 0.5555555555555556
+        p.y = 0.5555555555555556
+        p.z = 0.5555555555555556
+        p.E=2.
+    return particle_list
+
+def test_add_particle_data(sample_lattice, particle_list_strange):
+
+    # def gaussian_3d(x, y, z):
+    #     # Define the centers of the Gaussians
+    #     mu1 = np.array([0., 0., 0.])
+    #     mu2 = np.array([0.5, 0.5, 0.5])
+
+    #     # Define the covariance matrices (sigma^2 * I for isotropic Gaussians)
+    #     sigma = 1.
+    #     cov1 = cov2 = np.eye(3) * sigma**2
+
+    #     # Compute the distances to the centers
+    #     dist1 = np.array([x, y, z]) - mu1
+    #     dist2 = np.array([x, y, z]) - mu2
+
+    #     # Compute the Gaussian fields
+    #     g1 = 1. / (np.sqrt((2. * np.pi)**3 * np.linalg.det(cov1))) * np.exp(-0.5 * np.dot(dist1, np.linalg.solve(cov1, dist1)))
+    #     g2 = 2. / (np.sqrt((2. * np.pi)**3 * np.linalg.det(cov2))) * np.exp(-0.5 * np.dot(dist2, np.linalg.solve(cov2, dist2)))
+
+    #     return g1 + g2
+
+    # Add the particle data to the lattice
+    sample_lattice.add_particle_data(particle_list_strange, sigma=1e-1, quantity='energy_density', kernel='gaussian', add=False)
+
+    # Check that the data was added correctly
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                #if(i==0 and j==0 and k==0):
+                    #assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 1./sample_lattice.cell_volume_)
+                if(i==5 and j==5 and k==5):
+                    posx, posy, posz=sample_lattice.get_coordinates(i,j,k)
+                    print(posx)
+                    print_lattice(sample_lattice)
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)  
