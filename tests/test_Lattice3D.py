@@ -373,7 +373,25 @@ def particle_list_strange():
         p.pz=0.
     return particle_list
 
-def test_add_particle_data(sample_lattice, particle_list_strange):
+@pytest.fixture
+def particle_list_center():
+    particle_list = []
+    for i in range(1):
+        p = Particle()
+        p.pdg = 211
+        particle_list.append(p)
+        p.x = 0.5555555555555556
+        p.y = 0.5555555555555556
+        p.z = 0.5555555555555556
+        p.E=10.
+        p.mass=1.
+        p.px=1.
+        p.py=1.
+        p.pz=1.
+    return particle_list
+
+
+def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_center):
 
     # def gaussian_3d(x, y, z):
     #     # Define the centers of the Gaussians
@@ -407,7 +425,7 @@ def test_add_particle_data(sample_lattice, particle_list_strange):
                     assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)
 
     sample_lattice.add_particle_data(particle_list_strange, sigma=1e-2, quantity='energy_density', kernel='covariant', add=False)
-    print_lattice(sample_lattice)
+
     for i in range(10):
         for j in range(10):
             for k in range(10):
@@ -425,7 +443,25 @@ def test_add_particle_data(sample_lattice, particle_list_strange):
                     assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)
                 if(i==5 and j==5 and k==5):
                     assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 4./sample_lattice.cell_volume_)
+
+    sample_lattice.add_particle_data(particle_list_center, sigma=8e-2, quantity='energy_density', kernel='gaussian', add=False)
+    integral=0
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                integral+=sample_lattice.get_value_by_index(i, j, k)
+                if(i==4 and j==4 and k==4):
+                    print_lattice(sample_lattice)
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 0.559575/sample_lattice.cell_volume_)
+    assert np.isclose(integral*sample_lattice.cell_volume_, 10.)
+    print(sample_lattice)
+    sample_lattice.add_particle_data(particle_list_center, sigma=8e-2, quantity='energy_density', kernel='covariant', add=False)
+    integral=0
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                integral+=sample_lattice.get_value_by_index(i, j, k)
+    assert np.isclose(integral*sample_lattice.cell_volume_, 10.)
 #add check for nans of particle vlaues
 #test for wrong inputs
 #actual smearing tests?-> test one specific point (like 2 sigma distance)
-#check energy conservation with particel in central position
