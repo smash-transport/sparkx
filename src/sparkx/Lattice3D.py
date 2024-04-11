@@ -1238,7 +1238,7 @@ class Lattice3D:
 
                         # Calculate the value to add to the grid at (i, j, k)
                         if(kernel == "gaussian"):
-                            smearing_factor = kernel_value.pdf([xi, yj, zk])
+                            smearing_factor = kernel_value.pdf([xi+x, yj+y, zk+z])
                         else:
                             diff_space = (xi)**2+(yj)**2+(zk)**2
                             gamma = np.sqrt(1+particle.p_abs()**2/particle.mass**2)

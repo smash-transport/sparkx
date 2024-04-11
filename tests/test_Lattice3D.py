@@ -355,6 +355,10 @@ def particle_list_strange():
         p.y = 0.
         p.z = 0.
         p.E =1.
+        p.mass=1.
+        p.px=0.
+        p.py=0.
+        p.pz=0.
     for i in range(1):
         p = Particle()
         p.pdg = 211
@@ -363,6 +367,10 @@ def particle_list_strange():
         p.y = 0.5555555555555556
         p.z = 0.5555555555555556
         p.E=2.
+        p.mass=1.
+        p.px=0.
+        p.py=0.
+        p.pz=0.
     return particle_list
 
 def test_add_particle_data(sample_lattice, particle_list_strange):
@@ -387,16 +395,37 @@ def test_add_particle_data(sample_lattice, particle_list_strange):
     #     return g1 + g2
 
     # Add the particle data to the lattice
-    sample_lattice.add_particle_data(particle_list_strange, sigma=1e-1, quantity='energy_density', kernel='gaussian', add=False)
+    sample_lattice.add_particle_data(particle_list_strange, sigma=1e-2, quantity='energy_density', kernel='gaussian', add=False)
 
     # Check that the data was added correctly
     for i in range(10):
         for j in range(10):
             for k in range(10):
-                #if(i==0 and j==0 and k==0):
-                    #assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 1./sample_lattice.cell_volume_)
+                if(i==0 and j==0 and k==0):
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 1./sample_lattice.cell_volume_)
                 if(i==5 and j==5 and k==5):
-                    posx, posy, posz=sample_lattice.get_coordinates(i,j,k)
-                    print(posx)
-                    print_lattice(sample_lattice)
-                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)  
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)
+
+    sample_lattice.add_particle_data(particle_list_strange, sigma=1e-2, quantity='energy_density', kernel='covariant', add=False)
+    print_lattice(sample_lattice)
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                if(i==0 and j==0 and k==0):
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 1./sample_lattice.cell_volume_)
+                if(i==5 and j==5 and k==5):
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)
+
+    sample_lattice.add_particle_data(particle_list_strange, sigma=1e-2, quantity='energy_density', kernel='covariant', add=True)
+
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                if(i==0 and j==0 and k==0):
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 2./sample_lattice.cell_volume_)
+                if(i==5 and j==5 and k==5):
+                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 4./sample_lattice.cell_volume_)
+#add check for nans of particle vlaues
+#test for wrong inputs
+#actual smearing tests?-> test one specific point (like 2 sigma distance)
+#check energy conservation with particel in central position
