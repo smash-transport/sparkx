@@ -59,7 +59,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>> jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)
         >>>
         >>> # Create flow objects for v2
-        >>> flow2 = ReactionPlaneFlow(n=2)
+        >>> flow2 = ReactionPlaneFlow(n=2).particle_objects_list()
         >>>
         >>> # Calculate the integrated flow with error
         >>> v2 = flow2.integrated_flow(jetscape_flow)

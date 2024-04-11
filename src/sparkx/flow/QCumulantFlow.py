@@ -267,7 +267,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def __cov(self,wx,wy,x,y):
         """
-        Compute the covariance between two sets of variables based on event weights.
+        Compute the covariance between two sets of variables based on event 
+        weights.
 
         Parameters
         ----------
@@ -329,7 +330,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         k2 : int
             The order of the second cumulant.
         phi : list of lists
-            List of particle data, where each sublist represents the azimuthal angles (phi) for each event.
+            List of particle data, where each sublist represents the azimuthal 
+            angles (phi) for each event.
         ebe_corr1 : ndarray
             Event-by-event correlation data for the first cumulant.
         ebe_corr2 : ndarray
@@ -718,21 +720,27 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+            Variable on which the flow is calculated 
+            ("pt", "rapidity", or "pseudorapidity").
         poi_pdg : list
             List of PDG id for identified particle differential flow.
 
         Returns
         -------
         list of tuples
-            A list of tuples containing flow values and their corresponding uncertainty.
+            A list of tuples containing flow values and their corresponding 
+            uncertainty.
         """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
             raise TypeError('flow_as_function_of is not a string')
-        if poi_pdg != None and not isinstance(poi_pdg, (list,np.ndarray)):
-            raise TypeError('poi_pdg has to be list or np.ndarray')
+        if poi_pdg is not None:
+            if not isinstance(poi_pdg, (list,np.ndarray)):
+                raise TypeError('poi_pdg has to be list or np.ndarray')
+            for pdg in poi_pdg:
+                if not isinstance(pdg, int):
+                    raise TypeError('poi_pdg elements must be integers')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
         if self.k_ == 6:
