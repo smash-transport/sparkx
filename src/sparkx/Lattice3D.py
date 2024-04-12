@@ -1164,7 +1164,7 @@ class Lattice3D:
         Raises
         ------
         ValueError
-            If an unknown quantity is specified.
+            If an unknown quantity is specified or if the particle data contains NaN values.
 
         Notes
         -----
@@ -1192,6 +1192,9 @@ class Lattice3D:
             y = particle.y
             z = particle.z
 
+            if np.isnan(x) or np.isnan(y) or np.isnan(z):
+                raise ValueError("Particle data contains NaN values.")
+
             if quantity == "energy_density":
                 value = particle.E
             elif quantity == "number_density":
@@ -1205,11 +1208,16 @@ class Lattice3D:
             else:
                 raise ValueError("Unknown quantity for lattice.")
 
+            if np.isnan(value):
+                raise ValueError("Particle data contains NaN values.")
+            
             if(kernel == "gaussian"):
                 # Calculate the Gaussian kernel centered at (x, y, z)
-                kernel_value = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+                kernel_value = multivariate_normal(mean=[x, y, z], cov=sigma**2 * np.eye(3))
             elif(kernel == "covariant"):
-                kernel_value = multivariate_normal([0,0], cov=sigma**2 * np.eye(2))
+                if np.isnan(particle.px) or np.isnan(particle.py) or np.isnan(particle.py):
+                    raise ValueError("Particle data contains NaN values.")
+                kernel_value = multivariate_normal(mean=[0,0], cov=sigma**2 * np.eye(2))
             else:
                 raise ValueError("Unknown kernel type for lattice.")
 
@@ -1239,12 +1247,6 @@ class Lattice3D:
                         # Calculate the value to add to the grid at (i, j, k)
                         if(kernel == "gaussian"):
                             smearing_factor = kernel_value.pdf([xi+x, yj+y, zk+z])
-                            if(xi+x<0.5 and xi+x>0.4 and yj+y<0.5 and yj+y>0.4 and zk+z<0.5 and zk+z>0.4):
-                                print("&&&&&&&&&&&")
-                                print(smearing_factor)
-                                print(xi+x)
-                                print(x)
-                                print("&&&&&&&&&&&")
                         else:
                             diff_space = (xi)**2+(yj)**2+(zk)**2
                             gamma = np.sqrt(1+particle.p_abs()**2/particle.mass**2)
@@ -1263,9 +1265,6 @@ class Lattice3D:
                     for k in range(temp_lattice.num_points_z_):
                         if abs(norm)>1e-15:
                             temp_lattice.grid_[i, j, k] /= norm
-            print("-----------------")
-            print(norm) #whyyy not 1?
-            print("-----------------")
             xi ,yi ,zi = self.find_closest_indices(x, y, z)
             x_grid, y_grid, z_grid = self.get_coordinates(xi ,yi ,zi)
             self.add_same_spaced_grid(temp_lattice, x_grid, y_grid, z_grid)

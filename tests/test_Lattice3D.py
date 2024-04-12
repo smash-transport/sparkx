@@ -2,7 +2,7 @@ import pytest
 import csv
 import numpy as np
 import copy
-from sparkx.Lattice3D import Lattice3D, print_lattice
+from sparkx.Lattice3D import Lattice3D
 from sparkx.Particle import Particle
 
 @pytest.fixture
@@ -387,30 +387,20 @@ def particle_list_center():
         p.mass=1.
         p.px=1.
         p.py=1.
-        p.pz=1.
+        p.pz=2.
     return particle_list
 
 
 def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_center):
 
-    # def gaussian_3d(x, y, z):
-    #     # Define the centers of the Gaussians
-    #     mu1 = np.array([0., 0., 0.])
-    #     mu2 = np.array([0.5, 0.5, 0.5])
+    with pytest.raises(ValueError):
+        sample_lattice.add_particle_data(particle_list_center, sigma=1e-2, quantity='baryon_density', kernel='gaussian', add=False)
 
-    #     # Define the covariance matrices (sigma^2 * I for isotropic Gaussians)
-    #     sigma = 1.
-    #     cov1 = cov2 = np.eye(3) * sigma**2
+    with pytest.raises(ValueError):
+        sample_lattice.add_particle_data(particle_list_center, sigma=1e-2, quantity='Jean-Luc Picard', kernel='gaussian', add=False)
 
-    #     # Compute the distances to the centers
-    #     dist1 = np.array([x, y, z]) - mu1
-    #     dist2 = np.array([x, y, z]) - mu2
-
-    #     # Compute the Gaussian fields
-    #     g1 = 1. / (np.sqrt((2. * np.pi)**3 * np.linalg.det(cov1))) * np.exp(-0.5 * np.dot(dist1, np.linalg.solve(cov1, dist1)))
-    #     g2 = 2. / (np.sqrt((2. * np.pi)**3 * np.linalg.det(cov2))) * np.exp(-0.5 * np.dot(dist2, np.linalg.solve(cov2, dist2)))
-
-    #     return g1 + g2
+    with pytest.raises(ValueError):
+        sample_lattice.add_particle_data(particle_list_center, sigma=1e-2, quantity='strangeness', kernel='Commander Riker', add=False)
 
     # Add the particle data to the lattice
     sample_lattice.add_particle_data(particle_list_strange, sigma=1e-2, quantity='energy_density', kernel='gaussian', add=False)
@@ -449,19 +439,22 @@ def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_
     for i in range(10):
         for j in range(10):
             for k in range(10):
-                integral+=sample_lattice.get_value_by_index(i, j, k)
-                if(i==4 and j==4 and k==4):
-                    print_lattice(sample_lattice)
-                    assert np.isclose(sample_lattice.get_value_by_index(i, j, k), 0.559575/sample_lattice.cell_volume_)
+                integral+=sample_lattice.get_value_by_index(i, j, k)    
+    assert np.isclose(sample_lattice.get_value_nearest_neighbor(0.444,0.444,0.444)/sample_lattice.get_value_nearest_neighbor(0.555,0.555,0.555), 5.5381e-2)
+    #from definition of mulivariate normal distribution
     assert np.isclose(integral*sample_lattice.cell_volume_, 10.)
-    print(sample_lattice)
-    sample_lattice.add_particle_data(particle_list_center, sigma=8e-2, quantity='energy_density', kernel='covariant', add=False)
+    sample_lattice.add_particle_data(particle_list_center, sigma=1e-1, quantity='energy_density', kernel='covariant', add=False)
     integral=0
     for i in range(10):
         for j in range(10):
             for k in range(10):
                 integral+=sample_lattice.get_value_by_index(i, j, k)
+    gamma = np.sqrt(1+particle_list_center[0].p_abs()**2/particle_list_center[0].mass**2)
+    deltas1=(0.11111**2+0.11111**2+0.22222**2)
+    deltas2=(0.22222**2+0.33333**2+0.22222**2)
+    deltap1=(-0.11111-0.11111-2.*0.22222)/(gamma*particle_list_center[0].mass)
+    deltap2=(-0.22222-0.33333+2.*0.22222)/(gamma*particle_list_center[0].mass)
+    ratio = np.exp(-0.5*(deltas1**2+deltap1**2)*(1/1e-1)**2)/np.exp(-0.5*(deltas2**2+deltap2**2)*(1/1e-1)**2)
+    assert np.isclose(sample_lattice.get_value_nearest_neighbor(0.444,0.444,0.333)/sample_lattice.get_value_nearest_neighbor(0.333,0.222,0.777), ratio, rtol=1e-2)
     assert np.isclose(integral*sample_lattice.cell_volume_, 10.)
-#add check for nans of particle vlaues
-#test for wrong inputs
-#actual smearing tests?-> test one specific point (like 2 sigma distance)
+
