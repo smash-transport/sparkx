@@ -64,8 +64,9 @@ class EventCharacteristics:
         >>> # Oscar object containing all events
         >>> oscar = Oscar(OSCAR_FILE_PATH).particle_objects_list()
         >>>
-        >>> event_characterization = EventCharacteristics(oscar)
-        >>> event_characterization.eccentricity(2, weight_quantitiy = "number")
+        >>> # compute epsilon2 for the first event
+        >>> event_characterization = EventCharacteristics(oscar[0])
+        >>> eps2 = event_characterization.eccentricity(2, weight_quantitiy = "number")
 
     """
     def __init__(self, event_data):
