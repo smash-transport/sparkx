@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
@@ -1023,7 +1032,7 @@ class Oscar:
         header = []
         event_footer = ''
         format_oscar2013 = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
-        format_oscar2013_extended = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d %d'
+        format_oscar2013_extended = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d'
 
         with open(self.PATH_OSCAR_,'r') as oscar_file:
             counter_line = 0
@@ -1053,8 +1062,12 @@ class Oscar:
                     event = self.num_output_per_event_[i,0]
                     num_out = self.num_output_per_event_[i,1]
                     particle_output = np.asarray(self.particle_list()[i])
-
                     f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                    if len(particle_output) == 0:
+                        f_out.write(self.event_end_lines_[event])
+                        continue
+                    elif (i == 0 and len(particle_output[0])>20  and self.oscar_format_ == 'Oscar2013Extended'):
+                        format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
                     if self.oscar_format_ == 'Oscar2013':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
                     elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
@@ -1065,6 +1078,12 @@ class Oscar:
                 num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
                 f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                if len(particle_output) == 0:
+                    f_out.write(self.event_end_lines_[event])
+                    f_out.close()
+                    return
+                elif (len(particle_output[0])>20  and self.oscar_format_ == 'Oscar2013Extended'):
+                        format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
                 if self.oscar_format_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
                 elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':

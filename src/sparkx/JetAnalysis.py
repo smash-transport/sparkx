@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 import numpy as np
 import fastjet as fj
 import csv
@@ -11,6 +20,11 @@ class JetAnalysis:
     For further information on the jet finding algorithms please have a look
     at the documentation.
 
+    **Attention**: For a proper jet hole subtraction the `status` of the 
+    particles has to be set. This is only given for read in from Jetscape
+    output. With Oscar read in this has to be set by hand before doing the 
+    jet finding.
+
     Attributes
     ----------
     hadron_data_: list
@@ -18,7 +32,7 @@ class JetAnalysis:
     jet_R_: float
         Jet radius parameter.
     jet_eta_range_: tuple
-        Mimimum and maximum pseudorapidity for jet selection.
+        Minimum and maximum pseudorapidity for jet selection.
     jet_pt_range_: tuple
         Minimum transverse momentum for jet selection and maximum transverse
         momentum to write out the jet.
@@ -236,6 +250,8 @@ class JetAnalysis:
         """
         associated_hadrons = []
         for hadron in self.hadron_data_[event]:
+            if np.isnan(hadron.status):
+                raise ValueError("Hadron status not set")
             if (status_selection == 'negative' and hadron.status >= 0) or \
                 (status_selection == 'positive' and hadron.status < 0) or \
                 (only_charged and hadron.charge == 0):
@@ -395,7 +411,7 @@ class JetAnalysis:
                 # create a new file for the first event in the dataset
                 new_file = True
 
-            # perform the jet finiding algorithm
+            # perform the jet finding algorithm
             cluster = fj.ClusterSequence(event_PseudoJets, jet_definition)
             jets = fj.sorted_by_pt(cluster.inclusive_jets(self.jet_pt_range_[0]))
             jets = jet_selector(jets)
