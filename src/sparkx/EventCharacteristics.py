@@ -62,7 +62,7 @@ class EventCharacteristics:
         >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
         >>>
         >>> # Oscar object containing all events
-        >>> oscar = Oscar(OSCAR_FILE_PATH)
+        >>> oscar = Oscar(OSCAR_FILE_PATH).particle_objects_list()
         >>>
         >>> event_characterization = EventCharacteristics(oscar)
         >>> event_characterization.eccentricity(2, weight_quantitiy = "number")
@@ -103,7 +103,7 @@ class EventCharacteristics:
             self.event_data_ = event_data
             self.has_lattice_ = False
 
-    def eccentricity_from_particles(self,harmonic_n, weight_quantity = "energy"):
+    def eccentricity_from_particles(self,harmonic_n, harmonic_m = None, weight_quantity = "energy"):
         """
         Computes the spatial eccentricity from particles.
 
@@ -111,9 +111,11 @@ class EventCharacteristics:
         ----------
         harmonic_n : int
             The harmonic order for the eccentricity calculation.
+        harmonic_m : int, optional
+            The power of the radial weight.
         weight_quantity : str, optional
             The quantity used for particle weighting.
-            Valid options are "energy", "number", "charge", or "baryon".
+            Valid options are "energy", "number", "charge", "baryon", "strangeness".
             Default is "energy".
 
         Returns
@@ -127,36 +129,44 @@ class EventCharacteristics:
             If the harmonic order is less than 1.
             If the weight quantity is unknown.
         """
-        real_eps=0
-        imag_eps=0
-        norm=0
+        real_eps = 0.
+        imag_eps = 0.
+        norm = 0.
         if harmonic_n < 1:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
+        if harmonic_m != None and harmonic_m < 1:
+            raise ValueError("harmonic_m must be positive")
         for particle in self.event_data_:
             if weight_quantity == "energy":
                 weight = particle.E
             elif weight_quantity == "number":
-                weight = 1
+                weight = 1.
             elif weight_quantity == "charge":
                 weight = particle.charge
             elif weight_quantity == "baryon":
                 weight = particle.baryon_number
+            elif weight_quantity == "strangeness":
+                weight = particle.strangeness
             else:
                 raise ValueError("Unknown weight for eccentricity")
             x = particle.x
             y = particle.y
             #Exception for dipole asymmetry
-            if harmonic_n == 1:
-                rn = (x**2+y**2)**(3/2.0)
+            if harmonic_n == 1 and harmonic_m == None:
+                rn = (x**2 + y**2)**(3/2.)
+            elif harmonic_n != 1 and harmonic_m == None:
+                rn = (x**2 + y**2)**(harmonic_n/2.)
             else:
-                rn = (x**2+y**2)**(harmonic_n/2.0)
-            t = np.arctan2(y,x)
-            real_eps += rn*np.cos(harmonic_n*t)*weight
-            imag_eps += rn*np.sin(harmonic_n*t)*weight
-            norm += rn*weight
-        return real_eps/norm + (imag_eps/norm)*1j
+                rn = (x**2 + y**2)**(harmonic_m/2.)
 
-    def eccentricity_from_lattice(self,harmonic_n):
+            phi = np.arctan2(y,x)
+            real_eps += rn*np.cos(harmonic_n*phi)*weight
+            imag_eps += rn*np.sin(harmonic_n*phi)*weight
+            norm += rn*weight
+
+        return -(real_eps/norm + (imag_eps/norm)*1j)
+
+    def eccentricity_from_lattice(self,harmonic_n,harmonic_m = None):
         """
         Computes the spatial eccentricity from a 3D lattice. Takes all z-values
         into account.
@@ -165,6 +175,8 @@ class EventCharacteristics:
         ----------
         harmonic_n : int
             The harmonic order for the eccentricity calculation.
+        harmonic_m : int, optional
+            The power of the radial weight.
 
         Returns
         -------
@@ -176,36 +188,51 @@ class EventCharacteristics:
         ValueError
             If the harmonic order is less than 1.
         """
-        real_eps=0
-        imag_eps=0
-        norm=0
+        real_eps = 0.
+        imag_eps = 0.
+        norm = 0.
         if harmonic_n < 1:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
+        if harmonic_m != None and harmonic_m < 1:
+            raise ValueError("harmonic_m must be positive")
         for i, j, k in np.ndindex(self.event_data_.grid_.shape):
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             #Exception for dipole asymmetry
-            if harmonic_n == 1:
-                rn = (x**2+y**2)**(3/2.0)
+            if harmonic_n == 1 and harmonic_m == None:
+                rn = (x**2 + y**2)**(3/2.)
+            elif harmonic_n != 1 and harmonic_m == None:
+                rn = (x**2 + y**2)**(harmonic_n/2.)
             else:
-                rn = (x**2+y**2)**(harmonic_n/2.0)
-            t = np.arctan2(y,x)
-            lattice_density = self.event_data_.get_value_by_index(i, j, k)
-            real_eps += rn*np.cos(harmonic_n*t)*lattice_density
-            imag_eps += rn*np.sin(harmonic_n*t)*lattice_density
-            norm += rn*lattice_density
-        return real_eps/norm + (imag_eps/norm)*1j
+                rn = (x**2 + y**2)**(harmonic_m/2.)
 
-    def eccentricity(self,harmonic_n,weight_quantity = "energy"):
+            phi = np.arctan2(y,x)
+            lattice_density = self.event_data_.get_value_by_index(i, j, k)
+            real_eps += rn*np.cos(harmonic_n*phi)*lattice_density
+            imag_eps += rn*np.sin(harmonic_n*phi)*lattice_density
+            norm += rn*lattice_density
+
+        return -(real_eps/norm + (imag_eps/norm)*1j)
+
+    def eccentricity(self,harmonic_n,harmonic_m = None,weight_quantity = "energy"):
         """
         Computes the spatial eccentricity.
+
+        .. math::
+
+            \\varepsilon_{m,n}e^{\\mathrm{i}n\\Phi_{m,n}} = -\\frac{\\lbrace{r^{m}e^{\\mathrm{i}n\phi}\\rbrace}}{\\lbrace{r^{m}\\rbrace}}
+
+        For `harmonic_n=1`, :math:`n=3` is used. If `harmonic_m` is provided,
+        then the given value is used as radial exponent. 
 
         Parameters
         ----------
         harmonic_n : int
             The harmonic order for the eccentricity calculation.
+        harmonic_m : int, optional
+            The power of the radial weight.
         weight_quantity : str, optional
             The quantity used for particle weighting.
-            Valid options are "energy", "number", "charge", or "baryon".
+            Valid options are "energy", "number", "charge", "baryon", "strangeness".
             Default is "energy".
 
         Returns
@@ -219,9 +246,9 @@ class EventCharacteristics:
             If the harmonic order is less than 1.
         """
         if self.has_lattice_:
-            return self.eccentricity_from_lattice(harmonic_n)
+            return self.eccentricity_from_lattice(harmonic_n=harmonic_n,harmonic_m=harmonic_m)
         else:
-            return self.eccentricity_from_particles(harmonic_n, weight_quantity)
+            return self.eccentricity_from_particles(harmonic_n=harmonic_n, harmonic_m=harmonic_m, weight_quantity=weight_quantity)
 
     def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename,IC_info=None):
         """
