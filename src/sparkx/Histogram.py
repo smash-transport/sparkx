@@ -31,7 +31,6 @@ class Histogram:
                  <p><code style="color:red; background-color:transparent;
                  font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p>
 
-
     Parameters
     ----------
     bin_boundaries : tuple
@@ -639,8 +638,7 @@ class Histogram:
             start with a '#'.
 
         columns : list of str, optional
-            List of columns to include in the output. If None, all columns
-            are included which are:
+            List of columns to include in the output. If None, all columns are included which are:
                 - 'bin_center': Bin center.
                 - 'bin_low': Lower bin boundary.
                 - 'bin_high': Upper bin boundary.
