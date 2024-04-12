@@ -25,6 +25,7 @@ Date:
 
 * QCumulantFlow: Differential flow for two and four particle cumulants
 * Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar
+* Histogram: Choose which columns to be printed in the output file
 
 ### Fixed
 
