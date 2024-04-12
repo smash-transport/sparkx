@@ -71,6 +71,12 @@ def test_eccentricity_from_particles(fake_particle_list_eccentricity):
     eps3 = eve_char.eccentricity(3,weight_quantity="number")
     assert np.allclose(eps3, (0.-0j), atol=1e-10)
 
+    with pytest.raises(ValueError):
+        eve_char.eccentricity(0,weight_quantity="number")
+    
+    with pytest.raises(ValueError):
+        eve_char.eccentricity(2,harmonic_m=0,weight_quantity="number")
+
 def test_eccentricity_from_lattice(test_Lattice3D_instance):
     eve_char = EventCharacteristics(test_Lattice3D_instance)
     eps2 = eve_char.eccentricity(2,weight_quantity="number")
@@ -78,3 +84,9 @@ def test_eccentricity_from_lattice(test_Lattice3D_instance):
 
     eps3 = eve_char.eccentricity(3,weight_quantity="number")
     np.allclose(eps3, (0.-0j), atol=1e-10)
+
+    with pytest.raises(ValueError):
+        eve_char.eccentricity(0,weight_quantity="number")
+
+    with pytest.raises(ValueError):
+        eve_char.eccentricity(2,harmonic_m=0,weight_quantity="number")
