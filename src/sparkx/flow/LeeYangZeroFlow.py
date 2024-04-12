@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.flow import FlowInterface
 import numpy as np
 import random as rd
@@ -59,6 +68,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         >>> from sparkx.flow.LeeYangZerosFlow import LeeYangZerosFlow
         >>>
+        >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists_flow.dat
+        >>> # Jetscape object containing the particles on which we want to calculate flow
+        >>> particle_data = Jetscape(JETSCAPE_FILE_PATH).particle_objects_list()
+
         >>> # Create a LeeYangZerosFlow object
         >>> flow_instance = LeeYangZerosFlow(vmin=0.01, vmax=0.10, vstep=0.001, n=2)
         >>>
@@ -296,7 +309,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf_error (float): Standard error on the integrated flow magnitude.
             - chi_value (float): Resolution parameter :math:`\\chi`.
 
-        If vn_inf is NaN or Inf, the method returns [None, None, None].
+        If `vn_inf` is `NaN` or `Inf`, the method returns `[None, None, None]`.
         """
         number_events = len(particle_data)
         mean_multiplicity = 0
@@ -501,7 +514,8 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+            Variable on which the flow is calculated 
+            ("pt", "rapidity", or "pseudorapidity").
         poi_pdg : list
             List of PDG id for identified particle differential flow.
 
@@ -514,7 +528,8 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf (float): Differential flow magnitude for the bin.
             - vn_inf_error (float): Error on the differential flow magnitude for the bin.
             
-        If a bin has no events, the corresponding element in the result list is set to None.
+        If a bin has no events, the corresponding element in the result list is 
+        set to `None`.
 
         Notes
         -----
@@ -527,8 +542,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
             raise TypeError('flow_as_function_of is not a string')
-        if poi_pdg != None and not isinstance(poi_pdg, (list,np.ndarray)):
-            raise TypeError('poi_pdg has to be list or np.ndarray')
+        if poi_pdg is not None:
+            if not isinstance(poi_pdg, (list,np.ndarray)):
+                raise TypeError('poi_pdg has to be list or np.ndarray')
+            for pdg in poi_pdg:
+                if not isinstance(pdg, int):
+                    raise TypeError('poi_pdg elements must be integers')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
         
