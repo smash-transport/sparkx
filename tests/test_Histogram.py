@@ -100,6 +100,40 @@ def test_write_to_file(tmp_path):
         ]
         assert rows == expected_rows
 
+def test_write_to_file_custom_columns(tmp_path):
+    # Test writing histograms to a file
+    hist = Histogram((0, 4, 4))
+    hist.add_value([1, 2, 3])
+    hist.statistical_error()
+    hist_labels = [{'bin_center': 'Bin Center', 'bin_low': 'Bin Low', 'bin_high': 'Bin High',
+                    'distribution': 'Distribution', 'stat_err+': 'Stat Error+', 'stat_err-': 'Stat Error-',
+                    'sys_err+': 'Sys Error+', 'sys_err-': 'Sys Error-'}]
+    columns = ['bin_center', 'bin_low', 'bin_high', 'distribution', 'stat_err+', 'stat_err-']
+    filename = tmp_path / "test_histograms.csv"
+    hist.write_to_file(filename, hist_labels, columns=columns)
+
+    # Check if the file exists
+    assert filename.is_file()
+
+    # Read the file and verify its content
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        expected_headers = ['Bin Center', 'Bin Low', 'Bin High', 'Distribution', 
+                            'Stat Error+', 'Stat Error-']
+        assert headers == expected_headers
+
+        # Check the content of the file
+        rows = [row for row in reader]
+        rows = rows[:-1] # neglect the last empty line
+        expected_rows = [
+            ['0.5', '0.0', '1.0', '0.0', '0.0', '0.0'],
+            ['1.5', '1.0', '2.0', '1.0', '1.0', '1.0'],
+            ['2.5', '2.0', '3.0', '1.0', '1.0', '1.0'],
+            ['3.5', '3.0', '4.0', '1.0', '1.0', '1.0']
+        ]
+        assert rows == expected_rows
+
 def test_average_weighted():
     # Test weighted averaging histograms
     hist = Histogram((0, 10, 10))
