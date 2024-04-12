@@ -28,6 +28,7 @@ Date:
 * JetAnalysis: Add switch to write only charged associated particles
 * JetAnalysis: Add hole subtraction for particles with negative status
 * Histogram: Add possibility to add values with weights and possibility to create probability densities
+* Histogram: Choose which columns to be printed in the output file
 
 ### Fixed
 
