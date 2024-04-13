@@ -90,3 +90,71 @@ def test_eccentricity_from_lattice(test_Lattice3D_instance):
 
     with pytest.raises(ValueError):
         eve_char.eccentricity(2,harmonic_m=0,weight_quantity="number")
+
+def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance):
+    x_min = y_min = z_min = -5.
+    x_max = y_max = z_max = 5.
+    Nx = Ny = Nz = 50
+    n_sigma_x = n_sigma_y = n_sigma_z = 3
+    sigma_smear = 0.2
+    eta_range = 0.2
+    output_filename = 'test_eBQS_densities_Milne_from_OSCAR_IC.dat'
+
+    # test error if IC_info is not None and string
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename, 
+                                                             IC_info=1)
+
+    # test error if class is initialized with lattice
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(test_Lattice3D_instance)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+        
+def test_eBQS_densities_Minkowski_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance):
+    x_min = y_min = z_min = -5.
+    x_max = y_max = z_max = 5.
+    Nx = Ny = Nz = 50
+    n_sigma_x = n_sigma_y = n_sigma_z = 3
+    sigma_smear = 0.2
+    eta_range = 0.2
+    output_filename = 'test_eBQS_densities_Milne_from_OSCAR_IC.dat'
+
+    # test error if IC_info is not None and string
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Minkowski_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename, 
+                                                             IC_info=1)
+
+    # test error if class is initialized with lattice
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(test_Lattice3D_instance)
+        eve_char.generate_eBQS_densities_Minkowski_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
