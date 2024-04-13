@@ -285,12 +285,21 @@ class EventCharacteristics:
             A string containing info about the initial condition, e.g., 
             collision energy or centrality.
 
+        Raises
+        ------
+        TypeError
+            If the given IC_info is not a string and if the class is initialized
+            with a lattice.
+
         Returns
         -------
         None
         """
         if (IC_info is not None) and not isinstance(IC_info,str):
-            warnings.warn("The given IC_info is not a string")
+            raise TypeError("The given IC_info is not a string")
+
+        if self.has_lattice_:
+            raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
 
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -372,12 +381,21 @@ class EventCharacteristics:
             A string containing info about the initial condition, e.g., 
             collision energy or centrality.
 
+        Raises
+        ------
+        TypeError
+            If the given IC_info is not a string and if the class is initialized
+            with a lattice.
+
         Returns
         -------
         None
         """
         if (IC_info is not None) and not isinstance(IC_info,str):
             warnings.warn("The given IC_info is not a string")
+
+        if self.has_lattice_:
+            raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
 
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -424,4 +442,4 @@ class EventCharacteristics:
                             value_charge_density = 0.
                             value_strangeness_density = 0.
 
-                        output_file.write(f"{tau:g} {x_val:g} {y_val:g} {z_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")
+                        output_file.write(f"{tau:g} {x_val:g} {y_val:g} {z_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")    
