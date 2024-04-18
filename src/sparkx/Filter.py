@@ -255,7 +255,7 @@ def lower_event_energy_cut(particle_list,minimum_event_energy):
     """
     if not isinstance(minimum_event_energy, (int, float)):
         raise TypeError('Input value for lower event energy cut has not ' +\
-                        'one of the following types: int, float')#
+                        'one of the following types: int, float')
     if np.isnan(minimum_event_energy):
         raise ValueError('Input value should not be NaN')
     if minimum_event_energy <= 0.:
