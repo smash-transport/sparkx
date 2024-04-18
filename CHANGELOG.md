@@ -24,7 +24,7 @@ Date:
 ### Added
 
 * QCumulantFlow: Differential flow for two and four particle cumulants
-* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar, JetAnalysis, Flow, EventCharacteristics
+* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar, Jetscape, JetAnalysis, Flow, Lattice3D, EventCharacteristics
 * JetAnalysis: Add switch to write only charged associated particles
 * JetAnalysis: Add hole subtraction for particles with negative status
 * Histogram: Add possibility to add values with weights and possibility to create probability densities

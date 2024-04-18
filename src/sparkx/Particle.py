@@ -515,6 +515,8 @@ class Particle:
         -------
         pdg : int
         """
+        if (np.isnan(self.data_[9])):
+            return np.nan
         return int(self.data_[9])
 
     @pdg.setter
@@ -536,6 +538,8 @@ class Particle:
         -------
         ID : int
         """
+        if (np.isnan(self.data_[11])):
+            return np.nan
         return int(self.data_[11])
 
     @ID.setter
@@ -550,6 +554,8 @@ class Particle:
         -------
         charge : int
         """
+        if (np.isnan(self.data_[12])):
+            return np.nan
         return int(self.data_[12])
 
     @charge.setter
@@ -564,6 +570,8 @@ class Particle:
         -------
         ncoll : int
         """
+        if (np.isnan(self.data_[13])):
+            return np.nan
         return int(self.data_[13]) 
 
     @ncoll.setter
@@ -606,6 +614,8 @@ class Particle:
         -------
         proc_id_origin : int
         """
+        if (np.isnan(self.data_[16])):
+            return np.nan
         return int(self.data_[16])
 
     @proc_id_origin.setter
@@ -620,6 +630,8 @@ class Particle:
         -------
         proc_type_origin : int
         """
+        if (np.isnan(self.data_[17])):
+            return np.nan
         return int(self.data_[17])
 
     @proc_type_origin.setter
@@ -648,6 +660,8 @@ class Particle:
         -------
         pdg_mother1 : int
         """
+        if (np.isnan(self.data_[19])):
+            return np.nan
         return int(self.data_[19])
 
     @pdg_mother1.setter
@@ -662,6 +676,8 @@ class Particle:
         -------
         pdg_mother2 : int
         """
+        if (np.isnan(self.data_[20])):
+            return np.nan
         return int(self.data_[20])
 
     @pdg_mother2.setter
@@ -678,6 +694,8 @@ class Particle:
         -------
         status : int
         """
+        if (np.isnan(self.data_[21])):
+            return np.nan
         return int(self.data_[21])
 
     @status.setter

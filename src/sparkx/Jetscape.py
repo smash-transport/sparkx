@@ -184,11 +184,8 @@ class Jetscape:
     All filter functions without arguments need a :code:`True` in the dictionary.
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
-        if '.dat' in JETSCAPE_FILE:
-            None
-        else:
-            raise TypeError('Input file is not in the JETSCAPE format. Input '
-                            'file must have the ending .dat')
+        if not '.dat' in JETSCAPE_FILE:
+            raise FileNotFoundError('File not found or does not end with .dat')
 
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.num_output_per_event_ = None
@@ -879,5 +876,5 @@ class Jetscape:
             f_out.writelines(data_to_write)
 
             # Write the last line
-            last_line = self.__get_last_line(self.PATH_JETSCAPE_)
+            last_line = self.__get_last_line(self.PATH_JETSCAPE_) + '\n'
             f_out.write(last_line)
