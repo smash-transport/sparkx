@@ -509,7 +509,7 @@ def pseudorapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                        (-limit<=elem.pseudorapidity()<=limit 
+                                        (-limit<=elem.pseudorapidity()<=limit
                                         and not np.isnan(elem.pseudorapidity()))]
             updated_particle_list.append(particle_list_tmp)
     elif isinstance(cut_value, tuple):
@@ -519,7 +519,7 @@ def pseudorapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                        (lim_min<=elem.pseudorapidity()<=lim_max 
+                                        (lim_min<=elem.pseudorapidity()<=lim_max
                                         and not np.isnan(elem.pseudorapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
@@ -573,7 +573,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                        (-limit<=elem.spatial_rapidity()<=limit 
+                                        (-limit<=elem.spatial_rapidity()<=limit
                                         and not np.isnan(elem.spatial_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
     elif isinstance(cut_value, tuple):
@@ -583,7 +583,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                        (lim_min<=elem.spatial_rapidity()<=lim_max 
+                                        (lim_min<=elem.spatial_rapidity()<=lim_max
                                         and not np.isnan(elem.spatial_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
