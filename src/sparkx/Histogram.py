@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 import numpy as np
 import csv
 import warnings
@@ -597,7 +606,7 @@ class Histogram:
                           {self.histograms_[hist][bin]}')
             print("")
 
-    def write_to_file(self, filename, hist_labels, comment=''):
+    def write_to_file(self, filename, hist_labels, comment='', columns=None):
         """
         Write multiple histograms to a CSV file along with their headers.
 
@@ -621,16 +630,30 @@ class Histogram:
                 - 'stat_err-': Label for the statistical error (negative).
                 - 'sys_err+': Label for the systematic error (positive).
                 - 'sys_err-': Label for the systematic error (negative).
+            
+            Other keys are possible if non-default columns are used.
 
         comment : str, optional
             Additional comment to be included at the beginning of the file.
             It is possible to give a multi-line comment where each line should
             start with a '#'.
 
+        columns : list of str, optional
+            List of columns to include in the output. If None, all columns are included which are:
+                - 'bin_center': Bin center.
+                - 'bin_low': Lower bin boundary.
+                - 'bin_high': Upper bin boundary.
+                - 'distribution': Histogram value.
+                - 'stat_err+': Statistical error (positive).
+                - 'stat_err-': Statistical error (negative).
+                - 'sys_err+': Systematic error (positive).
+                - 'sys_err-': Systematic error (negative).
+
         Raises
         ------
         TypeError
-            If `hist_labels` is not a list of dictionaries.
+            If `hist_labels` is not a list of dictionaries, or if `columns` is
+            not a list of strings or contains keys which are not present in 'hist_labels'.
 
         ValueError
             If the number of histograms is greater than 1, and the number of
@@ -638,38 +661,15 @@ class Histogram:
             histograms. An exception is the case, where the number of histograms
             is greater than 1 and the number of provided dictionaries is 1.
             Then the same dictionary is used for all histograms.
-
-        Examples
-        --------
-
-        .. highlight:: python
-        .. code-block:: python
-            :linenos:
-
-            >>> hist_labels_multiple = [{'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
-                          'distribution': '$1 / Nevt * d^2 N / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
-                          'sys_err+': 'sys +', 'sys_err-': 'sys -'},
-                            {'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
-                          'distribution': '$1 / Nevt * d^2 N_{ch} / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
-                          'sys_err+': 'sys +', 'sys_err-': 'sys -'}]
-            >>> histogram_obj = Histogram(bin_boundaries=(0, 10, 10))
-            >>> histogram_obj.add_value([1,1,3,6,4,7])
-            >>> histogram_obj.add_histogram()
-            >>> histogram_obj.add_value([2,1,5,6,4,4,9,7])
-            >>> histogram_obj.statistical_error()
-            >>> histogram_obj.write_to_file('multiple_histograms.csv', hist_labels_multiple)
-
-        Notes
-        -----
-        The function assumes that the histogram data and corresponding errors
-        are already available in the Histogram object calling this function.
-
-        .. |br| raw:: html
-
-           <br />
         """
-        if not isinstance(hist_labels, list):
+        if not isinstance(hist_labels, list) or not all(isinstance(hist_label, dict) for hist_label in hist_labels):
             raise TypeError("hist_labels must be a list of dictionaries")
+        
+        if columns is not None and ( not isinstance(columns, list) or not all(isinstance(col, str) for col in columns)):
+            raise TypeError("columns must be a list of strings")
+        
+        if columns is not None and not all(col in hist_labels[0].keys() for col in columns):
+            raise TypeError("columns must contain only keys present in hist_labels")
 
         if self.number_of_histograms_ > 1 and len(hist_labels) == 1:
             error_message = "Print multiple histograms to file, only one header"\
@@ -677,34 +677,30 @@ class Histogram:
             warnings.warn(error_message)
         elif self.number_of_histograms_ > 1 and (len(hist_labels) > 1 and len(hist_labels) < self.number_of_histograms_):
             raise ValueError("Print multiple histograms to file, more than one,"\
-                             +" but less than number of histograms headers provided.")
+                            +" but less than number of histograms headers provided.")
 
-        f = open(filename, 'w')
-        writer = csv.writer(f)
-        if comment != '':
-            f.write(comment)
-            f.write('\n')
+        if columns is None:
+            columns = ['bin_center', 'bin_low', 'bin_high', 'distribution', 'stat_err+', 'stat_err-', 'sys_err+', 'sys_err-']
 
-        for idx in range(self.number_of_histograms_):
-            if len(hist_labels) == 1:
-                header = [hist_labels[0]['bin_center'],hist_labels[0]['bin_low'],\
-                        hist_labels[0]['bin_high'],hist_labels[0]['distribution'],\
-                        hist_labels[0]['stat_err+'],hist_labels[0]['stat_err-'],\
-                        hist_labels[0]['sys_err+'],hist_labels[0]['sys_err-']]
-            else:
-                header = [hist_labels[idx]['bin_center'],hist_labels[idx]['bin_low'],\
-                        hist_labels[idx]['bin_high'],hist_labels[idx]['distribution'],\
-                        hist_labels[idx]['stat_err+'],hist_labels[idx]['stat_err-'],\
-                        hist_labels[idx]['sys_err+'],hist_labels[idx]['sys_err-']]
-            writer.writerow(header)
-            for i in range(self.number_of_bins_):
-                if self.number_of_histograms_ == 1:
-                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                            self.histograms_[i], self.error_[i], self.error_[i],
-                            self.systematic_error_[i], self.systematic_error_[i]]
-                else:
-                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                            self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
-                            self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
-                writer.writerow(data)
-            f.write('\n')
+        with open(filename, 'w') as f:
+            writer = csv.writer(f)
+            if comment != '':
+                f.write(comment)
+                f.write('\n')
+
+            for idx in range(self.number_of_histograms_):
+                header = [hist_labels[0][col] if len(hist_labels) == 1 else hist_labels[idx][col] for col in columns]
+                writer.writerow(header)
+                for i in range(self.number_of_bins_):
+                    if self.number_of_histograms_ == 1:
+                        data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                                self.histograms_[i], self.error_[i], self.error_[i],
+                                self.systematic_error_[i], self.systematic_error_[i]]
+                    else:
+                        data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                                self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
+                                self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
+                    data = [data[columns.index(col)] for col in columns]
+                    writer.writerow(data)
+                f.write('\n')
+        

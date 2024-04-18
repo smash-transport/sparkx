@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.flow import FlowInterface
 import numpy as np
 import warnings
@@ -28,9 +37,11 @@ class PCAFlow(FlowInterface.FlowInterface):
     n : int, optional
         The flow harmonic to compute. Must be a positive integer. Default is 2.
     alpha : int, optional
-        The order in subleading flow up to which the flow is computed. Must be an integer greater than or equal to 1. Default is 2.
+        The order in subleading flow up to which the flow is computed. 
+        Must be an integer greater than or equal to 1. Default is 2.
     number_subcalc : int, optional
-        The number of subcalculations to estimate the error of the flow. Must be an integer greater than or equal to 2. Default is 4.
+        The number of subcalculations to estimate the error of the flow. 
+        Must be an integer greater than or equal to 2. Default is 4.
 
     Methods
     -------
@@ -57,7 +68,8 @@ class PCAFlow(FlowInterface.FlowInterface):
     bin_multiplicity_total_ : None or numpy.ndarray
         Total multiplicity in each bin across all events.
     sigma_multiplicity_total_ : list of numpy.ndarray
-        List of arrays containing the multiplicity in each bin for each subcalculation.
+        List of arrays containing the multiplicity in each bin for each 
+        subcalculation.
     number_events_subcalc_ : None or numpy.ndarray
         Number of events used in each subcalculation.
     QnRe_total_ : None or numpy.ndarray
@@ -243,7 +255,8 @@ class PCAFlow(FlowInterface.FlowInterface):
 
     def __compute_flow_PCA(self,bins):
         """
-        Perform Principal Component Analysis (PCA) to compute the anisotropic flow.
+        Perform Principal Component Analysis (PCA) to compute the anisotropic 
+        flow.
 
         Parameters
         ----------
