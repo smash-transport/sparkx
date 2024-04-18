@@ -295,6 +295,20 @@ class EventCharacteristics:
         -------
         None
         """
+        if not all(isinstance(val, (float, int)) for val in [x_min, x_max, y_min, y_max, z_min, z_max, sigma_smear]):
+            raise TypeError("Coordinates and sigma_smear must be float or int")
+        if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
+            raise TypeError("Nx, Ny, Nz must be positive integers")
+        if not all((isinstance(val, (float,int)) and val > 0) for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+            raise TypeError("n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
+        if not isinstance(eta_range, (list, tuple)):
+            raise TypeError("eta_range must be a list or tuple")
+        if len(eta_range) != 3:
+            raise ValueError("eta_range must contain min, max, and number of grid points")
+        if not all(isinstance(val, (float, int)) for val in eta_range):
+            raise TypeError("Values in eta_range must be float or int")
+        if not isinstance(output_filename, str):
+            raise TypeError("output_filename must be a string")
         if (IC_info is not None) and not isinstance(IC_info,str):
             raise TypeError("The given IC_info is not a string")
 
@@ -314,11 +328,13 @@ class EventCharacteristics:
 
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
+        if np.isnan(tau):
+            raise ValueError("The proper time is not defined for the given particles.")
         # take the x and y coordinates from the lattice and use the set eta range
         x = energy_density.x_values_
         y = energy_density.y_values_
         eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
-        if(tau*(np.sinh(eta[-1])-np.sinh(eta[-2])) < (z_max-z_min)/Nz):
+        if(1.05*tau*(np.sinh(eta[int(eta_range[2]/2.)])-np.sinh(eta[int(eta_range[2]/2.-1)])) < (z_max-z_min)/Nz):
             warnings.warn("Warning: The grid for z is not fine enough for the requested eta-grid.")
         
         # generate the header for the output file
@@ -339,6 +355,13 @@ class EventCharacteristics:
                         z_val = tau * np.sinh(eta_val)
                         milne_conversion = tau*np.cosh(eta_val) # dz = tau * cosh(eta) * deta
                         value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
+                        if(np.isnan(value_energy_density)):
+                            pass
+                            # print(milne_conversion)
+                            # print(eta_val)
+                            print(x_val, y_val, z_val)
+                            # print(energy_density.interpolate_value(x_val,y_val,z_val))
+                            # print(".....")
                         value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
                         value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
                         value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
@@ -351,95 +374,103 @@ class EventCharacteristics:
 
                         output_file.write(f"{tau:g} {x_val:g} {y_val:g} {eta_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")
 
-    def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename,IC_info=None):
-        """
-        Generates energy, baryon, charge, and strangeness densities in 
-        Minkowski coordinates from OSCAR initial conditions.
+    # def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename,IC_info=None):
+    #     """
+    #     Generates energy, baryon, charge, and strangeness densities in 
+    #     Minkowski coordinates from OSCAR initial conditions.
 
-        The total energy in GeV can be obtained by integrating the energy 
-        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z`.
+    #     The total energy in GeV can be obtained by integrating the energy 
+    #     density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z`.
 
-        Parameters
-        ----------
-        x_min, x_max, y_min, y_max, z_min, z_max : float
-            Minimum and maximum coordinates in the x, y, and z directions.
+    #     Parameters
+    #     ----------
+    #     x_min, x_max, y_min, y_max, z_min, z_max : float
+    #         Minimum and maximum coordinates in the x, y, and z directions.
 
-        Nx, Ny, Nz : int
-            Number of grid points in the x, y, and z directions.
+    #     Nx, Ny, Nz : int
+    #         Number of grid points in the x, y, and z directions.
 
-        n_sigma_x, n_sigma_y, n_sigma_z : float
-            Width of the smearing in the x, y, and z directions in units of 
-            sigma_smear.
+    #     n_sigma_x, n_sigma_y, n_sigma_z : float
+    #         Width of the smearing in the x, y, and z directions in units of 
+    #         sigma_smear.
 
-        sigma_smear : float
-            Smearing parameter for particle data.
+    #     sigma_smear : float
+    #         Smearing parameter for particle data.
 
-        output_filename : str
-            The name of the output file where the densities will be saved.
+    #     output_filename : str
+    #         The name of the output file where the densities will be saved.
 
-        IC_info : str
-            A string containing info about the initial condition, e.g., 
-            collision energy or centrality.
+    #     IC_info : str
+    #         A string containing info about the initial condition, e.g., 
+    #         collision energy or centrality.
 
-        Raises
-        ------
-        TypeError
-            If the given IC_info is not a string and if the class is initialized
-            with a lattice.
+    #     Raises
+    #     ------
+    #     TypeError
+    #         If the given IC_info is not a string and if the class is initialized
+    #         with a lattice.
 
-        Returns
-        -------
-        None
-        """
-        if (IC_info is not None) and not isinstance(IC_info,str):
-            warnings.warn("The given IC_info is not a string")
+    #     Returns
+    #     -------
+    #     None
+    #     """
+    #     if not all(isinstance(val, (float, int)) for val in [x_min, x_max, y_min, y_max, z_min, z_max, sigma_smear]):
+    #         raise TypeError("Coordinates and sigma_smear must be float or int")
+    #     if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
+    #         raise TypeError("Nx, Ny, Nz must be positive integers")
+    #     if not all((isinstance(val, (float,int)) and val > 0) for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+    #         raise TypeError("n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
+    #     if (IC_info is not None) and not isinstance(IC_info,str):
+    #         warnings.warn("The given IC_info is not a string")
+    #     if not isinstance(output_filename, str):
+    #         raise TypeError("output_filename must be a string")
 
-        if self.has_lattice_:
-            raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
+    #     if self.has_lattice_:
+    #         raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
 
-        energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
-        baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
-        charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
-        strangeness_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
+    #     energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
+    #     baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
+    #     charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
+    #     strangeness_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
 
-        # smear the particles on the 3D lattice
-        energy_density.add_particle_data(self.event_data_, sigma_smear,"energy_density")
-        baryon_density.add_particle_data(self.event_data_, sigma_smear,"baryon_density")
-        charge_density.add_particle_data(self.event_data_, sigma_smear,"charge_density")
-        strangeness_density.add_particle_data(self.event_data_, sigma_smear,"strangeness_density")
+    #     # smear the particles on the 3D lattice
+    #     energy_density.add_particle_data(self.event_data_, sigma_smear,"energy_density")
+    #     baryon_density.add_particle_data(self.event_data_, sigma_smear,"baryon_density")
+    #     charge_density.add_particle_data(self.event_data_, sigma_smear,"charge_density")
+    #     strangeness_density.add_particle_data(self.event_data_, sigma_smear,"strangeness_density")
 
-        # get the proper time of one of the particles from the iso-tau surface
-        tau = self.event_data_[0].proper_time()
-        # take the x, y and z coordinates from the lattice
-        x = energy_density.x_values_
-        y = energy_density.y_values_
-        z = energy_density.z_values_
+    #     # get the proper time of one of the particles from the iso-tau surface
+    #     tau = self.event_data_[0].proper_time()
+    #     # take the x, y and z coordinates from the lattice
+    #     x = energy_density.x_values_
+    #     y = energy_density.y_values_
+    #     z = energy_density.z_values_
 
-        # generate the header for the output file
-        file_header = "# smeared density from SPARKX in Milne coordinates\n# "
-        if IC_info is not None:
-            file_header += IC_info
-        file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
-        file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,Nz,x_min,x_max,y_min,y_max,z_min,z_max)
-        file_header += "# tau [fm], x [fm], y [fm], z [fm], energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]\n"
+    #     # generate the header for the output file
+    #     file_header = "# smeared density from SPARKX in Milne coordinates\n# "
+    #     if IC_info is not None:
+    #         file_header += IC_info
+    #     file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
+    #     file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,Nz,x_min,x_max,y_min,y_max,z_min,z_max)
+    #     file_header += "# tau [fm], x [fm], y [fm], z [fm], energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]\n"
 
 
-        # print the 3D lattice in Minkowski coordinates to a file
-        # Open the output file for writing
-        with open(output_filename, 'w') as output_file:
-            output_file.write(file_header)
-            for x_val in x:
-                for y_val in y:
-                    for z_val in z:
-                        value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)
-                        value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)
-                        value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)
-                        value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)
+    #     # print the 3D lattice in Minkowski coordinates to a file
+    #     # Open the output file for writing
+    #     with open(output_filename, 'w') as output_file:
+    #         output_file.write(file_header)
+    #         for x_val in x:
+    #             for y_val in y:
+    #                 for z_val in z:
+    #                     value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val)
+    #                     value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val)
+    #                     value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val)
+    #                     value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val)
 
-                        if value_energy_density == None:
-                            value_energy_density = 0.
-                            value_baryon_density = 0.
-                            value_charge_density = 0.
-                            value_strangeness_density = 0.
+    #                     if value_energy_density == None:
+    #                         value_energy_density = 0.
+    #                         value_baryon_density = 0.
+    #                         value_charge_density = 0.
+    #                         value_strangeness_density = 0.
 
-                        output_file.write(f"{tau:g} {x_val:g} {y_val:g} {z_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")    
+    #                     output_file.write(f"{tau:g} {x_val:g} {y_val:g} {z_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")    

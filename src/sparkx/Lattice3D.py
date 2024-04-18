@@ -578,7 +578,10 @@ class Lattice3D:
 
         """
         if not self.__is_within_range(x, y, z):
-            warnings.warn("Provided position is outside the lattice range.")
+            print(self.x_max_, self.x_min_, self.y_max_, self.y_min_, self.z_max_, self.z_min_)
+            print(x, y, z)
+            assert 1==0
+            #warnings.warn("Provided position is outside the lattice range.")
 
         i = self.__find_closest_index(x, self.x_values_)
         j = self.__find_closest_index(y, self.y_values_)
