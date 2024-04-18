@@ -169,3 +169,4 @@ def test_Jetscape_print(jetscape_file_path, output_path):
 def test_Jetscape_get_sigmaGen(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path)
     assert jetscape.get_sigmaGen() == (0.000314633,6.06164e-07)
+    
