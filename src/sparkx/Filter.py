@@ -671,4 +671,5 @@ def particle_status(particle_list, status_list):
         updated_particle_list.append(particle_list_tmp)
 
     particle_list = updated_particle_list
+
     return particle_list
