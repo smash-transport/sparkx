@@ -758,18 +758,19 @@ class Lattice3D:
         --------
 
         If you want to average over 3 lattices, you can do the following:
+
         .. highlight:: python
         .. code-block:: python
             :linenos:
 
-            >>> lattice1 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, z_max=1,
-                     num_points_x=10, num_points_y=10, num_points_z=10)
+            >>> lattice1 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
             >>>
-            >>> lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, z_max=1,
-                     num_points_x=10, num_points_y=10, num_points_z=10)
+            >>> lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, 
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
             >>>
-            >>> lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, z_max=1,
-                     num_points_x=10, num_points_y=10, num_points_z=10)
+            >>> lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, 
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
             >>>
             >>> lattice1=lattice1.average(lattice2, lattice3)
 
