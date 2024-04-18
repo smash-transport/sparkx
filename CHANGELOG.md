@@ -24,11 +24,12 @@ Date:
 ### Added
 
 * QCumulantFlow: Differential flow for two and four particle cumulants
-* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar, Jetscape, JetAnalysis, Flow, Lattice3D
+* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar, Jetscape, JetAnalysis, Flow, Lattice3D, EventCharacteristics
 * JetAnalysis: Add switch to write only charged associated particles
 * JetAnalysis: Add hole subtraction for particles with negative status
 * Histogram: Add possibility to add values with weights and possibility to create probability densities
 * Histogram: Choose which columns to be printed in the output file
+* EventCharacteristics: Add option for different radial weight in eccentricities
 
 ### Fixed
 
@@ -37,6 +38,8 @@ Date:
 * Oscar/Jetscape: Fix bug in keyword argument parsing
 * ReactionPlaneFlow: Fix bug in particle weight
 * Oscar: Fix various bugs in printout
+* EventCharacteristics: Fix sign of the eccentricity
+
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 
 ## v1.1.1-Newton

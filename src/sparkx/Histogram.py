@@ -31,7 +31,6 @@ class Histogram:
                  <p><code style="color:red; background-color:transparent;
                  font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p>
 
-
     Parameters
     ----------
     bin_boundaries : tuple
