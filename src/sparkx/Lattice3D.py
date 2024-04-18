@@ -578,10 +578,7 @@ class Lattice3D:
 
         """
         if not self.__is_within_range(x, y, z):
-            print(self.x_max_, self.x_min_, self.y_max_, self.y_min_, self.z_max_, self.z_min_)
-            print(x, y, z)
-            assert 1==0
-            #warnings.warn("Provided position is outside the lattice range.")
+            warnings.warn("Provided position is outside the lattice range.")
 
         i = self.__find_closest_index(x, self.x_values_)
         j = self.__find_closest_index(y, self.y_values_)
@@ -613,7 +610,7 @@ class Lattice3D:
         """
         if not self.__is_within_range(x, y, z):
             warnings.warn("Provided position is outside the lattice range.")
-            return 0
+            return None
 
         # Perform interpolation 
         xi = [x,y,z]
@@ -1233,7 +1230,7 @@ class Lattice3D:
 
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
-
+                            
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
                     for k in range(temp_lattice.num_points_z_):

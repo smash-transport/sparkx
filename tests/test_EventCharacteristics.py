@@ -86,6 +86,7 @@ def initial_particles():
     p1.y = 1.
     p1.z = 0.
     p1.E = 1.
+    p1.mass = 1.
     p1.px = 1.
     p1.py = 0.
     p1.pz = 0.
@@ -95,6 +96,7 @@ def initial_particles():
     particle_list.append(p1)
     p2 = Particle()
     p2.E = 1.
+    p2.mass=1.
     p2.t = 1.
     p2.x = 0.
     p2.y = -1.
@@ -137,142 +139,142 @@ def test_eccentricity_from_lattice(test_Lattice3D_instance):
         eve_char.eccentricity(2,harmonic_m=0,weight_quantity="number")
 
 def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance, fake_particle_list_eccentricity, initial_particles):
-    x_min = y_min = z_min = -2.
-    x_max = y_max = z_max = 2.
-    Nx = Ny = Nz = 50
-    n_sigma_x = n_sigma_y = n_sigma_z = 3
+    x_min = y_min = z_min = -3.
+    x_max = y_max = z_max = 3.
+    Nx = Ny = Nz = 100
+    n_sigma_x = n_sigma_y = n_sigma_z = 2
     sigma_smear = 0.1
     eta_range = [-1,1,6]
     output_filename = 'test_eBQS_densities_Milne_from_OSCAR_IC.dat'
 
-    # test error if IC_info is not None and string
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
-    #                                                          y_min,y_max, 
-    #                                                          z_min,z_max,
-    #                                                          Nx,Ny,Nz, 
-    #                                                          n_sigma_x,n_sigma_y,
-    #                                                          n_sigma_z,sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename, 
-    #                                                          IC_info=1)
+    #test error if IC_info is not None and string
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename, 
+                                                             IC_info=1)
 
-    # # test error if class is initialized with lattice
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(test_Lattice3D_instance)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
-    #                                                          y_min,y_max, 
-    #                                                          z_min,z_max,
-    #                                                          Nx,Ny,Nz, 
-    #                                                          n_sigma_x,n_sigma_y,
-    #                                                          n_sigma_z,sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # # Check error if x_min, x_max, y_min, y_max, z_min, z_max are not floats
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC("invalid", x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # # Check error if Nx, Ny, Nz are not positive integers
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          1.5, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          -2, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # # Check error if n_sigma_x, n_sigma_y, n_sigma_z are not floats
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          "invalid", n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          -3, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          output_filename)
-    # # Check error if eta_range is not a list with 3 float entries
-    # with pytest.raises(ValueError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          [1,2],
-    #                                                          output_filename)
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          [1,"invalid",2],
-    #                                                          output_filename)
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          3,
-    #                                                          output_filename)
-    # # Check error if output_filename is not a string
-    # with pytest.raises(TypeError):
-    #     eve_char = EventCharacteristics(oscar_particle_objects_list)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
-    #                                                          y_min, y_max, 
-    #                                                          z_min, z_max,
-    #                                                          Nx, Ny, Nz, 
-    #                                                          n_sigma_x, n_sigma_y,
-    #                                                          n_sigma_z, sigma_smear, 
-    #                                                          eta_range,
-    #                                                          1)
+    # test error if class is initialized with lattice
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(test_Lattice3D_instance)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min,x_max, 
+                                                             y_min,y_max, 
+                                                             z_min,z_max,
+                                                             Nx,Ny,Nz, 
+                                                             n_sigma_x,n_sigma_y,
+                                                             n_sigma_z,sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    # Check error if x_min, x_max, y_min, y_max, z_min, z_max are not floats
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC("invalid", x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    # Check error if Nx, Ny, Nz are not positive integers
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             1.5, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             -2, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    # Check error if n_sigma_x, n_sigma_y, n_sigma_z are not floats
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             "invalid", n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             -3, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             output_filename)
+    # Check error if eta_range is not a list with 3 float entries
+    with pytest.raises(ValueError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             [1,2],
+                                                             output_filename)
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             [1,"invalid",2],
+                                                             output_filename)
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             3,
+                                                             output_filename)
+    # Check error if output_filename is not a string
+    with pytest.raises(TypeError):
+        eve_char = EventCharacteristics(oscar_particle_objects_list)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(x_min, x_max, 
+                                                             y_min, y_max, 
+                                                             z_min, z_max,
+                                                             Nx, Ny, Nz, 
+                                                             n_sigma_x, n_sigma_y,
+                                                             n_sigma_z, sigma_smear, 
+                                                             eta_range,
+                                                             1)
     
-    # # Check error if not enough data for computing tau
-    # with pytest.raises(ValueError):
-    #     eve_char = EventCharacteristics(fake_particle_list_eccentricity)
-    #     eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(
-    #     x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz,
-    #     n_sigma_x, n_sigma_y, n_sigma_z, sigma_smear, eta_range,
-    #     output_filename
-    #     )
+    # Check error if not enough data for computing tau
+    with pytest.raises(ValueError):
+        eve_char = EventCharacteristics(fake_particle_list_eccentricity)
+        eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(
+        x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz,
+        n_sigma_x, n_sigma_y, n_sigma_z, sigma_smear, eta_range,
+        output_filename
+        )
 
     # Generate densities
     eve_char = EventCharacteristics(initial_particles)
