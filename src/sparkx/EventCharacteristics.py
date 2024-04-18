@@ -257,7 +257,7 @@ class EventCharacteristics:
         coordinates from OSCAR initial conditions.
 
         The total energy in GeV can be obtained by integrating the energy 
-        density with :math:`\\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.
+        density with :math:`\tau \\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.
 
         Parameters
         ----------
@@ -341,7 +341,7 @@ class EventCharacteristics:
         if IC_info is not None:
             file_header += IC_info
         file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
-        file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,Nz,x_min,x_max,y_min,y_max,eta_range[0],eta_range[1])
+        file_header += "%d %d %d %g %g %g %g %g %g\n"%(Nx,Ny,eta_range[2],x_min,x_max,y_min,y_max,eta_range[0],eta_range[1])
         file_header += "# tau [fm], x [fm], y [fm], eta, energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]\n"
 
         # print the 3D lattice in Milne coordinates to a file
