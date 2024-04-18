@@ -325,7 +325,6 @@ class EventCharacteristics:
         baryon_density.add_particle_data(self.event_data_, sigma_smear, "baryon_density")
         charge_density.add_particle_data(self.event_data_, sigma_smear, "charge_density")
         strangeness_density.add_particle_data(self.event_data_, sigma_smear, "strangeness_density")
-       
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
         if np.isnan(tau):
@@ -354,7 +353,10 @@ class EventCharacteristics:
                     for eta_val in eta:
                         z_val = tau * np.sinh(eta_val)
                         milne_conversion = tau*np.cosh(eta_val) # dz = tau * cosh(eta) * deta
+                        #milne_conversion = 1.0
                         value_energy_density = energy_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
+                        #if value_energy_density != 0:
+                        #    print(eta_val, z_val, milne_conversion, value_energy_density)
                         value_baryon_density = baryon_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
                         value_charge_density = charge_density.interpolate_value(x_val,y_val,z_val) * milne_conversion
                         value_strangeness_density = strangeness_density.interpolate_value(x_val,y_val,z_val) * milne_conversion

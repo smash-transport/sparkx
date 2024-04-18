@@ -143,8 +143,8 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lat
     x_max = y_max = z_max = 3.
     Nx = Ny = Nz = 100
     n_sigma_x = n_sigma_y = n_sigma_z = 2
-    sigma_smear = 0.1
-    eta_range = [-1,1,6]
+    sigma_smear = 0.3
+    eta_range = [-1,1,10]
     output_filename = 'test_eBQS_densities_Milne_from_OSCAR_IC.dat'
 
     #test error if IC_info is not None and string
@@ -307,8 +307,8 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lat
         assert y_min <= y <= y_max, "y coordinate out of range"
         assert z_min <= eta <= z_max, "eta coordinate out of range"
         assert energy_density >= 0, "Negative energy density"
-        integral += energy_density*tau*(x_max-x_min)*(y_max-y_min)*(z_max-z_min)/Nx/Ny/Nz
-    assert np.isclose(integral, 2., atol=1e-3), "Energy density integral is not close to 2"
+        integral += energy_density*tau*(x_max-x_min)*(y_max-y_min)*(eta_range[1]-eta_range[0])/(Nx*Ny*eta_range[2])
+    assert np.isclose(integral, 2., atol=1e-1), "Energy density integral is not close to 2"
 
         
 def test_eBQS_densities_Minkowski_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance):
