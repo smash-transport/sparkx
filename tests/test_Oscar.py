@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 import os
 import random
+import copy
 
 @pytest.fixture
 def output_path():
@@ -210,11 +211,13 @@ def test_filter_in_oscar(tmp_path):
         event_2.append(Kaon_0_spectator)
     particle_objects=[event_1, event_2]
     oscar1.particle_list_ = particle_objects
-    oscar2.particle_list_ = particle_objects
+    oscar2.particle_list_ = copy.deepcopy(particle_objects)
     oscar1.charged_particles()
     oscar2.uncharged_particles()
     print(oscar2.num_output_per_event())
     
+    print("Pi0 charge: ", pi_0_participant.charge)
+
     assert np.array_equal(oscar1.num_output_per_event(), np.array([[0, 6],[1, 10]]))
     assert np.array_equal(oscar2.num_output_per_event(), np.array([[0, 6],[1, 20]]))
 
