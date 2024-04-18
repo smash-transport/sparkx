@@ -140,14 +140,14 @@ def test_eccentricity_from_lattice(test_Lattice3D_instance):
     with pytest.raises(ValueError):
         eve_char.eccentricity(2,harmonic_m=0,weight_quantity="number")
 
-def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance, fake_particle_list_eccentricity, initial_particles):
+def test_eBQS_densities_Milne_from_OSCAR_IC(tmp_path,oscar_particle_objects_list,test_Lattice3D_instance, fake_particle_list_eccentricity, initial_particles):
     x_min = y_min = z_min = -3.
     x_max = y_max = z_max = 3.
     Nx = Ny = Nz = 100
     n_sigma_x = n_sigma_y = n_sigma_z = 2
     sigma_smear = 0.3
     eta_range = [-1,1,10]
-    output_filename = 'test_eBQS_densities_Milne_from_OSCAR_IC.dat'
+    output_filename = os.path.join(tmp_path,'test_eBQS_densities_Milne_from_OSCAR_IC.dat')
 
     #test error if IC_info is not None and string
     with pytest.raises(TypeError):
@@ -313,13 +313,13 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(oscar_particle_objects_list,test_Lat
     assert np.isclose(integral, 2., atol=1e-1), "Energy density integral is not close to 2"
 
         
-def test_eBQS_densities_Minkowski_from_OSCAR_IC(oscar_particle_objects_list,test_Lattice3D_instance):
+def test_eBQS_densities_Minkowski_from_OSCAR_IC(tmp_path,oscar_particle_objects_list,test_Lattice3D_instance):
     x_min = y_min = z_min = -5.
     x_max = y_max = z_max = 5.
     Nx = Ny = Nz = 50
     n_sigma_x = n_sigma_y = n_sigma_z = 3
     sigma_smear = 0.2
-    output_filename = 'test_eBQS_densities_Minkowski_from_OSCAR_IC.dat'
+    output_filename = os.path.join(tmp_path,'test_eBQS_densities_Minkowski_from_OSCAR_IC.dat')
 
     # test error if IC_info is not None and string
     with pytest.raises(TypeError):
@@ -400,4 +400,4 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(oscar_particle_objects_list,test
                                                              n_sigma_x, n_sigma_y,
                                                              n_sigma_z, sigma_smear, 
                                                              1)
-        
+    

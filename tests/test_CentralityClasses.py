@@ -9,6 +9,7 @@
     
 import pytest
 import numpy as np
+import os
 from sparkx.CentralityClasses import CentralityClasses
 
 
@@ -66,9 +67,9 @@ def test_get_centrality_class(centrality_obj):
     assert centrality_obj.get_centrality_class(29) == 7
 
 def test_output_centrality_classes(centrality_obj, tmp_path):
-    output_file = tmp_path / "centrality_output.txt"
+    output_file = os.path.join(tmp_path,"centrality_output.txt")
     centrality_obj.output_centrality_classes(str(output_file))
-    assert output_file.is_file()
+    assert os.path.isfile(output_file)
 
     # Check content of the output file
     with open(output_file, 'r') as f:
