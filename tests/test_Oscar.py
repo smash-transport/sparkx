@@ -173,7 +173,6 @@ def test_loading_defined_events_and_checking_event_length(tmp_path):
             assert oscar.num_events() == event_end - event_start + 1
 
             for event in range(event_end - event_start + 1):
-                print(event)
                 assert len(oscar.particle_objects_list()[event]) == \
                        num_output_per_event[event + event_start]
             del(oscar)
@@ -214,9 +213,6 @@ def test_filter_in_oscar(tmp_path):
     oscar2.particle_list_ = copy.deepcopy(particle_objects)
     oscar1.charged_particles()
     oscar2.uncharged_particles()
-    print(oscar2.num_output_per_event())
-    
-    print("Pi0 charge: ", pi_0_participant.charge)
 
     assert np.array_equal(oscar1.num_output_per_event(), np.array([[0, 6],[1, 10]]))
     assert np.array_equal(oscar2.num_output_per_event(), np.array([[0, 6],[1, 20]]))
