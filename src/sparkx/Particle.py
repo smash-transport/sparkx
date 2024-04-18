@@ -213,6 +213,7 @@ class Particle:
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):
         self.data_ = np.array(25*[np.nan],dtype=float)
+        self.pdg_valid = False
         
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
