@@ -17,7 +17,7 @@ from sparkx.Particle import Particle
 
 @pytest.fixture
 def oscar_file_path():
-    return os.path.join(os.path.dirname(__file__), 'test_files', 'particle_lists.oscar')
+    return os.path.join(os.path.dirname(__file__), 'test_files', 'particle_lists_extended.oscar')
 
 @pytest.fixture
 def oscar_particle_objects_list(oscar_file_path):
@@ -56,6 +56,7 @@ def fake_particle_list_eccentricity():
     p1 = Particle()
     p1.x = 0.
     p1.y = 1.
+    p1.z = 0.
     p1.E = 1.
     p1.px = 1.
     p1.py = 0.
@@ -68,6 +69,7 @@ def fake_particle_list_eccentricity():
     p2.E = 1.
     p2.x = 0.
     p2.y = -1.
+    p1.z = 0.
     p2.px = 1.
     p2.py = 0.
     p2.pz = 0.
