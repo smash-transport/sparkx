@@ -616,7 +616,7 @@ class Lattice3D:
         """
         if not self.__is_within_range(x, y, z):
             warnings.warn("Provided position is outside the lattice range.")
-            return 0
+            return None
 
         # Perform interpolation 
         xi = [x,y,z]
@@ -1277,7 +1277,7 @@ class Lattice3D:
                             value_to_add=0.
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
-
+                            
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
                     for k in range(temp_lattice.num_points_z_):
