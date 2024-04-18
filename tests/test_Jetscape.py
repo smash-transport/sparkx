@@ -25,11 +25,6 @@ def jetscape_file_path():
     # Assuming your test file is in the same directory as test_files/
     return os.path.join(os.path.dirname(__file__), 'test_files', 'test_jetscape.dat')
 
-@pytest.fixture
-def jetscape_path_to_oscar():
-    # Assuming your test file is in the same directory as test_files/
-    return os.path.join(os.path.dirname(__file__), 'test_files', 'particle_lists.oscar')
-
 def create_temporary_jetscape_file(path, num_events, output_per_event_list=None):
     """
     This function creates a sample Jetscape file "jetscape_test.dat" in the 
