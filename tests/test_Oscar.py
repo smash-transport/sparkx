@@ -463,8 +463,8 @@ def test_filter_in_oscar_constructor(tmp_path):
     header = ''.join(header_lines)
 
     # Create an Oscar file with 2 events
-    # Event 1: 6 proton spectators, 12 proton participants and 18 pi0 participants
-    # Event 2: 10 proton participants, 10 K0 participants and 10 K0 spectators
+    # Event 1: 5 pi0 spectators, 10 K0 participants and 15 K0 spectators
+    # Event 2: 11 pi0 participants and 22 K0 spectators
     with open(oscar_file, "w") as f:
         f.write(header)
         f.write("# event 0 out 30\n")
