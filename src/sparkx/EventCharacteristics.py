@@ -257,7 +257,7 @@ class EventCharacteristics:
         coordinates from OSCAR initial conditions.
 
         The total energy in GeV can be obtained by integrating the energy 
-        density with :math:`\tau \\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.
+        density with :math:`\\tau \\mathrm{d}x\\mathrm{d}y\\mathrm{d}\\eta`.
 
         Parameters
         ----------
