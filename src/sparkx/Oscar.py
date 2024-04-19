@@ -485,7 +485,6 @@ class Oscar:
             self.particle_list_ = particle_list
             
 
-
     def set_oscar_format(self):
         with open(self.PATH_OSCAR_, 'r') as file:
             first_line = file.readline()
