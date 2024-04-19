@@ -17,10 +17,10 @@ class Particle:
 
     The member variables of the Particle class are the quantities in the
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
-    they stay NaN to throw an error if one tries to access a non existing
+    they stay `np.nan` to throw an error if one tries to access a non existing
     quantity.
     If a particle with an unknown PDG is provided, a warning is thrown and and 
-    np.nan is returned for charge, spin, and spin degeneracy.
+    `np.nan` is returned for charge, spin, and spin degeneracy.
 
     Attributes
     ----------
@@ -205,7 +205,7 @@ class Particle:
     Notes
     -----
     If a member of the Particle class is not set or a quantity should be computed
-    and the needed member variables are not set, then `NaN` is returned by default.
+    and the needed member variables are not set, then `np.nan` is returned by default.
     All quantities are saved in a numpy array member variable `data_`. The datatype
     of this array is float, therefore casting is required when int or bool values are 
     required.
@@ -787,7 +787,7 @@ class Particle:
 
     def angular_momentum(self):
         """
-        Compute the angular momentum :math:`L=r \\times p` of a particle.
+        Compute the angular momentum :math:`\\vec{L}=\\vec{r} \\times \\vec{p}` of a particle.
 
         Returns
         -------

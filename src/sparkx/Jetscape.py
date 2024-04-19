@@ -10,9 +10,6 @@
 from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
-import csv
-import warnings
-import os
 
 class Jetscape:
     """
@@ -27,6 +24,9 @@ class Jetscape:
     list containing all quantities of the Jetscape format 2) as a list containing
     Particle objects from the Particle or it can be printed to a file
     complying with the input format.
+
+    .. note::
+        If filters are applied, be aware that not all cuts commute.
 
     Parameters
     ----------
@@ -82,7 +82,7 @@ class Jetscape:
     particle_list:
         Returns current Jetscape data as nested list
     particle_objects_list:
-        Returns current Jetscape data as nested list of ParticleClass objects
+        Returns current Jetscape data as nested list of Particle objects
     num_events:
         Get number of events
     num_output_per_event:
@@ -488,7 +488,7 @@ class Jetscape:
         Returns
         -------
         list
-            Nested list containing the current Oscar data
+            Nested list containing the current Jetscape data
         """
         return self.particle_list_
 
@@ -497,7 +497,7 @@ class Jetscape:
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
 
-        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        num_output_per_event[event_n, number_of_particles_in_event_n]
 
         num_output_per_event is updated with every manipulation e.g. after
         applying cuts.
@@ -669,8 +669,8 @@ class Jetscape:
 
     def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
+        Apply transverse momentum cut to all events by passing an acceptance
+        range by ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
@@ -684,7 +684,8 @@ class Jetscape:
         Returns
         -------
         self : Jetscape object
-            Containing only particles complying with the p_t cut for all events
+            Containing only particles complying with the transverse momentum 
+            cut for all events
         """
         self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()

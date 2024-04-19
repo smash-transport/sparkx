@@ -10,8 +10,6 @@
 from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
-import csv
-import warnings
 import os
 
 class Oscar:
@@ -23,12 +21,15 @@ class Oscar:
     allow to directly act on all contained events as applying acceptance filters
     (e.g. un/charged particles, spectators/participants) to keep/remove particles
     by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
-    Once these filters are applied, the new data set can be saved as a
+    Once these filters are applied, the new data set can be accessed as a
 
     1) nested list containing all quantities of the Oscar format
     2) list containing Particle objects from the Particle class
 
     or it may be printed to a file complying with the input format.
+
+    .. note::
+        If filters are applied, be aware that not all cuts commute.
 
     Parameters
     ----------
@@ -90,7 +91,7 @@ class Oscar:
     particle_list:
         Returns current Oscar data as nested list
     particle_objects_list:
-        Returns current Oscar data as nested list of ParticleClass objects
+        Returns current Oscar data as nested list of Particle objects
     num_events:
         Get number of events
     num_output_per_event:
@@ -193,9 +194,10 @@ class Oscar:
 
     Notes
     -----
-    If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list with
-    the :code:`dim` parameter and the :code:`cut_value_tuple` is needed. All other filters
-    need the usual parameters for the filter functions in the dictionary.
+    If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list 
+    specifying the dimension to be cut in the first entry and the tuple with the cut
+    boundaries in the second entry is needed. For all other filters, the dictionary
+    only needs the filter name as key and the filter argument as value.
     All filter functions without arguments need a :code:`True` in the dictionary.
     
     """
@@ -619,7 +621,7 @@ class Oscar:
         """
         Returns a nested python list containing all particles from
         the Oscar2013/Oscar2013Extended output as particle objects
-        from ParticleClass:
+        from Particle:
 
            | Single Event:    [particle_object]
            | Multiple Events: [event][particle_object]
@@ -627,7 +629,7 @@ class Oscar:
         Returns
         -------
         particle_list_ : list
-            List of particle objects from ParticleClass
+            List of particle objects from Particle
         """
         return self.particle_list_
 
@@ -882,8 +884,8 @@ class Oscar:
 
     def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
+        Apply transverse momentum cut to all events by passing an acceptance 
+        range by ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
@@ -897,7 +899,8 @@ class Oscar:
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the p_t cut for all events
+            Containing only particles complying with the transverse momentum 
+            cut for all events
         """
 
         self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)

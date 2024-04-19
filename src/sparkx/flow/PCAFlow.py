@@ -431,7 +431,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         Notes
         -----
         - The flow or the uncertainty can be accessed by: `function_return[bin][alpha]`
-        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to NaN.
+        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to `np.nan`.
         """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
@@ -462,8 +462,8 @@ class PCAFlow(FlowInterface.FlowInterface):
         list
             A list containing the Pearson correlation coefficient and its uncertainty.
 
-        - Pearson_r (numpy.ndarray): The Pearson correlation coefficient for factorization breaking between each pair of bins.
-        - Pearson_r_uncertainty (numpy.ndarray): The uncertainty of the Pearson correlation coefficient for factorization breaking between each pair of bins.
+            - Pearson_r (numpy.ndarray): The Pearson correlation coefficient for factorization breaking between each pair of bins.
+            - Pearson_r_uncertainty (numpy.ndarray): The uncertainty of the Pearson correlation coefficient for factorization breaking between each pair of bins.
 
         Notes
         -----

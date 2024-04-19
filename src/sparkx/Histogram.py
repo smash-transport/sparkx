@@ -288,11 +288,11 @@ class Histogram:
         TypeError
             if the input is not a number or numpy.ndarray or list
         ValueError
-            if an input `value` is NaN
+            if an input `value` is `np.nan`
         ValueError
             if the input `weight` has not the same dimension as `value`
         ValueError
-            if a `weight` value is NaN 
+            if a `weight` value is `np.nan` 
         """
         # Check if weight has the same length as value
         if weight is not None:

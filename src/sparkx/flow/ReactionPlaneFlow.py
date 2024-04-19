@@ -20,7 +20,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
     .. math::
 
-        v_n = \\left\\langle \\exp{in\\phi_i}\\right\\rangle
+        v_n = \\left\\langle \\exp{in\\phi_i}\\right\\rangle,
 
     where we average over all particles of all events. We return complex numbers, 
     which contain the information about the position of the event plane.
