@@ -149,14 +149,14 @@ def test_oscar_old_extended_initialization(oscar_old_extended_file_path):
     assert oscar_old_extended is not None
     
 def test_loading_defined_events_and_checking_event_length(tmp_path):
-    # To make sure that the correct number of lines are skipped when loading 
-    # only a subset of events, we create an OSCAR file with a known number of 
-    # events and then load a subset of events from it. We then check if the 
+    # To make sure that the correct number of lines are skipped when loading
+    # only a subset of events, we create an OSCAR file with a known number of
+    # events and then load a subset of events from it. We then check if the
     # number of events loaded is equal to the number of events requested.
     num_events = 8
     num_output_per_event = [3, 1, 8, 4, 7, 11, 17, 2]
-    
-    tmp_oscar_file = create_temporary_oscar_file(tmp_path, num_events, 
+
+    tmp_oscar_file = create_temporary_oscar_file(tmp_path, num_events,
                                                  "Oscar2013", num_output_per_event)
     # Single events
     for event in range(num_events):
@@ -178,8 +178,117 @@ def test_loading_defined_events_and_checking_event_length(tmp_path):
                        num_output_per_event[event + event_start]
             del(oscar)
 
+def test_oscar_format(tmp_path):
+    tmp_oscar_file = create_temporary_oscar_file(tmp_path, 2,"Oscar2013")
+    oscar = Oscar(tmp_oscar_file)
+    assert oscar.oscar_format() == "Oscar2013"
+
+    tmp_oscar_extended_file = create_temporary_oscar_file(tmp_path, 2,"Oscar2013Extended")
+    oscar = Oscar(tmp_oscar_extended_file)
+    assert oscar.oscar_format() == "Oscar2013Extended"
+
+def test_num_output_per_event(tmp_path, oscar_old_extended_file_path):
+    num_events = 7
+    num_output_per_event = [1, 35, 27, 0, 9, 17, 3]
+
+    tmp_oscar_file = create_temporary_oscar_file(tmp_path, num_events,
+                                                 "Oscar2013", num_output_per_event)
+    tmp_oscar_file_extended = create_temporary_oscar_file(tmp_path, num_events,
+                                                 "Oscar2013Extended", num_output_per_event)
+
+    num_output = [[0, 1],[1, 35],[2, 27],[3, 0],[4, 9],[5, 17],[6, 3]]
+    num_output_oscar_old_extended = [[0, 4],[1, 0]]
+
+    oscar = Oscar(tmp_oscar_file)
+    assert (oscar.num_output_per_event() == num_output).all()
+
+    oscar_extended = Oscar(tmp_oscar_file_extended)
+    assert (oscar_extended.num_output_per_event() == num_output).all()
+
+    oscar_old_extended = Oscar(oscar_old_extended_file_path)
+    assert (oscar_old_extended.num_output_per_event() == num_output_oscar_old_extended).all()
+
+def test_num_events(tmp_path, oscar_old_extended_file_path):
+    number_of_events = [1, 5, 17, 3, 44, 101, 98]
+
+    for events in number_of_events:
+        # Create temporary Oscar2013 files
+        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013")
+        oscar = Oscar(tmp_oscar_file)
+        assert oscar.num_events() == events
+        del(oscar)
+        del(tmp_oscar_file)
+
+    for events in number_of_events:
+        # Create temporary Oscar2013Extended files
+        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013Extended")
+        oscar = Oscar(tmp_oscar_file)
+        assert oscar.num_events() == events
+        del(oscar)
+        del(tmp_oscar_file)
+
+    oscar_old_extended = Oscar(oscar_old_extended_file_path)
+    assert oscar_old_extended.num_events() == 2
+
+def test_set_num_events(tmp_path):
+    number_of_events = [1, 3, 7, 14, 61, 99]
+
+    # Create multiple temporary Oscar2013 files with different numbers of events
+    for events in number_of_events:
+        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013")
+        oscar = Oscar(tmp_oscar_file)
+        assert oscar.num_events() == events
+        del(oscar)
+        del(tmp_oscar_file)
+
+    # Create multiple temporary Oscar2013Extended files with different numbers of events
+    for events in number_of_events:
+        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013Extended")
+        oscar = Oscar(tmp_oscar_file)
+        assert oscar.num_events() == events
+        del(oscar)
+        del(tmp_oscar_file)
+
+def test_particle_list(oscar_file_path):
+    dummy_particle_list = [[200,  1.19,   2.46,  66.66, 0.938, 0.96,  -0.006, -0.067,  0.23,  2112, 0,  0],
+                           [200,  0.825, -1.53,  0.0,   0.139, 0.495,  0.012, -0.059,  0.0,    321, 1,  1],
+                           [150,  0.999,  3.14, -2.72,  0.511, 1.25,   0.023,  0.078, -0.22,    11, 2, -1],
+                           [150,  0.123,  0.987, 4.56,  0.105, 0.302, -0.045,  0.019,  0.053,   22, 3,  0],
+                           [100, -2.1,    1.2,  -0.5,   1.776, 3.0,    0.25,  -0.15,   0.1,   2212, 4,  1],
+                           [100,  0.732,  0.824, 3.14,  0.938, 2.0,    0.1,    0.05,  -0.05,  -211, 5, -1],
+                           [50,  -1.5,    2.5,  -3.0,   0.511, 2.5,    0.3,   -0.2,    0.1,    211, 6,  1],
+                           [50,   1.0,   -2.0,   1.5,   0.105, 0.3,    0.02,  -0.05,   0.03,    22, 7,  0],
+                           [0,   -0.5,    0.0,  -1.0,   0.938, 1.0,    0.1,    0.0,   -0.1,    -13, 8, -1],
+                           [0,    1.5,    0.8,   0.0,   0.511, 0.75,  -0.1,    0.05,   0.0,     22, 9,  0]]
+
+    dummy_particle_list_nested = [[[200,  1.19,   2.46,  66.66, 0.938, 0.96,  -0.006, -0.067,  0.23,  2112, 0,  0],
+                                   [200,  0.825, -1.53,  0.0,   0.139, 0.495,  0.012, -0.059,  0.0,    321, 1,  1]],
+                                  [[150,  0.999,  3.14, -2.72,  0.511, 1.25,   0.023,  0.078, -0.22,    11, 2, -1],
+                                   [150,  0.123,  0.987, 4.56,  0.105, 0.302, -0.045,  0.019,  0.053,   22, 3,  0]],
+                                  [[100, -2.1,    1.2,  -0.5,   1.776, 3.0,    0.25,  -0.15,   0.1,   2212, 4,  1],
+                                   [100,  0.732,  0.824, 3.14,  0.938, 2.0,    0.1,    0.05,  -0.05,  -211, 5, -1]],
+                                  [[50,  -1.5,    2.5,  -3.0,   0.511, 2.5,    0.3,   -0.2,    0.1,    211, 6,  1],
+                                   [50,   1.0,   -2.0,   1.5,   0.105, 0.3,    0.02,  -0.05,   0.03,    22, 7,  0]],
+                                  [[0,   -0.5,    0.0,  -1.0,   0.938, 1.0,    0.1,    0.0,   -0.1,    -13, 8, -1],
+                                   [0,    1.5,    0.8,   0.0,   0.511, 0.75,  -0.1,    0.05,   0.0,     22, 9,  0]]]
+
+    particle_objects = []
+    for particle_data in dummy_particle_list:
+        particle_objects.append(Particle("Oscar2013", particle_data))
+
+    # Reshape particle objects list such that we have 5 events with
+    # 2 particle objects each and turn it back into a python list.
+    particle_objects = (np.array(particle_objects).reshape((5, 2))).tolist()
+
+    oscar = Oscar(oscar_file_path)
+    oscar.particle_list_ = particle_objects
+    oscar.num_events_ = 5
+    oscar.num_output_per_event_ = np.array([[0,2],[1,2],[2,2],[3,2],[4,2]])
+
+    assert (oscar.particle_list() == dummy_particle_list_nested)
+
 def test_filter_in_oscar(tmp_path):
-    # In this test we test a subset of filters only, as the filters are tested 
+    # In this test we test a subset of filters only, as the filters are tested
     # separately and completely. This test is therefore seen as an integration
     # test in Oscar.
 
@@ -281,124 +390,22 @@ def test_filter_in_oscar(tmp_path):
     assert np.array_equal(oscar_spectators_strange.num_output_per_event(), np.array([[0, 15],[1, 22]]))
     assert np.array_equal(oscar_participants_strange.num_output_per_event(), np.array([[0, 10],[1, 0]]))
 
-def test_oscar_format(tmp_path):
-    tmp_oscar_file = create_temporary_oscar_file(tmp_path, 2,"Oscar2013")
+def test_standard_oscar_print(tmp_path, output_path):
+    tmp_oscar_file = create_temporary_oscar_file(tmp_path, 5, "Oscar2013", [1, 7, 0, 36, 5])
     oscar = Oscar(tmp_oscar_file)
-    assert oscar.oscar_format() == "Oscar2013"
-    
-    tmp_oscar_extended_file = create_temporary_oscar_file(tmp_path, 2,"Oscar2013Extended")
-    oscar = Oscar(tmp_oscar_extended_file)
-    assert oscar.oscar_format() == "Oscar2013Extended"
-    
-def test_num_output_per_event(oscar_file_path, oscar_extended_file_path, 
-                              oscar_old_extended_file_path):
-    num_output_oscar = [[0, 32],[1, 32],[2, 32],[3, 32],[4, 32]]
-    num_output_oscar_extended = [[0, 32],[1, 32],[2, 32],[3, 32],[4, 32]]
-    num_output_oscar_old_extended = [[0, 4],[1, 0]]
-    
-    oscar = Oscar(oscar_file_path)
-    assert (oscar.num_output_per_event() == num_output_oscar).all()
-    
-    oscar_extended = Oscar(oscar_extended_file_path)
-    assert (oscar_extended.num_output_per_event() == num_output_oscar_extended).all()
-    
-    oscar_old_extended = Oscar(oscar_old_extended_file_path)
-    assert (oscar_old_extended.num_output_per_event() == num_output_oscar_old_extended).all()
-    
-def test_num_events(tmp_path, oscar_old_extended_file_path):
-    number_of_events = [1, 5, 17, 3, 44, 101, 98]
-
-    for events in number_of_events:
-        # Create temporary Oscar2013 files
-        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013")
-        oscar = Oscar(tmp_oscar_file)
-        assert oscar.num_events() == events
-        del(oscar)
-        del(tmp_oscar_file)
-
-    for events in number_of_events:
-        # Create temporary Oscar2013Extended files
-        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013Extended")
-        oscar = Oscar(tmp_oscar_file)
-        assert oscar.num_events() == events
-        del(oscar)
-        del(tmp_oscar_file)
-
-    oscar_old_extended = Oscar(oscar_old_extended_file_path)
-    assert oscar_old_extended.num_events() == 2
-
-def test_set_num_events(tmp_path):
-    number_of_events = [1, 3, 7, 14, 61, 99]
-
-    # Create multiple temporary Oscar2013 files with different numbers of events
-    for events in number_of_events:
-        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013")
-        oscar = Oscar(tmp_oscar_file)
-        assert oscar.num_events() == events
-        del(oscar)
-        del(tmp_oscar_file)
-
-    # Create multiple temporary Oscar2013Extended files with different numbers of events
-    for events in number_of_events:
-        tmp_oscar_file = create_temporary_oscar_file(tmp_path, events,"Oscar2013Extended")
-        oscar = Oscar(tmp_oscar_file)
-        assert oscar.num_events() == events
-        del(oscar)
-        del(tmp_oscar_file)
-
-def test_particle_list(oscar_file_path):
-    dummy_particle_list = [[200,  1.19,   2.46,  66.66, 0.938, 0.96,  -0.006, -0.067,  0.23,  2112, 0,  0],
-                           [200,  0.825, -1.53,  0.0,   0.139, 0.495,  0.012, -0.059,  0.0,    321, 1,  1],
-                           [150,  0.999,  3.14, -2.72,  0.511, 1.25,   0.023,  0.078, -0.22,    11, 2, -1],
-                           [150,  0.123,  0.987, 4.56,  0.105, 0.302, -0.045,  0.019,  0.053,   22, 3,  0],
-                           [100, -2.1,    1.2,  -0.5,   1.776, 3.0,    0.25,  -0.15,   0.1,   2212, 4,  1], 
-                           [100,  0.732,  0.824, 3.14,  0.938, 2.0,    0.1,    0.05,  -0.05,  -211, 5, -1],
-                           [50,  -1.5,    2.5,  -3.0,   0.511, 2.5,    0.3,   -0.2,    0.1,    211, 6,  1],
-                           [50,   1.0,   -2.0,   1.5,   0.105, 0.3,    0.02,  -0.05,   0.03,    22, 7,  0],
-                           [0,   -0.5,    0.0,  -1.0,   0.938, 1.0,    0.1,    0.0,   -0.1,    -13, 8, -1],
-                           [0,    1.5,    0.8,   0.0,   0.511, 0.75,  -0.1,    0.05,   0.0,     22, 9,  0]]
-    
-    dummy_particle_list_nested = [[[200,  1.19,   2.46,  66.66, 0.938, 0.96,  -0.006, -0.067,  0.23,  2112, 0,  0],
-                                   [200,  0.825, -1.53,  0.0,   0.139, 0.495,  0.012, -0.059,  0.0,    321, 1,  1]],
-                                  [[150,  0.999,  3.14, -2.72,  0.511, 1.25,   0.023,  0.078, -0.22,    11, 2, -1],
-                                   [150,  0.123,  0.987, 4.56,  0.105, 0.302, -0.045,  0.019,  0.053,   22, 3,  0]],
-                                  [[100, -2.1,    1.2,  -0.5,   1.776, 3.0,    0.25,  -0.15,   0.1,   2212, 4,  1], 
-                                   [100,  0.732,  0.824, 3.14,  0.938, 2.0,    0.1,    0.05,  -0.05,  -211, 5, -1]],
-                                  [[50,  -1.5,    2.5,  -3.0,   0.511, 2.5,    0.3,   -0.2,    0.1,    211, 6,  1],
-                                   [50,   1.0,   -2.0,   1.5,   0.105, 0.3,    0.02,  -0.05,   0.03,    22, 7,  0]],
-                                  [[0,   -0.5,    0.0,  -1.0,   0.938, 1.0,    0.1,    0.0,   -0.1,    -13, 8, -1],
-                                   [0,    1.5,    0.8,   0.0,   0.511, 0.75,  -0.1,    0.05,   0.0,     22, 9,  0]]]
-    
-    particle_objects = []
-    for particle_data in dummy_particle_list:
-        particle_objects.append(Particle("Oscar2013", particle_data))
-        
-    # Reshape particle objects list such that we have 5 events with 
-    # 2 particle objects each and turn it back into a python list
-    particle_objects = (np.array(particle_objects).reshape((5, 2))).tolist()
-
-    oscar = Oscar(oscar_file_path)
-    oscar.particle_list_ = particle_objects
-    oscar.num_events_ = 5
-    oscar.num_output_per_event_ = np.array([[0,2],[1,2],[2,2],[3,2],[4,2]])
-    
-    assert (oscar.particle_list() == dummy_particle_list_nested)
-    
-def test_extended_oscar_print(oscar_extended_file_path, output_path):
-    oscar = Oscar(oscar_extended_file_path)
     oscar.print_particle_lists_to_file(output_path)
-    assert filecmp.cmp(oscar_extended_file_path, output_path)
-    os.remove(output_path) 
+    assert filecmp.cmp(tmp_oscar_file, output_path)
+    os.remove(output_path)
+
+def test_extended_oscar_print(tmp_path, output_path):
+    tmp_oscar_file = create_temporary_oscar_file(tmp_path, 5, "Oscar2013Extended", [4, 1, 42, 0, 3])
+    oscar = Oscar(tmp_oscar_file)
+    oscar.print_particle_lists_to_file(output_path)
+    assert filecmp.cmp(tmp_oscar_file, output_path)
+    os.remove(output_path)
 
 def test_old_extended_oscar_print(oscar_old_extended_file_path, output_path):
     oscar = Oscar(oscar_old_extended_file_path)
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_old_extended_file_path, output_path)
-    os.remove(output_path)  
-
-def test_standard_oscar_print(oscar_file_path, output_path):
-    oscar = Oscar(oscar_file_path)
-    oscar.print_particle_lists_to_file(output_path)
-    assert filecmp.cmp(oscar_file_path, output_path)
-    os.remove(output_path) 
-    
+    os.remove(output_path)
