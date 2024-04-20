@@ -212,6 +212,9 @@ def test_particle_list(jetscape_file_path):
     
     assert (jetscape.particle_list() == dummy_particle_list_nested)
 
+# In the next tests we test a subset of filters only, as the filters are tested
+# separately and completely. This test is therefore seen as an integration
+# test in the Jetscape class.
 @pytest.fixture
 def particle_list_strange():
     particle_list1 = []
@@ -241,6 +244,62 @@ def test_filter_strangeness_in_Jetscape(tmp_path,particle_list_strange):
     jetscape.strange_particles()
 
     assert np.array_equal(jetscape.num_output_per_event(), np.array([[1,5],[2,7]]))
+
+def test_filter_status_in_Jetscape(jetscape_file_path):
+    jetscape = Jetscape(jetscape_file_path).particle_status(1)
+    
+    assert jetscape.num_events() == 5
+    assert (jetscape.num_output_per_event() == np.array([[1, 0],[2, 0],[3, 0],[4, 0],[5, 0]])).all()
+
+def test_filter_rapidity_in_Jetscape_constructor(tmp_path,jetscape_file_path):
+    # In this test we test the integration of filters in the Jetscape constructor,
+    # which are selected with keyword arguments while initializing the Jetscape object.
+
+    pi0_y0 = (0, 111, 27, 0.138, 0.0, 0.0, 0.0)
+    pi0_y1 = (1, 111, 27, 0.138, 0.0, 0.0, 0.10510)
+
+    data_pi0_y0 = ' '.join(map(str, pi0_y0)) + '\n'
+    data_pi0_y1 = ' '.join(map(str, pi0_y1)) + '\n'
+
+    # Create a particle list to be loaded into the Jetscape object
+    jetscape_file = str(tmp_path / "jetscape_test.dat")
+    header_line = "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
+
+    # Create a Jetscape file with two events
+    # Event 1: 6 pi0 with Y=0, 12 with Y=1
+    # Event 2: 10 pi0 with Y=0, 10 with Y=1
+    with open(jetscape_file, "w") as f:
+        f.write(header_line)
+        f.write("#	Event	1	weight	1	EPangle	0	N_hadrons	18\n")
+        for _ in range(6):
+            f.write(data_pi0_y0)
+            f.write(data_pi0_y1)
+            f.write(data_pi0_y1)
+        f.write("#	Event	2	weight	1	EPangle	0	N_hadrons	20\n")
+        for _ in range(10):
+            f.write(data_pi0_y0)
+            f.write(data_pi0_y1)
+        f.write("#	sigmaGen	0.000314633	sigmaErr	6.06164e-07\n")
+
+    # print content of temporary file
+    with open(jetscape_file, "r") as f:
+        print(f.read())
+
+    # Test filtering for the mid-rapidity particles
+    jetscape = Jetscape(jetscape_file, filters={'rapidity_cut': 0.5})
+
+    print(jetscape.num_output_per_event_)
+    print(len(jetscape.particle_list()[0]), len(jetscape.particle_list()[1]))
+    assert jetscape.num_events() == 2
+    assert np.array_equal(jetscape.num_output_per_event(), np.array([[1,6],[2,10]]))
+
+def test_filter_status_in_Jetscape_constructor(jetscape_file_path):
+    # Perform status filtering such that everything should be filtered out with 
+    # the given jetscape events in the file.
+    jetscape1 = Jetscape(jetscape_file_path, filters={'particle_status': 1})
+    
+    assert jetscape1.num_events() == 5
+    assert np.array_equal(jetscape1.num_output_per_event(), np.array([[1, 0],[2, 0],[3, 0],[4, 0],[5, 0]]))
 
 @pytest.fixture
 def particle_list_charge():
