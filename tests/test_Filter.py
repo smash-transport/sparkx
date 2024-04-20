@@ -309,7 +309,7 @@ def particle_list_pseudorapidity():
         particle_list.append(p)
     return [particle_list]
 
-def test_rapidity_cut(particle_list_pseudorapidity):
+def test_pseudorapidity_cut(particle_list_pseudorapidity):
     test_cases = [
         # Test cases for valid input
         (0.5,None,None, [[particle_list_pseudorapidity[0][0]]]),
