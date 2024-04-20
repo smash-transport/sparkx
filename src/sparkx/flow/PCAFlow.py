@@ -37,10 +37,10 @@ class PCAFlow(FlowInterface.FlowInterface):
     n : int, optional
         The flow harmonic to compute. Must be a positive integer. Default is 2.
     alpha : int, optional
-        The order in subleading flow up to which the flow is computed. 
+        The order in sub-leading flow up to which the flow is computed. 
         Must be an integer greater than or equal to 1. Default is 2.
     number_subcalc : int, optional
-        The number of subcalculations to estimate the error of the flow. 
+        The number of sub-calculations to estimate the error of the flow. 
         Must be an integer greater than or equal to 2. Default is 4.
 
     Methods
@@ -56,36 +56,36 @@ class PCAFlow(FlowInterface.FlowInterface):
     n_ : int
         The flow harmonic to compute.
     alpha_ : int
-        The order in subleading flow up to which the flow is computed.
+        The order in sub-leading flow up to which the flow is computed.
     number_subcalc_ : int
-        The number of subcalculations to estimate the error of the flow.
+        The number of sub-calculations to estimate the error of the flow.
     number_events_ : int or None
         The total number of events.
     subcalc_counter_ : int
-        A counter to keep track of the current subcalculation.
+        A counter to keep track of the current sub-calculation.
     normalization_ : None or numpy.ndarray
         Normalization factors for each bin.
     bin_multiplicity_total_ : None or numpy.ndarray
         Total multiplicity in each bin across all events.
     sigma_multiplicity_total_ : list of numpy.ndarray
         List of arrays containing the multiplicity in each bin for each 
-        subcalculation.
+        sub-calculation.
     number_events_subcalc_ : None or numpy.ndarray
-        Number of events used in each subcalculation.
+        Number of events used in each sub-calculation.
     QnRe_total_ : None or numpy.ndarray
         Real part of the flow vector for each bin across all events.
     QnIm_total_ : None or numpy.ndarray
         Imaginary part of the flow vector for each bin across all events.
     SigmaQnReSub_total_ : None or numpy.ndarray
-        Real part of the flow vector for each bin and subcalculation.
+        Real part of the flow vector for each bin and sub-calculation.
     SigmaQnImSub_total_ : None or numpy.ndarray
-        Imaginary part of the flow vector for each bin and subcalculation.
+        Imaginary part of the flow vector for each bin and sub-calculation.
     VnDelta_total_ : None or numpy.ndarray
         Covariance matrix for flow vectors across all events.
     SigmaVnDelta_total_ : None or numpy.ndarray
-        Covariance matrix for flow vectors for each subcalculation.
+        Covariance matrix for flow vectors for each sub-calculation.
     FlowSubCalc_ : None or numpy.ndarray
-        An array containing the flow magnitude for subcalculations.
+        An array containing the flow magnitude for sub-calculations.
     Flow_ : None or numpy.ndarray
         An array containing the flow magnitude.
     FlowUncertainty_ : None or numpy.ndarray
@@ -113,7 +113,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         else:
             self.n_ = n
 
-        # order in subleading flow up to which the flow is computed
+        # order in sub-leading flow up to which the flow is computed
         if not isinstance(alpha, int):
             raise TypeError('alpha has to be int')
         elif alpha < 1:
@@ -121,7 +121,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         else:
             self.alpha_ = alpha
 
-        # number of subcalculations to estimate the error of the flow
+        # number of sub-calculations to estimate the error of the flow
         if not isinstance(number_subcalc, int):
             raise TypeError('number_subcalc has to be int')
         elif number_subcalc < 2:
@@ -202,7 +202,7 @@ class PCAFlow(FlowInterface.FlowInterface):
             self.VnDelta_total_ = np.zeros((number_bins,number_bins))
             self.SigmaVnDelta_total_ = np.zeros((number_bins,number_bins,self.number_subcalc_))
 
-        # update the subcalculation counter if needed
+        # update the sub-calculation counter if needed
         number_events_subcalc = self.number_events_//self.number_subcalc_
         if (event_number%number_events_subcalc == 0) and (event_number != 0) and (self.subcalc_counter_ < self.number_subcalc_-1):
             self.subcalc_counter_ += 1

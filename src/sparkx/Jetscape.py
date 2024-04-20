@@ -274,7 +274,7 @@ class Jetscape:
         Parameters
         ----------
         fname : variable name
-            Name of the variable for the file opend with the :code:`open()`
+            Name of the variable for the file opened with the :code:`open()`
             command.
 
         """

@@ -653,7 +653,7 @@ class Oscar:
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
 
-        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        num_output_per_event[event_n, number_of_particles_in_event_n]
 
         num_output_per_event is updated with every manipulation e.g. after
         applying cuts.

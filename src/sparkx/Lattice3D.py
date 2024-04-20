@@ -918,8 +918,8 @@ class Lattice3D:
         A tuple containing the following:
         slice_data : ndarray
             The 2D slice data extracted from the lattice.
-        slice_values : tupel of 2 ndarrays
-            A tupel of coordinate lists containing the 2D coordinates of the slice.
+        slice_values : tuple of 2 ndarrays
+            A tuple of coordinate lists containing the 2D coordinates of the slice.
         slice_label : str
             The label describing the slice plane.
 

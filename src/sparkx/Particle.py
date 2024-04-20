@@ -595,7 +595,7 @@ class Particle:
 
     @property
     def xsecfac(self):
-        """Get or set the crosssection scaling factor of the particle.
+        """Get or set the cross section scaling factor of the particle.
 
         Returns
         -------
