@@ -32,7 +32,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
     Notes
     -----
-    If a result contains NaN or Inf, the corresponding value is set to None.
+    If a result contains `np.nan` or `np.inf`, the corresponding value is set to `None`.
     
     A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:
         - :math:`\\chi > 1`:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.
@@ -309,7 +309,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf_error (float): Standard error on the integrated flow magnitude.
             - chi_value (float): Resolution parameter :math:`\\chi`.
 
-        If `vn_inf` is `NaN` or `Inf`, the method returns `[None, None, None]`.
+        If `vn_inf` is `np.nan` or `np.inf`, the method returns `[None, None, None]`.
         """
         number_events = len(particle_data)
         mean_multiplicity = 0

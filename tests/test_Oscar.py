@@ -389,6 +389,112 @@ def test_filter_in_oscar(tmp_path):
     assert np.array_equal(oscar_spectators_strange.num_output_per_event(), np.array([[0, 15],[1, 22]]))
     assert np.array_equal(oscar_participants_strange.num_output_per_event(), np.array([[0, 10],[1, 0]]))
 
+def test_filter_in_oscar_constructor(tmp_path):
+    # In this test we test the integration of filters in the Oscar constructor,
+    # which are selected with keyword arguments while initializing the Oscar object.
+
+    # Particle information to generate a particle list for Oscar
+    proton_spectator = (200, 5.73, -4.06, -2.02, 0.93, 90.86, 0.07, -0.11, 90.86, 2212, 172, 1, 0, -2.00, 1, 0, 0, 0, 0, 0, 1, 0)
+    proton_participant = (200, 5.73, -4.06, -2.02, 0.93, 90.86, 0.07, -0.11, 90.86, 2212, 172, 1, 1, -2.00, 1, 0, 0, 0, 0, 0, 1, 0)
+    pi_0_spectator = (200, -3.91, -3.58, -199.88, 0.14, 9.79, 0.08, -0.18, -9.78, 111, 16220, 0, 0, 200, 1, 8884, 5, 200, -213, 0, 0, 0)
+    pi_0_participant = (200, -3.91, -3.58, -199.88, 0.14, 9.79, 0.08, -0.18, -9.78, 111, 16220, 0, 1, 200, 1, 8884, 5, 200, -213, 0, 0, 0)
+    Kaon_0_spectator = (200, 2.57, -1.94, -9.83, 0.49, 3.47, 0.08, -0.26, -3.42, 311, 3228, 0, 0, 49.12, 0, 369, 45, 0.06, 2112, 2212, 0, 1)
+    Kaon_0_participant = (200, 2.57, -1.94, -9.83, 0.49, 3.47, 0.08, -0.26, -3.42, 311, 3228, 0, 1, 49.12, 0, 369, 45, 0.06, 2112, 2212, 0, 1)
+
+    data_proton_spectator = ' '.join(map(str, proton_spectator)) + '\n'
+    data_proton_participant = ' '.join(map(str, proton_participant)) + '\n'
+    data_pi_0_spectator = ' '.join(map(str, pi_0_spectator)) + '\n'
+    data_pi_0_participant = ' '.join(map(str, pi_0_participant)) + '\n'
+    data_Kaon_0_spectator = ' '.join(map(str, Kaon_0_spectator)) + '\n'
+    data_Kaon_0_participant = ' '.join(map(str, Kaon_0_participant)) + '\n'
+
+    # Create a particle list to be loaded into the Oscar object
+    oscar_file = str(tmp_path / "particle_lists.oscar")
+    header_lines = [
+            "#!OSCAR2013Extended particle_lists t x y z mass p0 px py pz pdg ID charge ncoll form_time xsecfac proc_id_origin proc_type_origin time_last_coll pdg_mother1 pdg_mother2 baryon_number strangeness\n",
+            "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e none fm none none none fm none none none none\n",
+            "# SMASH-3.1rc-23-g59a05e65f\n"
+    ]
+    header = ''.join(header_lines)
+
+    # Create an Oscar file with 2 events
+    # Event 1: 6 proton spectators, 12 proton participants and 18 pi0 participants
+    # Event 2: 10 proton participants, 10 K0 participants and 10 K0 spectators
+    with open(oscar_file, "w") as f:
+        f.write(header)
+        f.write("# event 0 out 36\n")
+        for i in range(6):
+            f.write(data_proton_spectator)
+            f.write(data_proton_participant)
+            f.write(data_proton_participant)
+            f.write(data_pi_0_participant)
+            f.write(data_pi_0_participant)
+            f.write(data_pi_0_participant)
+        f.write("# event 0 end 0 impact   0.000 scattering_projectile_target yes\n")
+        f.write("# event 1 out 30\n")
+        for i in range(10):
+            f.write(data_proton_participant)
+            f.write(data_Kaon_0_participant)
+            f.write(data_Kaon_0_spectator)
+        f.write("# event 1 end 0 impact   0.000 scattering_projectile_target yes\n")
+
+    # Test filter: un/charged particles
+    oscar_charged = Oscar(oscar_file, filters={'charged_particles':True})
+    oscar_uncharged = Oscar(oscar_file, filters={'uncharged_particles': True})
+    oscar_empty = Oscar(oscar_file, filters={'charged_particles': True, 'uncharged_particles': True})
+    oscar_charged_participants = Oscar(oscar_file, filters={'charged_particles': True, 'participants': True})
+    oscar_uncharged_specators = Oscar(oscar_file, filters={'uncharged_particles': True, 'spectators': True})
+
+    assert np.array_equal(oscar_charged.num_output_per_event(), np.array([[0, 18],[1, 10]]))
+    assert np.array_equal(oscar_uncharged.num_output_per_event(), np.array([[0, 18],[1, 20]]))
+    assert np.array_equal(oscar_empty.num_output_per_event(), np.array([[0, 0],[1, 0]]))
+    assert np.array_equal(oscar_charged_participants.num_output_per_event(), np.array([[0, 12],[1, 10]]))
+    assert np.array_equal(oscar_uncharged_specators.num_output_per_event(), np.array([[0, 0],[1, 10]]))
+    del oscar_file, oscar_empty
+
+    # Create a particle list to be loaded into the Oscar object
+    oscar_file = str(tmp_path / "particle_lists.oscar")
+    header_lines = [
+            "#!OSCAR2013Extended particle_lists t x y z mass p0 px py pz pdg ID charge ncoll form_time xsecfac proc_id_origin proc_type_origin time_last_coll pdg_mother1 pdg_mother2 baryon_number strangeness\n",
+            "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e none fm none none none fm none none none none\n",
+            "# SMASH-3.1rc-23-g59a05e65f\n"
+    ]
+    header = ''.join(header_lines)
+
+    # Create an Oscar file with 2 events
+    # Event 1: 5 pi0 spectators, 10 K0 participants and 15 K0 spectators
+    # Event 2: 11 pi0 participants and 22 K0 spectators
+    with open(oscar_file, "w") as f:
+        f.write(header)
+        f.write("# event 0 out 30\n")
+        for i in range(5):
+            f.write(data_pi_0_spectator)
+            f.write(data_Kaon_0_participant)
+            f.write(data_Kaon_0_participant)
+            f.write(data_Kaon_0_spectator)
+            f.write(data_Kaon_0_spectator)
+            f.write(data_Kaon_0_spectator)
+        f.write("# event 0 end 0 impact   0.000 scattering_projectile_target yes\n")
+        f.write("# event 1 out 33\n")
+        for i in range(11):
+            f.write(data_pi_0_participant)
+            f.write(data_Kaon_0_spectator)
+            f.write(data_Kaon_0_spectator)
+        f.write("# event 1 end 0 impact   0.000 scattering_projectile_target yes\n")
+
+    # Test filter: spectators/participants
+    oscar_participants = Oscar(oscar_file, filters={'participants': True})
+    oscar_spectators = Oscar(oscar_file, filters={'spectators': True})
+    oscar_empty = Oscar(oscar_file, filters={'participants': True, 'spectators': True})
+    oscar_spectators_strange = Oscar(oscar_file, filters={'spectators': True, 'strange_particles': True})
+    oscar_participants_strange = Oscar(oscar_file, filters={'participants': True, 'strange_particles': True})
+
+    assert np.array_equal(oscar_participants.num_output_per_event(), np.array([[0, 10],[1, 11]]))
+    assert np.array_equal(oscar_spectators.num_output_per_event(), np.array([[0, 20],[1, 22]]))
+    assert np.array_equal(oscar_empty.num_output_per_event(), np.array([[0, 0],[1, 0]]))
+    assert np.array_equal(oscar_spectators_strange.num_output_per_event(), np.array([[0, 15],[1, 22]]))
+    assert np.array_equal(oscar_participants_strange.num_output_per_event(), np.array([[0, 10],[1, 0]]))
+
 def test_standard_oscar_print(tmp_path, output_path):
     tmp_oscar_file = create_temporary_oscar_file(tmp_path, 5, "Oscar2013", [1, 7, 0, 36, 5])
     oscar = Oscar(tmp_oscar_file)

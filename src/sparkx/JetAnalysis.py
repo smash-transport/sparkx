@@ -16,7 +16,7 @@ from sparkx.Particle import Particle
 class JetAnalysis:
     """
     This class analyzes simulation output using the
-    `fastjet <https://fastjet.fr/repo/doxygen-3.4.1/>`__ python package.
+    `fastjet <https://fastjet.readthedocs.io/en/latest/>`__ python package.
     For further information on the jet finding algorithms please have a look
     at the documentation.
 
