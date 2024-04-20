@@ -426,7 +426,7 @@ class Oscar:
             elif i == 'multiplicity_cut':
                 event = multiplicity_cut(event, filters_dict['multiplicity_cut'])
             else:
-                raise ValueError('The cut is unkown!')
+                raise ValueError('The cut is unknown!')
 
         return event
 
@@ -801,7 +801,7 @@ class Oscar:
 
         Returns
         -------
-        self : Oscar oject
+        self : Oscar object
             Containing participants in every event only
         """
 
@@ -947,7 +947,7 @@ class Oscar:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with pseudo-rapidity
             in [-1.0, 1.0] are kept.
