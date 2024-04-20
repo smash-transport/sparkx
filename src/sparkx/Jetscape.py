@@ -354,7 +354,7 @@ class Jetscape:
             elif i == 'particle_status':
                 event = particle_status(event, filters_dict['particle_status'])
             else:
-                raise ValueError('The cut is unkown!')
+                raise ValueError('The cut is unknown!')
 
         return event
 
@@ -372,6 +372,9 @@ class Jetscape:
                 if not line:
                     raise IndexError('Index out of range of JETSCAPE file')
                 elif '#' in line and 'sigmaGen' in line:
+                    if 'filters' in self.optional_arguments_.keys():
+                        data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
+                        self.num_output_per_event_[len(particle_list)]=(len(particle_list)+1,len(data))
                     particle_list.append(data)
                 elif i == 0 and '#' not in line and 'weight' not in line:
                     raise ValueError('First line of the event is not a comment ' +\
@@ -389,7 +392,7 @@ class Jetscape:
                     else:
                         if 'filters' in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
-                            self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
+                            self.num_output_per_event_[len(particle_list)]=(len(particle_list)+1,len(data))
                         particle_list.append(data)
                         data = []
                 else:
@@ -700,7 +703,7 @@ class Jetscape:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with rapidity in
             [-1.0, 1.0] are kept.
@@ -728,7 +731,7 @@ class Jetscape:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with pseudo-rapidity
             in [-1.0, 1.0] are kept.

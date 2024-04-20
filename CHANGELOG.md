@@ -39,6 +39,7 @@ Date:
 * ReactionPlaneFlow: Fix bug in particle weight
 * Oscar: Fix various bugs in printout
 * EventCharacteristics: Fix sign of the eccentricity
+* Jetscape: Fix bug in keyword argument filtering, where filters were not applied to the last event
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 
