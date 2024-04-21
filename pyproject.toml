@@ -7,7 +7,7 @@ name = "sparkx"
 version = "1.2.0"
 authors = [
     { name="Niklas Götz", email="goetz@itp.uni-frankfurt.de"},
-    { name="Hendrik Roch", email="roch@itp.uni-frankfurt.de" },
+    { name="Hendrik Roch", email="hroch@wayne.edu" },
     { name="Nils Sass", email="nsass@itp.uni-frankfurt.de" }
 ]
 description = "Software Package for Analyzing Relativistic Kinematics in Collision eXperiments"

@@ -17,7 +17,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author='Niklas Götz, Hendrik Roch, Nils Sass',
-    author_email="goetz@fias.uni-frankfurt.de, roch@fias.uni-frankfurt.de, nsass@fias.uni-frankfurt.de",
+    author_email="goetz@itp.uni-frankfurt.de, hroch@wayne.edu, nsass@itp.uni-frankfurt.de",
     url="https://smash-transport.github.io/sparkx/",
     download_url="https://github.com/smash-transport/sparkx",
     license='MIT',
