@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LeeYangZeroFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>LeeYangZeroFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -107,10 +108,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">LeeYangZeroFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow" title="Link to this definition"></a></dt>
-<dd><p><strong>Attention</strong>: This is a beta version of the LeeYangZeroFlow analysis class 
-for testing purposes. We do not recommend using this class for production 
-runs yet.</p>
-<p>Compute integrated and differential anisotropic flow using the Lee-Yang 
+<dd><p>Compute integrated and differential anisotropic flow using the Lee-Yang 
 zero method from</p>
 <ul class="simple">
 <li><p>[1] <a class="reference external" href="https://inspirehep.net/literature/622649">Phys. Lett. B 580 (2004) 157  [nucl-th/0307018]</a></p></li>
@@ -137,7 +135,7 @@ relevant equations are given.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If a result contains NaN or Inf, the corresponding value is set to None.</p>
+<p>If a result contains <cite>np.nan</cite> or <cite>np.inf</cite>, the corresponding value is set to <cite>None</cite>.</p>
 <dl class="simple">
 <dt>A few remarks from Ref. [2] about the applicability of the method and the resolution parameter <span class="math notranslate nohighlight">\(\chi\)</span>:</dt><dd><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\chi &gt; 1\)</span>:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.</p></li>
@@ -148,13 +146,17 @@ relevant equations are given.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>A demonstration of how to use the LeeYangZerosFlow class to calculate flow.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.LeeYangZerosFlow</span> <span class="kn">import</span> <span class="n">LeeYangZerosFlow</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a LeeYangZerosFlow object</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow_instance</span> <span class="o">=</span> <span class="n">LeeYangZerosFlow</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">vstep</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error and resolution parameter</span>
-<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">flow_instance</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.LeeYangZerosFlow</span> <span class="kn">import</span> <span class="n">LeeYangZerosFlow</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_flow</span><span class="o">.</span><span class="n">dat</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles on which we want to calculate flow</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle_data</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a LeeYangZerosFlow object</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow_instance</span> <span class="o">=</span> <span class="n">LeeYangZerosFlow</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">vstep</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error and resolution parameter</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">flow_instance</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -190,7 +192,7 @@ relevant equations are given.</p>
 <li><p>chi_value (float): Resolution parameter <span class="math notranslate nohighlight">\(\chi\)</span>.</p></li>
 </ul>
 </dd>
-<dt>If vn_inf is NaN or Inf, the method returns [None, None, None].</dt><dd></dd>
+<dt>If <cite>vn_inf</cite> is <cite>np.nan</cite> or <cite>np.inf</cite>, the method returns <cite>[None, None, None]</cite>.</dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -198,7 +200,7 @@ relevant equations are given.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow.differential_flow">
-<span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poi_pdg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the differential flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -207,7 +209,10 @@ relevant equations are given.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”, or “pseudorapidity”).</p>
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated 
+(“pt”, “rapidity”, or “pseudorapidity”).</p>
+</dd>
+<dt><strong>poi_pdg</strong><span class="classifier">list</span></dt><dd><p>List of PDG id for identified particle differential flow.</p>
 </dd>
 </dl>
 </dd>
@@ -220,10 +225,16 @@ Each element in the list corresponds to a bin and contains:</p>
 <li><p>vn_inf_error (float): Error on the differential flow magnitude for the bin.</p></li>
 </ul>
 </dd>
-<dt>If a bin has no events, the corresponding element in the result list is set to None.</dt><dd></dd>
+<dt>If a bin has no events, the corresponding element in the result list is</dt><dd></dd>
+<dt>set to <cite>None</cite>.</dt><dd></dd>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This method will call the <cite>integrated_flow</cite> method if it was not called
+before and computes the integrated flow for the given <cite>particle_data</cite>.
+Make sure that the same <cite>particle_data</cite> is used. Otherwise this could
+lead to wrong results.</p>
 </dd></dl>
 
 </section>
@@ -239,7 +250,7 @@ Each element in the list corresponds to a bin and contains:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

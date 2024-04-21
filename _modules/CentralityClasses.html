@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CentralityClasses &mdash; sparkx 0.9.0 documentation</title>
+  <title>CentralityClasses &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +75,17 @@
            <div itemprop="articleBody">
              
   <h1>Source code for CentralityClasses</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 
 <div class="viewcode-block" id="CentralityClasses">
@@ -136,8 +147,32 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; is not list or numpy.ndarray&quot;</span><span class="p">)</span>
         
+        <span class="c1"># Check if centrality_bins is sorted</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; is not sorted. Sorting automatically.&quot;</span><span class="p">)</span>
+            <span class="n">centrality_bins</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        
+        <span class="c1"># Check for uniqueness of values</span>
+        <span class="c1"># Remove duplicates from the list</span>
+        <span class="n">unique_bins</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">multiple_same_entries</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">centrality_bins</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">unique_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">multiple_same_entries</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">multiple_same_entries</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; contains duplicate values. They are removed automatically.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Check for negative values and values greater than 100</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mf">100.0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">centrality_bins</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; contains values less than 0 or greater than 100.&quot;</span><span class="p">)</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">events_multiplicity_</span> <span class="o">=</span> <span class="n">events_multiplicity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span> <span class="o">=</span> <span class="n">centrality_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span> <span class="o">=</span> <span class="n">unique_bins</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMax_</span> <span class="o">=</span> <span class="p">[]</span>
@@ -327,7 +362,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

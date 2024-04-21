@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jetscape &mdash; sparkx 0.9.0 documentation</title>
+  <title>Jetscape &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,12 +75,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for Jetscape</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">csv</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">os</span>
 
 <div class="viewcode-block" id="Jetscape">
 <a class="viewcode-back" href="../classes/Jetscape/index.html#Jetscape.Jetscape">[docs]</a>
@@ -96,6 +103,9 @@
 <span class="sd">    list containing all quantities of the Jetscape format 2) as a list containing</span>
 <span class="sd">    Particle objects from the Particle or it can be printed to a file</span>
 <span class="sd">    complying with the input format.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        If filters are applied, be aware that not all cuts commute.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -151,7 +161,7 @@
 <span class="sd">    particle_list:</span>
 <span class="sd">        Returns current Jetscape data as nested list</span>
 <span class="sd">    particle_objects_list:</span>
-<span class="sd">        Returns current Jetscape data as nested list of ParticleClass objects</span>
+<span class="sd">        Returns current Jetscape data as nested list of Particle objects</span>
 <span class="sd">    num_events:</span>
 <span class="sd">        Get number of events</span>
 <span class="sd">    num_output_per_event:</span>
@@ -241,7 +251,7 @@
 <span class="sd">    Let&#39;s assume we only want to keep pions in events with a</span>
 <span class="sd">    multiplicity &gt; 500:</span>
 
-<span class="sd">        &gt;&gt;&gt; jetscape = Jetscape(JETSCAPE_FILE_PATH, kwargs={&#39;filters&#39;:{&#39;multiplicity_cut&#39;:500, &#39;particle_species&#39;:(211, -211, 111)}})</span>
+<span class="sd">        &gt;&gt;&gt; jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={&#39;multiplicity_cut&#39;:500, &#39;particle_species&#39;:(211, -211, 111)}})</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # print the pions to a jetscape file</span>
 <span class="sd">        &gt;&gt;&gt; jetscape.print_particle_lists_to_file(&#39;./particle_lists.dat&#39;)</span>
@@ -253,11 +263,8 @@
 <span class="sd">    All filter functions without arguments need a :code:`True` in the dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">JETSCAPE_FILE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s1">&#39;.dat&#39;</span> <span class="ow">in</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span>
-            <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input file is not in the JETSCAPE format. Input &#39;</span>
-                            <span class="s1">&#39;file must have the ending .dat&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;.dat&#39;</span> <span class="ow">in</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s1">&#39;File not found or does not end with .dat&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span> <span class="o">=</span> <span class="n">JETSCAPE_FILE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="kc">None</span>
@@ -265,10 +272,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span> <span class="o">=</span> <span class="n">kwargs</span>
 
+        <span class="k">for</span> <span class="n">keys</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">keys</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;filters&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown keyword argument used in constructor&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="s1">&#39;events&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_that_tuple_contains_integers_only</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">])</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First value of event number tuple must be smaller than second value&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Event numbers must be positive&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="s1">&#39;events&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -278,6 +290,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_particle_list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         
     <span class="c1"># PRIVATE CLASS METHODS</span>
+    <span class="k">def</span> <span class="nf">__check_that_tuple_contains_integers_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events_tuple</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if all elements inside the event tuple are integers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        events_tuple : tuple</span>
+<span class="sd">            Tuple containing event boundary events for read in.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If one or more elements inside the event tuple are not integers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events_tuple</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All elements inside the event tuple must be integers.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__get_num_skip_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -325,7 +353,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        fname : variable name</span>
-<span class="sd">            Name of the variable for the file opend with the :code:`open()`</span>
+<span class="sd">            Name of the variable for the file opened with the :code:`open()`</span>
 <span class="sd">            command.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -405,7 +433,7 @@
             <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;particle_status&#39;</span><span class="p">:</span>
                 <span class="n">event</span> <span class="o">=</span> <span class="n">particle_status</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s1">&#39;particle_status&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The cut is unkown!&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The cut is unknown!&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">event</span>
 
@@ -423,6 +451,9 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index out of range of JETSCAPE file&#39;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;sigmaGen&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;filters&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">([</span><span class="n">data</span><span class="p">],</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)]</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
                     <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s1">&#39;#&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;weight&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;First line of the event is not a comment &#39;</span> <span class="o">+</span>\
@@ -438,9 +469,9 @@
                     <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">first_event_header</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="s1">&#39;filters&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="s1">&#39;filters&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">([</span><span class="n">data</span><span class="p">],</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;filters&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)]</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)]</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
                         <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -544,7 +575,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
-<span class="sd">            Nested list containing the current Oscar data</span>
+<span class="sd">            Nested list containing the current Jetscape data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span></div>
 
@@ -556,7 +587,7 @@
 <span class="sd">        Returns a numpy array containing the event number (starting with 1)</span>
 <span class="sd">        and the corresponding number of particles created in this event as</span>
 
-<span class="sd">        num_output_per_event[event_n, numer_of_particles_in_event_n]</span>
+<span class="sd">        num_output_per_event[event_n, number_of_particles_in_event_n]</span>
 
 <span class="sd">        num_output_per_event is updated with every manipulation e.g. after</span>
 <span class="sd">        applying cuts.</span>
@@ -755,8 +786,8 @@
 <a class="viewcode-back" href="../classes/Jetscape/index.html#Jetscape.Jetscape.pt_cut">[docs]</a>
     <span class="k">def</span> <span class="nf">pt_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply p_t cut to all events by passing an acceptance range by</span>
-<span class="sd">        ::code`cut_value_tuple`. All particles outside this range will</span>
+<span class="sd">        Apply transverse momentum cut to all events by passing an acceptance</span>
+<span class="sd">        range by ::code`cut_value_tuple`. All particles outside this range will</span>
 <span class="sd">        be removed.</span>
 
 <span class="sd">        Parameters</span>
@@ -770,7 +801,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self : Jetscape object</span>
-<span class="sd">            Containing only particles complying with the p_t cut for all events</span>
+<span class="sd">            Containing only particles complying with the transverse momentum </span>
+<span class="sd">            cut for all events</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="n">pt_cut</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__update_num_output_per_event_after_filter</span><span class="p">()</span>
@@ -788,7 +820,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cut_value : float</span>
-<span class="sd">            If a single value is passed, the cut is applyed symmetrically</span>
+<span class="sd">            If a single value is passed, the cut is applied symmetrically</span>
 <span class="sd">            around 0.</span>
 <span class="sd">            For example, if cut_value = 1, only particles with rapidity in</span>
 <span class="sd">            [-1.0, 1.0] are kept.</span>
@@ -819,7 +851,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cut_value : float</span>
-<span class="sd">            If a single value is passed, the cut is applyed symmetrically</span>
+<span class="sd">            If a single value is passed, the cut is applied symmetrically</span>
 <span class="sd">            around 0.</span>
 <span class="sd">            For example, if cut_value = 1, only particles with pseudo-rapidity</span>
 <span class="sd">            in [-1.0, 1.0] are kept.</span>
@@ -977,7 +1009,7 @@
             <span class="n">f_out</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">data_to_write</span><span class="p">)</span>
 
             <span class="c1"># Write the last line</span>
-            <span class="n">last_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_last_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">)</span>
+            <span class="n">last_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_last_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">last_line</span><span class="p">)</span></div>
 </div>
 
@@ -990,7 +1022,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

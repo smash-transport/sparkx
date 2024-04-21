@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 0.9.0 documentation</title>
+  <title>Particle &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +75,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for Particle</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">particle</span> <span class="kn">import</span> <span class="n">PDGID</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -86,10 +96,10 @@
 
 <span class="sd">    The member variables of the Particle class are the quantities in the</span>
 <span class="sd">    OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,</span>
-<span class="sd">    they stay NaN to throw an error if one tries to access a non existing</span>
+<span class="sd">    they stay `np.nan` to throw an error if one tries to access a non existing</span>
 <span class="sd">    quantity.</span>
 <span class="sd">    If a particle with an unknown PDG is provided, a warning is thrown and and </span>
-<span class="sd">    np.nan is returned for charge, spin, and spin degeneracy.</span>
+<span class="sd">    `np.nan` is returned for charge, spin, and spin degeneracy.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -274,7 +284,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    If a member of the Particle class is not set or a quantity should be computed</span>
-<span class="sd">    and the needed member variables are not set, then `NaN` is returned by default.</span>
+<span class="sd">    and the needed member variables are not set, then `np.nan` is returned by default.</span>
 <span class="sd">    All quantities are saved in a numpy array member variable `data_`. The datatype</span>
 <span class="sd">    of this array is float, therefore casting is required when int or bool values are </span>
 <span class="sd">    required.</span>
@@ -282,6 +292,7 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data_&#39;</span><span class="p">]</span> 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">particle_array</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">25</span><span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="kc">False</span>
         
         <span class="k">if</span> <span class="p">((</span><span class="n">input_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">particle_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">or</span> <span class="p">((</span><span class="n">input_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">particle_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;input_format&#39; or &#39;particle_array&#39; not given&quot;</span><span class="p">)</span>
@@ -425,7 +436,7 @@
                  <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span> <span class="o">&lt;=</span>  <span class="nb">len</span><span class="p">(</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span>\
                     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span> <span class="o">&gt;=</span>  <span class="nb">len</span><span class="p">(</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span><span class="o">-</span><span class="mi">2</span><span class="p">)):</span>
                 <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span><span class="o">&lt;</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span><span class="o">&lt;=</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                         <span class="k">continue</span>
                     <span class="c1"># Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields</span>
                     <span class="c1"># to ensure similar behaving as if we were reading in data into ints.</span>
@@ -584,6 +595,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        pdg : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">9</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
 
     <span class="nd">@pdg</span><span class="o">.</span><span class="n">setter</span>
@@ -593,7 +606,7 @@
         
         <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">):</span>
              <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The PDG code &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; is not valid. &#39;</span><span class="o">+</span>
-                           <span class="s1">&#39;All properties extracted from the PDG are set to None.&#39;</span><span class="p">)</span>
+                           <span class="s1">&#39;All properties extracted from the PDG are set to nan.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -605,6 +618,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        ID : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">11</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
 
     <span class="nd">@ID</span><span class="o">.</span><span class="n">setter</span>
@@ -619,6 +634,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        charge : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">12</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span>
 
     <span class="nd">@charge</span><span class="o">.</span><span class="n">setter</span>
@@ -633,6 +650,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        ncoll : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">13</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span> 
 
     <span class="nd">@ncoll</span><span class="o">.</span><span class="n">setter</span>
@@ -655,7 +674,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">xsecfac</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the crosssection scaling factor of the particle.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the cross section scaling factor of the particle.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -675,6 +694,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        proc_id_origin : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">16</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">16</span><span class="p">])</span>
 
     <span class="nd">@proc_id_origin</span><span class="o">.</span><span class="n">setter</span>
@@ -689,6 +710,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        proc_type_origin : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">17</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span>
 
     <span class="nd">@proc_type_origin</span><span class="o">.</span><span class="n">setter</span>
@@ -717,6 +740,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        pdg_mother1 : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">19</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">19</span><span class="p">])</span>
 
     <span class="nd">@pdg_mother1</span><span class="o">.</span><span class="n">setter</span>
@@ -731,6 +756,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        pdg_mother2 : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">20</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">20</span><span class="p">])</span>
 
     <span class="nd">@pdg_mother2</span><span class="o">.</span><span class="n">setter</span>
@@ -747,6 +774,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        status : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">21</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">21</span><span class="p">])</span>
 
     <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
@@ -761,6 +790,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        baryon_number : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">22</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">22</span><span class="p">])</span>
  
     <span class="nd">@baryon_number</span><span class="o">.</span><span class="n">setter</span>
@@ -775,6 +806,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        strangeness : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">23</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">23</span><span class="p">])</span>
 
     <span class="nd">@strangeness</span><span class="o">.</span><span class="n">setter</span>
@@ -838,7 +871,7 @@
 <a class="viewcode-back" href="../classes/Particle/index.html#Particle.Particle.angular_momentum">[docs]</a>
     <span class="k">def</span> <span class="nf">angular_momentum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the angular momentum :math:`L=r \\times p` of a particle.</span>
+<span class="sd">        Compute the angular momentum :math:`\\vec{L}=\\vec{r} \\times \\vec{p}` of a particle.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1262,7 +1295,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

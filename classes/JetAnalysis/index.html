@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetAnalysis &mdash; sparkx 0.9.0 documentation</title>
+  <title>JetAnalysis &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -106,9 +107,13 @@
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">JetAnalysis</span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis" title="Link to this definition"></a></dt>
 <dd><p>This class analyzes simulation output using the
-<a class="reference external" href="https://fastjet.fr/repo/doxygen-3.4.1/">fastjet</a> python package.
+<a class="reference external" href="https://fastjet.readthedocs.io/en/latest/">fastjet</a> python package.
 For further information on the jet finding algorithms please have a look
 at the documentation.</p>
+<p><strong>Attention</strong>: For a proper jet hole subtraction the <cite>status</cite> of the 
+particles has to be set. This is only given for read in from Jetscape
+output. With Oscar read in this has to be set by hand before doing the 
+jet finding.</p>
 <p class="rubric">Notes</p>
 <p>The columns of the output file include the following quantities:</p>
 <table class="docutils align-default">
@@ -191,7 +196,7 @@ from the file like:</p>
 </dd>
 <dt><strong>jet_R_: float</strong></dt><dd><p>Jet radius parameter.</p>
 </dd>
-<dt><strong>jet_eta_range_: tuple</strong></dt><dd><p>Mimimum and maximum pseudorapidity for jet selection.</p>
+<dt><strong>jet_eta_range_: tuple</strong></dt><dd><p>Minimum and maximum pseudorapidity for jet selection.</p>
 </dd>
 <dt><strong>jet_pt_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse
 momentum to write out the jet.</p>
@@ -231,7 +236,7 @@ momentum to write out the jet.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.perform_jet_finding">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assoc_only_charged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
 <dd><p>Perform the jet analysis for multiple events. The function generates a
 file containing the jets consisting of a leading particle and associated
 hadrons in the jet cone.</p>
@@ -239,7 +244,8 @@ hadrons in the jet cone.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>hadron_data: list</strong></dt><dd><p>List of hadron data for each event.
-Use the for example the Jetscape class and generate a <code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code>.</p>
+Use the for example the Jetscape class and generate 
+a <code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code>.</p>
 </dd>
 <dt><strong>jet_R: float</strong></dt><dd><p>Jet radius parameter.</p>
 </dd>
@@ -254,13 +260,18 @@ and the upper one to <span class="math notranslate nohighlight">\(+\infty\)</spa
 </dd>
 <dt><strong>output_filename: str</strong></dt><dd><p>Filename for the jet output.</p>
 </dd>
-<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. Default is <code class="code docutils literal notranslate"><span class="pre">fastjet.antikt_algorithm</span></code>.</p>
+<dt><strong>assoc_only_charged: bool</strong></dt><dd><p>Selects if the associated particles are only charged ones. 
+Default is True.</p>
+</dd>
+<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. 
+Default is <code class="code docutils literal notranslate"><span class="pre">fastjet.antikt_algorithm</span></code>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The standard recombination scheme <code class="code docutils literal notranslate"><span class="pre">E_scheme</span></code> of the fastjet package is fixed here.</p>
+<p>The standard recombination scheme <code class="code docutils literal notranslate"><span class="pre">E_scheme</span></code> of the fastjet 
+package is fixed here.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -330,7 +341,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.fill_associated_particles">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">fill_associated_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.fill_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.fill_associated_particles" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">fill_associated_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_charged</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.fill_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.fill_associated_particles" title="Link to this definition"></a></dt>
 <dd><p>Select particles in the jet cone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -339,12 +350,17 @@ element of the list (<code class="code docutils literal notranslate"><span class
 </dd>
 <dt><strong>event: int</strong></dt><dd><p>The event index.</p>
 </dd>
+<dt><strong>status_selection: str</strong></dt><dd><p>The selection status to find the associated particles. This can be 
+‘negative’ or ‘positive’ hadrons status.</p>
+</dd>
+<dt><strong>only_charged: bool</strong></dt><dd><p>Select only charged particles as associated particles.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list</dt><dd></dd>
-<dt>List of associated particles in the jet cone.</dt><dd></dd>
+<dt>list</dt><dd><p>List of associated particles in the jet cone.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -363,7 +379,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

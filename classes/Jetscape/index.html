@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jetscape &mdash; sparkx 0.9.0 documentation</title>
+  <title>Jetscape &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -125,6 +126,10 @@ Once these filters are applied, the new data set can be saved 1) as a nested
 list containing all quantities of the Jetscape format 2) as a list containing
 Particle objects from the Particle or it can be printed to a file
 complying with the input format.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If filters are applied, be aware that not all cuts commute.</p>
+</div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -223,7 +228,7 @@ each single event. This is achieved by the keyword argument <code class="code do
 contains the filter dictionary. Filters are applied in the order in which they appear.
 Let’s assume we only want to keep pions in events with a
 multiplicity &gt; 500:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;filters&#39;</span><span class="p">:{</span><span class="s1">&#39;multiplicity_cut&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;particle_species&#39;</span><span class="p">:(</span><span class="mi">211</span><span class="p">,</span> <span class="o">-</span><span class="mi">211</span><span class="p">,</span> <span class="mi">111</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;multiplicity_cut&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;particle_species&#39;</span><span class="p">:(</span><span class="mi">211</span><span class="p">,</span> <span class="o">-</span><span class="mi">211</span><span class="p">,</span> <span class="mi">111</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># print the pions to a jetscape file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape</span><span class="o">.</span><span class="n">print_particle_lists_to_file</span><span class="p">(</span><span class="s1">&#39;./particle_lists.dat&#39;</span><span class="p">)</span>
@@ -251,7 +256,7 @@ are applied)</p>
 <td><p>Returns current Jetscape data as nested list</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>particle_objects_list:</strong></p></td>
-<td><p>Returns current Jetscape data as nested list of ParticleClass objects</p></td>
+<td><p>Returns current Jetscape data as nested list of Particle objects</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>num_events:</strong></p></td>
 <td><p>Get number of events</p></td>
@@ -337,7 +342,7 @@ current Jetscape data as numerical values with the following shape:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt>list</dt><dd><p>Nested list containing the current Oscar data</p>
+<dt>list</dt><dd><p>Nested list containing the current Jetscape data</p>
 </dd>
 </dl>
 </dd>
@@ -365,7 +370,7 @@ applying cuts.</p>
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.num_output_per_event" title="Link to this definition"></a></dt>
 <dd><p>Returns a numpy array containing the event number (starting with 1)
 and the corresponding number of particles created in this event as</p>
-<p>num_output_per_event[event_n, numer_of_particles_in_event_n]</p>
+<p>num_output_per_event[event_n, number_of_particles_in_event_n]</p>
 <p>num_output_per_event is updated with every manipulation e.g. after
 applying cuts.</p>
 <dl class="field-list simple">
@@ -514,8 +519,8 @@ energy threshold.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Jetscape.Jetscape.pt_cut">
 <span class="sig-prename descclassname"><span class="pre">Jetscape.</span></span><span class="sig-name descname"><span class="pre">pt_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.pt_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.pt_cut" title="Link to this definition"></a></dt>
-<dd><p>Apply p_t cut to all events by passing an acceptance range by
-::code`cut_value_tuple`. All particles outside this range will
+<dd><p>Apply transverse momentum cut to all events by passing an acceptance
+range by ::code`cut_value_tuple`. All particles outside this range will
 be removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -529,7 +534,8 @@ or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the p_t cut for all events</p>
+<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the transverse momentum 
+cut for all events</p>
 </dd>
 </dl>
 </dd>
@@ -544,7 +550,7 @@ not complying with cut_value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applied symmetrically
 around 0.
 For example, if cut_value = 1, only particles with rapidity in
 [-1.0, 1.0] are kept.</p>
@@ -572,7 +578,7 @@ pseudo-rapidity not complying with cut_value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applied symmetrically
 around 0.
 For example, if cut_value = 1, only particles with pseudo-rapidity
 in [-1.0, 1.0] are kept.</p>
@@ -666,7 +672,7 @@ with the same format as the input file</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

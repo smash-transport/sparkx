@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oscar &mdash; sparkx 0.9.0 documentation</title>
+  <title>Oscar &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -123,12 +124,16 @@ events in either the Oscar2013 or Oscar2013Extended format. It’s methods
 allow to directly act on all contained events as applying acceptance filters
 (e.g. un/charged particles, spectators/participants) to keep/remove particles
 by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
-Once these filters are applied, the new data set can be saved as a</p>
+Once these filters are applied, the new data set can be accessed as a</p>
 <ol class="arabic simple">
 <li><p>nested list containing all quantities of the Oscar format</p></li>
 <li><p>list containing Particle objects from the Particle class</p></li>
 </ol>
 <p>or it may be printed to a file complying with the input format.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If filters are applied, be aware that not all cuts commute.</p>
+</div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -176,9 +181,10 @@ which they appear in the dictionary.</p></td>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the <code class="code docutils literal notranslate"><span class="pre">filters</span></code> keyword with the <code class="code docutils literal notranslate"><span class="pre">spacetime_cut</span></code> is used, then a list with
-the <code class="code docutils literal notranslate"><span class="pre">dim</span></code> parameter and the <code class="code docutils literal notranslate"><span class="pre">cut_value_tuple</span></code> is needed. All other filters
-need the usual parameters for the filter functions in the dictionary.
+<p>If the <code class="code docutils literal notranslate"><span class="pre">filters</span></code> keyword with the <code class="code docutils literal notranslate"><span class="pre">spacetime_cut</span></code> is used, then a list 
+specifying the dimension to be cut in the first entry and the tuple with the cut
+boundaries in the second entry is needed. For all other filters, the dictionary
+only needs the filter name as key and the filter argument as value.
 All filter functions without arguments need a <code class="code docutils literal notranslate"><span class="pre">True</span></code> in the dictionary.</p>
 <p class="rubric">Examples</p>
 <p><strong>1. Initialization</strong></p>
@@ -228,7 +234,7 @@ each single event. This is achieved by the keyword argument <code class="code do
 contains the filter dictionary. Filters are applied in the order in which they appear.
 Let’s assume we only want to keep participant pions in events with a
 multiplicity &gt; 500:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;filters&#39;</span><span class="p">:{</span><span class="s1">&#39;multiplicity_cut&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;participants&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;particle_species&#39;</span><span class="p">:(</span><span class="mi">211</span><span class="p">,</span> <span class="o">-</span><span class="mi">211</span><span class="p">,</span> <span class="mi">111</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;multiplicity_cut&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;participants&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;particle_species&#39;</span><span class="p">:(</span><span class="mi">211</span><span class="p">,</span> <span class="o">-</span><span class="mi">211</span><span class="p">,</span> <span class="mi">111</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># print the pions to an oscar file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span><span class="o">.</span><span class="n">print_particle_lists_to_file</span><span class="p">(</span><span class="s1">&#39;./particle_lists.oscar&#39;</span><span class="p">)</span>
@@ -261,7 +267,7 @@ Needed to print the Oscar object to a file.</p>
 <td><p>Returns current Oscar data as nested list</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>particle_objects_list:</strong></p></td>
-<td><p>Returns current Oscar data as nested list of ParticleClass objects</p></td>
+<td><p>Returns current Oscar data as nested list of Particle objects</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>num_events:</strong></p></td>
 <td><p>Get number of events</p></td>
@@ -347,7 +353,7 @@ current Oscar data as numerical values with the following shape:</p>
 <span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">particle_objects_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.particle_objects_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.particle_objects_list" title="Link to this definition"></a></dt>
 <dd><p>Returns a nested python list containing all particles from
 the Oscar2013/Oscar2013Extended output as particle objects
-from ParticleClass:</p>
+from Particle:</p>
 <blockquote>
 <div><div class="line-block">
 <div class="line">Single Event:    [particle_object]</div>
@@ -357,7 +363,7 @@ from ParticleClass:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>particle_list_</strong><span class="classifier">list</span></dt><dd><p>List of particle objects from ParticleClass</p>
+<dt><strong>particle_list_</strong><span class="classifier">list</span></dt><dd><p>List of particle objects from Particle</p>
 </dd>
 </dl>
 </dd>
@@ -385,7 +391,7 @@ applying cuts.</p>
 <span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.num_output_per_event" title="Link to this definition"></a></dt>
 <dd><p>Returns a numpy array containing the event number (starting with 1)
 and the corresponding number of particles created in this event as</p>
-<p>num_output_per_event[event_n, numer_of_particles_in_event_n]</p>
+<p>num_output_per_event[event_n, number_of_particles_in_event_n]</p>
 <p>num_output_per_event is updated with every manipulation e.g. after
 applying cuts.</p>
 <dl class="field-list simple">
@@ -468,7 +474,7 @@ of PDG IDs</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Oscar oject</span></dt><dd><p>Containing participants in every event only</p>
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing participants in every event only</p>
 </dd>
 </dl>
 </dd>
@@ -563,8 +569,8 @@ energy threshold.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Oscar.Oscar.pt_cut">
 <span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">pt_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.pt_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.pt_cut" title="Link to this definition"></a></dt>
-<dd><p>Apply p_t cut to all events by passing an acceptance range by
-::code`cut_value_tuple`. All particles outside this range will
+<dd><p>Apply transverse momentum cut to all events by passing an acceptance 
+range by ::code`cut_value_tuple`. All particles outside this range will
 be removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -578,7 +584,8 @@ or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the p_t cut for all events</p>
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the transverse momentum 
+cut for all events</p>
 </dd>
 </dl>
 </dd>
@@ -621,7 +628,7 @@ pseudo-rapidity not complying with cut_value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applyed symmetrically
+<dt><strong>cut_value</strong><span class="classifier">float</span></dt><dd><p>If a single value is passed, the cut is applied symmetrically
 around 0.
 For example, if cut_value = 1, only particles with pseudo-rapidity
 in [-1.0, 1.0] are kept.</p>
@@ -719,7 +726,7 @@ with the same format as the input file</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

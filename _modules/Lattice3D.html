@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lattice3D &mdash; sparkx 0.9.0 documentation</title>
+  <title>Lattice3D &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +75,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for Lattice3D</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interpn</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multivariate_normal</span>
@@ -325,7 +335,7 @@
 <span class="sd">        value : int or float</span>
 <span class="sd">            The value for which the index is to be determined.</span>
 <span class="sd">        values : list or numpy.ndarray</span>
-<span class="sd">            The list or array containing the range of values.</span>
+<span class="sd">            The list or array containing the range of values, sorted ascending.</span>
 <span class="sd">        num_points : int</span>
 <span class="sd">            The number of points in the range.</span>
 
@@ -345,8 +355,6 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="n">num_points</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">-=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
     
@@ -360,7 +368,7 @@
 <span class="sd">        value : int or float</span>
 <span class="sd">            The value for which the index is to be determined.</span>
 <span class="sd">        values : list or numpy.ndarray</span>
-<span class="sd">            The list or array containing the range of values.</span>
+<span class="sd">            The list or array containing the range of values, sorted ascending.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -510,8 +518,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int or float or None</span>
-<span class="sd">            The value at the specified coordinates. Returns None if any of</span>
-<span class="sd">            the coordinates are outside their specified ranges.</span>
+<span class="sd">            The value at the specified coordinates. </span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any of the coordinates are outside their specified ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_by_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
@@ -536,8 +548,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int or float or None</span>
-<span class="sd">            The value at the specified coordinates. Returns None if any of</span>
-<span class="sd">            the coordinates are outside their specified ranges.</span>
+<span class="sd">            The value at the specified coordinates.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any of the coordinates are outside their specified ranges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_indices_nearest_neighbor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_by_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
@@ -682,7 +698,7 @@
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.interpolate_value">[docs]</a>
     <span class="k">def</span> <span class="nf">interpolate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Interpolate the value at the specified position using trilinear</span>
+<span class="sd">        Interpolate the value at the specified position using (up to) trilinear</span>
 <span class="sd">        interpolation.</span>
 
 <span class="sd">        Parameters</span>
@@ -705,7 +721,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_within_range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Provided position is outside the lattice range.&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># Perform interpolation </span>
         <span class="n">xi</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]</span>
@@ -846,6 +862,26 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If the lattices do not have the same shape.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        If you want to average over 3 lattices, you can do the following:</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+
+<span class="sd">            &gt;&gt;&gt; lattice1 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,</span>
+<span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, </span>
+<span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, </span>
+<span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; lattice1=lattice1.average(lattice2, lattice3)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_lattices</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">lattices</span><span class="p">)</span>
 
@@ -855,6 +891,7 @@
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The lattices must have the same shape.&quot;</span><span class="p">)</span>
+
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
                            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
@@ -900,15 +937,22 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">])</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">])</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">metadata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+        <span class="c1"># Reshape metadata to have 1 row and as many columns as necessary</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Reshape the flattened grid to have 1 row and as many columns as necessary</span>
+        <span class="n">grid_flattened</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">metadata</span><span class="p">,</span> <span class="n">grid_flattened</span><span class="p">))</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice3D.load_from_csv">
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.load_from_csv">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_from_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_from_csv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load lattice data, including metadata, from a CSV file.</span>
 
@@ -924,13 +968,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
         <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span> <span class="o">=</span> <span class="n">metadata</span>
 
         <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_z</span><span class="p">))</span>
 
-        <span class="n">grid_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">grid_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span>
         <span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span> <span class="o">=</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">lattice</span></div>
@@ -998,8 +1041,8 @@
 <span class="sd">        A tuple containing the following:</span>
 <span class="sd">        slice_data : ndarray</span>
 <span class="sd">            The 2D slice data extracted from the lattice.</span>
-<span class="sd">        slice_values : ndarray</span>
-<span class="sd">            The values corresponding to the axis perpendicular to the slice.</span>
+<span class="sd">        slice_values : tuple of 2 ndarrays</span>
+<span class="sd">            A tuple of coordinate lists containing the 2D coordinates of the slice.</span>
 <span class="sd">        slice_label : str</span>
 <span class="sd">            The label describing the slice plane.</span>
 
@@ -1014,21 +1057,21 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the X-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;Y-Z Plane at X = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Y-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;X-Z Plane at Y = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Z-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;X-Y Plane at Z = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis. Must be &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;.&quot;</span><span class="p">)</span>
@@ -1063,23 +1106,27 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the X-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in Y-Z Plane at X = </span><span class="si">{}</span><span class="s2">. Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">)</span><span class="o">+</span>\
+                <span class="s2">&quot;ny: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz:</span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
+
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Y-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in X-Z Plane at Y = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span><span class="o">+</span>\
+                <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Z-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in X-Y Plane at Z = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span><span class="o">+</span>\
+                <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> ny: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis. Must be &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;.&quot;</span><span class="p">)</span>
 
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">slice_data</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">slice_values</span><span class="p">)),</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">slice_data</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice3D.interpolate_to_lattice">
@@ -1276,7 +1323,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If an unknown quantity is specified.</span>
+<span class="sd">            If an unknown quantity is specified or if the particle data contains NaN values.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1304,6 +1351,9 @@
             <span class="n">y</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">y</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">z</span>
 
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Particle data contains NaN values.&quot;</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">E</span>
             <span class="k">elif</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s2">&quot;number_density&quot;</span><span class="p">:</span>
@@ -1315,13 +1365,18 @@
             <span class="k">elif</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">strangeness</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown quantity for lattice.&quot;</span><span class="p">);</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown quantity for lattice.&quot;</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Particle data contains NaN values.&quot;</span><span class="p">)</span>
+            
             <span class="k">if</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
                 <span class="c1"># Calculate the Gaussian kernel centered at (x, y, z)</span>
-                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
             <span class="k">elif</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;covariant&quot;</span><span class="p">):</span>
-                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Particle data contains NaN values.&quot;</span><span class="p">)</span>
+                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown kernel type for lattice.&quot;</span><span class="p">)</span>
 
@@ -1350,7 +1405,7 @@
 
                         <span class="c1"># Calculate the value to add to the grid at (i, j, k)</span>
                         <span class="k">if</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="n">xi</span><span class="p">,</span> <span class="n">yj</span><span class="p">,</span> <span class="n">zk</span><span class="p">])</span>
+                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="n">xi</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="n">yj</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">zk</span><span class="o">+</span><span class="n">z</span><span class="p">])</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">diff_space</span> <span class="o">=</span> <span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">yj</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">zk</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
                             <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">particle</span><span class="o">.</span><span class="n">p_abs</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -1358,15 +1413,17 @@
                             <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="n">diff_space</span><span class="p">,</span><span class="n">diff_velocity</span><span class="p">])</span>
                         <span class="n">norm</span> <span class="o">+=</span> <span class="n">smearing_factor</span>
                         <span class="n">value_to_add</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">smearing_factor</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_volume_</span>
-
+                        
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value_to_add</span><span class="p">):</span>
+                            <span class="n">value_to_add</span><span class="o">=</span><span class="mf">0.</span>
                         <span class="c1"># Add the value to the grid</span>
                         <span class="n">temp_lattice</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value_to_add</span>
-
+                            
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">):</span>
-                        <span class="n">temp_lattice</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span>
-
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-15</span><span class="p">:</span>
+                            <span class="n">temp_lattice</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span>
             <span class="n">xi</span> <span class="p">,</span><span class="n">yi</span> <span class="p">,</span><span class="n">zi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_closest_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
             <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">xi</span> <span class="p">,</span><span class="n">yi</span> <span class="p">,</span><span class="n">zi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_same_spaced_grid</span><span class="p">(</span><span class="n">temp_lattice</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span><span class="p">)</span></div>
@@ -1390,7 +1447,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

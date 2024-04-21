@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LeeYangZeroFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>LeeYangZeroFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +75,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for LeeYangZeroFlow</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -85,10 +95,6 @@
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow">[docs]</a>
 <span class="k">class</span> <span class="nc">LeeYangZeroFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Attention**: This is a beta version of the LeeYangZeroFlow analysis class </span>
-<span class="sd">    for testing purposes. We do not recommend using this class for production </span>
-<span class="sd">    runs yet.</span>
-
 <span class="sd">    Compute integrated and differential anisotropic flow using the Lee-Yang </span>
 <span class="sd">    zero method from</span>
 
@@ -105,7 +111,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    If a result contains NaN or Inf, the corresponding value is set to None.</span>
+<span class="sd">    If a result contains `np.nan` or `np.inf`, the corresponding value is set to `None`.</span>
 <span class="sd">    </span>
 <span class="sd">    A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:</span>
 <span class="sd">        - :math:`\\chi &gt; 1`:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.</span>
@@ -141,6 +147,10 @@
 
 <span class="sd">        &gt;&gt;&gt; from sparkx.flow.LeeYangZerosFlow import LeeYangZerosFlow</span>
 <span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists_flow.dat</span>
+<span class="sd">        &gt;&gt;&gt; # Jetscape object containing the particles on which we want to calculate flow</span>
+<span class="sd">        &gt;&gt;&gt; particle_data = Jetscape(JETSCAPE_FILE_PATH).particle_objects_list()</span>
+
 <span class="sd">        &gt;&gt;&gt; # Create a LeeYangZerosFlow object</span>
 <span class="sd">        &gt;&gt;&gt; flow_instance = LeeYangZerosFlow(vmin=0.01, vmax=0.10, vstep=0.001, n=2)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
@@ -380,7 +390,7 @@
 <span class="sd">            - vn_inf_error (float): Standard error on the integrated flow magnitude.</span>
 <span class="sd">            - chi_value (float): Resolution parameter :math:`\\chi`.</span>
 
-<span class="sd">        If vn_inf is NaN or Inf, the method returns [None, None, None].</span>
+<span class="sd">        If `vn_inf` is `np.nan` or `np.inf`, the method returns `[None, None, None]`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">number_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
         <span class="n">mean_multiplicity</span> <span class="o">=</span> <span class="mi">0</span>
@@ -577,7 +587,7 @@
 
 <div class="viewcode-block" id="LeeYangZeroFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">flow_as_function_of</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="n">poi_pdg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the differential flow.</span>
 
@@ -588,7 +598,10 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the differential flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
+<span class="sd">            Variable on which the flow is calculated </span>
+<span class="sd">            (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
+<span class="sd">        poi_pdg : list</span>
+<span class="sd">            List of PDG id for identified particle differential flow.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -599,12 +612,26 @@
 <span class="sd">            - vn_inf (float): Differential flow magnitude for the bin.</span>
 <span class="sd">            - vn_inf_error (float): Error on the differential flow magnitude for the bin.</span>
 <span class="sd">            </span>
-<span class="sd">        If a bin has no events, the corresponding element in the result list is set to None.</span>
+<span class="sd">        If a bin has no events, the corresponding element in the result list is </span>
+<span class="sd">        set to `None`.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method will call the `integrated_flow` method if it was not called</span>
+<span class="sd">        before and computes the integrated flow for the given `particle_data`.</span>
+<span class="sd">        Make sure that the same `particle_data` is used. Otherwise this could</span>
+<span class="sd">        lead to wrong results.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bins has to be list or np.ndarray&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;flow_as_function_of is not a string&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">poi_pdg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">poi_pdg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg has to be list or np.ndarray&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg elements must be integers&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
         
@@ -625,7 +652,7 @@
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span>
                     <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">:</span>
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
                         <span class="n">particles_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particles_event</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">events_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">particles_event</span><span class="p">])</span>
@@ -651,7 +678,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventCharacteristics &mdash; sparkx 0.9.0 documentation</title>
+  <title>EventCharacteristics &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -121,10 +122,11 @@ containing the relevant densities.</p>
 <span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">OSCAR_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Oscar_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">oscar</span>
 <span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar object containing all events</span>
-<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
 <span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="n">event_characterization</span> <span class="o">=</span> <span class="n">EventCharacteristics</span><span class="p">(</span><span class="n">oscar</span><span class="p">)</span>
-<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">event_characterization</span><span class="o">.</span><span class="n">eccentricity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight_quantitiy</span> <span class="o">=</span> <span class="s2">&quot;number&quot;</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># compute epsilon2 for the first event</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">event_characterization</span> <span class="o">=</span> <span class="n">EventCharacteristics</span><span class="p">(</span><span class="n">oscar</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">eps2</span> <span class="o">=</span> <span class="n">event_characterization</span><span class="o">.</span><span class="n">eccentricity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight_quantity</span> <span class="o">=</span> <span class="s2">&quot;number&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -189,15 +191,21 @@ If at least one element in the input is not of type Particle.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics.eccentricity">
-<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">eccentricity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonic_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'energy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.eccentricity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.eccentricity" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">eccentricity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonic_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'energy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.eccentricity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.eccentricity" title="Link to this definition"></a></dt>
 <dd><p>Computes the spatial eccentricity.</p>
+<div class="math notranslate nohighlight">
+\[\varepsilon_{m,n}e^{\mathrm{i}n\Phi_{m,n}} = -\frac{\lbrace{r^{m}e^{\mathrm{i}n\phi}\rbrace}}{\lbrace{r^{m}\rbrace}}\]</div>
+<p>For <cite>harmonic_n=1</cite>, <span class="math notranslate nohighlight">\(n=3\)</span> is used. If <cite>harmonic_m</cite> is provided,
+then the given value is used as radial exponent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>harmonic_n</strong><span class="classifier">int</span></dt><dd><p>The harmonic order for the eccentricity calculation.</p>
 </dd>
+<dt><strong>harmonic_m</strong><span class="classifier">int, optional</span></dt><dd><p>The power of the radial weight.</p>
+</dd>
 <dt><strong>weight_quantity</strong><span class="classifier">str, optional</span></dt><dd><p>The quantity used for particle weighting.
-Valid options are “energy”, “number”, “charge”, or “baryon”.
+Valid options are “energy”, “number”, “charge”, “baryon”, “strangeness”.
 Default is “energy”.</p>
 </dd>
 </dl>
@@ -223,7 +231,7 @@ Default is “energy”.</p>
 <dd><p>Generates energy, baryon, charge, and strangeness densities in Milne 
 coordinates from OSCAR initial conditions.</p>
 <p>The total energy in GeV can be obtained by integrating the energy 
-density with <span class="math notranslate nohighlight">\(\mathrm{d}x\mathrm{d}y\mathrm{d}\eta\)</span>.</p>
+density with <span class="math notranslate nohighlight">\(\tau \mathrm{d}x\mathrm{d}y\mathrm{d}\eta\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -249,6 +257,13 @@ collision energy or centrality.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the given IC_info is not a string and if the class is initialized
+with a lattice.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -285,6 +300,13 @@ collision energy or centrality.</p>
 <dt>None</dt><dd></dd>
 </dl>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the given IC_info is not a string and if the class is initialized
+with a lattice.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -301,7 +323,7 @@ collision energy or centrality.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

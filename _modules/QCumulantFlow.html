@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QCumulantFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>QCumulantFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,10 +75,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for QCumulantFlow</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
@@ -85,11 +94,7 @@
 <a class="viewcode-back" href="../classes/flow/QCumulantFlow/index.html#QCumulantFlow.QCumulantFlow">[docs]</a>
 <span class="k">class</span> <span class="nc">QCumulantFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    **Attention**: This is a beta version of the QCumulantFlow analysis class </span>
-<span class="sd">    for testing purposes. We do not recommend using this class for production </span>
-<span class="sd">    runs yet. There is only the integrated flow implemented at the moment.</span>
-
-<span class="sd">    This class implements the Q-cumulant method for anisotropic flow analysis.</span>
+<span class="sd">    This class implements the Q-Cumulant method for anisotropic flow analysis.</span>
 
 <span class="sd">    References:</span>
 
@@ -218,7 +223,7 @@
         <span class="n">Qn_sq_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Qn</span><span class="p">,</span><span class="n">Qn</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="c1"># |Q_n|^2</span>
 
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="c1"># this implements Eq. (16) from Ref. [1]</span>
+            <span class="c1"># this implements Eq. (16) from Ref. [2]</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="p">(</span><span class="n">Qn_sq_sum</span> <span class="o">-</span> <span class="n">sum_mult</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sum_mult_squared</span> <span class="o">-</span> <span class="n">sum_mult</span><span class="p">)</span>
             
             <span class="n">W2</span> <span class="o">=</span> <span class="n">mult</span><span class="o">*</span><span class="p">(</span><span class="n">mult</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -238,7 +243,7 @@
             <span class="k">return</span> <span class="n">corr</span><span class="p">,</span> <span class="n">corr_err</span><span class="p">,</span> <span class="n">ebe_2p_corr</span>
         
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="c1"># this implements Eq. (18) from Ref. [1]</span>
+            <span class="c1"># this implements Eq. (18) from Ref. [2]</span>
             <span class="n">Q2n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
             <span class="n">Q2n_sq_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q2n</span><span class="p">,</span><span class="n">Q2n</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
             <span class="n">Qn_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Qn</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Qn</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
@@ -258,19 +263,19 @@
             <span class="c1"># ebe difference from mean: &lt;4&gt;_i - &lt;&lt;4&gt;&gt;</span>
             <span class="n">ebe_4p_corr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Q2n</span><span class="o">*</span><span class="n">Q2n</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span> 
                            <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Q2n</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-                           <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="n">mult</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Q2n</span><span class="o">*</span><span class="n">Q2n</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span> <span class="o">-</span> <span class="n">mult</span><span class="o">*</span><span class="p">(</span><span class="n">mult</span><span class="o">-</span><span class="mi">3</span><span class="p">)))</span> <span class="o">/</span> <span class="n">W4</span>
+                           <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="n">mult</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">Qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span> <span class="o">-</span> <span class="n">mult</span><span class="o">*</span><span class="p">(</span><span class="n">mult</span><span class="o">-</span><span class="mi">3</span><span class="p">)))</span> <span class="o">/</span> <span class="n">W4</span>
             <span class="n">difference</span> <span class="o">=</span> <span class="n">ebe_4p_corr</span> <span class="o">-</span> <span class="n">corr</span>
             <span class="c1"># weighted variance</span>
             <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">difference</span><span class="p">))</span> <span class="o">/</span> <span class="n">sum_W4</span>
             <span class="c1"># unbiased variance^2</span>
             <span class="n">variance_sq</span> <span class="o">=</span> <span class="n">variance</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">sum_W4_sq</span><span class="o">/</span><span class="p">(</span><span class="n">sum_W4</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span>
             <span class="c1"># error of &lt;&lt;4&gt;&gt;, Eq. (C18) Ref. [1]</span>
-            <span class="n">corr_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_W4_sq</span><span class="o">*</span><span class="n">variance_sq</span><span class="p">)</span><span class="o">/</span><span class="n">sum_W4</span>   
+            <span class="n">corr_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_W4_sq</span><span class="o">*</span><span class="n">variance_sq</span><span class="p">)</span><span class="o">/</span><span class="n">sum_W4</span>
 
             <span class="k">return</span> <span class="n">corr</span><span class="p">,</span> <span class="n">corr_err</span><span class="p">,</span> <span class="n">ebe_4p_corr</span>
         
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="c1"># this implements Eq. (A10) from Ref. [1]</span>
+            <span class="c1"># this implements Eq. (A10) from Ref. [2]</span>
             <span class="n">Q2n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
             <span class="n">Q2n_sq_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q2n</span><span class="p">,</span><span class="n">Q2n</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
             <span class="n">Qn_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Qn</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Qn</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
@@ -340,7 +345,8 @@
 
     <span class="k">def</span> <span class="nf">__cov</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wx</span><span class="p">,</span><span class="n">wy</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the covariance between two sets of variables based on event weights.</span>
+<span class="sd">        Compute the covariance between two sets of variables based on event </span>
+<span class="sd">        weights.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -361,14 +367,29 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        This function calculates the covariance between two sets of variables </span>
-<span class="sd">        using event weights. It follows the formula provided in Eq. (C12) from Ref. [1].</span>
+<span class="sd">        using event weights. It follows the formula provided in Eq. (C12) </span>
+<span class="sd">        from Ref. [1].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sum_wx_wy_x_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">wy</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">sum_wx_wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">wy</span><span class="p">)</span>
-        <span class="n">sum_wx_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">sum_wx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="p">)</span>
-        <span class="n">sum_wy_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wy</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">sum_wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wy</span><span class="p">)</span>
+        <span class="n">sum_wx_wy_x_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">wy</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">sum_wx_wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">wy</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">sum_wx_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">sum_wx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wx</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">sum_wy_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wy</span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">sum_wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">wy</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+
+        <span class="c1"># Normalize the data to avoid overflow</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sum_wx_wy_x_y</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sum_wx_wy</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sum_wx_x</span><span class="p">),</span> 
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">sum_wx</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sum_wy_y</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sum_wy</span><span class="p">))</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mf">1e15</span><span class="p">:</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">max_val</span>
+
+        <span class="n">sum_wx_wy_x_y</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+        <span class="n">sum_wx_wy</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+        <span class="n">sum_wx_x</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+        <span class="n">sum_wx</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+        <span class="n">sum_wy_y</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+        <span class="n">sum_wy</span> <span class="o">*=</span> <span class="n">scale_factor</span>
 
         <span class="n">cov</span> <span class="o">=</span> <span class="p">(((</span><span class="n">sum_wx_wy_x_y</span><span class="o">/</span><span class="n">sum_wx_wy</span><span class="p">)</span> 
                <span class="o">-</span> <span class="p">(</span><span class="n">sum_wx_x</span><span class="o">/</span><span class="n">sum_wx</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">sum_wy_y</span><span class="o">/</span><span class="n">sum_wy</span><span class="p">))</span> 
@@ -378,7 +399,7 @@
 
     <span class="k">def</span> <span class="nf">__cov_term</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">k1</span><span class="p">,</span><span class="n">k2</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">ebe_corr1</span><span class="p">,</span><span class="n">ebe_corr2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the covariance term for the last term in Eq. (C29) from Ref. [1].</span>
+<span class="sd">        Compute the covariance term in Eqs. (C29) and (C32) of Ref. [1].</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -387,7 +408,8 @@
 <span class="sd">        k2 : int</span>
 <span class="sd">            The order of the second cumulant.</span>
 <span class="sd">        phi : list of lists</span>
-<span class="sd">            List of particle data, where each sublist represents the azimuthal angles (phi) for each event.</span>
+<span class="sd">            List of particle data, where each sublist represents the azimuthal </span>
+<span class="sd">            angles (phi) for each event.</span>
 <span class="sd">        ebe_corr1 : ndarray</span>
 <span class="sd">            Event-by-event correlation data for the first cumulant.</span>
 <span class="sd">        ebe_corr2 : ndarray</span>
@@ -416,7 +438,63 @@
         <span class="n">W1_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W1</span><span class="p">)</span>
         <span class="n">W2_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W2</span><span class="p">)</span>
         <span class="n">W1W2_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span><span class="n">W2</span><span class="p">)</span>
-        <span class="n">cov_term</span> <span class="o">=</span> <span class="p">(</span><span class="n">W1W2_sum</span><span class="o">/</span><span class="p">(</span><span class="n">W1_sum</span><span class="o">*</span><span class="n">W2_sum</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span><span class="n">W2</span><span class="p">,</span><span class="n">ebe_corr1</span><span class="p">,</span><span class="n">ebe_corr2</span><span class="p">)</span>
+        <span class="c1"># Calculate the maximum value among the terms involved</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">W1W2_sum</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">W1_sum</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">W2_sum</span><span class="p">))</span>
+        
+        <span class="c1"># Check if scaling is necessary</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mf">1e15</span><span class="p">:</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">max_val</span>
+
+        <span class="c1"># Apply scaling to the terms</span>
+        <span class="n">W1W2_sum_scaled</span> <span class="o">=</span> <span class="n">W1W2_sum</span> <span class="o">*</span> <span class="n">scale_factor</span>
+        <span class="n">denominator_scaled</span> <span class="o">=</span> <span class="n">W1_sum</span> <span class="o">*</span> <span class="n">scale_factor</span>
+        <span class="n">denominator_scaled</span> <span class="o">*=</span> <span class="n">W2_sum</span>
+        <span class="n">cov_term</span> <span class="o">=</span> <span class="p">(</span><span class="n">W1W2_sum_scaled</span><span class="o">/</span><span class="p">(</span><span class="n">denominator_scaled</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span><span class="n">W2</span><span class="p">,</span><span class="n">ebe_corr1</span><span class="p">,</span><span class="n">ebe_corr2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cov_term</span>
+    
+    <span class="k">def</span> <span class="nf">__cov_term_differential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w_corr1</span><span class="p">,</span><span class="n">w_corr2</span><span class="p">,</span><span class="n">ebe_corr1</span><span class="p">,</span><span class="n">ebe_corr2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the covariance term in Eqs. (C42) and (C46) of Ref. [1].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w_corr1 : ndarray</span>
+<span class="sd">            Weights for correlation data of first cumulant.</span>
+<span class="sd">        w_corr2 : ndarray</span>
+<span class="sd">            Weights for correlation data of second cumulant.</span>
+<span class="sd">        ebe_corr1 : ndarray</span>
+<span class="sd">            Event-by-event correlation data for the first cumulant.</span>
+<span class="sd">        ebe_corr2 : ndarray</span>
+<span class="sd">            Event-by-event correlation data for the second cumulant.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The computed covariance term.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function implements the fraction and covariance term in the last </span>
+<span class="sd">        term of Eq. (C42) from Ref. [1]. The implementation is designed to be </span>
+<span class="sd">        more general and can be used for all higher order cumulants.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate the maximum value among the terms involved</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w_corr1</span><span class="p">,</span> <span class="n">w_corr2</span><span class="p">)),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w_corr1</span><span class="p">))</span> <span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w_corr2</span><span class="p">)))</span>
+
+        <span class="c1"># Check if scaling is necessary</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mf">1e15</span><span class="p">:</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">max_val</span>
+
+        <span class="c1"># Apply scaling to the terms</span>
+        <span class="n">w_corr1_w_corr2_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w_corr1</span><span class="p">,</span><span class="n">w_corr2</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_factor</span>
+        <span class="n">denominator_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w_corr1</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_factor</span>
+        <span class="n">denominator_scaled</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w_corr2</span><span class="p">)</span>
+
+        <span class="n">cov_term</span> <span class="o">=</span> <span class="p">(</span><span class="n">w_corr1_w_corr2_scaled</span> <span class="o">/</span> <span class="n">denominator_scaled</span>
+                    <span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov</span><span class="p">(</span><span class="n">w_corr1</span><span class="p">,</span><span class="n">w_corr2</span><span class="p">,</span><span class="n">ebe_corr1</span><span class="p">,</span><span class="n">ebe_corr2</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cov_term</span>
 
@@ -452,6 +530,47 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">vnk</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vnk</span>
+    
+    <span class="k">def</span> <span class="nf">__flow_from_cumulant_differential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cnk</span><span class="p">,</span><span class="n">dnk</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the flow magnitude from a cumulant value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cnk : float</span>
+<span class="sd">            Cumulant value corresponding to the full events.</span>
+<span class="sd">        dnk : float</span>
+<span class="sd">            Cumulant value corresponding to the POI.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The computed flow magnitude.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function calculates the flow magnitude from a cumulant value using </span>
+<span class="sd">        the specified cumulant order (k).</span>
+<span class="sd">        It considers the sign of the cumulant value and the chosen behavior </span>
+<span class="sd">        for imaginary roots.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vnk</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cnk</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="n">dnk</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cumulant_factor_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">]</span> <span class="o">*</span> <span class="n">cnk</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaginary_</span> <span class="o">==</span> <span class="s1">&#39;negative&#39;</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="n">dnk</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">cumulant_factor_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">]</span> <span class="o">*</span> <span class="n">cnk</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaginary_</span> <span class="o">==</span> <span class="s1">&#39;zero&#39;</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="mf">0.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cnk</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="o">-</span><span class="n">dnk</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cumulant_factor_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">]</span> <span class="o">*</span> <span class="n">cnk</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaginary_</span> <span class="o">==</span> <span class="s1">&#39;negative&#39;</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="o">-</span><span class="n">dnk</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">cumulant_factor_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">]</span> <span class="o">*</span> <span class="n">cnk</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaginary_</span> <span class="o">==</span> <span class="s1">&#39;zero&#39;</span><span class="p">:</span>
+                <span class="n">vnk</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">return</span> <span class="n">vnk</span>
 
     <span class="k">def</span> <span class="nf">__cumulant_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">phi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -477,11 +596,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">n2_corr</span><span class="p">,</span> <span class="n">n2_corr_err</span><span class="p">,</span> <span class="n">ebe_2p_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_corr</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-            <span class="c1"># returns &lt;v_n{2}&gt; and s_{&lt;v_n{2}&gt;}, Eqs. (C22),(C24) Ref. [1]</span>
+            <span class="c1"># returns &lt;v_n{2}&gt; and s_{&lt;v_n{2}&gt;}, Eqs. (C22),(C23) Ref. [1]</span>
             <span class="n">avg_vn2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flow_from_cumulant</span><span class="p">(</span><span class="n">n2_corr</span><span class="p">)</span>
-            <span class="n">avg_v2_err</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">avg_vn2</span><span class="p">))</span><span class="o">*</span><span class="n">n2_corr_err</span>
+            <span class="n">avg_vn2_err_sq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">n2_corr</span><span class="p">))</span><span class="o">*</span><span class="n">n2_corr_err</span><span class="o">**</span><span class="mf">2.</span>
             
-            <span class="k">return</span> <span class="n">avg_vn2</span><span class="p">,</span> <span class="n">avg_v2_err</span>
+            <span class="k">return</span> <span class="n">avg_vn2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">avg_vn2_err_sq</span><span class="p">)</span>
         
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="n">n2_corr</span><span class="p">,</span> <span class="n">n2_corr_err</span><span class="p">,</span> <span class="n">ebe_2p_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_corr</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -510,7 +629,7 @@
 
             <span class="c1"># compute Eq. (C32) Ref. [1]</span>
             <span class="n">avg_vn6_err_sq</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="mf">2.</span><span class="o">**</span><span class="p">(</span><span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">QC6</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">5.</span><span class="o">/</span><span class="mf">3.</span><span class="p">))</span> 
-                              <span class="o">*</span> <span class="p">((</span><span class="mf">9.</span><span class="o">/</span><span class="mf">4.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">n2_corr</span><span class="o">**</span><span class="mf">2.</span><span class="o">-</span><span class="n">n4_corr</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">n2_corr_err</span><span class="o">**</span><span class="mf">2.</span>
+                              <span class="o">*</span> <span class="p">((</span><span class="mf">9.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">n2_corr</span><span class="o">**</span><span class="mf">2.</span><span class="o">-</span><span class="n">n4_corr</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">n2_corr_err</span><span class="o">**</span><span class="mf">2.</span>
                             <span class="o">+</span> <span class="p">(</span><span class="mf">9.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">n2_corr</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">n4_corr_err</span><span class="o">**</span><span class="mf">2.</span>
                             <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">18.</span><span class="p">)</span><span class="o">*</span><span class="n">n6_corr_err</span><span class="o">**</span><span class="mf">2.</span>
                             <span class="o">-</span> <span class="mf">9.</span><span class="o">*</span><span class="n">n2_corr</span><span class="o">*</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">n2_corr</span><span class="o">**</span><span class="mf">2.</span><span class="o">-</span><span class="n">n4_corr</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">ebe_2p_corr</span><span class="p">,</span><span class="n">ebe_4p_corr</span><span class="p">)</span>
@@ -568,14 +687,114 @@
         <span class="k">return</span> <span class="n">vnk</span><span class="p">,</span> <span class="n">vnk_err</span></div>
 
 
+    <span class="k">def</span> <span class="nf">__compute_differential_flow_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">,</span><span class="n">phi_bin</span><span class="p">,</span><span class="n">phi_bin_poi</span><span class="p">):</span>
+        <span class="c1"># full_event_quantities = Qn,M,n2_corr,n2_corr_err,ebe_2p_corr,Q2n,n4_corr,n4_corr_err,ebe_4p_corr</span>
+        <span class="n">pn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phi_bin_poi</span><span class="p">])</span>
+        <span class="n">mq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phi_bin</span><span class="p">])</span>
+        <span class="n">Qn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">qn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+            <span class="n">q2n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+
+        <span class="c1"># compute Eq. (28) Ref. [2]</span>
+        <span class="n">corr2_ev</span> <span class="o">=</span> <span class="p">(</span><span class="n">pn</span> <span class="o">*</span> <span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">-</span> <span class="n">mq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mp</span> <span class="o">*</span> <span class="n">M</span> <span class="o">-</span> <span class="n">mq</span><span class="p">)</span>
+        <span class="c1"># compute Eq. (24) Ref. [2]</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="n">mp</span> <span class="o">*</span> <span class="n">M</span> <span class="o">-</span> <span class="n">mq</span>
+        <span class="c1"># compute Eq. (29) Ref. [2]</span>
+        <span class="n">corr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">corr2_ev</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w2</span><span class="p">)</span>
+
+        <span class="n">vn_bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flow_from_cumulant_differential</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">corr2</span><span class="p">)</span>
+
+        <span class="c1"># ebe difference from mean: &lt;2&gt;_i - &lt;&lt;2&gt;&gt;</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">corr2_ev</span> <span class="o">-</span> <span class="n">corr2</span>
+        <span class="c1"># weighted variance</span>
+        <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">difference</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w2</span><span class="p">)</span>
+        <span class="c1"># unbiased variance^2</span>
+        <span class="n">variance_sq</span> <span class="o">=</span> <span class="n">variance</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">w2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w2</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span>
+        <span class="c1"># error of &lt;&lt;2&gt;&gt;, Eq. (C38) Ref. [1]</span>
+        <span class="n">corr2_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">w2</span><span class="p">)</span><span class="o">*</span><span class="n">variance_sq</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w2</span><span class="p">)</span>
+
+        <span class="n">avg_vn2_err_sq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">corr2</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+            <span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">corr2_err</span><span class="o">**</span><span class="mf">2.</span>
+            <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">corr2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">w2</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">corr2_ev</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">avg_vn_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">avg_vn2_err_sq</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">Q2n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="c1"># compute Eq. (32) Ref. [2]</span>
+            <span class="n">corr4_ev</span> <span class="o">=</span> <span class="p">(</span><span class="n">pn</span><span class="o">*</span><span class="n">Qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> 
+                     <span class="o">-</span> <span class="n">q2n</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">-</span> <span class="n">pn</span><span class="o">*</span><span class="n">Qn</span><span class="o">*</span><span class="n">Q2n</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="n">M</span><span class="o">*</span><span class="n">pn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="n">mq</span><span class="o">*</span><span class="n">Qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">+</span> <span class="mf">7.</span><span class="o">*</span><span class="n">qn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">-</span> <span class="n">Qn</span><span class="o">*</span><span class="n">qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">+</span> <span class="n">q2n</span><span class="o">*</span><span class="n">Q2n</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">pn</span><span class="o">*</span><span class="n">Qn</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                     <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">mq</span><span class="o">*</span><span class="n">M</span>
+                     <span class="o">-</span> <span class="mf">6.</span><span class="o">*</span><span class="n">mq</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">mp</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="mf">3.</span><span class="o">*</span><span class="n">mq</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="c1"># compute Eq. (25) Ref. [2]</span>
+            <span class="n">w4</span> <span class="o">=</span> <span class="p">(</span><span class="n">mp</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="mf">3.</span><span class="o">*</span><span class="n">mq</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># compute Eq. (33) Ref. [2]</span>
+            <span class="n">corr4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w4</span><span class="p">,</span><span class="n">corr4_ev</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w4</span><span class="p">)</span>
+            <span class="c1"># compute Eq. (34) Ref. [2]</span>
+            <span class="n">dn4</span> <span class="o">=</span> <span class="n">corr4</span> <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="n">corr2</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="c1"># compute Eq. (12) Ref. [2]</span>
+            <span class="n">cn4</span> <span class="o">=</span> <span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+
+            <span class="n">vn_bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flow_from_cumulant_differential</span><span class="p">(</span><span class="n">cn4</span><span class="p">,</span><span class="n">dn4</span><span class="p">)</span>
+
+            <span class="c1"># ebe difference from mean: &lt;4&gt;_i - &lt;&lt;4&gt;&gt;</span>
+            <span class="n">difference</span> <span class="o">=</span> <span class="n">corr4_ev</span> <span class="o">-</span> <span class="n">corr4</span>
+            <span class="c1"># weighted variance</span>
+            <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">difference</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w4</span><span class="p">)</span>
+            <span class="c1"># unbiased variance^2</span>
+            <span class="n">variance_sq</span> <span class="o">=</span> <span class="n">variance</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w4</span><span class="p">,</span><span class="n">w4</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w4</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span>
+            <span class="c1"># error of &lt;&lt;4&gt;&gt;, Eq. (C38) Ref. [1]</span>
+            <span class="n">corr4_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">w4</span><span class="p">,</span><span class="n">w4</span><span class="p">)</span><span class="o">*</span><span class="n">variance_sq</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w4</span><span class="p">)</span>
+
+            <span class="n">minus_cn4</span> <span class="o">=</span> <span class="o">-</span><span class="n">cn4</span>
+            <span class="n">term1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">corr2</span> 
+                     <span class="o">-</span> <span class="mf">3.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">corr4</span>
+                     <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">*</span><span class="n">corr2</span>
+                     <span class="p">)</span>
+            <span class="n">term2</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">corr2</span> <span class="o">-</span> <span class="n">corr4</span>
+            <span class="n">multiplicity_prefac</span> <span class="o">=</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="n">avg_vn4_err_sq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">minus_cn4</span><span class="o">**</span><span class="p">(</span><span class="mf">7.</span><span class="o">/</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="n">term1</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="o">+</span> <span class="p">(</span><span class="mf">9.</span><span class="o">/</span><span class="mf">16.</span><span class="p">)</span><span class="o">*</span><span class="n">term2</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">corr2_err</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="o">+</span> <span class="n">minus_cn4</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">corr4_err</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="o">-</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">term2</span><span class="o">*</span><span class="n">term1</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">multiplicity_prefac</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+                <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">*</span><span class="n">term1</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">w2</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">corr2_ev</span><span class="p">)</span>
+                <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">*</span><span class="n">term1</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">w4</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">corr4_ev</span><span class="p">)</span>
+                <span class="o">+</span> <span class="mf">3.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">*</span><span class="n">term2</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">multiplicity_prefac</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span><span class="n">corr2_ev</span><span class="p">)</span>
+                <span class="o">-</span> <span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">*</span><span class="n">term2</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">multiplicity_prefac</span><span class="p">,</span><span class="n">w4</span><span class="p">,</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span><span class="n">corr4_ev</span><span class="p">)</span>
+                <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">minus_cn4</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__cov_term_differential</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span><span class="n">w4</span><span class="p">,</span><span class="n">corr2_ev</span><span class="p">,</span><span class="n">corr4_ev</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">avg_vn_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">avg_vn4_err_sq</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">vn_bin</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">avg_vn_err</span><span class="o">.</span><span class="n">real</span><span class="p">]</span>
 
 <div class="viewcode-block" id="QCumulantFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/QCumulantFlow/index.html#QCumulantFlow.QCumulantFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">flow_as_function_of</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">flow_as_function_of</span><span class="p">,</span> <span class="n">poi_pdg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        **Attention**: This feature is not yet available.</span>
-
-<span class="sd">        Compute the differential flow.</span>
+<span class="sd">        Compute the differential flow. The cumulants of second and fourth order</span>
+<span class="sd">        are implemented.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -584,15 +803,88 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the differential flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
+<span class="sd">            Variable on which the flow is calculated </span>
+<span class="sd">            (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
+<span class="sd">        poi_pdg : list</span>
+<span class="sd">            List of PDG id for identified particle differential flow.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of tuples</span>
-<span class="sd">            A list of tuples containing flow values and their corresponding uncertainty.</span>
+<span class="sd">            A list of tuples containing flow values and their corresponding </span>
+<span class="sd">            uncertainty.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This feature is not yet available.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bins has to be list or np.ndarray&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;flow_as_function_of is not a string&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">poi_pdg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">poi_pdg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg has to be list or np.ndarray&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg elements must be integers&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;6 particle Q-Cumulant differential flow is not implemented&quot;</span><span class="p">)</span>
+
+        <span class="n">number_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__sample_random_reaction_planes</span><span class="p">(</span><span class="n">number_events</span><span class="p">)</span>
+
+        <span class="n">phi_all</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
+            <span class="n">event_phi</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
+                <span class="n">event_phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+            <span class="n">phi_all</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">event_phi</span><span class="p">])</span>
+
+        <span class="n">phi_bin</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">phi_bin_poi</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">events_bin</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">events_bin_poi</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
+                <span class="n">particles_event</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">particles_event_poi</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="mf">0.</span>
+                    <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pt&quot;</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">particles_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
+                            <span class="n">particles_event_poi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
+                <span class="n">events_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">particles_event</span><span class="p">])</span>
+                <span class="n">events_bin_poi</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">particles_event_poi</span><span class="p">])</span>
+            <span class="n">phi_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">events_bin</span><span class="p">])</span>
+            <span class="n">phi_bin_poi</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">events_bin_poi</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">poi_pdg</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phi_bin_poi</span> <span class="o">=</span> <span class="n">phi_bin</span>
+
+        <span class="c1"># compute full event quantities Qn, Q2n, ...</span>
+        <span class="n">Qn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_all</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+        <span class="n">n2_corr</span><span class="p">,</span> <span class="n">n2_corr_err</span><span class="p">,</span> <span class="n">ebe_2p_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_corr</span><span class="p">(</span><span class="n">phi_all</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phi_all</span><span class="p">]</span>
+        <span class="n">full_event_quantities</span> <span class="o">=</span> <span class="p">[</span><span class="n">Qn</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">n2_corr</span><span class="p">,</span><span class="n">n2_corr_err</span><span class="p">,</span><span class="n">ebe_2p_corr</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">Q2n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_all</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+            <span class="n">n4_corr</span><span class="p">,</span> <span class="n">n4_corr_err</span><span class="p">,</span> <span class="n">ebe_4p_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_corr</span><span class="p">(</span><span class="n">phi_all</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">full_event_quantities</span> <span class="o">=</span> <span class="p">[</span><span class="n">Qn</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">n2_corr</span><span class="p">,</span><span class="n">n2_corr_err</span><span class="p">,</span><span class="n">ebe_2p_corr</span><span class="p">,</span><span class="n">Q2n</span><span class="p">,</span><span class="n">n4_corr</span><span class="p">,</span><span class="n">n4_corr_err</span><span class="p">,</span><span class="n">ebe_4p_corr</span><span class="p">]</span>
+
+        <span class="n">flow_bins</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">)):</span>
+            <span class="n">total_elements_bin</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">phi_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span>
+            <span class="n">total_elements_bin_poi</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">phi_bin_poi</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">total_elements_bin</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">total_elements_bin_poi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">flow_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__compute_differential_flow_bin</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">,</span><span class="n">phi_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">],</span><span class="n">phi_bin_poi</span><span class="p">[</span><span class="nb">bin</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flow_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">flow_bins</span></div>
 </div>
 
 </pre></div>
@@ -604,7 +896,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QCumulantFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>QCumulantFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -106,10 +107,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="QCumulantFlow.QCumulantFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">QCumulantFlow.</span></span><span class="sig-name descname"><span class="pre">QCumulantFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imaginary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/QCumulantFlow.html#QCumulantFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#QCumulantFlow.QCumulantFlow" title="Link to this definition"></a></dt>
-<dd><p><strong>Attention</strong>: This is a beta version of the QCumulantFlow analysis class 
-for testing purposes. We do not recommend using this class for production 
-runs yet. There is only the integrated flow implemented at the moment.</p>
-<p>This class implements the Q-cumulant method for anisotropic flow analysis.</p>
+<dd><p>This class implements the Q-Cumulant method for anisotropic flow analysis.</p>
 <p>References:</p>
 <ul class="simple">
 <li><p>[1] <a class="reference external" href="https://inspirehep.net/literature/1186272">PhD Thesis A. Bilandzic</a></p></li>
@@ -186,9 +184,9 @@ with particles.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="QCumulantFlow.QCumulantFlow.differential_flow">
-<span class="sig-prename descclassname"><span class="pre">QCumulantFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/QCumulantFlow.html#QCumulantFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#QCumulantFlow.QCumulantFlow.differential_flow" title="Link to this definition"></a></dt>
-<dd><p><strong>Attention</strong>: This feature is not yet available.</p>
-<p>Compute the differential flow.</p>
+<span class="sig-prename descclassname"><span class="pre">QCumulantFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poi_pdg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/QCumulantFlow.html#QCumulantFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#QCumulantFlow.QCumulantFlow.differential_flow" title="Link to this definition"></a></dt>
+<dd><p>Compute the differential flow. The cumulants of second and fourth order
+are implemented.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -196,13 +194,17 @@ with particles.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”, or “pseudorapidity”).</p>
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated 
+(“pt”, “rapidity”, or “pseudorapidity”).</p>
+</dd>
+<dt><strong>poi_pdg</strong><span class="classifier">list</span></dt><dd><p>List of PDG id for identified particle differential flow.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list of tuples</dt><dd><p>A list of tuples containing flow values and their corresponding uncertainty.</p>
+<dt>list of tuples</dt><dd><p>A list of tuples containing flow values and their corresponding 
+uncertainty.</p>
 </dd>
 </dl>
 </dd>
@@ -222,7 +224,7 @@ with particles.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

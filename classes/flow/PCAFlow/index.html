@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PCAFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>PCAFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -125,9 +126,11 @@ particle data.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>n</strong><span class="classifier">int, optional</span></dt><dd><p>The flow harmonic to compute. Must be a positive integer. Default is 2.</p>
 </dd>
-<dt><strong>alpha</strong><span class="classifier">int, optional</span></dt><dd><p>The order in subleading flow up to which the flow is computed. Must be an integer greater than or equal to 1. Default is 2.</p>
+<dt><strong>alpha</strong><span class="classifier">int, optional</span></dt><dd><p>The order in sub-leading flow up to which the flow is computed. 
+Must be an integer greater than or equal to 1. Default is 2.</p>
 </dd>
-<dt><strong>number_subcalc</strong><span class="classifier">int, optional</span></dt><dd><p>The number of subcalculations to estimate the error of the flow. Must be an integer greater than or equal to 2. Default is 4.</p>
+<dt><strong>number_subcalc</strong><span class="classifier">int, optional</span></dt><dd><p>The number of sub-calculations to estimate the error of the flow. 
+Must be an integer greater than or equal to 2. Default is 4.</p>
 </dd>
 </dl>
 </dd>
@@ -144,35 +147,36 @@ or number_subcalc is less than 2.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>n_</strong><span class="classifier">int</span></dt><dd><p>The flow harmonic to compute.</p>
 </dd>
-<dt><strong>alpha_</strong><span class="classifier">int</span></dt><dd><p>The order in subleading flow up to which the flow is computed.</p>
+<dt><strong>alpha_</strong><span class="classifier">int</span></dt><dd><p>The order in sub-leading flow up to which the flow is computed.</p>
 </dd>
-<dt><strong>number_subcalc_</strong><span class="classifier">int</span></dt><dd><p>The number of subcalculations to estimate the error of the flow.</p>
+<dt><strong>number_subcalc_</strong><span class="classifier">int</span></dt><dd><p>The number of sub-calculations to estimate the error of the flow.</p>
 </dd>
 <dt><strong>number_events_</strong><span class="classifier">int or None</span></dt><dd><p>The total number of events.</p>
 </dd>
-<dt><strong>subcalc_counter_</strong><span class="classifier">int</span></dt><dd><p>A counter to keep track of the current subcalculation.</p>
+<dt><strong>subcalc_counter_</strong><span class="classifier">int</span></dt><dd><p>A counter to keep track of the current sub-calculation.</p>
 </dd>
 <dt><strong>normalization_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Normalization factors for each bin.</p>
 </dd>
 <dt><strong>bin_multiplicity_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Total multiplicity in each bin across all events.</p>
 </dd>
-<dt><strong>sigma_multiplicity_total_</strong><span class="classifier">list of numpy.ndarray</span></dt><dd><p>List of arrays containing the multiplicity in each bin for each subcalculation.</p>
+<dt><strong>sigma_multiplicity_total_</strong><span class="classifier">list of numpy.ndarray</span></dt><dd><p>List of arrays containing the multiplicity in each bin for each 
+sub-calculation.</p>
 </dd>
-<dt><strong>number_events_subcalc_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Number of events used in each subcalculation.</p>
+<dt><strong>number_events_subcalc_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Number of events used in each sub-calculation.</p>
 </dd>
 <dt><strong>QnRe_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Real part of the flow vector for each bin across all events.</p>
 </dd>
 <dt><strong>QnIm_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Imaginary part of the flow vector for each bin across all events.</p>
 </dd>
-<dt><strong>SigmaQnReSub_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Real part of the flow vector for each bin and subcalculation.</p>
+<dt><strong>SigmaQnReSub_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Real part of the flow vector for each bin and sub-calculation.</p>
 </dd>
-<dt><strong>SigmaQnImSub_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Imaginary part of the flow vector for each bin and subcalculation.</p>
+<dt><strong>SigmaQnImSub_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Imaginary part of the flow vector for each bin and sub-calculation.</p>
 </dd>
 <dt><strong>VnDelta_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Covariance matrix for flow vectors across all events.</p>
 </dd>
-<dt><strong>SigmaVnDelta_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Covariance matrix for flow vectors for each subcalculation.</p>
+<dt><strong>SigmaVnDelta_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Covariance matrix for flow vectors for each sub-calculation.</p>
 </dd>
-<dt><strong>FlowSubCalc_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>An array containing the flow magnitude for subcalculations.</p>
+<dt><strong>FlowSubCalc_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>An array containing the flow magnitude for sub-calculations.</p>
 </dd>
 <dt><strong>Flow_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>An array containing the flow magnitude.</p>
 </dd>
@@ -229,7 +233,7 @@ Each array in the list corresponds:</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>The flow or the uncertainty can be accessed by: <cite>function_return[bin][alpha]</cite></p></li>
-<li><p>If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to NaN.</p></li>
+<li><p>If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to <cite>np.nan</cite>.</p></li>
 </ul>
 </dd></dl>
 
@@ -238,22 +242,16 @@ Each array in the list corresponds:</p>
 <span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">Pearson_correlation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow.Pearson_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow.Pearson_correlation" title="Link to this definition"></a></dt>
 <dd><p>Retrieve the Pearson correlation coefficient and its uncertainty
 (Eq. (12), Ref. [1]).</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>list</dt><dd><p>A list containing the Pearson correlation coefficient and its uncertainty.</p>
+<ul class="simple">
+<li><p>Pearson_r (numpy.ndarray): The Pearson correlation coefficient for factorization breaking between each pair of bins.</p></li>
+<li><p>Pearson_r_uncertainty (numpy.ndarray): The uncertainty of the Pearson correlation coefficient for factorization breaking between each pair of bins.</p></li>
+</ul>
 </dd>
 </dl>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Pearson_r (numpy.ndarray): The Pearson correlation coefficient for factorization breaking between each pair of bins.</dt><dd></dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Pearson_r_uncertainty (numpy.ndarray): The uncertainty of the Pearson correlation coefficient for factorization breaking between each pair of bins.</dt><dd></dd>
-</dl>
-</li>
-</ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -273,7 +271,7 @@ Each array in the list corresponds:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

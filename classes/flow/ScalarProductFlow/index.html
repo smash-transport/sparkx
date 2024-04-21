@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScalarProductFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>ScalarProductFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -109,10 +110,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">ScalarProductFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a scalar product flow analysis algorithm
 <a class="reference external" href="https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A">Adler, C., et al. “Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV.” Physical Review C 66.3 (2002): 034904</a>.</p>
-<p>For this method, the flow is calcuated by correlating the event vector <span class="math notranslate nohighlight">\(Q\)</span> with the conjugated unit momentum vector
-of the particle. This is normalized by square root of the scalar product of the event vectors of two equal-sized
-subevents. We choose here to divide the subevents by positive and negative pseudorapidity. Note that for asymmetric
-systems, this will not be sufficient.</p>
+<p>For this method, the flow is calculated by correlating the event 
+vector <span class="math notranslate nohighlight">\(Q\)</span> with the conjugated unit momentum vector of the particle. 
+This is normalized by square root of the scalar product of the event vectors 
+of two equal-sized sub-events. We choose here to divide the sub-events by 
+positive and negative pseudorapidity. Note that for asymmetric systems, this 
+will not be sufficient.</p>
 <p>In summary, this class calculates the following:</p>
 <div class="math notranslate nohighlight">
 \[v_n = \frac{\langle Q_n u_{n,i}^\ast \rangle}{2\sqrt{\langle Q_n^aQ_n^{b \ast}\rangle}}\]</div>
@@ -124,14 +127,17 @@ systems, this will not be sufficient.</p>
 </dd>
 <dt><strong>weight</strong><span class="classifier">str, optional</span></dt><dd><p>The weight used for calculating the flow. Default is “pt2”.</p>
 </dd>
-<dt><strong>pseudorapidity_gap</strong><span class="classifier">float, optional</span></dt><dd><p>The pseudorapidity gap used for dividing the particles into sub-events. Default is 0.0.</p>
+<dt><strong>pseudorapidity_gap</strong><span class="classifier">float, optional</span></dt><dd><p>The pseudorapidity gap used for dividing the particles into sub-events.
+Default is 0.0.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>A demonstration how to calculate flow according to the event plane of a separate particle list.
-The same particle list can also be used to determine the event plane and the flow.</p>
+<p>A demonstration how to calculate flow according to the event plane of a 
+separate particle list.
+The same particle list can also be used to determine the event plane and 
+the flow.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
 <span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.ScalarProductFlow</span> <span class="kn">import</span> <span class="n">ScalarProductFlow</span>
 <span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
@@ -139,10 +145,10 @@ The same particle list can also be used to determine the event plane and the flo
 <span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH_EVENT_PLANE</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists_ep</span><span class="o">.</span><span class="n">dat</span>
 <span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles on which we want to calculate flow</span>
-<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_flow</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH_FLOW</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_flow</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH_FLOW</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
 <span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Jetscape object containing the particles which determine the event plane</span>
-<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_event</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_EVENT_PLANE</span><span class="p">)</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_event</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_EVENT_PLANE</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
 <span class="linenos">12</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create flow objects for v2, weighted with pT**2 and v3 weighted with pT**2</span>
 <span class="linenos">14</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow2</span> <span class="o">=</span> <span class="n">ScalarProductFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -177,13 +183,15 @@ The same particle list can also be used to determine the event plane and the flo
 </dd>
 <dt><strong>particle_data_event_plane</strong><span class="classifier">list</span></dt><dd><p>List of particle data for the event plane calculation.</p>
 </dd>
-<dt><strong>self_corr</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to consider self-correlation in the flow calculation. Default is True.</p>
+<dt><strong>self_corr</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to consider self-correlation in the flow calculation.
+Default is True.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>tuple</dt><dd><p>A tuple containing the integrated flow value and the corresponding uncertainty.</p>
+<dt>tuple</dt><dd><p>A tuple containing the integrated flow value and the corresponding 
+uncertainty.</p>
 </dd>
 </dl>
 </dd>
@@ -201,17 +209,20 @@ The same particle list can also be used to determine the event plane and the flo
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”, or “pseudorapidity”).</p>
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated 
+(“pt”, “rapidity”, or “pseudorapidity”).</p>
 </dd>
 <dt><strong>particle_data_event_plane</strong><span class="classifier">list</span></dt><dd><p>List of particle data for the event plane calculation.</p>
 </dd>
-<dt><strong>self_corr</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to consider self-correlation in the flow calculation. Default is True.</p>
+<dt><strong>self_corr</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to consider self-correlation in the flow calculation.
+Default is True.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list</dt><dd><p>A list of tuples containing the flow values and uncertainties for each bin.</p>
+<dt>list</dt><dd><p>A list of tuples containing the flow values and uncertainties for 
+each bin.</p>
 </dd>
 </dl>
 </dd>
@@ -231,7 +242,7 @@ The same particle list can also be used to determine the event plane and the flo
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

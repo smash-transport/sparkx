@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ReactionPlaneFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>ReactionPlaneFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +75,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ReactionPlaneFlow</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
+<span></span><span class="c1">#===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1">#===================================================</span>
+    
+<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="ReactionPlaneFlow">
@@ -84,15 +94,17 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class implements a reaction plane flow analysis algorithm.</span>
 
-<span class="sd">    For this method, the flow is calculated under the assumption that the event plane angle is constant</span>
-<span class="sd">    throughout all events. The flow is calculated as</span>
+<span class="sd">    For this method, the flow is calculated under the assumption that the event </span>
+<span class="sd">    plane angle is constant throughout all events. The flow is calculated as</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        v_n = \\left\\langle p_{\\mathrm{T}}^n \\exp{\\frac{in\\phi_i}{p_{\\mathrm{T}}^n}}\\right\\rangle</span>
+<span class="sd">        v_n = \\left\\langle \\exp{in\\phi_i}\\right\\rangle,</span>
 
-<span class="sd">    where we average over all particles of all events. We return complex numbers, which contain the information</span>
-<span class="sd">    about the position of the event plane.</span>
+<span class="sd">    where we average over all particles of all events. We return complex numbers, </span>
+<span class="sd">    which contain the information about the position of the event plane.</span>
+<span class="sd">    If a weight is set for the particles in the `Particle` objects, then this </span>
+<span class="sd">    is used in the flow calculation.</span>
 
 
 <span class="sd">    Parameters</span>
@@ -126,10 +138,14 @@
 <span class="sd">        &gt;&gt;&gt; jetscape_flow = Jetscape(JETSCAPE_FILE_PATH_FLOW)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Create flow objects for v2</span>
-<span class="sd">        &gt;&gt;&gt; flow2 = ReactionPlaneFlow(n=2)</span>
+<span class="sd">        &gt;&gt;&gt; flow2 = ReactionPlaneFlow(n=2).particle_objects_list()</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Calculate the integrated flow with error</span>
 <span class="sd">        &gt;&gt;&gt; v2 = flow2.integrated_flow(jetscape_flow)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Calculate the differential flow with error</span>
+<span class="sd">        &gt;&gt;&gt; pt_bins = [0.0,0.5,1.0,2.0,3.0,4.0]</span>
+<span class="sd">        &gt;&gt;&gt; v2_differential = flow2.integrated_flow(jetscape_flow,pt_bins,&#39;pt&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
@@ -169,10 +185,10 @@
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
             <span class="n">flow_event</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">+</span> <span class="mf">0.</span><span class="n">j</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
-                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="k">else</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
                 <span class="n">pt</span> <span class="o">=</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span>
                 <span class="n">phi</span> <span class="o">=</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span>
-                <span class="n">flow_event</span> <span class="o">+=</span> <span class="n">weight</span><span class="o">*</span><span class="p">(</span><span class="n">pt</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span> <span class="o">/</span> <span class="n">pt</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+                <span class="n">flow_event</span> <span class="o">+=</span> <span class="n">weight</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span>
                 <span class="n">number_particles</span> <span class="o">+=</span> <span class="n">weight</span>
             <span class="k">if</span> <span class="n">number_particles</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
                 <span class="n">flow_event_average</span> <span class="o">+=</span> <span class="n">flow_event</span>
@@ -238,10 +254,10 @@
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">])):</span>
                 <span class="n">flow_event</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">+</span> <span class="mf">0.</span><span class="n">j</span>
                 <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">])):</span>
-                    <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
+                    <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="k">else</span> <span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
                     <span class="n">pt</span> <span class="o">=</span> <span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span>
                     <span class="n">phi</span> <span class="o">=</span> <span class="n">binned_particle_data</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span>
-                    <span class="n">flow_event</span> <span class="o">+=</span> <span class="n">weight</span><span class="o">*</span><span class="p">(</span><span class="n">pt</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span> <span class="o">/</span> <span class="n">pt</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+                    <span class="n">flow_event</span> <span class="o">+=</span> <span class="n">weight</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span>
                     <span class="n">number_particles</span> <span class="o">+=</span> <span class="n">weight</span>
                 <span class="n">flow_event_average</span> <span class="o">+=</span> <span class="n">flow_event</span>
             <span class="k">if</span> <span class="n">number_particles</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
@@ -260,7 +276,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

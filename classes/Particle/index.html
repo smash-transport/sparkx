@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 0.9.0 documentation</title>
+  <title>Particle &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -121,13 +122,13 @@
 <dd><p>Defines a particle object.</p>
 <p>The member variables of the Particle class are the quantities in the
 OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
-they stay NaN to throw an error if one tries to access a non existing
+they stay <cite>np.nan</cite> to throw an error if one tries to access a non existing
 quantity.
 If a particle with an unknown PDG is provided, a warning is thrown and and 
-np.nan is returned for charge, spin, and spin degeneracy.</p>
+<cite>np.nan</cite> is returned for charge, spin, and spin degeneracy.</p>
 <p class="rubric">Notes</p>
 <p>If a member of the Particle class is not set or a quantity should be computed
-and the needed member variables are not set, then <cite>NaN</cite> is returned by default.
+and the needed member variables are not set, then <cite>np.nan</cite> is returned by default.
 All quantities are saved in a numpy array member variable <cite>data_</cite>. The datatype
 of this array is float, therefore casting is required when int or bool values are 
 required.</p>
@@ -188,7 +189,7 @@ Supported formats include:</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">form_time</span></code><span class="classifier">double</span></dt><dd><p>Get or set the formation time of the particle.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">xsecfac</span></code><span class="classifier">double</span></dt><dd><p>Get or set the crosssection scaling factor of the particle.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">xsecfac</span></code><span class="classifier">double</span></dt><dd><p>Get or set the cross section scaling factor of the particle.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">proc_id_origin</span></code><span class="classifier">int</span></dt><dd><p>Get or set the process ID of the particle’s origin.</p>
 </dd>
@@ -359,7 +360,7 @@ a comma.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.angular_momentum">
 <span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">angular_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.angular_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.angular_momentum" title="Link to this definition"></a></dt>
-<dd><p>Compute the angular momentum <span class="math notranslate nohighlight">\(L=r \times p\)</span> of a particle.</p>
+<dd><p>Compute the angular momentum <span class="math notranslate nohighlight">\(\vec{L}=\vec{r} \times \vec{p}\)</span> of a particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -670,7 +671,7 @@ is returned.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ReactionPlaneFlow &mdash; sparkx 0.9.0 documentation</title>
+  <title>ReactionPlaneFlow &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -108,12 +109,14 @@
 <dt class="sig sig-object py" id="ReactionPlaneFlow.ReactionPlaneFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ReactionPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">ReactionPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ReactionPlaneFlow.html#ReactionPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ReactionPlaneFlow.ReactionPlaneFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a reaction plane flow analysis algorithm.</p>
-<p>For this method, the flow is calculated under the assumption that the event plane angle is constant
-throughout all events. The flow is calculated as</p>
+<p>For this method, the flow is calculated under the assumption that the event 
+plane angle is constant throughout all events. The flow is calculated as</p>
 <div class="math notranslate nohighlight">
-\[v_n = \left\langle p_{\mathrm{T}}^n \exp{\frac{in\phi_i}{p_{\mathrm{T}}^n}}\right\rangle\]</div>
-<p>where we average over all particles of all events. We return complex numbers, which contain the information
-about the position of the event plane.</p>
+\[v_n = \left\langle \exp{in\phi_i}\right\rangle,\]</div>
+<p>where we average over all particles of all events. We return complex numbers, 
+which contain the information about the position of the event plane.
+If a weight is set for the particles in the <cite>Particle</cite> objects, then this 
+is used in the flow calculation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -133,10 +136,14 @@ about the position of the event plane.</p>
 <span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jetscape_flow</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="n">JETSCAPE_FILE_PATH_FLOW</span><span class="p">)</span>
 <span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create flow objects for v2</span>
-<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow2</span> <span class="o">=</span> <span class="n">ReactionPlaneFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">flow2</span> <span class="o">=</span> <span class="n">ReactionPlaneFlow</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
 <span class="linenos">11</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the integrated flow with error</span>
 <span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="n">flow2</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">)</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">15</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate the differential flow with error</span>
+<span class="linenos">16</span><span class="gp">&gt;&gt;&gt; </span><span class="n">pt_bins</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">4.0</span><span class="p">]</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt; </span><span class="n">v2_differential</span> <span class="o">=</span> <span class="n">flow2</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">jetscape_flow</span><span class="p">,</span><span class="n">pt_bins</span><span class="p">,</span><span class="s1">&#39;pt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -209,7 +216,7 @@ about the position of the event plane.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

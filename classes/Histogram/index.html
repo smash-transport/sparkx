@@ -4,18 +4,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Histogram &mdash; sparkx 0.9.0 documentation</title>
+  <title>Histogram &mdash; sparkx 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+        <script src="../../_static/documentation_options.js?v=6efca38a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -63,6 +64,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.bin_boundaries"><code class="docutils literal notranslate"><span class="pre">Histogram.bin_boundaries()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.add_value"><code class="docutils literal notranslate"><span class="pre">Histogram.add_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.add_histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.add_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.make_density"><code class="docutils literal notranslate"><span class="pre">Histogram.make_density()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.average"><code class="docutils literal notranslate"><span class="pre">Histogram.average()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.average_weighted"><code class="docutils literal notranslate"><span class="pre">Histogram.average_weighted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.standard_error"><code class="docutils literal notranslate"><span class="pre">Histogram.standard_error()</span></code></a></li>
@@ -225,31 +227,34 @@ variable, the methods <code class="docutils literal notranslate"><span class="pr
 <tr class="row-even"><td><p><strong>add_histogram:</strong></p></td>
 <td><p>Add a new histogram.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>average:</strong></p></td>
+<tr class="row-odd"><td><p><strong>make_density:</strong></p></td>
+<td><p>Create probability density from last histogram.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>average:</strong></p></td>
 <td><p>Averages over all histograms.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>average_weighted:</strong></p></td>
+<tr class="row-odd"><td><p><strong>average_weighted:</strong></p></td>
 <td><p>Performs a weighted average over all histograms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>standard_error:</strong></p></td>
+<tr class="row-even"><td><p><strong>standard_error:</strong></p></td>
 <td><p>Get the standard deviation for each bin.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>statistical_error:</strong></p></td>
+<tr class="row-odd"><td><p><strong>statistical_error:</strong></p></td>
 <td><p>Statistical error of all histogram bins in all histograms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_systematic_error:</strong></p></td>
+<tr class="row-even"><td><p><strong>set_systematic_error:</strong></p></td>
 <td><p>Sets the systematic histogram error by hand.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>scale_histogram:</strong></p></td>
+<tr class="row-odd"><td><p><strong>scale_histogram:</strong></p></td>
 <td><p>Multiply latest histogram with a factor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_error:</strong></p></td>
+<tr class="row-even"><td><p><strong>set_error:</strong></p></td>
 <td><p>Set the error for the histogram by hand.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>print_histogram:</strong></p></td>
+<tr class="row-odd"><td><p><strong>print_histogram:</strong></p></td>
 <td><p>Print the histogram(s) to the terminal.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>write_to_file:</strong></p></td>
+<tr class="row-even"><td><p><strong>write_to_file:</strong></p></td>
 <td><p>Write one histogram to a csv file.</p></td>
 </tr>
 </tbody>
@@ -274,7 +279,8 @@ variable, the methods <code class="docutils literal notranslate"><span class="pr
 <dt class="sig sig-object py" id="Histogram.Histogram.histogram_raw_counts">
 <span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">histogram_raw_counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.histogram_raw_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.histogram_raw_counts" title="Link to this definition"></a></dt>
 <dd><p>Get the raw bin counts of the histogram(s), even after the original
-histograms are scaled or averaged.</p>
+histograms are scaled or averaged. If weights are used, then they
+affect the raw counts histogram.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -371,7 +377,7 @@ histograms are scaled or averaged.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Histogram.Histogram.add_value">
-<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">add_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.add_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.add_value" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">add_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.add_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.add_value" title="Link to this definition"></a></dt>
 <dd><p>Add value(s) to the latest histogram.</p>
 <p>Different cases, if there is just one number added or a whole list/
 array of numbers.</p>
@@ -380,11 +386,20 @@ array of numbers.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>value: int, float, np.number, list, numpy.ndarray</strong></dt><dd><p>Value(s) which are supposed to be added to the histogram instance.</p>
 </dd>
+<dt><strong>weight: int, float, np.number, list, numpy.ndarray, optional</strong></dt><dd><p>Weight(s) associated with the value(s). If provided, it should have 
+the same length as the value parameter.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>TypeError</dt><dd><p>if the input is not a number or numpy.ndarray or list</p>
+</dd>
+<dt>ValueError</dt><dd><p>if an input <cite>value</cite> is <cite>np.nan</cite></p>
+</dd>
+<dt>ValueError</dt><dd><p>if the input <cite>weight</cite> has not the same dimension as <cite>value</cite></p>
+</dd>
+<dt>ValueError</dt><dd><p>if a <cite>weight</cite> value is <cite>np.nan</cite></p>
 </dd>
 </dl>
 </dd>
@@ -400,11 +415,30 @@ to the last histogram.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="Histogram.Histogram.make_density">
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">make_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.make_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.make_density" title="Link to this definition"></a></dt>
+<dd><p>Make a probability density from the last histogram.
+The result represents the probability density function in a given bin. 
+It is normalized such that the integral over the whole histogram 
+yields 1. This behavior is similar to the one of numpy histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>if there is no histogram available</p>
+</dd>
+<dt>ValueError</dt><dd><p>if the integral over the histogram is zero</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="Histogram.Histogram.average">
 <span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.average" title="Link to this definition"></a></dt>
 <dd><p>Average over all histograms.</p>
 <p>When this function is called the previously generated histograms are
-averaged with the unit weigths and they are overwritten by the
+averaged with the unit weights and they are overwritten by the
 averaged histogram.
 The standard error of the averaged histograms is computed.</p>
 <dl class="field-list simple">
@@ -428,7 +462,7 @@ The standard error of the averaged histograms is computed.</p>
 <span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">average_weighted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.average_weighted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.average_weighted" title="Link to this definition"></a></dt>
 <dd><p>Weighted average over all histograms.</p>
 <p>When this function is called the previously generated histograms are
-averaged with the given weigths and they are overwritten by the
+averaged with the given weights and they are overwritten by the
 averaged histogram.
 The standard error of the histograms is computed.</p>
 <dl class="field-list simple">
@@ -539,7 +573,7 @@ be overwritten by the standard error.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Histogram.Histogram.write_to_file">
-<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.write_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.write_to_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.write_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.write_to_file" title="Link to this definition"></a></dt>
 <dd><p>Write multiple histograms to a CSV file along with their headers.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -563,16 +597,32 @@ only one dictionary, then this is used for all histograms.</p>
 </ul>
 </dd>
 </dl>
+<p>Other keys are possible if non-default columns are used.</p>
 </dd>
 <dt><strong>comment</strong><span class="classifier">str, optional</span></dt><dd><p>Additional comment to be included at the beginning of the file.
 It is possible to give a multi-line comment where each line should
 start with a ‘#’.</p>
 </dd>
+<dt><strong>columns</strong><span class="classifier">list of str, optional</span></dt><dd><dl class="simple">
+<dt>List of columns to include in the output. If None, all columns are included which are:</dt><dd><ul class="simple">
+<li><p>‘bin_center’: Bin center.</p></li>
+<li><p>‘bin_low’: Lower bin boundary.</p></li>
+<li><p>‘bin_high’: Upper bin boundary.</p></li>
+<li><p>‘distribution’: Histogram value.</p></li>
+<li><p>‘stat_err+’: Statistical error (positive).</p></li>
+<li><p>‘stat_err-’: Statistical error (negative).</p></li>
+<li><p>‘sys_err+’: Systematic error (positive).</p></li>
+<li><p>‘sys_err-’: Systematic error (negative).</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>TypeError</dt><dd><p>If <cite>hist_labels</cite> is not a list of dictionaries.</p>
+<dt>TypeError</dt><dd><p>If <cite>hist_labels</cite> is not a list of dictionaries, or if <cite>columns</cite> is
+not a list of strings or contains keys which are not present in ‘hist_labels’.</p>
 </dd>
 <dt>ValueError</dt><dd><p>If the number of histograms is greater than 1, and the number of
 provided headers in <cite>hist_labels</cite> does not match the number of
@@ -583,24 +633,6 @@ Then the same dictionary is used for all histograms.</p>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>The function assumes that the histogram data and corresponding errors
-are already available in the Histogram object calling this function.</p>
-<p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">hist_labels_multiple</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;bin_center&#39;</span><span class="p">:</span> <span class="s1">&#39;$p_T$&#39;</span><span class="p">,</span> <span class="s1">&#39;bin_low&#39;</span><span class="p">:</span> <span class="s1">&#39;$p_T$ [GEV/c] LOW&#39;</span><span class="p">,</span> <span class="s1">&#39;bin_high&#39;</span><span class="p">:</span> <span class="s1">&#39;$p_T$ [GEV/c] HIGH&#39;</span><span class="p">,</span>
-<span class="linenos"> 2</span><span class="go">              &#39;distribution&#39;: &#39;$1 / Nevt * d^2 N / dp_T d\eta$ [nb/GEV/c]&#39;, &#39;stat_err+&#39;: &#39;stat +&#39;, &#39;stat_err-&#39;: &#39;stat -&#39;,</span>
-<span class="linenos"> 3</span><span class="go">              &#39;sys_err+&#39;: &#39;sys +&#39;, &#39;sys_err-&#39;: &#39;sys -&#39;},</span>
-<span class="linenos"> 4</span><span class="go">                {&#39;bin_center&#39;: &#39;$p_T$&#39;, &#39;bin_low&#39;: &#39;$p_T$ [GEV/c] LOW&#39;, &#39;bin_high&#39;: &#39;$p_T$ [GEV/c] HIGH&#39;,</span>
-<span class="linenos"> 5</span><span class="go">              &#39;distribution&#39;: &#39;$1 / Nevt * d^2 N_{ch} / dp_T d\eta$ [nb/GEV/c]&#39;, &#39;stat_err+&#39;: &#39;stat +&#39;, &#39;stat_err-&#39;: &#39;stat -&#39;,</span>
-<span class="linenos"> 6</span><span class="go">              &#39;sys_err+&#39;: &#39;sys +&#39;, &#39;sys_err-&#39;: &#39;sys -&#39;}]</span>
-<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span><span class="o">.</span><span class="n">add_value</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
-<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">()</span>
-<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span><span class="o">.</span><span class="n">add_value</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
-<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span><span class="o">.</span><span class="n">statistical_error</span><span class="p">()</span>
-<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">histogram_obj</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">(</span><span class="s1">&#39;multiple_histograms.csv&#39;</span><span class="p">,</span> <span class="n">hist_labels_multiple</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>
@@ -616,7 +648,7 @@ are already available in the Histogram object calling this function.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
