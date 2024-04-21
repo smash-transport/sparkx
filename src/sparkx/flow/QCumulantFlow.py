@@ -1,17 +1,21 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.flow import FlowInterface
 import numpy as np
 import random as rd
-import warnings
 
 rd.seed(42)
 
 class QCumulantFlow(FlowInterface.FlowInterface):
     """
-    **Attention**: This is a beta version of the QCumulantFlow analysis class 
-    for testing purposes. We do not recommend using this class for production 
-    runs yet. There is only the integrated flow implemented at the moment.
-
-    This class implements the Q-cumulant method for anisotropic flow analysis.
+    This class implements the Q-Cumulant method for anisotropic flow analysis.
 
     References:
 
@@ -140,7 +144,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         Qn_sq_sum = np.vdot(Qn,Qn).real # |Q_n|^2
 
         if k == 2:
-            # this implements Eq. (16) from Ref. [1]
+            # this implements Eq. (16) from Ref. [2]
             corr = (Qn_sq_sum - sum_mult) / (sum_mult_squared - sum_mult)
             
             W2 = mult*(mult-1)
@@ -160,7 +164,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             return corr, corr_err, ebe_2p_corr
         
         if k == 4:
-            # this implements Eq. (18) from Ref. [1]
+            # this implements Eq. (18) from Ref. [2]
             Q2n = self.__Qn(phi,2.*self.n_)
             Q2n_sq_sum = np.vdot(Q2n,Q2n).real
             Qn_sq = np.square(Qn.real) + np.square(Qn.imag)
@@ -180,19 +184,19 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # ebe difference from mean: <4>_i - <<4>>
             ebe_4p_corr = (np.real(Qn*Qn*Qn.conj()*Qn.conj()) + np.real(Q2n*Q2n.conj()) 
                            - 2.* np.real(Q2n*Qn.conj()*Qn.conj())
-                           - 2.*(2.*(mult-2)*np.real(Q2n*Q2n.conj()) - mult*(mult-3))) / W4
+                           - 2.*(2.*(mult-2)*np.real(Qn*Qn.conj()) - mult*(mult-3))) / W4
             difference = ebe_4p_corr - corr
             # weighted variance
             variance = np.sum(W4*np.square(difference)) / sum_W4
             # unbiased variance^2
             variance_sq = variance / (1. - sum_W4_sq/(sum_W4**2.))
             # error of <<4>>, Eq. (C18) Ref. [1]
-            corr_err = np.sqrt(sum_W4_sq*variance_sq)/sum_W4   
+            corr_err = np.sqrt(sum_W4_sq*variance_sq)/sum_W4
 
             return corr, corr_err, ebe_4p_corr
         
         if k == 6:
-            # this implements Eq. (A10) from Ref. [1]
+            # this implements Eq. (A10) from Ref. [2]
             Q2n = self.__Qn(phi,2.*self.n_)
             Q2n_sq_sum = np.vdot(Q2n,Q2n).real
             Qn_sq = np.square(Qn.real) + np.square(Qn.imag)
@@ -262,7 +266,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def __cov(self,wx,wy,x,y):
         """
-        Compute the covariance between two sets of variables based on event weights.
+        Compute the covariance between two sets of variables based on event 
+        weights.
 
         Parameters
         ----------
@@ -283,14 +288,29 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         Notes
         -----
         This function calculates the covariance between two sets of variables 
-        using event weights. It follows the formula provided in Eq. (C12) from Ref. [1].
+        using event weights. It follows the formula provided in Eq. (C12) 
+        from Ref. [1].
         """
-        sum_wx_wy_x_y = np.sum(wx*wy*x*y)
-        sum_wx_wy = np.sum(wx*wy)
-        sum_wx_x = np.sum(wx*x)
-        sum_wx = np.sum(wx)
-        sum_wy_y = np.sum(wy*y)
-        sum_wy = np.sum(wy)
+        sum_wx_wy_x_y = np.sum(wx*wy*x*y).real
+        sum_wx_wy = np.sum(wx*wy).real
+        sum_wx_x = np.sum(wx*x).real
+        sum_wx = np.sum(wx).real
+        sum_wy_y = np.sum(wy*y).real
+        sum_wy = np.sum(wy).real
+
+        # Normalize the data to avoid overflow
+        max_val = max(abs(sum_wx_wy_x_y), abs(sum_wx_wy), abs(sum_wx_x), 
+                    abs(sum_wx), abs(sum_wy_y), abs(sum_wy))
+        scale_factor = 1.0
+        if max_val > 1e15:
+            scale_factor = 1.0 / max_val
+
+        sum_wx_wy_x_y *= scale_factor
+        sum_wx_wy *= scale_factor
+        sum_wx_x *= scale_factor
+        sum_wx *= scale_factor
+        sum_wy_y *= scale_factor
+        sum_wy *= scale_factor
 
         cov = (((sum_wx_wy_x_y/sum_wx_wy) 
                - (sum_wx_x/sum_wx)*(sum_wy_y/sum_wy)) 
@@ -300,7 +320,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
     def __cov_term(self,k1,k2,phi,ebe_corr1,ebe_corr2):
         """
-        Compute the covariance term for the last term in Eq. (C29) from Ref. [1].
+        Compute the covariance term in Eqs. (C29) and (C32) of Ref. [1].
 
         Parameters
         ----------
@@ -309,7 +329,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         k2 : int
             The order of the second cumulant.
         phi : list of lists
-            List of particle data, where each sublist represents the azimuthal angles (phi) for each event.
+            List of particle data, where each sublist represents the azimuthal 
+            angles (phi) for each event.
         ebe_corr1 : ndarray
             Event-by-event correlation data for the first cumulant.
         ebe_corr2 : ndarray
@@ -338,7 +359,63 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         W1_sum = np.sum(W1)
         W2_sum = np.sum(W2)
         W1W2_sum = np.inner(W1,W2)
-        cov_term = (W1W2_sum/(W1_sum*W2_sum))*self.__cov(W1,W2,ebe_corr1,ebe_corr2)
+        # Calculate the maximum value among the terms involved
+        max_val = max(abs(W1W2_sum), abs(W1_sum), abs(W2_sum))
+        
+        # Check if scaling is necessary
+        scale_factor = 1.0
+        if max_val > 1e15:
+            scale_factor = 1.0 / max_val
+
+        # Apply scaling to the terms
+        W1W2_sum_scaled = W1W2_sum * scale_factor
+        denominator_scaled = W1_sum * scale_factor
+        denominator_scaled *= W2_sum
+        cov_term = (W1W2_sum_scaled/(denominator_scaled))*self.__cov(W1,W2,ebe_corr1,ebe_corr2)
+
+        return cov_term
+    
+    def __cov_term_differential(self,w_corr1,w_corr2,ebe_corr1,ebe_corr2):
+        """
+        Compute the covariance term in Eqs. (C42) and (C46) of Ref. [1].
+
+        Parameters
+        ----------
+        w_corr1 : ndarray
+            Weights for correlation data of first cumulant.
+        w_corr2 : ndarray
+            Weights for correlation data of second cumulant.
+        ebe_corr1 : ndarray
+            Event-by-event correlation data for the first cumulant.
+        ebe_corr2 : ndarray
+            Event-by-event correlation data for the second cumulant.
+
+        Returns
+        -------
+        float
+            The computed covariance term.
+
+        Notes
+        -----
+        This function implements the fraction and covariance term in the last 
+        term of Eq. (C42) from Ref. [1]. The implementation is designed to be 
+        more general and can be used for all higher order cumulants.
+        """
+        # Calculate the maximum value among the terms involved
+        max_val = max(abs(np.vdot(w_corr1, w_corr2)), abs(np.sum(w_corr1)) , abs(np.sum(w_corr2)))
+
+        # Check if scaling is necessary
+        scale_factor = 1.0
+        if max_val > 1e15:
+            scale_factor = 1.0 / max_val
+
+        # Apply scaling to the terms
+        w_corr1_w_corr2_scaled = np.vdot(w_corr1,w_corr2) * scale_factor
+        denominator_scaled = np.sum(w_corr1) * scale_factor
+        denominator_scaled *= np.sum(w_corr2)
+
+        cov_term = (w_corr1_w_corr2_scaled / denominator_scaled
+                    )*self.__cov(w_corr1,w_corr2,ebe_corr1,ebe_corr2)
 
         return cov_term
 
@@ -374,6 +451,47 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         else:
             vnk = float('nan')
         return vnk
+    
+    def __flow_from_cumulant_differential(self,cnk,dnk):
+        """
+        Compute the flow magnitude from a cumulant value.
+
+        Parameters
+        ----------
+        cnk : float
+            Cumulant value corresponding to the full events.
+        dnk : float
+            Cumulant value corresponding to the POI.
+
+        Returns
+        -------
+        float
+            The computed flow magnitude.
+
+        Notes
+        -----
+        This function calculates the flow magnitude from a cumulant value using 
+        the specified cumulant order (k).
+        It considers the sign of the cumulant value and the chosen behavior 
+        for imaginary roots.
+        """
+        vnk = float('nan')
+        if self.k_ == 2:
+            if cnk > 0.:
+                vnk = dnk / (self.cumulant_factor_[self.k_] * cnk)**(1/self.k_)
+            elif self.imaginary_ == 'negative':
+                vnk = dnk / (-self.cumulant_factor_[self.k_] * cnk)**(1/self.k_)
+            elif self.imaginary_ == 'zero':
+                vnk = 0.
+
+        if self.k_ == 4:
+            if cnk < 0.:
+                vnk = -dnk / (self.cumulant_factor_[self.k_] * cnk)**(3/self.k_)
+            elif self.imaginary_ == 'negative':
+                vnk = -dnk / (-self.cumulant_factor_[self.k_] * cnk)**(3/self.k_)
+            elif self.imaginary_ == 'zero':
+                vnk = 0.
+        return vnk
 
     def __cumulant_flow(self,phi):
         """
@@ -399,11 +517,11 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         if self.k_ == 2:
             n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi,k=2)
 
-            # returns <v_n{2}> and s_{<v_n{2}>}, Eqs. (C22),(C24) Ref. [1]
+            # returns <v_n{2}> and s_{<v_n{2}>}, Eqs. (C22),(C23) Ref. [1]
             avg_vn2 = self.__flow_from_cumulant(n2_corr)
-            avg_v2_err = (1./(2.*avg_vn2))*n2_corr_err
+            avg_vn2_err_sq = (1./(4.*n2_corr))*n2_corr_err**2.
             
-            return avg_vn2, avg_v2_err
+            return avg_vn2, np.sqrt(avg_vn2_err_sq)
         
         elif self.k_ == 4:
             n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi,k=2)
@@ -432,7 +550,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
             # compute Eq. (C32) Ref. [1]
             avg_vn6_err_sq = ((1./(2.*2.**(2./3.))) * (1./(QC6)**(5./3.)) 
-                              * ((9./4.)*(4.*n2_corr**2.-n4_corr)**2.*n2_corr_err**2.
+                              * ((9./2.)*(4.*n2_corr**2.-n4_corr)**2.*n2_corr_err**2.
                             + (9./2.)*n2_corr**2.*n4_corr_err**2.
                             + (1./18.)*n6_corr_err**2.
                             - 9.*n2_corr*(4.*n2_corr**2.-n4_corr)*self.__cov_term(2,4,phi,ebe_2p_corr,ebe_4p_corr)
@@ -487,12 +605,112 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         
         return vnk, vnk_err
 
+    def __compute_differential_flow_bin(self,full_event_quantities,phi_bin,phi_bin_poi):
+        # full_event_quantities = Qn,M,n2_corr,n2_corr_err,ebe_2p_corr,Q2n,n4_corr,n4_corr_err,ebe_4p_corr
+        pn = self.__Qn(phi_bin,self.n_)
+        mp = np.array([len(i) for i in phi_bin_poi])
+        mq = np.array([len(i) for i in phi_bin])
+        Qn = np.array(full_event_quantities[0])
+        M = np.array(full_event_quantities[1])
+        if self.k_ == 4:
+            qn = self.__Qn(phi_bin,self.n_)
+            q2n = self.__Qn(phi_bin,2*self.n_)
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of):
+        # compute Eq. (28) Ref. [2]
+        corr2_ev = (pn * Qn.conj() - mq) / (mp * M - mq)
+        # compute Eq. (24) Ref. [2]
+        w2 = mp * M - mq
+        # compute Eq. (29) Ref. [2]
+        corr2 = np.vdot(w2,corr2_ev) / np.sum(w2)
+
+        vn_bin = self.__flow_from_cumulant_differential(full_event_quantities[2],corr2)
+
+        # ebe difference from mean: <2>_i - <<2>>
+        difference = corr2_ev - corr2
+        # weighted variance
+        variance = np.sum(w2*np.square(difference)) / np.sum(w2)
+        # unbiased variance^2
+        variance_sq = variance / (1. - np.vdot(w2,w2)/(np.sum(w2)**2.))
+        # error of <<2>>, Eq. (C38) Ref. [1]
+        corr2_err = np.sqrt(np.vdot(w2,w2)*variance_sq)/np.sum(w2)
+
+        avg_vn2_err_sq = (1. / (4.*full_event_quantities[2]**3.)) * (
+            corr2**2. * full_event_quantities[3]**2.
+            + 4.*full_event_quantities[2]**2.*corr2_err**2.
+            - 4.*full_event_quantities[2]*corr2 * self.__cov_term_differential(M*(M-1),w2,full_event_quantities[4],corr2_ev)
+        )
+
+        avg_vn_err = np.sqrt(avg_vn2_err_sq)
+
+        if self.k_ == 4:
+            Q2n = np.array(full_event_quantities[5])
+            # compute Eq. (32) Ref. [2]
+            corr4_ev = (pn*Qn*Qn.conj()*Qn.conj() 
+                     - q2n*Qn.conj()*Qn.conj()
+                     - pn*Qn*Q2n.conj()
+                     - 2.*M*pn*Qn.conj()
+                     - 2.*mq*Qn*Qn.conj()
+                     + 7.*qn*Qn.conj()
+                     - Qn*qn.conj()
+                     + q2n*Q2n.conj()
+                     + 2.*pn*Qn.conj()
+                     + 2.*mq*M
+                     - 6.*mq) / ((mp*M - 3.*mq)*(M - 1)*(M - 2))
+            # compute Eq. (25) Ref. [2]
+            w4 = (mp*M - 3.*mq) * (M - 1) * (M - 2)
+            # compute Eq. (33) Ref. [2]
+            corr4 = np.vdot(w4,corr4_ev) / np.sum(w4)
+            # compute Eq. (34) Ref. [2]
+            dn4 = corr4 - 2.*corr2*full_event_quantities[2]
+            # compute Eq. (12) Ref. [2]
+            cn4 = full_event_quantities[6] - 2. * full_event_quantities[2]**2.
+
+            vn_bin = self.__flow_from_cumulant_differential(cn4,dn4)
+
+            # ebe difference from mean: <4>_i - <<4>>
+            difference = corr4_ev - corr4
+            # weighted variance
+            variance = np.sum(w4*np.square(difference)) / np.sum(w4)
+            # unbiased variance^2
+            variance_sq = variance / (1. - np.vdot(w4,w4)/(np.sum(w4)**2.))
+            # error of <<4>>, Eq. (C38) Ref. [1]
+            corr4_err = np.sqrt(np.vdot(w4,w4)*variance_sq)/np.sum(w4)
+
+            minus_cn4 = -cn4
+            term1 = (2.*full_event_quantities[2]**2.*corr2 
+                     - 3.*full_event_quantities[2]*corr4
+                     + 2.*full_event_quantities[6]*corr2
+                     )
+            term2 = 2.*full_event_quantities[2]*corr2 - corr4
+            multiplicity_prefac = M*(M-1)*(M-2)*(M-3)
+
+            avg_vn4_err_sq = (1./minus_cn4**(7./2.)) * (
+                term1**2. * full_event_quantities[3]**2.
+                + (9./16.)*term2**2.*full_event_quantities[7]**2.
+                + 4.*full_event_quantities[2]**2.*minus_cn4**2.*corr2_err**2.
+                + minus_cn4**2.*corr4_err**2.
+                - (3./2.)*term2*term1
+                *self.__cov_term_differential(M*(M-1),multiplicity_prefac,full_event_quantities[4],full_event_quantities[8])
+                - 4.*full_event_quantities[2]*minus_cn4*term1
+                *self.__cov_term_differential(M*(M-1),w2,full_event_quantities[4],corr2_ev)
+                + 2.*minus_cn4*term1
+                *self.__cov_term_differential(M*(M-1),w4,full_event_quantities[4],corr4_ev)
+                + 3.*full_event_quantities[2]*minus_cn4*term2
+                *self.__cov_term_differential(multiplicity_prefac,w2,full_event_quantities[8],corr2_ev)
+                - (3./2.)*minus_cn4*term2
+                *self.__cov_term_differential(multiplicity_prefac,w4,full_event_quantities[8],corr4_ev)
+                - 4.*full_event_quantities[2]*minus_cn4**2.
+                *self.__cov_term_differential(w2,w4,corr2_ev,corr4_ev)
+            )
+
+            avg_vn_err = np.sqrt(avg_vn4_err_sq)
+
+        return [vn_bin.real, avg_vn_err.real]
+
+    def differential_flow(self, particle_data, bins, flow_as_function_of, poi_pdg=None):
         """
-        **Attention**: This feature is not yet available.
-
-        Compute the differential flow.
+        Compute the differential flow. The cumulants of second and fourth order
+        are implemented.
 
         Parameters
         ----------
@@ -501,12 +719,85 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+            Variable on which the flow is calculated 
+            ("pt", "rapidity", or "pseudorapidity").
+        poi_pdg : list
+            List of PDG id for identified particle differential flow.
 
         Returns
         -------
         list of tuples
-            A list of tuples containing flow values and their corresponding uncertainty.
+            A list of tuples containing flow values and their corresponding 
+            uncertainty.
         """
-        warnings.warn("This feature is not yet available.")
-        return None
+        if not isinstance(bins, (list,np.ndarray)):
+            raise TypeError('bins has to be list or np.ndarray')
+        if not isinstance(flow_as_function_of, str):
+            raise TypeError('flow_as_function_of is not a string')
+        if poi_pdg is not None:
+            if not isinstance(poi_pdg, (list,np.ndarray)):
+                raise TypeError('poi_pdg has to be list or np.ndarray')
+            for pdg in poi_pdg:
+                if not isinstance(pdg, int):
+                    raise TypeError('poi_pdg elements must be integers')
+        if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
+            raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
+        if self.k_ == 6:
+            raise ValueError("6 particle Q-Cumulant differential flow is not implemented")
+
+        number_events = len(particle_data)
+        self.__sample_random_reaction_planes(number_events)
+
+        phi_all = []
+        for event in range(number_events):
+            event_phi = []
+            for particle in particle_data[event]:
+                event_phi.append(particle.phi()+self.rand_reaction_planes_[event])
+            phi_all.extend([event_phi])
+
+        phi_bin = []
+        phi_bin_poi = []
+        for bin in range(len(bins)-1):
+            events_bin = []
+            events_bin_poi = []
+            for event in range(len(particle_data)):
+                particles_event = []
+                particles_event_poi = []
+                for particle in particle_data[event]:
+                    val = 0.
+                    if flow_as_function_of == "pt":
+                        val = particle.pt_abs()
+                    elif flow_as_function_of == "rapidity":
+                        val = particle.momentum_rapidity_Y()
+                    elif flow_as_function_of == "pseudorapidity":
+                        val = particle.pseudorapidity()
+                    if val >= bins[bin] and val < bins[bin+1]:
+                        particles_event.append(particle.phi()+self.rand_reaction_planes_[event])
+                        if particle.pdg in poi_pdg:
+                            particles_event_poi.append(particle.phi()+self.rand_reaction_planes_[event])
+                events_bin.extend([particles_event])
+                events_bin_poi.extend([particles_event_poi])
+            phi_bin.extend([events_bin])
+            phi_bin_poi.extend([events_bin_poi])
+        if poi_pdg == None:
+            phi_bin_poi = phi_bin
+
+        # compute full event quantities Qn, Q2n, ...
+        Qn = self.__Qn(phi_all,self.n_)
+        n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi_all,k=2)
+        M = [len(i) for i in phi_all]
+        full_event_quantities = [Qn,M,n2_corr,n2_corr_err,ebe_2p_corr]
+        if self.k_ == 4:
+            Q2n = self.__Qn(phi_all,2*self.n_)
+            n4_corr, n4_corr_err, ebe_4p_corr = self.__calculate_corr(phi_all,k=4)
+            full_event_quantities = [Qn,M,n2_corr,n2_corr_err,ebe_2p_corr,Q2n,n4_corr,n4_corr_err,ebe_4p_corr]
+
+        flow_bins = []
+        for bin in range(len(phi_bin)):
+            total_elements_bin = sum(len(sublist) for sublist in phi_bin[bin])
+            total_elements_bin_poi = sum(len(sublist) for sublist in phi_bin_poi[bin])
+            if len(phi_bin[bin]) > 0 and total_elements_bin > 0 and total_elements_bin_poi > 0:
+                flow_bins.append(self.__compute_differential_flow_bin(full_event_quantities,phi_bin[bin],phi_bin_poi[bin]))
+            else:
+                flow_bins.append(None)
+        return flow_bins

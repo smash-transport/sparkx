@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 import numpy as np
 import warnings
 from scipy.interpolate import interpn
@@ -241,7 +250,7 @@ class Lattice3D:
         value : int or float
             The value for which the index is to be determined.
         values : list or numpy.ndarray
-            The list or array containing the range of values.
+            The list or array containing the range of values, sorted ascending.
         num_points : int
             The number of points in the range.
 
@@ -261,8 +270,6 @@ class Lattice3D:
         index = np.searchsorted(values, value, side='right')
         if index == 0:
             index += 1
-        elif index == num_points:
-            index -= 1
 
         return index - 1
     
@@ -276,7 +283,7 @@ class Lattice3D:
         value : int or float
             The value for which the index is to be determined.
         values : list or numpy.ndarray
-            The list or array containing the range of values.
+            The list or array containing the range of values, sorted ascending.
 
         Returns
         -------
@@ -418,8 +425,12 @@ class Lattice3D:
         Returns
         -------
         int or float or None
-            The value at the specified coordinates. Returns None if any of
-            the coordinates are outside their specified ranges.
+            The value at the specified coordinates. 
+            
+        Raises
+        ------
+        ValueError
+            If any of the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices(x, y, z)
         return self.get_value_by_index(i, j, k)
@@ -441,8 +452,12 @@ class Lattice3D:
         Returns
         -------
         int or float or None
-            The value at the specified coordinates. Returns None if any of
-            the coordinates are outside their specified ranges.
+            The value at the specified coordinates.
+        
+        Raises
+        ------
+        ValueError
+            If any of the coordinates are outside their specified ranges.
         """
         i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
         return self.get_value_by_index(i, j, k)
@@ -578,7 +593,7 @@ class Lattice3D:
 
     def interpolate_value(self, x, y, z, method='nearest'):
         """
-        Interpolate the value at the specified position using trilinear
+        Interpolate the value at the specified position using (up to) trilinear
         interpolation.
 
         Parameters
@@ -601,7 +616,7 @@ class Lattice3D:
         """
         if not self.__is_within_range(x, y, z):
             warnings.warn("Provided position is outside the lattice range.")
-            return 0
+            return None
 
         # Perform interpolation 
         xi = [x,y,z]
@@ -739,6 +754,26 @@ class Lattice3D:
         ValueError
             If the lattices do not have the same shape.
 
+        Examples
+        --------
+
+        If you want to average over 3 lattices, you can do the following:
+
+        .. highlight:: python
+        .. code-block:: python
+            :linenos:
+
+            >>> lattice1 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
+            >>>
+            >>> lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, 
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
+            >>>
+            >>> lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, 
+            >>>    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)
+            >>>
+            >>> lattice1=lattice1.average(lattice2, lattice3)
+
         """
         all_lattices = [self] + list(lattices)
 
@@ -748,6 +783,7 @@ class Lattice3D:
 
             if self.grid_.shape != lattice.grid_.shape:
                 raise ValueError("The lattices must have the same shape.")
+
 
         result = Lattice3D(self.x_min_, self.x_max_, self.y_min_, self.y_max_, self.z_min_, self.z_max_,
                            self.num_points_x_, self.num_points_y_, self.num_points_z_)
@@ -787,12 +823,19 @@ class Lattice3D:
 
         """
         metadata = np.array([self.x_min_, self.x_max_, self.y_min_, self.y_max_, self.z_min_, self.z_max_,
-                             self.num_points_x_, self.num_points_y_, self.num_points_z_])
+                     self.num_points_x_, self.num_points_y_, self.num_points_z_])
 
-        data = np.vstack((metadata, self.grid_.flatten()))
+        # Reshape metadata to have 1 row and as many columns as necessary
+        metadata = metadata.reshape(1, -1)
+
+        # Reshape the flattened grid to have 1 row and as many columns as necessary
+        grid_flattened = self.grid_.flatten().reshape(1, -1)
+
+        data = np.hstack((metadata, grid_flattened))
         np.savetxt(filename, data, delimiter=',')
 
-    def load_from_csv(filename):
+    @classmethod
+    def load_from_csv(cls, filename):
         """
         Load lattice data, including metadata, from a CSV file.
 
@@ -808,13 +851,12 @@ class Lattice3D:
 
         """
         data = np.loadtxt(filename, delimiter=',')
-
-        metadata = data[0]
+        metadata = data[0:9]
         x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z = metadata
 
         lattice = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, int(num_points_x), int(num_points_y), int(num_points_z))
 
-        grid_data = data[1:]
+        grid_data = data[9:]
         lattice.grid_ = grid_data.reshape(lattice.grid_.shape)
 
         return lattice
@@ -876,8 +918,8 @@ class Lattice3D:
         A tuple containing the following:
         slice_data : ndarray
             The 2D slice data extracted from the lattice.
-        slice_values : ndarray
-            The values corresponding to the axis perpendicular to the slice.
+        slice_values : tuple of 2 ndarrays
+            A tuple of coordinate lists containing the 2D coordinates of the slice.
         slice_label : str
             The label describing the slice plane.
 
@@ -892,21 +934,21 @@ class Lattice3D:
                 raise ValueError("Invalid index for the X-axis.")
 
             slice_data = self.grid_[index, :, :]
-            slice_values = self.y_values_
+            slice_values = (self.y_values_,self.z_values_)
             slice_label = 'Y-Z Plane at X = {}'.format(self.x_values_[index])
         elif axis == 'y':
             if index < 0 or index >= self.num_points_y_:
                 raise ValueError("Invalid index for the Y-axis.")
 
             slice_data = self.grid_[:, index, :]
-            slice_values = self.x_values_
+            slice_values = (self.x_values_,self.z_values_)
             slice_label = 'X-Z Plane at Y = {}'.format(self.y_values_[index])
         elif axis == 'z':
             if index < 0 or index >= self.num_points_z_:
                 raise ValueError("Invalid index for the Z-axis.")
 
             slice_data = self.grid_[:, :, index]
-            slice_values = self.x_values_
+            slice_values = (self.x_values_,self.y_values_)
             slice_label = 'X-Y Plane at Z = {}'.format(self.z_values_[index])
         else:
             raise ValueError("Invalid axis. Must be 'x', 'y', or 'z'.")
@@ -938,23 +980,27 @@ class Lattice3D:
                 raise ValueError("Invalid index for the X-axis.")
 
             slice_data = self.grid_[index, :, :]
-            slice_values = self.y_values_
+            header="#Slice in Y-Z Plane at X = {}. Ymin: {} Ymax: {} ".format(self.x_values_[index],self.y_min_,self.y_max_)+\
+                "ny: {} Zmin: {} Zmax: {} nz:{} ".format(self.num_points_y_,self.z_min_,self.z_max_,self.num_points_z_)
+
         elif axis == 'y':
             if index < 0 or index >= self.num_points_y_:
                 raise ValueError("Invalid index for the Y-axis.")
 
             slice_data = self.grid_[:, index, :]
-            slice_values = self.x_values_
+            header="#Slice in X-Z Plane at Y = {}. Xmin: {} Xmax: {} ".format(self.y_values_[index],self.x_min_,self.x_max_)+\
+                "nx: {} Zmin: {} Zmax: {} nz: {} ".format(self.num_points_x_,self.z_min_,self.z_max_,self.num_points_z_)
         elif axis == 'z':
             if index < 0 or index >= self.num_points_z_:
                 raise ValueError("Invalid index for the Z-axis.")
 
             slice_data = self.grid_[:, :, index]
-            slice_values = self.x_values_
+            header="#Slice in X-Y Plane at Z = {}. Xmin: {} Xmax: {} ".format(self.z_values_[index], self.x_min_,self.x_max_)+\
+                "nx: {} Ymin: {} Ymax: {} ny: {} ".format(self.num_points_x_,self.y_min_,self.y_max_,self.num_points_y_)
         else:
             raise ValueError("Invalid axis. Must be 'x', 'y', or 'z'.")
 
-        np.savetxt(filename, slice_data, delimiter=',', header=','.join(map(str, slice_values)), comments='')
+        np.savetxt(filename, slice_data, delimiter=',', header=header, comments='')
 
     def interpolate_to_lattice(self, num_points_x, num_points_y, num_points_z):
         """
@@ -1136,7 +1182,7 @@ class Lattice3D:
         Raises
         ------
         ValueError
-            If an unknown quantity is specified.
+            If an unknown quantity is specified or if the particle data contains NaN values.
 
         Notes
         -----
@@ -1164,6 +1210,9 @@ class Lattice3D:
             y = particle.y
             z = particle.z
 
+            if np.isnan(x) or np.isnan(y) or np.isnan(z):
+                raise ValueError("Particle data contains NaN values.")
+
             if quantity == "energy_density":
                 value = particle.E
             elif quantity == "number_density":
@@ -1175,13 +1224,18 @@ class Lattice3D:
             elif quantity == "strangeness_density":
                 value = particle.strangeness
             else:
-                raise ValueError("Unknown quantity for lattice.");
+                raise ValueError("Unknown quantity for lattice.")
 
+            if np.isnan(value):
+                raise ValueError("Particle data contains NaN values.")
+            
             if(kernel == "gaussian"):
                 # Calculate the Gaussian kernel centered at (x, y, z)
-                kernel_value = multivariate_normal([x, y, z], cov=sigma**2 * np.eye(3))
+                kernel_value = multivariate_normal(mean=[x, y, z], cov=sigma**2 * np.eye(3))
             elif(kernel == "covariant"):
-                kernel_value = multivariate_normal([0,0], cov=sigma**2 * np.eye(2))
+                if np.isnan(particle.px) or np.isnan(particle.py) or np.isnan(particle.py):
+                    raise ValueError("Particle data contains NaN values.")
+                kernel_value = multivariate_normal(mean=[0,0], cov=sigma**2 * np.eye(2))
             else:
                 raise ValueError("Unknown kernel type for lattice.")
 
@@ -1210,7 +1264,7 @@ class Lattice3D:
 
                         # Calculate the value to add to the grid at (i, j, k)
                         if(kernel == "gaussian"):
-                            smearing_factor = kernel_value.pdf([xi, yj, zk])
+                            smearing_factor = kernel_value.pdf([xi+x, yj+y, zk+z])
                         else:
                             diff_space = (xi)**2+(yj)**2+(zk)**2
                             gamma = np.sqrt(1+particle.p_abs()**2/particle.mass**2)
@@ -1218,15 +1272,17 @@ class Lattice3D:
                             smearing_factor = kernel_value.pdf([diff_space,diff_velocity])
                         norm += smearing_factor
                         value_to_add = value * smearing_factor / self.cell_volume_
-
+                        
+                        if np.isnan(value_to_add):
+                            value_to_add=0.
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
-
+                            
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
                     for k in range(temp_lattice.num_points_z_):
-                        temp_lattice.grid_[i, j, k] /= norm
-
+                        if abs(norm)>1e-15:
+                            temp_lattice.grid_[i, j, k] /= norm
             xi ,yi ,zi = self.find_closest_indices(x, y, z)
             x_grid, y_grid, z_grid = self.get_coordinates(xi ,yi ,zi)
             self.add_same_spaced_grid(temp_lattice, x_grid, y_grid, z_grid)

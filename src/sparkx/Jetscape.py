@@ -1,9 +1,15 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
-import csv
-import warnings
-import os
 
 class Jetscape:
     """
@@ -18,6 +24,9 @@ class Jetscape:
     list containing all quantities of the Jetscape format 2) as a list containing
     Particle objects from the Particle or it can be printed to a file
     complying with the input format.
+
+    .. note::
+        If filters are applied, be aware that not all cuts commute.
 
     Parameters
     ----------
@@ -73,7 +82,7 @@ class Jetscape:
     particle_list:
         Returns current Jetscape data as nested list
     particle_objects_list:
-        Returns current Jetscape data as nested list of ParticleClass objects
+        Returns current Jetscape data as nested list of Particle objects
     num_events:
         Get number of events
     num_output_per_event:
@@ -163,7 +172,7 @@ class Jetscape:
     Let's assume we only want to keep pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, kwargs={'filters':{'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
         >>>
         >>> # print the pions to a jetscape file
         >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
@@ -175,11 +184,8 @@ class Jetscape:
     All filter functions without arguments need a :code:`True` in the dictionary.
     """
     def __init__(self, JETSCAPE_FILE, **kwargs):
-        if '.dat' in JETSCAPE_FILE:
-            None
-        else:
-            raise TypeError('Input file is not in the JETSCAPE format. Input '
-                            'file must have the ending .dat')
+        if not '.dat' in JETSCAPE_FILE:
+            raise FileNotFoundError('File not found or does not end with .dat')
 
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.num_output_per_event_ = None
@@ -187,10 +193,15 @@ class Jetscape:
         self.particle_list_ = None
         self.optional_arguments_ = kwargs
 
+        for keys in self.optional_arguments_.keys():
+            if keys not in ['events', 'filters']:
+                raise ValueError('Unknown keyword argument used in constructor')
+
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
+            self.__check_that_tuple_contains_integers_only(self.optional_arguments_['events'])
             if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
                 raise ValueError('First value of event number tuple must be smaller than second value')
-            elif self.optional_arguments_['events'][0] <0 or self.optional_arguments_['events'][1] < 0:
+            elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
                 raise ValueError('Event numbers must be positive')
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
@@ -200,6 +211,22 @@ class Jetscape:
         self.set_particle_list(kwargs)
         
     # PRIVATE CLASS METHODS
+    def __check_that_tuple_contains_integers_only(self, events_tuple):
+        """
+        Check if all elements inside the event tuple are integers.
+
+        Parameters
+        ----------
+        events_tuple : tuple
+            Tuple containing event boundary events for read in.
+
+        Raises
+        ------
+        TypeError
+            If one or more elements inside the event tuple are not integers.
+        """
+        if not all(isinstance(event, int) for event in events_tuple):
+            raise TypeError("All elements inside the event tuple must be integers.")
 
     def __get_num_skip_lines(self):
         """
@@ -247,7 +274,7 @@ class Jetscape:
         Parameters
         ----------
         fname : variable name
-            Name of the variable for the file opend with the :code:`open()`
+            Name of the variable for the file opened with the :code:`open()`
             command.
 
         """
@@ -327,7 +354,7 @@ class Jetscape:
             elif i == 'particle_status':
                 event = particle_status(event, filters_dict['particle_status'])
             else:
-                raise ValueError('The cut is unkown!')
+                raise ValueError('The cut is unknown!')
 
         return event
 
@@ -345,6 +372,9 @@ class Jetscape:
                 if not line:
                     raise IndexError('Index out of range of JETSCAPE file')
                 elif '#' in line and 'sigmaGen' in line:
+                    if 'filters' in self.optional_arguments_.keys():
+                        data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
+                        self.num_output_per_event_[len(particle_list)]=(len(particle_list)+1,len(data))
                     particle_list.append(data)
                 elif i == 0 and '#' not in line and 'weight' not in line:
                     raise ValueError('First line of the event is not a comment ' +\
@@ -360,9 +390,9 @@ class Jetscape:
                     if int(line[2]) == first_event_header:
                         continue
                     else:
-                        if 'filters' in kwargs.keys():
+                        if 'filters' in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
-                            self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
+                            self.num_output_per_event_[len(particle_list)]=(len(particle_list)+1,len(data))
                         particle_list.append(data)
                         data = []
                 else:
@@ -461,7 +491,7 @@ class Jetscape:
         Returns
         -------
         list
-            Nested list containing the current Oscar data
+            Nested list containing the current Jetscape data
         """
         return self.particle_list_
 
@@ -470,7 +500,7 @@ class Jetscape:
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
 
-        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        num_output_per_event[event_n, number_of_particles_in_event_n]
 
         num_output_per_event is updated with every manipulation e.g. after
         applying cuts.
@@ -642,8 +672,8 @@ class Jetscape:
 
     def pt_cut(self, cut_value_tuple):
         """
-        Apply p_t cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
+        Apply transverse momentum cut to all events by passing an acceptance
+        range by ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
@@ -657,7 +687,8 @@ class Jetscape:
         Returns
         -------
         self : Jetscape object
-            Containing only particles complying with the p_t cut for all events
+            Containing only particles complying with the transverse momentum 
+            cut for all events
         """
         self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
@@ -672,7 +703,7 @@ class Jetscape:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with rapidity in
             [-1.0, 1.0] are kept.
@@ -700,7 +731,7 @@ class Jetscape:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with pseudo-rapidity
             in [-1.0, 1.0] are kept.
@@ -849,5 +880,5 @@ class Jetscape:
             f_out.writelines(data_to_write)
 
             # Write the last line
-            last_line = self.__get_last_line(self.PATH_JETSCAPE_)
+            last_line = self.__get_last_line(self.PATH_JETSCAPE_) + '\n'
             f_out.write(last_line)

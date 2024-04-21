@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 import numpy as np
 import math
 from particle import PDGID
@@ -8,10 +17,10 @@ class Particle:
 
     The member variables of the Particle class are the quantities in the
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
-    they stay NaN to throw an error if one tries to access a non existing
+    they stay `np.nan` to throw an error if one tries to access a non existing
     quantity.
     If a particle with an unknown PDG is provided, a warning is thrown and and 
-    np.nan is returned for charge, spin, and spin degeneracy.
+    `np.nan` is returned for charge, spin, and spin degeneracy.
 
     Attributes
     ----------
@@ -196,7 +205,7 @@ class Particle:
     Notes
     -----
     If a member of the Particle class is not set or a quantity should be computed
-    and the needed member variables are not set, then `NaN` is returned by default.
+    and the needed member variables are not set, then `np.nan` is returned by default.
     All quantities are saved in a numpy array member variable `data_`. The datatype
     of this array is float, therefore casting is required when int or bool values are 
     required.
@@ -204,6 +213,7 @@ class Particle:
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):
         self.data_ = np.array(25*[np.nan],dtype=float)
+        self.pdg_valid = False
         
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
@@ -347,7 +357,7 @@ class Particle:
                  and len(particle_array) <=  len(attribute_mapping[input_format])\
                     and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
-                    if len(particle_array)<index[1]+1:
+                    if len(particle_array)<=(index[1]):
                         continue
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
                     # to ensure similar behaving as if we were reading in data into ints.
@@ -506,6 +516,8 @@ class Particle:
         -------
         pdg : int
         """
+        if (np.isnan(self.data_[9])):
+            return np.nan
         return int(self.data_[9])
 
     @pdg.setter
@@ -515,7 +527,7 @@ class Particle:
         
         if(not self.pdg_valid):
              warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
-                           'All properties extracted from the PDG are set to None.')
+                           'All properties extracted from the PDG are set to nan.')
 
     @property
     def ID(self):
@@ -527,6 +539,8 @@ class Particle:
         -------
         ID : int
         """
+        if (np.isnan(self.data_[11])):
+            return np.nan
         return int(self.data_[11])
 
     @ID.setter
@@ -541,6 +555,8 @@ class Particle:
         -------
         charge : int
         """
+        if (np.isnan(self.data_[12])):
+            return np.nan
         return int(self.data_[12])
 
     @charge.setter
@@ -555,6 +571,8 @@ class Particle:
         -------
         ncoll : int
         """
+        if (np.isnan(self.data_[13])):
+            return np.nan
         return int(self.data_[13]) 
 
     @ncoll.setter
@@ -577,7 +595,7 @@ class Particle:
 
     @property
     def xsecfac(self):
-        """Get or set the crosssection scaling factor of the particle.
+        """Get or set the cross section scaling factor of the particle.
 
         Returns
         -------
@@ -597,6 +615,8 @@ class Particle:
         -------
         proc_id_origin : int
         """
+        if (np.isnan(self.data_[16])):
+            return np.nan
         return int(self.data_[16])
 
     @proc_id_origin.setter
@@ -611,6 +631,8 @@ class Particle:
         -------
         proc_type_origin : int
         """
+        if (np.isnan(self.data_[17])):
+            return np.nan
         return int(self.data_[17])
 
     @proc_type_origin.setter
@@ -639,6 +661,8 @@ class Particle:
         -------
         pdg_mother1 : int
         """
+        if (np.isnan(self.data_[19])):
+            return np.nan
         return int(self.data_[19])
 
     @pdg_mother1.setter
@@ -653,6 +677,8 @@ class Particle:
         -------
         pdg_mother2 : int
         """
+        if (np.isnan(self.data_[20])):
+            return np.nan
         return int(self.data_[20])
 
     @pdg_mother2.setter
@@ -669,6 +695,8 @@ class Particle:
         -------
         status : int
         """
+        if (np.isnan(self.data_[21])):
+            return np.nan
         return int(self.data_[21])
 
     @status.setter
@@ -683,6 +711,8 @@ class Particle:
         -------
         baryon_number : int
         """
+        if np.isnan(self.data_[22]):
+            return np.nan
         return int(self.data_[22])
  
     @baryon_number.setter
@@ -697,6 +727,8 @@ class Particle:
         -------
         strangeness : int
         """
+        if np.isnan(self.data_[23]):
+            return np.nan
         return int(self.data_[23])
 
     @strangeness.setter
@@ -755,7 +787,7 @@ class Particle:
 
     def angular_momentum(self):
         """
-        Compute the angular momentum :math:`L=r \\times p` of a particle.
+        Compute the angular momentum :math:`\\vec{L}=\\vec{r} \\times \\vec{p}` of a particle.
 
         Returns
         -------
