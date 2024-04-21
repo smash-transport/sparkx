@@ -19,7 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v1.2.0-Newton
-Date:
+Date: 2024-04-21
 
 ### Added
 
