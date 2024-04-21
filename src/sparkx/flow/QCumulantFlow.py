@@ -10,13 +10,12 @@
 from sparkx.flow import FlowInterface
 import numpy as np
 import random as rd
-import warnings
 
 rd.seed(42)
 
 class QCumulantFlow(FlowInterface.FlowInterface):
     """
-    This class implements the Q-cumulant method for anisotropic flow analysis.
+    This class implements the Q-Cumulant method for anisotropic flow analysis.
 
     References:
 

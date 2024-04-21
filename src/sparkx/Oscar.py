@@ -426,7 +426,7 @@ class Oscar:
             elif i == 'multiplicity_cut':
                 event = multiplicity_cut(event, filters_dict['multiplicity_cut'])
             else:
-                raise ValueError('The cut is unkown!')
+                raise ValueError('The cut is unknown!')
 
         return event
 
@@ -653,7 +653,7 @@ class Oscar:
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
 
-        num_output_per_event[event_n, numer_of_particles_in_event_n]
+        num_output_per_event[event_n, number_of_particles_in_event_n]
 
         num_output_per_event is updated with every manipulation e.g. after
         applying cuts.
@@ -801,7 +801,7 @@ class Oscar:
 
         Returns
         -------
-        self : Oscar oject
+        self : Oscar object
             Containing participants in every event only
         """
 
@@ -947,7 +947,7 @@ class Oscar:
         Parameters
         ----------
         cut_value : float
-            If a single value is passed, the cut is applyed symmetrically
+            If a single value is passed, the cut is applied symmetrically
             around 0.
             For example, if cut_value = 1, only particles with pseudo-rapidity
             in [-1.0, 1.0] are kept.

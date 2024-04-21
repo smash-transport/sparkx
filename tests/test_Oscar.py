@@ -173,7 +173,6 @@ def test_loading_defined_events_and_checking_event_length(tmp_path):
             assert oscar.num_events() == event_end - event_start + 1
 
             for event in range(event_end - event_start + 1):
-                print(event)
                 assert len(oscar.particle_objects_list()[event]) == \
                        num_output_per_event[event + event_start]
             del(oscar)

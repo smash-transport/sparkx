@@ -13,7 +13,7 @@ import csv
 def pdg_to_latex(pdg_id):
     """
     Converts a given PDG ID or a list of PDG IDs into the corresponding LaTeX
-    formatted particle name as sts or a list of LaTeX formated particle names
+    formatted particle name as sts or a list of LaTeX formatted particle names
     as str which has the same order as the input PDG IDs
 
     Parameters
@@ -24,7 +24,7 @@ def pdg_to_latex(pdg_id):
     Returns
     -------
     latex_names : str / list
-        LaTeX formated particle name or list of LaTeX formated particle names
+        LaTeX formatted particle name or list of LaTeX formatted particle names
         in the same order as the input PDG IDs.
 
     Examples
