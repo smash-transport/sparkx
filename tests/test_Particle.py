@@ -177,16 +177,19 @@ def test_status():
 
 def test_initialize_from_array_valid_formats():
     format1 = "JETSCAPE"
-    array1 = np.array([1,211,27,3.0,0.5,1.0,1.5])
+    array1 = np.array([1,211,27,4.36557,3.56147,0.562961,2.45727])
 
     p1 = Particle(input_format=format1,particle_array=array1)
     assert p1.ID == 1
     assert p1.pdg == 211
     assert p1.status == 27
-    assert p1.E == 3.0
-    assert p1.px == 0.5
-    assert p1.py == 1.0
-    assert p1.pz == 1.5
+    assert p1.E == 4.36557
+    assert p1.px == 3.56147
+    assert p1.py == 0.562961
+    assert p1.pz == 2.45727
+    assert np.isclose(p1.mass, 0.137956238, rtol=1e-6)
+    assert p1.pdg_valid == True
+    assert p1.charge == 1
 
     format2 = "Oscar2013"
     array2 = np.array([0.0,1.0,2.0,3.0,0.138,4.0,5.0,6.0,7.0,211,100,1])
