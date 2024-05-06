@@ -287,6 +287,16 @@ def test_initialize_from_array_valid_formats():
     assert p5.pdg_mother2 == 2212
     assert p5.weight == 0.75
 
+def test_initialize_from_array_Jetscape_invalid_pdg_warning():
+    format1 = "JETSCAPE"
+    array1 = np.array([1,99999999,27,4.36557,3.56147,0.562961,2.45727])
+    p1 = Particle()
+
+    # check that a warning is issued
+    with pytest.warns(UserWarning, match=r"The PDG code 99999999 is not known by PDGID, charge could not be computed. Consider setting it by hand."):
+        p1.__initialize_from_array(input_format=format1,particle_array=array1)
+
+
 def test_initialize_from_array_invalid_format():
     with pytest.raises(ValueError, match=r"Unsupported input format 'InvalidFormat'"):
         Particle(input_format="InvalidFormat", particle_array=np.array([1, 2, 3]))

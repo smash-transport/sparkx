@@ -376,7 +376,7 @@ class Particle:
                     self.mass = self.compute_mass_from_energy_momentum()
                     self.charge = self.compute_charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
-                        raise ValueError("The PDG code is not valid and the charge could not be computed.")
+                        warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
             else:
                 raise ValueError("The input file is corrupted! " +\
                                  "A line with wrong number of columns "+str(len(particle_array))+" was found.")
