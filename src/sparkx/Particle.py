@@ -214,14 +214,14 @@ class Particle:
     def __init__(self,input_format=None,particle_array=None):
         self.data_ = np.array(25*[np.nan],dtype=float)
         self.pdg_valid = False
-        
+
         if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
 
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(input_format,particle_array)
-            
-        
+
+
     def __initialize_from_array(self,input_format,particle_array):
         """
         Initialize instance attributes based on the provided input format and array.
@@ -368,16 +368,20 @@ class Particle:
                     else:
                         self.data_[index[0]] = int(particle_array[index[1]])
 
+                # It is important for JETSCAPE particles to compute pdg_valid
+                # here because the compute_charge_from_pdg function depends on it. 
+                self.pdg_valid = PDGID(self.pdg).is_valid
+
                 if input_format == "JETSCAPE":
                     self.mass = self.compute_mass_from_energy_momentum()
                     self.charge = self.compute_charge_from_pdg()
+                    if self.pdg_valid == False and np.isnan(self.charge):
+                        warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
             else:
                 raise ValueError("The input file is corrupted! " +\
                                  "A line with wrong number of columns "+str(len(particle_array))+" was found.")
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
-        
-        self.pdg_valid = PDGID(self.pdg).is_valid
 
         if(not self.pdg_valid):
              warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
@@ -434,6 +438,7 @@ class Particle:
         z : float
         """
         return self.data_[3]
+
     @z.setter
     def z(self,value):
         self.data_[3] = value
@@ -761,7 +766,7 @@ class Particle:
 
     @pdg_valid.setter
     def pdg_valid(self,value):
-        self.data_[10] = value
+        self.data_[10] = 1 if value else 0
 
     def print_particle(self):
         """Print the whole particle information as csv string.
@@ -1114,7 +1119,7 @@ class Particle:
             return True
         else:
             return False
-     
+
     def spin(self):
         """
         Get the total spin :math:`J` of the particle.
@@ -1131,7 +1136,7 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).J
-           
+
     def spin_degeneracy(self):
         """
         Get the number of all possible spin projections (:math:`2J + 1`).
@@ -1148,4 +1153,20 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).j_spin
-    
+
+format1 = "JETSCAPE"
+array1 = np.array([1,211,27,4.36557,3.56147,0.562961,2.45727])
+
+p1 = Particle(input_format=format1,particle_array=array1)
+assert p1.ID == 1
+assert p1.pdg == 211
+assert p1.status == 27
+assert p1.E == 4.36557
+assert p1.px == 3.56147
+assert p1.py == 0.562961
+assert p1.pz == 2.45727
+assert np.isclose(p1.mass, 0.137956238, rtol=1e-6)
+assert p1.pdg_valid == True
+assert p1.charge == 1
+
+print(p1.compute_charge_from_pdg())
