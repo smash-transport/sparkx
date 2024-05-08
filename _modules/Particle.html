@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 1.2.0 documentation</title>
+  <title>Particle &mdash; sparkx 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6efca38a"></script>
+        <script src="../_static/documentation_options.js?v=ca842793"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -293,14 +293,14 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">particle_array</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">25</span><span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="kc">False</span>
-        
+
         <span class="k">if</span> <span class="p">((</span><span class="n">input_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">particle_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">or</span> <span class="p">((</span><span class="n">input_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">particle_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;input_format&#39; or &#39;particle_array&#39; not given&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">input_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">particle_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__initialize_from_array</span><span class="p">(</span><span class="n">input_format</span><span class="p">,</span><span class="n">particle_array</span><span class="p">)</span>
-            
-        
+
+
     <span class="k">def</span> <span class="nf">__initialize_from_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_format</span><span class="p">,</span><span class="n">particle_array</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize instance attributes based on the provided input format and array.</span>
@@ -447,16 +447,20 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">particle_array</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
+                <span class="c1"># It is important for JETSCAPE particles to compute pdg_valid</span>
+                <span class="c1"># here because the compute_charge_from_pdg function depends on it. </span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span>
+
                 <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;JETSCAPE&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_mass_from_energy_momentum</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_charge_from_pdg</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">):</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The PDG code &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; is not known by PDGID, charge could not be computed. Consider setting it by hand.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input file is corrupted! &quot;</span> <span class="o">+</span>\
                                  <span class="s2">&quot;A line with wrong number of columns &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot; was found.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported input format &#39;</span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span>
 
         <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">):</span>
              <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;The PDG code &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; is not valid. &#39;</span><span class="o">+</span>
@@ -513,6 +517,7 @@
 <span class="sd">        z : float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
     <span class="nd">@z</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -840,7 +845,7 @@
 
     <span class="nd">@pdg_valid</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">pdg_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="Particle.print_particle">
 <a class="viewcode-back" href="../classes/Particle/index.html#Particle.Particle.print_particle">[docs]</a>
@@ -1244,7 +1249,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-     
+
 <div class="viewcode-block" id="Particle.spin">
 <a class="viewcode-back" href="../classes/Particle/index.html#Particle.Particle.spin">[docs]</a>
     <span class="k">def</span> <span class="nf">spin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1264,7 +1269,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">J</span></div>
 
-           
+
 <div class="viewcode-block" id="Particle.spin_degeneracy">
 <a class="viewcode-back" href="../classes/Particle/index.html#Particle.Particle.spin_degeneracy">[docs]</a>
     <span class="k">def</span> <span class="nf">spin_degeneracy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1285,7 +1290,23 @@
         <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">j_spin</span></div>
 </div>
 
-    
+
+<span class="n">format1</span> <span class="o">=</span> <span class="s2">&quot;JETSCAPE&quot;</span>
+<span class="n">array1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">211</span><span class="p">,</span><span class="mi">27</span><span class="p">,</span><span class="mf">4.36557</span><span class="p">,</span><span class="mf">3.56147</span><span class="p">,</span><span class="mf">0.562961</span><span class="p">,</span><span class="mf">2.45727</span><span class="p">])</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">input_format</span><span class="o">=</span><span class="n">format1</span><span class="p">,</span><span class="n">particle_array</span><span class="o">=</span><span class="n">array1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">ID</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">pdg</span> <span class="o">==</span> <span class="mi">211</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="mi">27</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">E</span> <span class="o">==</span> <span class="mf">4.36557</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">px</span> <span class="o">==</span> <span class="mf">3.56147</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">py</span> <span class="o">==</span> <span class="mf">0.562961</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">pz</span> <span class="o">==</span> <span class="mf">2.45727</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="mf">0.137956238</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">==</span> <span class="kc">True</span>
+<span class="k">assert</span> <span class="n">p1</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">compute_charge_from_pdg</span><span class="p">())</span>
 </pre></div>
 
            </div>
