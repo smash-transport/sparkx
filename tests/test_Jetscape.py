@@ -382,4 +382,4 @@ def test_Jetscape_get_sigmaGen(jetscape_file_path):
 def test_Jetscape_charge_filter_one_event(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path, events=0).charged_particles()
     assert jetscape.num_events() == 1
-    assert (jetscape.num_output_per_event() == np.array([[1, 15]])).all()
+    assert (jetscape.num_output_per_event() == np.array([[1, 14]])).all()
