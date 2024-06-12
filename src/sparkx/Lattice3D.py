@@ -164,9 +164,9 @@ class Lattice3D:
         self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else 3
         self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else 3
 
-        self.spacing_x_ = self.x_values_[1]-self.x_values_[0] if num_points_x >1 else  None
-        self.spacing_y_ = self.y_values_[1]-self.y_values_[0] if num_points_y >1 else  None
-        self.spacing_z_ = self.z_values_[1]-self.z_values_[0] if num_points_z >1 else  None
+        self.spacing_x_ = self.x_values_[1]-self.x_values_[0] if num_points_x >1 else None
+        self.spacing_y_ = self.y_values_[1]-self.y_values_[0] if num_points_y >1 else None
+        self.spacing_z_ = self.z_values_[1]-self.z_values_[0] if num_points_z >1 else None
         self.density_x_ = (self.x_max_-self.x_min_)/self.num_points_x_
         self.density_y_ = (self.y_max_-self.y_min_)/self.num_points_y_
         self.density_z_ = (self.z_max_-self.z_min_)/self.num_points_z_
