@@ -172,7 +172,6 @@ def remove_particle_species(particle_list, pdg_list):
 
     elif isinstance(pdg_list, (list, np.ndarray, tuple)):
         pdg_list = np.asarray(pdg_list, dtype=np.int64)
-        print(pdg_list)
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
