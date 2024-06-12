@@ -175,7 +175,7 @@ class JetAnalysis:
 
         # check jet eta range
         if not isinstance(jet_eta_range, tuple):
-            raise TypeError("jet_eta_range is not a tuple. " +\
+            raise TypeError("jet_eta_range is not a tuple. " +
                             "It must contain either values or None.")
         if len(jet_eta_range) != 2:
             raise ValueError("jet_eta_range must contain exactly two values.")
@@ -186,12 +186,12 @@ class JetAnalysis:
             self.jet_eta_range_ = (lower_cut, upper_cut)
         else:
             self.jet_eta_range_ = (upper_cut, lower_cut)
-            warnings.warn("The lower jet eta cut value is larger than the " +\
+            warnings.warn("The lower jet eta cut value is larger than the " +
                           "upper one. They are interchanged automatically.")
 
         # check the jet pt range
         if not isinstance(jet_pt_range, tuple):
-            raise TypeError("jet_pt_range is not a tuple. " +\
+            raise TypeError("jet_pt_range is not a tuple. " +
                             "It must contain either values or None.")
         if len(jet_pt_range) != 2:
             raise ValueError("jet_pt_range must contain exactly two values.")
@@ -204,7 +204,7 @@ class JetAnalysis:
             self.jet_pt_range_ = (lower_cut, upper_cut)
         else:
             self.jet_pt_range_ = (upper_cut, lower_cut)
-            warnings.warn("The lower jet pt cut value is larger than the " +\
+            warnings.warn("The lower jet pt cut value is larger than the " +
                           "upper one. They are interchanged automatically.")
 
     def create_fastjet_PseudoJets(self, event_hadrons):
@@ -257,7 +257,7 @@ class JetAnalysis:
                 (only_charged and hadron.charge == 0):
                 continue
 
-            fastjet_particle = fj.PseudoJet(hadron.px,hadron.py,\
+            fastjet_particle = fj.PseudoJet(hadron.px,hadron.py,
                                             hadron.pz,hadron.E)
             delta_eta = fastjet_particle.eta() - jet.eta()
             delta_phi = fastjet_particle.delta_phi_to(jet)
@@ -335,15 +335,15 @@ class JetAnalysis:
         output_list = []
 
         if jet.perp() < self.jet_pt_range_[1]:
-            output_list = [[0,jet.perp(),jet.eta(),jet.phi(),jet_status,\
+            output_list = [[0,jet.perp(),jet.eta(),jet.phi(),jet_status,
                             jet_pid,jet.e(),event]]
 
             # associated hadrons
             for i, associated in enumerate(associated_hadrons, start=1):
-                pseudo_jet = fj.PseudoJet(associated.px,associated.py,\
+                pseudo_jet = fj.PseudoJet(associated.px,associated.py,
                                           associated.pz,associated.E)
-                output = [i,pseudo_jet.perp(),pseudo_jet.eta(),\
-                          pseudo_jet.phi(),associated.status,\
+                output = [i,pseudo_jet.perp(),pseudo_jet.eta(),
+                          pseudo_jet.phi(),associated.status,
                             associated.pdg,associated.E,event]
                 output_list.append(output)
 
@@ -425,8 +425,8 @@ class JetAnalysis:
                                                 status_selection='positive',
                                                 only_charged=assoc_only_charged)
                 jet = self.jet_hole_subtraction(jet, holes_in_jet)
-                new_file = self.write_jet_output(output_filename, jet,\
-                                                associated_particles,\
+                new_file = self.write_jet_output(output_filename, jet,
+                                                associated_particles,
                                                 event,new_file)
 
     def read_jet_data(self, input_filename):
@@ -448,8 +448,8 @@ class JetAnalysis:
                 if jet_index == 0 and current_jet:
                     jet_data.append(current_jet)
                     current_jet = []
-                current_jet.append([int(row[0]), float(row[1]), float(row[2]),\
-                                     float(row[3]), int(row[4]), int(row[5]),\
+                current_jet.append([int(row[0]), float(row[1]), float(row[2]),
+                                     float(row[3]), int(row[4]), int(row[5]),
                                           float(row[6]), int(row[7])])
             if current_jet:
                 jet_data.append(current_jet)

@@ -196,7 +196,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         # implements Eq.15 from arXiv:0809.2949
         QnSquared = np.asarray([(np.conjugate(Q_vector_A[event]) * Q_vector_B[event]).real for event in range(len(Q_vector_A))])
         QnSquaredSum = np.mean(QnSquared)
-        return  2. * np.sqrt(QnSquaredSum)
+        return 2. * np.sqrt(QnSquaredSum)
 
     def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, resolution, self_corr):
         flow_values = []
