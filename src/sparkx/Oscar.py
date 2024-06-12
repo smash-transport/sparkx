@@ -300,7 +300,7 @@ class Oscar:
                     cumulate_lines += self.num_output_per_event_[i,1] + 2
                 skip_lines = 3 + cumulate_lines
         else:
-            raise TypeError('Value given as flag "events" is not of type ' +\
+            raise TypeError('Value given as flag "events" is not of type ' +
                             'int or a tuple of two int values')
 
         return skip_lines
@@ -361,7 +361,7 @@ class Oscar:
         particle_list.append(int(particle.ID))
         particle_list.append(int(particle.charge))
 
-        if self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+        if self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
             particle_list.append(int(particle.ncoll))
             particle_list.append(float(particle.form_time))
             particle_list.append(float(particle.xsecfac))
@@ -441,11 +441,11 @@ class Oscar:
             for i in range(0, num_read_lines):
                 line = oscar_file.readline()
                 if not line:
-                    raise IndexError('Index out of range of OSCAR file. This most likely happened because ' +\
-                                     'the particle number specified by the comments in the OSCAR ' +\
+                    raise IndexError('Index out of range of OSCAR file. This most likely happened because ' +
+                                     'the particle number specified by the comments in the OSCAR ' +
                                      'file differs from the actual number of particles in the event.')
                 elif i == 0 and '#' not in line and 'out' not in line:
-                    raise ValueError('First line of the event is not a comment ' +\
+                    raise ValueError('First line of the event is not a comment ' +
                                      'line or does not contain "out"')
                 elif 'event' in line and ('out' in line or 'in ' in line):
                     continue
@@ -465,8 +465,8 @@ class Oscar:
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
-                raise IndexError('Number of events in OSCAR file does not match the '+\
-                                 'number of events specified by the comments in the '+\
+                raise IndexError('Number of events in OSCAR file does not match the '+
+                                 'number of events specified by the comments in the '+
                                     'OSCAR file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
@@ -501,7 +501,7 @@ class Oscar:
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
             self.oscar_format_ = 'Oscar2013Extended'
         else:
-            raise TypeError('Input file must follow the Oscar2013, '+\
+            raise TypeError('Input file must follow the Oscar2013, '+
                             'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
 
 
@@ -575,8 +575,8 @@ class Oscar:
         if last_line[0] == '#' and 'event' in last_line:
             self.num_events_ = int(last_line[2]) + 1
         else:
-            raise TypeError('Input file does not end with a comment line '+\
-                            'including the events. File might be incomplete '+\
+            raise TypeError('Input file does not end with a comment line '+
+                            'including the events. File might be incomplete '+
                             'or corrupted.')
 
     def particle_list(self):
@@ -1068,11 +1068,11 @@ class Oscar:
                     if len(particle_output) == 0:
                         f_out.write(self.event_end_lines_[event])
                         continue
-                    elif (i == 0 and len(particle_output[0])>20  and self.oscar_format_ == 'Oscar2013Extended'):
+                    elif (i == 0 and len(particle_output[0])>20 and self.oscar_format_ == 'Oscar2013Extended'):
                         format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
                     if self.oscar_format_ == 'Oscar2013':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                    elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+                    elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
                         np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                     f_out.write(self.event_end_lines_[event])
             else:
@@ -1084,11 +1084,11 @@ class Oscar:
                     f_out.write(self.event_end_lines_[event])
                     f_out.close()
                     return
-                elif (len(particle_output[0])>20  and self.oscar_format_ == 'Oscar2013Extended'):
+                elif (len(particle_output[0])>20 and self.oscar_format_ == 'Oscar2013Extended'):
                         format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
                 if self.oscar_format_ == 'Oscar2013':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
-                elif self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+                elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
                     np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
         f_out.close()
