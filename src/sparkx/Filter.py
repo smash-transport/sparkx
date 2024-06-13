@@ -93,8 +93,8 @@ def particle_species(particle_list, pdg_list):
         Filtered list of lists containing particle objects for each event
     """
     if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple, float)):
-        raise TypeError('Input value for pgd codes has not one of the ' +\
-                        'following types: str, int, float, np.integer, list ' +\
+        raise TypeError('Input value for pgd codes has not one of the ' +
+                        'following types: str, int, float, np.integer, list ' +
                         'of str, list of int, list of int np.ndarray, tuple')
 
     if isinstance(pdg_list, float):
@@ -122,8 +122,8 @@ def particle_species(particle_list, pdg_list):
                                             and not np.isnan(elem.pdg))]
 
     else:
-        raise TypeError('Input value for pgd codes has not one of the ' +\
-                        'following types: str, int, float, np.integer, list ' +\
+        raise TypeError('Input value for pgd codes has not one of the ' +
+                        'following types: str, int, float, np.integer, list ' +
                         'of str, list of int, list of float, np.ndarray, tuple')
     return particle_list
 
@@ -150,8 +150,8 @@ def remove_particle_species(particle_list, pdg_list):
         Filtered list of lists containing particle objects for each event
     """
     if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
-        raise TypeError('Input value for pgd codes has not one of the ' +\
-                        'following types: str, int, float, np.integer, list ' +\
+        raise TypeError('Input value for pgd codes has not one of the ' +
+                        'following types: str, int, float, np.integer, list ' +
                         'of str, list of int, list of float, np.ndarray, tuple')
 
     if isinstance(pdg_list, float):
@@ -172,7 +172,6 @@ def remove_particle_species(particle_list, pdg_list):
 
     elif isinstance(pdg_list, (list, np.ndarray, tuple)):
         pdg_list = np.asarray(pdg_list, dtype=np.int64)
-        print(pdg_list)
 
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
@@ -180,8 +179,8 @@ def remove_particle_species(particle_list, pdg_list):
                                             and not np.isnan(elem.pdg))]
 
     else:
-        raise TypeError('Input value for pgd codes has not one of the ' +\
-                        'following types: str, int, float, np.integer, list ' +\
+        raise TypeError('Input value for pgd codes has not one of the ' +
+                        'following types: str, int, float, np.integer, list ' +
                         'of str, list of int, list of float, np.ndarray, tuple')
     return particle_list
 
@@ -254,7 +253,7 @@ def lower_event_energy_cut(particle_list,minimum_event_energy):
         If the minimum_event_energy parameter is NaN.
     """
     if not isinstance(minimum_event_energy, (int, float)):
-        raise TypeError('Input value for lower event energy cut has not ' +\
+        raise TypeError('Input value for lower event energy cut has not ' +
                         'one of the following types: int, float')
     if np.isnan(minimum_event_energy):
         raise ValueError('Input value should not be NaN')
@@ -367,7 +366,7 @@ def pt_cut(particle_list, cut_value_tuple):
         Filtered list of lists containing particle objects for each event
     """
     if not isinstance(cut_value_tuple, tuple) or len(cut_value_tuple) != 2:
-        raise TypeError('Input value must be a tuple containing either '+\
+        raise TypeError('Input value must be a tuple containing either '+
                         'positive numbers or None of length two')
     elif any(val is not None and not isinstance(val, (int, float)) for val in cut_value_tuple):
         raise ValueError('Non-numeric value found in cut_value_tuple')
@@ -425,7 +424,7 @@ def rapidity_cut(particle_list, cut_value):
     """
     if isinstance(cut_value, tuple):
         if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain '+\
+            raise TypeError('If input value is a tuple, then it must contain '+
                             'two numbers')
         elif any(not isinstance(val, (int, float)) for val in cut_value):
             raise ValueError('Non-numeric value found in cut_value')
@@ -435,7 +434,7 @@ def rapidity_cut(particle_list, cut_value):
             warnings.warn(warn_msg)
 
     elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +\
+        raise TypeError('Input value must be a number or a tuple ' +
                         'with the cut limits (cut_min, cut_max)')
 
     if isinstance(cut_value, (int, float)):
@@ -489,7 +488,7 @@ def pseudorapidity_cut(particle_list, cut_value):
     """
     if isinstance(cut_value, tuple):
         if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain '+\
+            raise TypeError('If input value is a tuple, then it must contain '+
                             'two numbers')
         elif any(not isinstance(val, (int, float)) for val in cut_value):
             raise ValueError('Non-numeric value found in cut_value')
@@ -499,7 +498,7 @@ def pseudorapidity_cut(particle_list, cut_value):
             warnings.warn(warn_msg)
 
     elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +\
+        raise TypeError('Input value must be a number or a tuple ' +
                         'with the cut limits (cut_min, cut_max)')
 
     if isinstance(cut_value, (int, float)):
@@ -553,7 +552,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
     """
     if isinstance(cut_value, tuple):
         if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain '+\
+            raise TypeError('If input value is a tuple, then it must contain '+
                             'two numbers')
         elif any(not isinstance(val, (int, float)) for val in cut_value):
             raise ValueError('Non-numeric value found in cut_value')
@@ -563,7 +562,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
             warnings.warn(warn_msg)
 
     elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +\
+        raise TypeError('Input value must be a number or a tuple ' +
                         'with the cut limits (cut_min, cut_max)')
 
     if isinstance(cut_value, (int, float)):
@@ -646,7 +645,7 @@ def particle_status(particle_list, status_list):
         Filtered list of lists containing particle objects for each event
     """
     if not isinstance(status_list, (int, list, tuple, np.ndarray)):
-        raise TypeError('Input for status codes must be int, or  '+\
+        raise TypeError('Input for status codes must be int, or  '+
                         'list/tuple/array of int values')
     if isinstance(status_list, (list, tuple, np.ndarray)):
         if any(not isinstance(val, int) for val in status_list):

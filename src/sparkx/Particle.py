@@ -353,9 +353,9 @@ class Particle:
             },
         }
         if (input_format in attribute_mapping):
-            if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
-                 and len(particle_array) <=  len(attribute_mapping[input_format])\
-                    and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
+            if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]
+                 and len(particle_array) <= len(attribute_mapping[input_format])
+                    and len(particle_array) >= len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array)<=(index[1]):
                         continue
@@ -378,7 +378,7 @@ class Particle:
                     if self.pdg_valid == False and np.isnan(self.charge):
                         warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
             else:
-                raise ValueError("The input file is corrupted! " +\
+                raise ValueError("The input file is corrupted! " +
                                  "A line with wrong number of columns "+str(len(particle_array))+" was found.")
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
@@ -582,7 +582,7 @@ class Particle:
 
     @ncoll.setter
     def ncoll(self,value):
-        self.data_[13]  = value
+        self.data_[13] = value
 
     @property
     def form_time(self):
@@ -596,7 +596,7 @@ class Particle:
 
     @form_time.setter
     def form_time(self,value):
-        self.data_[14]  = value
+        self.data_[14] = value
 
     @property
     def xsecfac(self):
@@ -610,7 +610,7 @@ class Particle:
 
     @xsecfac.setter
     def xsecfac(self,value):
-        self.data_[15]  = value
+        self.data_[15] = value
 
     @property
     def proc_id_origin(self):
@@ -1153,20 +1153,3 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).j_spin
-
-format1 = "JETSCAPE"
-array1 = np.array([1,211,27,4.36557,3.56147,0.562961,2.45727])
-
-p1 = Particle(input_format=format1,particle_array=array1)
-assert p1.ID == 1
-assert p1.pdg == 211
-assert p1.status == 27
-assert p1.E == 4.36557
-assert p1.px == 3.56147
-assert p1.py == 0.562961
-assert p1.pz == 2.45727
-assert np.isclose(p1.mass, 0.137956238, rtol=1e-6)
-assert p1.pdg_valid == True
-assert p1.charge == 1
-
-print(p1.compute_charge_from_pdg())

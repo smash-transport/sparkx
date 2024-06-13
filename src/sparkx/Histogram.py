@@ -175,7 +175,7 @@ class Histogram:
             self.systematic_error_ = np.zeros(self.number_of_bins_)
 
         else:
-            raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+\
+            raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+
                             'or a list/numpy.ndarray containing the bin edges!')
 
     def histogram(self):
@@ -675,7 +675,7 @@ class Histogram:
                             + " provided. Use the header for all histograms."
             warnings.warn(error_message)
         elif self.number_of_histograms_ > 1 and (len(hist_labels) > 1 and len(hist_labels) < self.number_of_histograms_):
-            raise ValueError("Print multiple histograms to file, more than one,"\
+            raise ValueError("Print multiple histograms to file, more than one,"
                             +" but less than number of histograms headers provided.")
 
         if columns is None:

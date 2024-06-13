@@ -259,7 +259,7 @@ class Jetscape:
                     cumulate_lines += self.num_output_per_event_[i,1] + 1
                 skip_lines = 1 + cumulate_lines
         else:
-            raise TypeError('Value given as flag "events" is not of type ' +\
+            raise TypeError('Value given as flag "events" is not of type ' +
                             'int or a tuple of two int values')
 
         return skip_lines
@@ -309,12 +309,12 @@ class Jetscape:
     def __particle_as_list(self, particle):
         particle_list = [0.0]*7
         particle_list[0] = int(particle.ID)
-        particle_list[1]  = int(particle.pdg)
-        particle_list[2]  = int(particle.status)
-        particle_list[3]  = float(particle.E)
-        particle_list[4]  = float(particle.px)
-        particle_list[5]  = float(particle.py)
-        particle_list[6]  = float(particle.pz)
+        particle_list[1] = int(particle.pdg)
+        particle_list[2] = int(particle.status)
+        particle_list[3] = float(particle.E)
+        particle_list[4] = float(particle.px)
+        particle_list[5] = float(particle.py)
+        particle_list[6] = float(particle.pz)
 
         return particle_list
 
@@ -377,7 +377,7 @@ class Jetscape:
                         self.num_output_per_event_[len(particle_list)]=(len(particle_list)+1,len(data))
                     particle_list.append(data)
                 elif i == 0 and '#' not in line and 'weight' not in line:
-                    raise ValueError('First line of the event is not a comment ' +\
+                    raise ValueError('First line of the event is not a comment ' +
                                      'line or does not contain "weight"')
                 elif 'Event' in line and 'weight' in line:
                     line = line.replace('\n','').replace('\t',' ').split(' ')
@@ -403,8 +403,8 @@ class Jetscape:
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
-                raise IndexError('Number of events in Jetscape file does not match the '+\
-                                 'number of events specified by the comments in the '+\
+                raise IndexError('Number of events in Jetscape file does not match the '+
+                                 'number of events specified by the comments in the '+
                                  'Jetscape file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
