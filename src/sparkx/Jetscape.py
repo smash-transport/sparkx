@@ -64,6 +64,7 @@ class Jetscape:
               - This parameter allows to switch from the standard hadron file |br|
                 to the parton output of JETSCAPE. The parameter can be set to |br|
                 :code:`particletype='hadron'` (default) or :code:`particletype='parton'`.
+                Quark charges are multiplied by 3 to make them integer values.
 
         .. |br| raw:: html
 
