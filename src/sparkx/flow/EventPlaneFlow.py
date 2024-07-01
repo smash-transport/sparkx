@@ -258,8 +258,10 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
     def __compute_flow_particles(self, particle_data, weights, Q_vector, u_vectors, resolution, self_corr):
         flow_values = []
+        psi_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
+            psi_values_event = []
             for particle in range(len(particle_data[event])):
                 weight_particle = np.abs(weights[event][particle])
                 Q_vector_particle = Q_vector[event]
@@ -271,9 +273,10 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
                 flow_of_particle = vn_obs / resolution
                 flow_values_event.append(flow_of_particle)
+                psi_values_event.append(Psi_n)
             flow_values.extend([flow_values_event])
-
-        return flow_values
+            psi_values.extend([psi_values_event])
+        return flow_values, psi_values
 
     def __calculate_reference(self, particle_data_event_plane):
         event_weights_event_plane = self.__compute_particle_weights(particle_data_event_plane)
@@ -286,34 +289,46 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
     def __calculate_particle_flow(self, particle_data, resolution, Q_vector, self_corr):
         event_weights = self.__compute_particle_weights(particle_data)
         u_vectors = self.__compute_u_vectors(particle_data)
-        sum_weights_u = self.__sum_weights(event_weights)
+        flow_values, psi_values = self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,resolution,self_corr)
 
-        return self.__compute_flow_particles(particle_data,event_weights,Q_vector,u_vectors,resolution, self_corr)
+        return flow_values, psi_values
 
-    def __calculate_flow_event_average(self, particle_data, flow_particle_list):
+    def __calculate_flow_event_average(self, particle_data, flow_particle_list, psi_particle_list):
         # compute the integrated flow
         number_of_particles = 0
         flowvalue = 0.0
         flowvalue_squared = 0.0
+        psivalue = 0.0
+        psivalue_squared = 0.0
         for event in range(len(flow_particle_list)):
             for particle in range(len(flow_particle_list[event])):
                 weight = 1. if np.isnan(particle_data[event][particle].weight) else particle_data[event][particle].weight
                 number_of_particles += weight
                 flowvalue += flow_particle_list[event][particle]*weight
                 flowvalue_squared += flow_particle_list[event][particle]**2.*weight**2.
+                psivalue += psi_particle_list[event][particle]*weight
+                psivalue_squared += psi_particle_list[event][particle]**2.*weight**2.
 
         vn_integrated = 0.0
+        Psi_n = 0.0
         sigma = 0.0
+        sigma_Psi = 0.0
         if number_of_particles == 0:
             vn_integrated = 0.0
+            Psi_n = 0.0
             sigma = 0.0
+            sigma_Psi = 0.0
         else:
             vn_integrated = flowvalue / number_of_particles
+            Psi_n = psivalue / number_of_particles
             vn_squared = flowvalue_squared / number_of_particles**2.
+            Psi_n_squared = psivalue_squared / number_of_particles**2.
             std_deviation = np.sqrt(vn_integrated**2. - vn_squared)
+            std_deviation_Psi = np.sqrt(Psi_n**2. - Psi_n_squared)
             sigma = std_deviation / np.sqrt(number_of_particles)
+            sigma_Psi = std_deviation_Psi / np.sqrt(number_of_particles)
 
-        return vn_integrated, sigma
+        return vn_integrated, sigma, Psi_n, sigma_Psi
 
     def integrated_flow(self,particle_data,particle_data_event_plane, self_corr=True):
         """
@@ -333,12 +348,14 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         -------
         tuple
             A tuple containing the integrated flow value and the corresponding 
-            uncertainty.
+            uncertainty. The third and fourth element are the event plane angle
+            and the corresponding uncertainty.
         """
         if not isinstance(self_corr, bool):
             raise TypeError('self_corr has to be bool')
         resolution, Q_vector = self.__calculate_reference(particle_data_event_plane)
-        return self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particle_data, resolution, Q_vector, self_corr))
+        flow_values, psi_values = self.__calculate_particle_flow(particle_data, resolution, Q_vector, self_corr)
+        return self.__calculate_flow_event_average(particle_data, flow_values, psi_values)
 
     def differential_flow(self, particle_data, bins, flow_as_function_of, particle_data_event_plane, self_corr=True):
         """
@@ -363,7 +380,8 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         -------
         list
             A list of tuples containing the flow values and uncertainties for 
-            each bin.
+            each bin. The third and fourth element are the event plane angle
+            and the corresponding uncertainty.
         """
         if not isinstance(self_corr, bool):
             raise TypeError('self_corr has to be bool')
@@ -396,6 +414,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
         flow_bin = []
         for bin in range(len(bins)-1):
-            flow_bin.append(self.__calculate_flow_event_average(particle_data, self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)))
+            flow_values, psi_values = self.__calculate_particle_flow(particles_bin[bin],resolution,Q_vector,self_corr)
+            flow_bin.append(self.__calculate_flow_event_average(particle_data, flow_values, psi_values))
 
         return flow_bin
