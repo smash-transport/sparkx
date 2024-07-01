@@ -26,6 +26,11 @@ def jetscape_file_path():
     # Assuming your test file is in the same directory as test_files/
     return os.path.join(os.path.dirname(__file__), 'test_files', 'test_jetscape.dat')
 
+@pytest.fixture
+def jetscape_file_path_partons():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(os.path.dirname(__file__), 'test_files', 'test_jetscape_partons.dat')
+
 def create_temporary_jetscape_file(path, num_events, output_per_event_list=None):
     """
     This function creates a sample Jetscape file "jetscape_test.dat" in the 
@@ -383,3 +388,20 @@ def test_Jetscape_charge_filter_one_event(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path, events=0).charged_particles()
     assert jetscape.num_events() == 1
     assert (jetscape.num_output_per_event() == np.array([[1, 14]])).all()
+
+def test_Jetscape_read_parton_file(jetscape_file_path_partons):
+    jetscape = Jetscape(jetscape_file_path_partons,particletype='parton')
+    assert jetscape.particle_type_ == 'parton'
+    assert jetscape.num_events() == 5
+
+    charged_quarks = jetscape.charged_particles().particle_objects_list()
+    for ev in range(5):
+        assert len(charged_quarks[ev]) == 2
+
+    # Test construction with wrong particletype
+    with pytest.raises(ValueError):
+        Jetscape(jetscape_file_path_partons,particletype='wrong')
+    
+    # Test construction with wrong particletype (not string)
+    with pytest.raises(TypeError):
+        Jetscape(jetscape_file_path_partons,particletype=1)
