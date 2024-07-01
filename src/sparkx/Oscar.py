@@ -231,6 +231,7 @@ class Oscar:
         self.particle_list_ = None
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
+        self.custom_attr_list = None
 
         for keys in self.optional_arguments_.keys():
             if keys not in ['events', 'filters']:
@@ -348,41 +349,80 @@ class Oscar:
 
     def __particle_as_list(self, particle):
         particle_list = []
-        particle_list.append(float(particle.t))
-        particle_list.append(float(particle.x))
-        particle_list.append(float(particle.y))
-        particle_list.append(float(particle.z))
-        particle_list.append(float(particle.mass))
-        particle_list.append(float(particle.E))
-        particle_list.append(float(particle.px))
-        particle_list.append(float(particle.py))
-        particle_list.append(float(particle.pz))
-        particle_list.append(int(particle.pdg))
-        particle_list.append(int(particle.ID))
-        particle_list.append(int(particle.charge))
+        if self.oscar_format_ == 'OscarCustom':
+            for attr in self.custom_attr_list:
+                particle_list.append(getattr(particle, attr))
+            return particle_list
+        else:
+            particle_list.append(float(particle.t))
+            particle_list.append(float(particle.x))
+            particle_list.append(float(particle.y))
+            particle_list.append(float(particle.z))
+            particle_list.append(float(particle.mass))
+            particle_list.append(float(particle.E))
+            particle_list.append(float(particle.px))
+            particle_list.append(float(particle.py))
+            particle_list.append(float(particle.pz))
+            particle_list.append(int(particle.pdg))
+            particle_list.append(int(particle.ID))
+            particle_list.append(int(particle.charge))
 
-        if self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
-            particle_list.append(int(particle.ncoll))
-            particle_list.append(float(particle.form_time))
-            particle_list.append(float(particle.xsecfac))
-            particle_list.append(int(particle.proc_id_origin))
-            particle_list.append(int(particle.proc_type_origin))
-            particle_list.append(float(particle.t_last_coll))
-            particle_list.append(int(particle.pdg_mother1))
-            particle_list.append(int(particle.pdg_mother2))
-            if self.oscar_format_ != 'Oscar2013Extended_Photons':
-                if not np.isnan(particle.baryon_number):
-                    particle_list.append(int(particle.baryon_number))
-                if not np.isnan(particle.strangeness):
-                    particle_list.append(int(particle.strangeness))
-            else:
-                if not np.isnan(particle.weight):
-                    particle_list.append(int(particle.weight))
+            if self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+                particle_list.append(int(particle.ncoll))
+                particle_list.append(float(particle.form_time))
+                particle_list.append(float(particle.xsecfac))
+                particle_list.append(int(particle.proc_id_origin))
+                particle_list.append(int(particle.proc_type_origin))
+                particle_list.append(float(particle.t_last_coll))
+                particle_list.append(int(particle.pdg_mother1))
+                particle_list.append(int(particle.pdg_mother2))
+                if self.oscar_format_ != 'Oscar2013Extended_Photons':
+                    if not np.isnan(particle.baryon_number):
+                        particle_list.append(int(particle.baryon_number))
+                    if not np.isnan(particle.strangeness):
+                        particle_list.append(int(particle.strangeness))
+                else:
+                    if not np.isnan(particle.weight):
+                        particle_list.append(int(particle.weight))
 
-        elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
-            raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
+            elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
+                raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
 
-        return particle_list
+            return particle_list
+
+    def _set_custom_attr_list(self,header_line):
+        self.custom_attr_list = []
+        attr_map = {
+            't': 't',
+            'x': 'x',
+            'y': 'y',
+            'z': 'z',
+            'mass': 'mass',
+            'p0': 'E',
+            'px': 'px',
+            'py': 'py',
+            'pz': 'pz',
+            'pdg': 'pdg',
+            'ID': 'ID',
+            'charge': 'charge',
+            'ncoll': 'ncoll',
+            'form_time': 'form_time',
+            'xsecfac': 'xsecfac',
+            'proc_id_origin': 'proc_id_origin',
+            'proc_type_origin': 'proc_type_origin',
+            'time_last_coll': 'time_last_coll',
+            'pdg_mother1': 'pdg_mother1',
+            'pdg_mother2': 'pdg_mother2',
+            'baryon_number': 'baryon_number',
+            'strangeness': 'strangeness'
+        }
+        for i in range(0, len(header_line)):
+            if i == 0:
+                continue
+            attr_name = attr_map.get(header_line[i])
+            if attr_name is not None:
+                self.custom_attr_list.append(attr_name)
+        return self.custom_attr_list
 
     def __update_num_output_per_event_after_filter(self):
         for event in range(0, len(self.particle_list_)):
@@ -459,7 +499,10 @@ class Oscar:
                     raise ValueError('Comment line unexpectedly found: '+line)
                 else:
                     line = line.replace('\n','').split(' ')
-                    particle = Particle(self.oscar_format_, line)
+                    if(self.oscar_format == "OscarCustom"):
+                        particle = Particle(self.oscar_format_, line, self.custom_attr_list)
+                    else:
+                        particle = Particle(self.oscar_format_, line)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
@@ -485,7 +528,6 @@ class Oscar:
             self.particle_list_ = particle_list
         else:
             self.particle_list_ = particle_list
-            
 
     def set_oscar_format(self):
         with open(self.PATH_OSCAR_, 'r') as file:
@@ -500,6 +542,11 @@ class Oscar:
             self.oscar_format_ = 'Oscar2013Extended_Photons'
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
             self.oscar_format_ = 'Oscar2013Extended'
+        elif first_line[0] == '#!OSCARCustom':
+            self.oscar_format_ = 'OscarCustom'
+            second_line=file.readline()
+            second_line = second_line.replace('\n', '').split(' ')
+            self.custom_attr_list = self._set_custom_attr_list(second_line)
         else:
             raise TypeError('Input file must follow the Oscar2013, '+
                             'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
