@@ -8,6 +8,8 @@
 # ===================================================
 
 from sparkx.Filter import *
+
+from .BinaryReader import BinaryReader
 import numpy as np
 from sparkx.loader.OscarLoader import OscarLoader
 from sparkx.BaseStorer import BaseStorer
