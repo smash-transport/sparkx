@@ -242,6 +242,8 @@ class Particle:
 
         If the input format is "JETSCAPE," additional attributes (mass_ and 
         charge_) are computed based on energy-momentum and PDG code.
+        If the JETSCAPE class is created with parton output, then the charge is
+        multiplied by 3 to make it an integer.
 
         """
         #first entry: index in data array
@@ -545,6 +547,10 @@ class Particle:
 
     @charge.setter
     def charge(self,value):
+        # this is for the case a parton is created from the JETSCAPE reader
+        # handle quarks with 3 times the charge to make it integer
+        if np.abs(value) < 1:
+            value *= 3
         self.data_[12] = value
 
     @property
