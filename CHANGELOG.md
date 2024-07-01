@@ -23,6 +23,8 @@ Date: XXX
 
 ### Added
 * ReactionPlaneFlow: Returns also the angle, not only the flow value
+* Jetscape: Add option to read in parton output
+* Particle: Include changes for parton read in from Jetscape class, multiply quark charges by 3 to make them integers
 
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.2.2)
