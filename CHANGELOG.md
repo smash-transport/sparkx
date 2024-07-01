@@ -23,7 +23,7 @@ Date: XXX
 
 ### Added
 * ReactionPlaneFlow: Returns also the angle, not only the flow value
-* Jetscape: Add option to read in parton output
+* Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
 * Particle: Include changes for parton read in from Jetscape class, multiply quark charges by 3 to make them integers
 
 
@@ -49,10 +49,6 @@ Date: 2024-04-21
 * Histogram: Add possibility to add values with weights and possibility to create probability densities
 * Histogram: Choose which columns to be printed in the output file
 * EventCharacteristics: Add option for different radial weight in eccentricities
-
-### Added
-
-* Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
 
 ### Fixed
 
