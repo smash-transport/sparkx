@@ -9,6 +9,8 @@
     
 from sparkx.Particle import Particle
 from sparkx.Filter import *
+
+from .BinaryReader import BinaryReader
 import numpy as np
 import os
 
@@ -219,10 +221,13 @@ class Oscar:
         -------
         None
         """
-
+        self.binary = False
         if not '.oscar' in OSCAR_FILE:
-            raise FileNotFoundError('Input file is not in the OSCAR format. Input '
-                                    'file must have the ending .oscar')
+            if not '.bin' in OSCAR_FILE:
+                raise FileNotFoundError('Input file is not in the OSCAR format. Input '
+                                'file must have the ending .oscar or bin for binary format')
+            else:
+                self.binary = True
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
@@ -231,7 +236,6 @@ class Oscar:
         self.particle_list_ = None
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
-
         for keys in self.optional_arguments_.keys():
             if keys not in ['events', 'filters']:
                 raise ValueError('Unknown keyword argument used in constructor')
@@ -246,10 +250,13 @@ class Oscar:
             if self.optional_arguments_['events'] < 0:
                 raise ValueError('Event number must be positive')
 
-        self.set_oscar_format()
-        self.set_num_events()
-        self.set_num_output_per_event_and_event_footers()
-        self.set_particle_list(kwargs)
+        if(self.binary):
+            self.read_binary(kwargs)
+        else:
+            self.set_oscar_format()
+            self.set_num_events()
+            self.set_num_output_per_event_and_event_footers()
+            self.set_particle_list(kwargs)
 
     # PRIVATE CLASS METHODS
     def __check_that_tuple_contains_integers_only(self, events_tuple):
@@ -429,8 +436,47 @@ class Oscar:
                 raise ValueError('The cut is unknown!')
 
         return event
+        self.optional_arguments_ = kwargs
+
 
     # PUBLIC CLASS METHODS
+    def read_binary(self,kwargs):
+        reader = BinaryReader(self.PATH_OSCAR_)
+        if(reader.format_extended == 1):
+            self.oscar_format  = "Oscar2013Extended"
+        else:
+            self.oscar_format  = "Oscar2013"
+        data = []
+        particle_list = []
+        self.num_output_per_event_ = []
+        end_line_template = '# event {} end 0 impact   {} scattering_projectile_target {}\n'
+        
+        for block in reader:
+            if(block['type'] == 'p'):
+                particles = block['part']
+                for particle in particles:
+                    data.append(Particle(self.oscar_format,particle))
+            if(block['type'] == 'f'):
+                n_event = block["nevent"]
+                b = block["b"]
+                empty_event = block["empty_event"]
+                
+                if empty_event:
+                    end_line = end_line_template.format(n_event,b,"yes")
+                else:
+                    end_line = end_line_template.format(n_event,b,"no")
+                
+                self.event_end_lines_.append(end_line)
+                self.num_output_per_event_.append((n_event,len(particle_list)))
+                if 'filters' in self.optional_arguments_.keys():
+                    data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
+                self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
+
+                particle_list.append(data)
+                data = []
+        return 
+        
+
 
     def set_particle_list(self, kwargs):
         particle_list = []
