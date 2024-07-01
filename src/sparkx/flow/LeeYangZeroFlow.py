@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 from sparkx.flow import FlowInterface
 import numpy as np
 import random as rd
@@ -7,10 +16,6 @@ rd.seed(42)
 
 class LeeYangZeroFlow(FlowInterface.FlowInterface):
     """
-    **Attention**: This is a beta version of the LeeYangZeroFlow analysis class 
-    for testing purposes. We do not recommend using this class for production 
-    runs yet.
-
     Compute integrated and differential anisotropic flow using the Lee-Yang 
     zero method from
 
@@ -27,7 +32,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
     Notes
     -----
-    If a result contains NaN or Inf, the corresponding value is set to None.
+    If a result contains `np.nan` or `np.inf`, the corresponding value is set to `None`.
     
     A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:
         - :math:`\\chi > 1`:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.
@@ -63,6 +68,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         >>> from sparkx.flow.LeeYangZerosFlow import LeeYangZerosFlow
         >>>
+        >>> JETSCAPE_FILE_PATH = [Jetscape_directory]/particle_lists_flow.dat
+        >>> # Jetscape object containing the particles on which we want to calculate flow
+        >>> particle_data = Jetscape(JETSCAPE_FILE_PATH).particle_objects_list()
+
         >>> # Create a LeeYangZerosFlow object
         >>> flow_instance = LeeYangZerosFlow(vmin=0.01, vmax=0.10, vstep=0.001, n=2)
         >>>
@@ -300,7 +309,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf_error (float): Standard error on the integrated flow magnitude.
             - chi_value (float): Resolution parameter :math:`\\chi`.
 
-        If vn_inf is NaN or Inf, the method returns [None, None, None].
+        If `vn_inf` is `np.nan` or `np.inf`, the method returns `[None, None, None]`.
         """
         number_events = len(particle_data)
         mean_multiplicity = 0
@@ -494,7 +503,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         else:
             return [vn_differential,vn_differential_uncertainty]
 
-    def differential_flow(self,particle_data,bins,flow_as_function_of):
+    def differential_flow(self,particle_data,bins,flow_as_function_of, poi_pdg=None):
         """
         Compute the differential flow.
 
@@ -505,7 +514,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+            Variable on which the flow is calculated 
+            ("pt", "rapidity", or "pseudorapidity").
+        poi_pdg : list
+            List of PDG id for identified particle differential flow.
 
         Returns
         -------
@@ -516,12 +528,26 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             - vn_inf (float): Differential flow magnitude for the bin.
             - vn_inf_error (float): Error on the differential flow magnitude for the bin.
             
-        If a bin has no events, the corresponding element in the result list is set to None.
+        If a bin has no events, the corresponding element in the result list is 
+        set to `None`.
+
+        Notes
+        -----
+        This method will call the `integrated_flow` method if it was not called
+        before and computes the integrated flow for the given `particle_data`.
+        Make sure that the same `particle_data` is used. Otherwise this could
+        lead to wrong results.
         """
         if not isinstance(bins, (list,np.ndarray)):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
             raise TypeError('flow_as_function_of is not a string')
+        if poi_pdg is not None:
+            if not isinstance(poi_pdg, (list,np.ndarray)):
+                raise TypeError('poi_pdg has to be list or np.ndarray')
+            for pdg in poi_pdg:
+                if not isinstance(pdg, int):
+                    raise TypeError('poi_pdg elements must be integers')
         if flow_as_function_of not in ["pt","rapidity","pseudorapidity"]:
             raise ValueError("flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
         
@@ -542,7 +568,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                    if val >= bins[bin] and val < bins[bin+1]:
+                    if val >= bins[bin] and val < bins[bin+1] and particle.pdg in poi_pdg:
                         particles_event.append(particle)
                 if len(particles_event) > 0:
                     events_bin.extend([particles_event])

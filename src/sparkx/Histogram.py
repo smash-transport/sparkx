@@ -1,3 +1,12 @@
+#===================================================
+#
+#    Copyright (c) 2023-2024
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+#===================================================
+    
 import numpy as np
 import csv
 import warnings
@@ -21,7 +30,6 @@ class Histogram:
 
                  <p><code style="color:red; background-color:transparent;
                  font-size: 0.9em;">bins[i-1] &lt;= value &lt; bins[i]</code></p>
-
 
     Parameters
     ----------
@@ -72,6 +80,8 @@ class Histogram:
         Add one or multiple values to the latest histogram.
     add_histogram:
         Add a new histogram.
+    make_density:
+        Create probability density from last histogram.
     average:
         Averages over all histograms.
     average_weighted:
@@ -165,7 +175,7 @@ class Histogram:
             self.systematic_error_ = np.zeros(self.number_of_bins_)
 
         else:
-            raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+\
+            raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+
                             'or a list/numpy.ndarray containing the bin edges!')
 
     def histogram(self):
@@ -182,7 +192,8 @@ class Histogram:
     def histogram_raw_counts(self):
         """
         Get the raw bin counts of the histogram(s), even after the original
-        histograms are scaled or averaged.
+        histograms are scaled or averaged. If weights are used, then they
+        affect the raw counts histogram.
 
         Returns
         -------
@@ -257,7 +268,7 @@ class Histogram:
         """
         return np.asarray(self.bin_edges_)
 
-    def add_value(self, value):
+    def add_value(self, value, weight=None):
         """
         Add value(s) to the latest histogram.
 
@@ -268,14 +279,38 @@ class Histogram:
         ----------
         value: int, float, np.number, list, numpy.ndarray
             Value(s) which are supposed to be added to the histogram instance.
+        weight: int, float, np.number, list, numpy.ndarray, optional
+            Weight(s) associated with the value(s). If provided, it should have 
+            the same length as the value parameter.
 
         Raises
         ------
         TypeError
             if the input is not a number or numpy.ndarray or list
+        ValueError
+            if an input `value` is `np.nan`
+        ValueError
+            if the input `weight` has not the same dimension as `value`
+        ValueError
+            if a `weight` value is `np.nan` 
         """
+        # Check if weight has the same length as value
+        if weight is not None:
+            if isinstance(weight, (int, float, np.number)):
+                if not isinstance(value, (int, float, np.number)):
+                    raise ValueError("Value must be numeric when weight is scalar.")
+                if np.isnan(weight):
+                    raise ValueError("Value cannot be NaN when weight is scalar.")
+            elif len(weight) != np.atleast_1d(value).shape[0]:
+                raise ValueError("Weight must have the same length as value.")
+            else:
+                if np.isnan(value).any():
+                    raise ValueError("Value cannot contain NaN when weight is not scalar.")
+
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
+            if np.isnan(value):
+                raise ValueError("Input value in add_value is NaN.")
 
             counter_warnings = 0
             if (value < self.bin_edges_[0] or value > self.bin_edges_[-1]) and counter_warnings == 0:
@@ -290,8 +325,12 @@ class Histogram:
                 if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[bin_index-1] += 1
-                    self.histograms_raw_count_[bin_index-1] += 1
+                    if weight is not None:
+                        self.histograms_[bin_index-1] += weight
+                        self.histograms_raw_count_[bin_index-1] += weight
+                    else:
+                        self.histograms_[bin_index-1] += 1
+                        self.histograms_raw_count_[bin_index-1] += 1
 
             # Case 2.2: If histogram contains multiple instances,
             #           always add values to the latest histogram
@@ -300,19 +339,61 @@ class Histogram:
                 if bin_index == 0 or bin_index > self.number_of_bins_:
                     pass
                 else:
-                    self.histograms_[-1,bin_index-1] += 1
-                    self.histograms_raw_count_[-1,bin_index-1] += 1
+                    if weight is not None:
+                        self.histograms_[-1,bin_index-1] += weight
+                        self.histograms_raw_count_[-1,bin_index-1] += weight
+                    else:
+                        self.histograms_[-1,bin_index-1] += 1
+                        self.histograms_raw_count_[-1,bin_index-1] += 1
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
-            for element in value:
-                self.add_value(element)
+            if np.isnan(value).any():
+                raise ValueError("At least one input value in add_value is NaN.")
+            if weight is not None:
+                for element, w in zip(value, weight):
+                    self.add_value(element, weight=w)
+            else:
+                for element in value:
+                    self.add_value(element)
 
         # Case 1.3: value has an invalid input type
         else:
             err_msg = 'Invalid input type! Input value must have one of the '+\
                       'following types: (int, float, np.number, list, np.ndarray)'
             raise TypeError(err_msg)
+
+    def make_density(self):
+        """
+        Make a probability density from the last histogram.
+        The result represents the probability density function in a given bin. 
+        It is normalized such that the integral over the whole histogram 
+        yields 1. This behavior is similar to the one of numpy histograms.
+
+        Raises
+        ------
+        ValueError
+            if there is no histogram available
+        ValueError
+            if the integral over the histogram is zero
+        """
+        if self.number_of_histograms_ == 0:
+            raise ValueError("No histograms available to compute density.")
+
+        if self.number_of_histograms_ == 1:
+            last_histogram = self.histograms_
+        else:
+            last_histogram = self.histograms_[-1]
+
+        bin_widths = self.bin_width()
+        density = last_histogram / bin_widths
+        integral = np.sum(density * bin_widths)
+        if integral == 0:
+            raise ValueError("Integral over the histogram is zero.")
+        scale_factor = 1. / integral
+
+        self.statistical_error()
+        self.scale_histogram(scale_factor)
 
     def add_histogram(self):
         """
@@ -336,7 +417,7 @@ class Histogram:
         Average over all histograms.
 
         When this function is called the previously generated histograms are
-        averaged with the unit weigths and they are overwritten by the
+        averaged with the unit weights and they are overwritten by the
         averaged histogram.
         The standard error of the averaged histograms is computed.
 
@@ -365,7 +446,7 @@ class Histogram:
         Weighted average over all histograms.
 
         When this function is called the previously generated histograms are
-        averaged with the given weigths and they are overwritten by the
+        averaged with the given weights and they are overwritten by the
         averaged histogram.
         The standard error of the histograms is computed.
 
@@ -444,6 +525,8 @@ class Histogram:
             raise ValueError("The scaling factor of the histogram cannot be negative")
         elif isinstance(value, (list, np.ndarray)) and sum(1 for number in value if number < 0) > 0:
             raise ValueError("The scaling factor of the histogram cannot be negative")
+        elif isinstance(value, (list, np.ndarray)) and len(value) != self.number_of_bins_:
+            raise ValueError("The length of list/array not compatible with number_of_bins_ of the histogram")
 
         if self.histograms_.ndim == 1:
             if isinstance(value, (int, float, np.number)):
@@ -479,7 +562,7 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the uncertainties of the individual bins.
         """
-        if len(own_error) != self.number_of_bins_ and\
+        if len(own_error) != self.number_of_bins_ or\
               not isinstance(own_error, (list,np.ndarray)):
             error_message = "The input error has a different length than the"\
                  + " number of histogram bins or it is not a list/numpy.ndarray"
@@ -498,7 +581,7 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the systematic uncertainties of the individual bins.
         """
-        if len(own_error) != self.number_of_bins_ and\
+        if len(own_error) != self.number_of_bins_ or\
               not isinstance(own_error, (list,np.ndarray)):
             error_message = "The input error has a different length than the"\
                  + " number of histogram bins or it is not a list/numpy.ndarray"
@@ -522,7 +605,7 @@ class Histogram:
                           {self.histograms_[hist][bin]}')
             print("")
 
-    def write_to_file(self, filename, hist_labels, comment=''):
+    def write_to_file(self, filename, hist_labels, comment='', columns=None):
         """
         Write multiple histograms to a CSV file along with their headers.
 
@@ -546,16 +629,30 @@ class Histogram:
                 - 'stat_err-': Label for the statistical error (negative).
                 - 'sys_err+': Label for the systematic error (positive).
                 - 'sys_err-': Label for the systematic error (negative).
+            
+            Other keys are possible if non-default columns are used.
 
         comment : str, optional
             Additional comment to be included at the beginning of the file.
             It is possible to give a multi-line comment where each line should
             start with a '#'.
 
+        columns : list of str, optional
+            List of columns to include in the output. If None, all columns are included which are:
+                - 'bin_center': Bin center.
+                - 'bin_low': Lower bin boundary.
+                - 'bin_high': Upper bin boundary.
+                - 'distribution': Histogram value.
+                - 'stat_err+': Statistical error (positive).
+                - 'stat_err-': Statistical error (negative).
+                - 'sys_err+': Systematic error (positive).
+                - 'sys_err-': Systematic error (negative).
+
         Raises
         ------
         TypeError
-            If `hist_labels` is not a list of dictionaries.
+            If `hist_labels` is not a list of dictionaries, or if `columns` is
+            not a list of strings or contains keys which are not present in 'hist_labels'.
 
         ValueError
             If the number of histograms is greater than 1, and the number of
@@ -563,73 +660,46 @@ class Histogram:
             histograms. An exception is the case, where the number of histograms
             is greater than 1 and the number of provided dictionaries is 1.
             Then the same dictionary is used for all histograms.
-
-        Examples
-        --------
-
-        .. highlight:: python
-        .. code-block:: python
-            :linenos:
-
-            >>> hist_labels_multiple = [{'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
-                          'distribution': '$1 / Nevt * d^2 N / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
-                          'sys_err+': 'sys +', 'sys_err-': 'sys -'},
-                            {'bin_center': '$p_T$', 'bin_low': '$p_T$ [GEV/c] LOW', 'bin_high': '$p_T$ [GEV/c] HIGH',
-                          'distribution': '$1 / Nevt * d^2 N_{ch} / dp_T d\eta$ [nb/GEV/c]', 'stat_err+': 'stat +', 'stat_err-': 'stat -',
-                          'sys_err+': 'sys +', 'sys_err-': 'sys -'}]
-            >>> histogram_obj = Histogram(bin_boundaries=(0, 10, 10))
-            >>> histogram_obj.add_value([1,1,3,6,4,7])
-            >>> histogram_obj.add_histogram()
-            >>> histogram_obj.add_value([2,1,5,6,4,4,9,7])
-            >>> histogram_obj.statistical_error()
-            >>> histogram_obj.write_to_file('multiple_histograms.csv', hist_labels_multiple)
-
-        Notes
-        -----
-        The function assumes that the histogram data and corresponding errors
-        are already available in the Histogram object calling this function.
-
-        .. |br| raw:: html
-
-           <br />
         """
-        if not isinstance(hist_labels, list):
+        if not isinstance(hist_labels, list) or not all(isinstance(hist_label, dict) for hist_label in hist_labels):
             raise TypeError("hist_labels must be a list of dictionaries")
+        
+        if columns is not None and ( not isinstance(columns, list) or not all(isinstance(col, str) for col in columns)):
+            raise TypeError("columns must be a list of strings")
+        
+        if columns is not None and not all(col in hist_labels[0].keys() for col in columns):
+            raise TypeError("columns must contain only keys present in hist_labels")
 
         if self.number_of_histograms_ > 1 and len(hist_labels) == 1:
             error_message = "Print multiple histograms to file, only one header"\
                             + " provided. Use the header for all histograms."
             warnings.warn(error_message)
         elif self.number_of_histograms_ > 1 and (len(hist_labels) > 1 and len(hist_labels) < self.number_of_histograms_):
-            raise ValueError("Print multiple histograms to file, more than one,"\
-                             +" but less than number of histograms headers provided.")
+            raise ValueError("Print multiple histograms to file, more than one,"
+                            +" but less than number of histograms headers provided.")
 
-        f = open(filename, 'w')
-        writer = csv.writer(f)
-        if comment != '':
-            f.write(comment)
-            f.write('\n')
+        if columns is None:
+            columns = ['bin_center', 'bin_low', 'bin_high', 'distribution', 'stat_err+', 'stat_err-', 'sys_err+', 'sys_err-']
 
-        for idx in range(self.number_of_histograms_):
-            if len(hist_labels) == 1:
-                header = [hist_labels[0]['bin_center'],hist_labels[0]['bin_low'],\
-                        hist_labels[0]['bin_high'],hist_labels[0]['distribution'],\
-                        hist_labels[0]['stat_err+'],hist_labels[0]['stat_err-'],\
-                        hist_labels[0]['sys_err+'],hist_labels[0]['sys_err-']]
-            else:
-                header = [hist_labels[idx]['bin_center'],hist_labels[idx]['bin_low'],\
-                        hist_labels[idx]['bin_high'],hist_labels[idx]['distribution'],\
-                        hist_labels[idx]['stat_err+'],hist_labels[idx]['stat_err-'],\
-                        hist_labels[idx]['sys_err+'],hist_labels[idx]['sys_err-']]
-            writer.writerow(header)
-            for i in range(self.number_of_bins_):
-                if self.number_of_histograms_ == 1:
-                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                            self.histograms_[i], self.error_[i], self.error_[i],
-                            self.systematic_error_[i], self.systematic_error_[i]]
-                else:
-                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                            self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
-                            self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
-                writer.writerow(data)
-            f.write('\n')
+        with open(filename, 'w') as f:
+            writer = csv.writer(f)
+            if comment != '':
+                f.write(comment)
+                f.write('\n')
+
+            for idx in range(self.number_of_histograms_):
+                header = [hist_labels[0][col] if len(hist_labels) == 1 else hist_labels[idx][col] for col in columns]
+                writer.writerow(header)
+                for i in range(self.number_of_bins_):
+                    if self.number_of_histograms_ == 1:
+                        data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                                self.histograms_[i], self.error_[i], self.error_[i],
+                                self.systematic_error_[i], self.systematic_error_[i]]
+                    else:
+                        data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
+                                self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
+                                self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
+                    data = [data[columns.index(col)] for col in columns]
+                    writer.writerow(data)
+                f.write('\n')
+        

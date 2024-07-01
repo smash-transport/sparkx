@@ -18,8 +18,35 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v1.2.2-Newton
+Date: XXX
+
+### Added
+* ReactionPlaneFlow: Returns also the angle, not only the flow value
+
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.2.2)
+
+## v1.2.1-Newton
+Date: 2024-05-08
+
+### Fixed
+* Jetscape: Fix for Jetscape charged particle filtering
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.0...v1.2.1)
+
 ## v1.2.0-Newton
-Date:
+Date: 2024-04-21
+
+### Added
+
+* QCumulantFlow: Differential flow for two and four particle cumulants
+* Tests: Tests for Histogram, Utilities, CentralityClasses, Oscar, Jetscape, JetAnalysis, Flow, Lattice3D, Filter, EventCharacteristics
+* JetAnalysis: Add switch to write only charged associated particles
+* JetAnalysis: Add hole subtraction for particles with negative status
+* Histogram: Add possibility to add values with weights and possibility to create probability densities
+* Histogram: Choose which columns to be printed in the output file
+* EventCharacteristics: Add option for different radial weight in eccentricities
 
 ### Added
 
@@ -27,7 +54,13 @@ Date:
 
 ### Fixed
 
-* Oscar/Jetscape: Fixed bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)
+* Oscar/Jetscape: Fix bug in `remove_particle_species` filter function if only one PDG id is given (issue #182)
+* Oscar/Jetscape: Fix bug in `pseudorapidity_cut` filter function if only one cut value is given (issue #188)
+* Oscar/Jetscape: Fix bug in keyword argument parsing
+* ReactionPlaneFlow: Fix bug in particle weight
+* Oscar: Fix various bugs in printout
+* EventCharacteristics: Fix sign of the eccentricity
+* Jetscape: Fix bug in keyword argument filtering, where filters were not applied to the last event
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.1.1...v1.2.0)
 

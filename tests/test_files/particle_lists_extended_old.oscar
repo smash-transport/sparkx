@@ -1,0 +1,11 @@
+#!OSCAR2013Extended particle_lists t x y z mass p0 px py pz pdg ID charge ncoll form_time xsecfac proc_id_origin proc_type_origin time_last_coll pdg_mother1 pdg_mother2
+# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e none fm none none none fm none none
+# SMASH-3.1rc-23-g59a05e65f
+# event 0 out 4
+200 1.19982 2.4656 66.6003 0.938 0.969041054 -0.0062451792 -0.0679376012 0.233542383 2112 0 0 0 -5.76975 1 0 0 0 0 0
+200 -35.1206 3.67917 53.7048 0.938 0.999183602 -0.187411374 0.0248889149 0.28771755 2112 1 0 1 -5.76975 1 14 1 17.2191 0 0
+200 -36.0241 -72.3435 0.292269 0.938 1.02984689 -0.198371594 -0.375935324 0.00787130722 2112 2 0 1 -5.76975 1 7 1 9.56613 0 0
+200 -0.327458 -1.03495 63.4848 0.938 0.970534111 -0.0728987705 0.0500597969 0.232964045 2112 3 0 0 -5.76975 1 0 0 0 0 0
+# event 0 end 0 impact   0.000 scattering_projectile_target yes
+# event 1 out 0
+# event 1 end 0 impact   0.000 scattering_projectile_target yes

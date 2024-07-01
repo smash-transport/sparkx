@@ -1,3 +1,9 @@
+.. raw:: html
+
+   <div style="text-align: right;">
+       <img src="_static/SPARKX_logo.png" style="max-width:30%; display:inline-block;">
+   </div>
+
 SPARKX
 ======
 

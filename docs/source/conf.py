@@ -18,9 +18,9 @@ sys.path.insert(0, os.path.abspath('../../src/sparkx/flow'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'sparkx'
-copyright = '2023, SPARKX Collaboration'
+copyright = '2024, SPARKX Collaboration'
 author = 'Hendrik Roch, Nils Sass, Niklas Götz'
-release = '0.9.0'
+release = '1.2.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -61,3 +61,4 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_favicon = '_static/favicon.ico'
