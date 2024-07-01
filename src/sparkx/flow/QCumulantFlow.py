@@ -773,7 +773,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin+1]:
                         particles_event.append(particle.phi()+self.rand_reaction_planes_[event])
-                        if particle.pdg in poi_pdg:
+                        if poi_pdg == None or particle.pdg in poi_pdg:
                             particles_event_poi.append(particle.phi()+self.rand_reaction_planes_[event])
                 events_bin.extend([particles_event])
                 events_bin_poi.extend([particles_event_poi])

@@ -568,8 +568,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         val = particle.momentum_rapidity_Y()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
-                    if val >= bins[bin] and val < bins[bin+1] and particle.pdg in poi_pdg:
-                        particles_event.append(particle)
+                    if val >= bins[bin] and val < bins[bin+1]:
+                        if poi_pdg == None or particle.pdg in poi_pdg:
+                            particles_event.append(particle)
                 if len(particles_event) > 0:
                     events_bin.extend([particles_event])
             particle_data_bin.extend([events_bin])

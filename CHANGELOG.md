@@ -32,6 +32,7 @@ Date: 2024-05-08
 
 ### Fixed
 * Jetscape: Fix for Jetscape charged particle filtering
+* QCumulantFlow and LeeYangZeroFlow: Fix bug in the calculation of the differential flow
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.0...v1.2.1)
 
