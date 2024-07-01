@@ -200,7 +200,7 @@ class Particle:
         :linenos:
 
         >>> particle_quantity_JETSCAPE = np.array([0,2114,11,2.01351754,1.30688601,-0.422958786,-0.512249773])
-        >>> particle = Particle(input_format="JETSCAPE", particle_array=particle_array_oscar2013)
+        >>> particle = Particle(input_format="JETSCAPE", particle_array=particle_quantity_JETSCAPE)
 
     Notes
     -----
@@ -209,6 +209,11 @@ class Particle:
     All quantities are saved in a numpy array member variable `data_`. The datatype
     of this array is float, therefore casting is required when int or bool values are 
     required.
+
+    When JETSCAPE creates particle objects, which are partons, the charge is multiplied
+    by 3 to make it an integer.
+    The functions `is_strange()` and `is_heavy_flavor()` should not be used in this
+    case.
     """
     __slots__ = ['data_'] 
     def __init__(self,input_format=None,particle_array=None):

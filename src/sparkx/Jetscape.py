@@ -200,7 +200,7 @@ class Jetscape:
         self.optional_arguments_ = kwargs
 
         for keys in self.optional_arguments_.keys():
-            if keys not in ['events', 'filters']:
+            if keys not in ['events', 'filters', 'particletype']:
                 raise ValueError('Unknown keyword argument used in constructor')
 
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
