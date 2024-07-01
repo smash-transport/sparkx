@@ -10,6 +10,7 @@
 import numpy as np
 import pytest
 import csv
+import copy
 from sparkx.Histogram import Histogram
 
 def test_histogram_creation_with_tuple():
@@ -244,6 +245,14 @@ def test_average():
     hist.add_value([2, 4, 6, 8, 9])
     hist.average()
     assert np.allclose(hist.histogram(), np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0]))
+
+def test_average_over_single_histogram():
+    # Test averaging histograms
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 3, 5, 7, 9])
+    hist2=copy.deepcopy(hist)
+    hist.average()
+    assert np.allclose(hist.histogram(), hist2.histogram())
 
 def test_write_to_file(tmp_path):
     # Test writing histograms to a file
