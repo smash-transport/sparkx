@@ -388,35 +388,36 @@ class Particle:
             for attr in attribute_list:
                 mapping_dict[attr] = [attribute_mapping["Allfields"][attr][0], attribute_list.index(attr)]
             attribute_mapping["OscarCustom"] = mapping_dict
-        if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
-                and len(particle_array) <=  len(attribute_mapping[input_format])\
-                and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
-            for attribute, index in attribute_mapping[input_format].items():
-                if len(particle_array)<=(index[1]):
-                    continue
-                if input_format == "OscarCustom":
-                    attribute = attribute + "_"
-                # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
-                # to ensure similar behaving as if we were reading in data into ints.
-                if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
-                    self.data_[index[0]] = float(particle_array[index[1]])
-                elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
-                    self.data_[index[0]] = int(particle_array[index[1]])
-                else:
-                    self.data_[index[0]] = int(particle_array[index[1]])
+        elif input_format in attribute_mapping:
+            if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
+                    and len(particle_array) <=  len(attribute_mapping[input_format])\
+                    and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
+                for attribute, index in attribute_mapping[input_format].items():
+                    if len(particle_array)<=(index[1]):
+                        continue
+                    if input_format == "OscarCustom":
+                        attribute = attribute + "_"
+                    # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
+                    # to ensure similar behaving as if we were reading in data into ints.
+                    if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
+                        self.data_[index[0]] = float(particle_array[index[1]])
+                    elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
+                        self.data_[index[0]] = int(particle_array[index[1]])
+                    else:
+                        self.data_[index[0]] = int(particle_array[index[1]])
 
-            # It is important for JETSCAPE particles to compute pdg_valid
-            # here because the compute_charge_from_pdg function depends on it. 
-            self.pdg_valid = PDGID(self.pdg).is_valid
+                # It is important for JETSCAPE particles to compute pdg_valid
+                # here because the compute_charge_from_pdg function depends on it. 
+                self.pdg_valid = PDGID(self.pdg).is_valid
 
-            if input_format == "JETSCAPE":
-                self.mass = self.compute_mass_from_energy_momentum()
-                self.charge = self.compute_charge_from_pdg()
-                if self.pdg_valid == False and np.isnan(self.charge):
-                    warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
+                if input_format == "JETSCAPE":
+                    self.mass = self.compute_mass_from_energy_momentum()
+                    self.charge = self.compute_charge_from_pdg()
+                    if self.pdg_valid == False and np.isnan(self.charge):
+                        warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
             else:
                 raise ValueError("The input file is corrupted! " +\
-                                 "A line with wrong number of columns "+str(len(particle_array))+" was found.")
+                                "A line with wrong number of columns "+str(len(particle_array))+" was found.")
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
 
