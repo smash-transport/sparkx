@@ -799,3 +799,16 @@ def test_spin_degeneracy_from_pdg_invalid_values():
     result = p.spin_degeneracy()
 
     assert np.isnan(result)
+
+def test_create_quark_from_pdg_valid_values():
+    particle_quantity_JETSCAPE = np.array([0,1,11,2.01351754,1.30688601,-0.422958786,-0.512249773])
+    particle = Particle(input_format="JETSCAPE", particle_array=particle_quantity_JETSCAPE)
+
+    assert particle.charge == -1
+    assert math.isclose(particle.mass, 1.38, rel_tol=1e-3)
+
+def test_create_gluon_from_pdg_valid_values():
+    particle_quantity_JETSCAPE = np.array([0,21,11,2.01351754,1.30688601,-0.422958786,-0.512249773])
+    particle = Particle(input_format="JETSCAPE", particle_array=particle_quantity_JETSCAPE)
+
+    assert particle.charge == 0
