@@ -10,6 +10,7 @@
 import numpy as np
 import pytest
 import csv
+import copy
 from sparkx.Histogram import Histogram
 
 def test_histogram_creation_with_tuple():
@@ -81,6 +82,66 @@ def test_add_value_single_number_to_multiple_histograms():
     hist.add_histogram()
     hist.add_value(5.5)
     assert np.allclose(hist.histogram(), np.array([[0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]]))
+
+def test_remove_bin_out_of_range():
+    # Test removing a bin at an index out of range
+    hist = Histogram((0, 10, 10))
+    with pytest.raises(ValueError):
+        hist.remove_bin(11)
+
+def test_remove_bin_from_existing_histogram():
+    # Test removing a bin from an existing histogram
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.remove_bin(4)
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0, 0, 0, 0, 0]))
+
+def test_remove_bin_from_multiple_histograms():
+    # Test removing a bin from multiple histograms
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.add_histogram()
+    hist.add_value(5.5)
+    hist.remove_bin(4)
+    assert np.allclose(hist.histogram(), np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0, 0]]))
+
+def test_add_bin():
+    # Test adding a bin to the histogram
+    hist = Histogram((0, 10, 10))
+    hist.add_bin(6, 5.5)
+    assert np.allclose(hist.bin_edges_, np.array([0, 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 9, 10]))
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+
+
+def test_add_bin_index_out_of_range():
+    # Test adding a bin at an index out of range
+    hist = Histogram((0, 10, 10))
+    with pytest.raises(ValueError):
+        hist.add_bin(11, 11)
+
+def test_add_bin_non_monotonic():
+    # Test adding a bin that would make the bin edges non-monotonic
+    hist = Histogram((0, 10, 10))
+    with pytest.raises(ValueError):
+        hist.add_bin(6, 4.5)
+
+def test_add_bin_to_existing_histogram():
+    # Test adding a bin to an existing histogram
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.add_bin(6, 5.5)
+    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]))
+
+def test_add_bin_to_multiple_histograms():
+    # Test adding a bin to multiple histograms
+    hist = Histogram((0, 10, 10))
+    hist.add_value(4.5)
+    hist.add_histogram()
+    hist.add_value(5.6)
+    hist.add_bin(6, 5.5)
+    hist.add_value(5.6)
+    print(hist.histogram())
+    assert np.allclose(hist.histogram(), np.array([[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]))
 
 def test_add_value_with_weight():
     hist = Histogram((0, 10, 10))
@@ -184,6 +245,14 @@ def test_average():
     hist.add_value([2, 4, 6, 8, 9])
     hist.average()
     assert np.allclose(hist.histogram(), np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0]))
+
+def test_average_over_single_histogram():
+    # Test averaging histograms
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 3, 5, 7, 9])
+    hist2=copy.deepcopy(hist)
+    hist.average()
+    assert np.allclose(hist.histogram(), hist2.histogram())
 
 def test_write_to_file(tmp_path):
     # Test writing histograms to a file

@@ -23,6 +23,7 @@ Date: XXX
 
 ### Added
 * ReactionPlaneFlow: Returns also the angle, not only the flow value
+* Histogram: Add possibility to add and remove bins
 * Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
 * Particle: Include changes for parton read in from Jetscape class, multiply quark charges by 3 to make them integers
 
