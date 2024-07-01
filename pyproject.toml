@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "sparkx"
@@ -37,5 +37,3 @@ dependencies = [
 "Repository" = "https://github.com/smash-transport/sparkx"
 "Bug Tracker" = "https://github.com/smash-transport/sparkx/issues"
 "Documentation" = "https://smash-transport.github.io/sparkx/"
-
-

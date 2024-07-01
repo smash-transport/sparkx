@@ -2,8 +2,8 @@ from setuptools import find_packages, setup
 
 setup(
     name='sparkx',
-    packages=find_packages(where='src/sparkx'),
-    package_dir={'': 'sparkx'},
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     install_requires=[
         "particle==0.23.0",
         "numpy>=1.23.5",
