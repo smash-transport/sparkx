@@ -18,6 +18,15 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v1.2.2-Newton
+Date: XXX
+
+### Added
+* ReactionPlaneFlow: Returns also the angle, not only the flow value
+
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.2.2)
+
 ## v1.2.1-Newton
 Date: 2024-05-08
 
