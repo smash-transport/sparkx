@@ -9,6 +9,7 @@
     
 import numpy as np
 import warnings
+from typing import List, Union
 
 
 class CentralityClasses:
@@ -62,7 +63,8 @@ class CentralityClasses:
         1
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
-    def __init__(self,events_multiplicity,centrality_bins):
+    def __init__(self,events_multiplicity: Union[List[float], np.ndarray], 
+                 centrality_bins: Union[List[float], np.ndarray]) -> None:
         if not isinstance(events_multiplicity, (list,np.ndarray)):
             raise TypeError("'events_multiplicity' is not list or numpy.ndarray")
         if not isinstance(centrality_bins, (list,np.ndarray)):
@@ -95,14 +97,14 @@ class CentralityClasses:
         self.events_multiplicity_ = events_multiplicity
         self.centrality_bins_ = unique_bins
 
-        self.dNchdetaMin_ = []
-        self.dNchdetaMax_ = []
-        self.dNchdetaAvg_ = []
-        self.dNchdetaAvgErr_ = [] 
+        self.dNchdetaMin_: list[float] = []
+        self.dNchdetaMax_: list[float] = []
+        self.dNchdetaAvg_: list[float] = []
+        self.dNchdetaAvgErr_: list[float] = [] 
 
         self.__create_centrality_classes()
 
-    def __create_centrality_classes(self):
+    def __create_centrality_classes(self) -> None:
         """
         Create centrality classes based on event multiplicity.
 
@@ -186,7 +188,7 @@ class CentralityClasses:
 
             MinRecord = MaxRecord
 
-    def get_centrality_class(self,dNchdEta):
+    def get_centrality_class(self,dNchdEta: float) -> int:
         """
         This function determines the index of the centrality bin for a given
         multiplicity value based on the predefined centrality classes.
@@ -223,8 +225,10 @@ class CentralityClasses:
             for i in range(1, len(self.dNchdetaMin_)-1):
                 if (dNchdEta >= self.dNchdetaMin_[i]) and (dNchdEta < self.dNchdetaMin_[i-1]):
                     return i
+        # default case to satisfy mypy's requirement for a return statement
+        return -1
                 
-    def output_centrality_classes(self,fname):
+    def output_centrality_classes(self,fname: str) -> None:
         """
         Write centrality class information to a file.
 
