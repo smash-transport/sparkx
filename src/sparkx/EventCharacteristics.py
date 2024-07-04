@@ -70,13 +70,16 @@ class EventCharacteristics:
         >>> eps2 = event_characterization.eccentricity(2, weight_quantity = "number")
 
     """
+    event_data_: Union[Lattice3D, List[Particle], np.ndarray[Any, np.dtype[np.object_]]]
+    has_lattice_: bool
+
     def __init__(self, event_data: Union[List[Particle], 
-                                         np.ndarray[Any, np.dtype[Particle]], 
+                                         np.ndarray[Any, np.dtype[np.object_]], 
                                          Lattice3D]) -> None:
         self.set_event_data(event_data)
 
     def set_event_data(self, event_data: Union[List[Particle], 
-                                            np.ndarray[Any, np.dtype[Particle]],
+                                            np.ndarray[Any, np.dtype[np.object_]],
                                             Lattice3D]) -> None:
         """
         Overwrites the event data.
@@ -144,6 +147,10 @@ class EventCharacteristics:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
         if harmonic_m is not None and harmonic_m < 1:
             raise ValueError("harmonic_m must be positive")
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for particle in self.event_data_:
             if weight_quantity == "energy":
                 weight = particle.E
@@ -164,8 +171,10 @@ class EventCharacteristics:
                 rn = (x**2 + y**2)**(3/2.)
             elif harmonic_n != 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(harmonic_n/2.)
-            else:
+            elif harmonic_m is not None:
                 rn = (x**2 + y**2)**(harmonic_m/2.)
+            else:
+                raise ValueError("harmonic_m or harmonic_n must be provided")
 
             phi = np.arctan2(y,x)
             real_eps += rn*np.cos(harmonic_n*phi)*weight
@@ -204,6 +213,10 @@ class EventCharacteristics:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
         if harmonic_m is not None and harmonic_m < 1:
             raise ValueError("harmonic_m must be positive")
+        if  isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a grid.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for i, j, k in np.ndindex(self.event_data_.grid_.shape):
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             #Exception for dipole asymmetry
@@ -211,8 +224,10 @@ class EventCharacteristics:
                 rn = (x**2 + y**2)**(3/2.)
             elif harmonic_n != 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(harmonic_n/2.)
-            else:
+            elif harmonic_m is not None:
                 rn = (x**2 + y**2)**(harmonic_m/2.)
+            else:
+                raise ValueError("harmonic_m or harmonic_n must be provided")
 
             phi = np.arctan2(y,x)
             lattice_density = self.event_data_.get_value_by_index(i, j, k)
@@ -337,9 +352,10 @@ class EventCharacteristics:
             raise TypeError("output_filename must be a string")
         if (IC_info is not None) and not isinstance(IC_info,str):
             raise TypeError("The given IC_info is not a string")
-
         if self.has_lattice_:
             raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
 
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -458,10 +474,11 @@ class EventCharacteristics:
             warnings.warn("The given IC_info is not a string")
         if not isinstance(output_filename, str):
             raise TypeError("output_filename must be a string")
-
         if self.has_lattice_:
             raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
-
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
