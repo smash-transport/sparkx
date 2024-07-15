@@ -481,22 +481,16 @@ class Histogram:
         averaged with the unit weights and they are overwritten by the
         averaged histogram.
         The standard error of the averaged histograms is computed.
+        ``histogram_raw_counts`` is summed over all histograms.
+        ``scaling_`` is set to the value of the first histogram.
 
         Returns
         -------
         Histogram
             Returns a Histogram object.
 
-        Raises
-        ------
-        TypeError
-            if there is only one histogram
         """
-
-        self.error_ = np.sqrt(np.sum(self.histograms_, axis=0) / self.number_of_histograms_)
-        self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0))
-        self.histograms_ = np.mean(self.histograms_, axis=0)
-        self.number_of_histograms_ = 1
+        self.average_weighted(np.ones(self.number_of_histograms_))
         return self
 
     def average_weighted(self,weights):
@@ -506,7 +500,9 @@ class Histogram:
         When this function is called the previously generated histograms are
         averaged with the given weights and they are overwritten by the
         averaged histogram.
-        The standard error of the histograms is computed.
+        The weighted standard error of the histograms is computed.
+        ``histogram_raw_counts`` is summed over all histograms.
+        ``scaling_`` is set to the value of the first histogram.
 
         Parameters
         ----------
@@ -518,10 +514,6 @@ class Histogram:
         Histogram
             Returns a Histogram object.
 
-        Raises
-        ------
-        TypeError
-            if there is only one histogram
         """
         average = np.average(self.histograms_, axis=0, weights=weights)
         variance = np.average((self.histograms_ - average)**2., axis=0, weights=weights)
@@ -529,9 +521,48 @@ class Histogram:
         self.histograms_ = average
         self.error_ = np.sqrt(variance)
         self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0, weights=weights))
+        self.histogram_raw_count_= np.sum(self.histograms_raw_count_, axis=0)
+        self.scaling_= self.scaling_[0]
 
         self.number_of_histograms_ = 1
         
+        return self
+    
+    def average_weighted_by_error(self):
+        """
+        Weighted average over all histograms, where each entry is weighted by its associated error.
+
+        When this function is called the previously generated histograms are
+        averaged with the weights determined by the inverse of the error associated with each entry.
+        The histograms are then overwritten by the averaged histogram.
+        The weighted standard error of the histograms is computed.
+        ``histogram_raw_counts`` is summed over all histograms.
+        ``scaling_`` is set to the value of the first histogram.
+
+        Returns
+        -------
+        Histogram
+            Returns a Histogram object.
+
+        Raises
+        ------
+        TypeError
+            if the error is zero for any entry.
+        """
+        if np.any(self.error_ == 0):
+            raise TypeError("Error cannot be zero for any entry when averaging by error.")
+
+        weights = 1 / self.error_**2
+        average = np.average(self.histograms_, axis=0, weights=weights)
+
+        self.histograms_ = average
+        self.error_ = np.sqrt(1. / np.sum(1. / np.square(self.error_), axis=0))
+        self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0, weights=weights))
+        self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
+        self.scaling_ = self.scaling_[0]
+
+        self.number_of_histograms_ = 1
+
         return self
 
     def standard_error(self):
