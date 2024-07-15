@@ -243,8 +243,55 @@ def test_average():
     hist.add_value([1, 3, 5, 7, 9])
     hist.add_histogram()
     hist.add_value([2, 4, 6, 8, 9])
+    counts_summed=[0., 1., 1., 1., 1., 1., 1., 1., 1., 2.]
     hist.average()
     assert np.allclose(hist.histogram(), np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0]))
+    # Test if the error is the standard error
+    assert np.allclose(hist.error_, np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0]))
+    assert isinstance(hist.scaling_, np.ndarray)
+    assert not any(isinstance(i, np.ndarray) for i in hist.scaling_)
+    assert np.allclose(counts_summed, hist.histogram_raw_count_)
+
+def test_average_weighted():
+    # Test averaging histograms with different weights
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 3, 5, 7, 9])
+    hist.add_histogram()
+    hist.add_value([2, 4, 6, 8, 9])
+    counts_summed=[0., 1., 1., 1., 1., 1., 1., 1., 1., 2.]
+    hist.average_weighted([0.3, 0.7])
+    assert np.allclose(hist.histogram(), np.array([0, 0.3, 0.3, 0.3, 0.3, 0.7, 0.3, 0.3, 0.3, 0.7]))
+    # Test if the error is the standard error
+    assert np.allclose(hist.error_, np.array([0, 0.3, 0.3, 0.3, 0.3, 0.7, 0.3, 0.3, 0.3, 0.7]))
+    assert isinstance(hist.scaling_, np.ndarray)
+    assert not any(isinstance(i, np.ndarray) for i in hist.scaling_)
+    assert np.allclose(counts_summed, hist.histogram_raw_count_)
+
+def test_average_weighted_by_error():
+    # Test averaging histograms with weights determined by error
+    hist = Histogram((0, 3, 3))
+    hist.add_value([0, 0,0,])
+    hist.error_[0] =  np.array([1.,2.,3.])
+    hist.add_histogram()
+    hist.add_value([1.,1.,2.])
+    hist.error_[1] =  np.array([2.,2.,3.])
+    counts_summed=[3.,2.,1.]
+    hist.average_weighted_by_error()
+    assert np.allclose(hist.histogram(), np.array([2.4,1.,0.5]), atol=0.01)
+    # Test if the error is the standard error
+    assert np.allclose(hist.error_, np.array([0.89442719, 1.41421356, 2.12132034]), atol=0.01)
+    assert isinstance(hist.scaling_, np.ndarray)
+    assert not any(isinstance(i, np.ndarray) for i in hist.scaling_)
+    assert np.allclose(counts_summed, hist.histogram_raw_count_)
+
+def test_average_weighted_by_error_no_error_set():
+    # Test that an error is thrown if the error is not set
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 3, 5, 7, 9])
+    hist.add_histogram()
+    hist.add_value([2, 4, 6, 8, 9])
+    with pytest.raises(TypeError):
+        hist.average_weighted_by_error()
 
 def test_average_over_single_histogram():
     # Test averaging histograms
