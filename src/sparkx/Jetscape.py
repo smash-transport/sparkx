@@ -85,38 +85,8 @@ class Jetscape:
 
     Methods
     -------
-    particle_list:
-        Returns current Jetscape data as nested list
-    particle_objects_list:
-        Returns current Jetscape data as nested list of Particle objects
-    num_events:
-        Get number of events
-    num_output_per_event:
-        Get number of particles in each event
-    get_sigmaGen:
-        Retrieves the sigmaGen values with error
-    particle_species:
-        Keep only particles with given PDG ids
-    remove_particle_species:
-        Remove particles with given PDG ids
-    charged_particles:
-        Keep charged particles only
-    uncharged_particles:
-        Keep uncharged particles only
-    strange_particles:
-        Keep strange particles only
     particle_status:
         Keep only particles with a given status flag
-    pT_cut:
-        Apply pT cut to all particles
-    rapidity_cut:
-        Apply rapidity cut to all particles
-    pseudorapidity_cut:
-        Apply pseudorapidity cut to all particles
-    multiplicity_cut:
-        Apply multiplicity cut to all particles
-    lower_event_energy_cut:
-        Filters out events with total energy lower than a threshold.
     print_particle_lists_to_file:
         Print current particle data to file with same format
 
@@ -370,6 +340,58 @@ class Jetscape:
         particle_list[6] = float(particle.pz)
 
         return particle_list
+    
+    def particle_list(self):
+        """
+        Returns a nested python list containing all quantities from the
+        current Jetscape data as numerical values with the following shape:
+
+            | Single Event:    [event][output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
+
+        Returns
+        -------
+        list
+            Nested list containing the current Jetscape data
+
+        """
+        num_events = self.num_events_
+        
+        if num_events == 1:
+            num_particles = self.num_output_per_event_[0][1]
+        else:
+            num_particles = self.num_output_per_event_[:,1]
+
+        particle_array = []
+
+        if num_events == 1:
+            for i_part in range(0, num_particles):
+                particle = self.particle_list_[0][i_part]
+                particle_array.append(self.__particle_as_list(particle))
+        else:
+            for i_ev in range(0, num_events):
+                event = []
+                for i_part in range(0, num_particles[i_ev]):
+                    particle = self.particle_list_[i_ev][i_part]
+                    event.append(self.__particle_as_list(particle))
+                particle_array.append(event)
+
+        return particle_array
+
+    def particle_objects_list(self):
+        """
+        Returns a nested python list containing all quantities from the
+        current Jetscape data as numerical values with the following shape:
+
+            | Single Event:    [output_line][particle_quantity]
+            | Multiple Events: [event][output_line][particle_quantity]
+
+        Returns
+        -------
+        list
+            Nested list containing the current Jetscape data
+        """
+        return self.particle_list_
 
     def __update_num_output_per_event_after_filter(self):
         for event in range(0, len(self.particle_list_)):
@@ -530,183 +552,6 @@ class Jetscape:
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
 
-    def particle_list(self):
-        """
-        Returns a nested python list containing all quantities from the
-        current Jetscape data as numerical values with the following shape:
-
-            | Single Event:    [event][output_line][particle_quantity]
-            | Multiple Events: [event][output_line][particle_quantity]
-
-        Returns
-        -------
-        list
-            Nested list containing the current Jetscape data
-
-        """
-        num_events = self.num_events_
-
-        if num_events == 1:
-            num_particles = self.num_output_per_event_[0][1]
-        else:
-            num_particles = self.num_output_per_event_[:, 1]
-
-        particle_array = []
-
-        if num_events == 1:
-            for i_part in range(0, num_particles):
-                particle = self.particle_list_[0][i_part]
-                particle_array.append(self.__particle_as_list(particle))
-        else:
-            for i_ev in range(0, num_events):
-                event = []
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                particle_array.append(event)
-
-        return particle_array
-
-    def particle_objects_list(self):
-        """
-        Returns a nested python list containing all quantities from the
-        current Jetscape data as numerical values with the following shape:
-
-            | Single Event:    [output_line][particle_quantity]
-            | Multiple Events: [event][output_line][particle_quantity]
-
-        Returns
-        -------
-        list
-            Nested list containing the current Jetscape data
-        """
-        return self.particle_list_
-
-    def num_output_per_event(self):
-        """
-        Returns a numpy array containing the event number (starting with 1)
-        and the corresponding number of particles created in this event as
-
-        num_output_per_event[event_n, number_of_particles_in_event_n]
-
-        num_output_per_event is updated with every manipulation e.g. after
-        applying cuts.
-
-        Returns
-        -------
-        num_output_per_event_ : numpy.ndarray
-            Array containing the event number and the corresponding number of
-            particles
-        """
-        return self.num_output_per_event_
-
-    def num_events(self):
-        """
-        Returns the number of events in particle_list
-
-        num_events is updated with every manipulation e.g. after
-        applying cuts.
-
-        Returns
-        -------
-        num_events_ : int
-            Number of events in particle_list
-        """
-        return self.num_events_
-
-    def charged_particles(self):
-        """
-        Keep only charged particles in particle_list
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing charged particles in every event only
-        """
-        self.particle_list_ = charged_particles(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def uncharged_particles(self):
-        """
-        Keep only uncharged particles in particle_list
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing uncharged particles in every event only
-        """
-        self.particle_list_ = uncharged_particles(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def strange_particles(self):
-        """
-        Keep only strange particles in particle_list
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing strange particles in every event only
-        """
-        self.particle_list_ = strange_particles(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def particle_species(self, pdg_list):
-        """
-        Keep only particle species given by their PDG ID in every event
-
-        Parameters
-        ----------
-        pdg_list : int
-            To keep a single particle species only, pass a single PDG ID
-
-        pdg_list : tuple/list/array
-            To keep multiple particle species, pass a tuple or list or array
-            of PDG IDs
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing only particle species specified by pdg_list for every event
-
-        """
-        self.particle_list_ = particle_species(self.particle_list_, pdg_list)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def remove_particle_species(self, pdg_list):
-        """
-        Remove particle species from particle_list by their PDG ID in every
-        event
-
-        Parameters
-        ----------
-        pdg_list : int
-            To remove a single particle species only, pass a single PDG ID
-
-        pdg_list : tuple/list/array
-            To remove multiple particle species, pass a tuple or list or array
-            of PDG IDs
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing all but the specified particle species in every event
-
-        """
-        self.particle_list_ = remove_particle_species(
-            self.particle_list_, pdg_list
-        )
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
     def particle_status(self, status_list):
         """
         Keep only particles with a given particle status
@@ -732,164 +577,6 @@ class Jetscape:
 
         return self
 
-    def lower_event_energy_cut(self, minimum_event_energy):
-        """
-        Filters out events with total energy lower than a threshold.
-
-        Parameters
-        ----------
-        minimum_event_energy : int or float
-            The minimum event energy threshold. Should be a positive integer or float.
-
-        Returns
-        -------
-        self: Jetscape object
-            The updated instance of the class contains only events above the
-            energy threshold.
-
-        Raises
-        ------
-        TypeError
-            If the minimum_event_energy parameter is not an integer or float.
-        ValueError
-            If the minimum_event_energy parameter is less than or equal to 0.
-        """
-        self.particle_list_ = lower_event_energy_cut(
-            self.particle_list_, minimum_event_energy
-        )
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def pT_cut(self, cut_value_tuple):
-        """
-        Apply transverse momentum cut to all events by passing an acceptance
-        range by ::code`cut_value_tuple`. All particles outside this range will
-        be removed.
-
-        Parameters
-        ----------
-        cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the pT acceptance
-            range :code:`(cut_min, cut_max)`. If one of the limits is not
-            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
-            or :code:`(cut_min, None)`.
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing only particles complying with the transverse momentum
-            cut for all events
-        """
-        self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def mT_cut(self, cut_value_tuple):
-        """
-        Apply transverse mass cut to all events by passing an acceptance
-        range by ::code`cut_value_tuple`. All particles outside this range will
-        be removed.
-
-        Parameters
-        ----------
-        cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the mT acceptance
-            range :code:`(cut_min, cut_max)`. If one of the limits is not
-            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
-            or :code:`(cut_min, None)`.
-
-        Returns
-        -------
-        self : Oscar object
-            Containing only particles complying with the transverse mass
-            cut for all events
-        """
-
-        self.particle_list_ = mT_cut(self.particle_list_, cut_value_tuple)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def rapidity_cut(self, cut_value):
-        """
-        Apply rapidity cut to all events and remove all particles with rapidity
-        not complying with cut_value
-
-        Parameters
-        ----------
-        cut_value : float
-            If a single value is passed, the cut is applied symmetrically
-            around 0.
-            For example, if cut_value = 1, only particles with rapidity in
-            [-1.0, 1.0] are kept.
-
-        cut_value : tuple
-            To specify an asymmetric acceptance range for the rapidity
-            of particles, pass a tuple (cut_min, cut_max)
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing only particles complying with the rapidity cut
-            for all events
-        """
-        self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def pseudorapidity_cut(self, cut_value):
-        """
-        Apply pseudo-rapidity cut to all events and remove all particles with
-        pseudo-rapidity not complying with cut_value
-
-        Parameters
-        ----------
-        cut_value : float
-            If a single value is passed, the cut is applied symmetrically
-            around 0.
-            For example, if cut_value = 1, only particles with pseudo-rapidity
-            in [-1.0, 1.0] are kept.
-
-        cut_value : tuple
-            To specify an asymmetric acceptance range for the pseudo-rapidity
-            of particles, pass a tuple (cut_min, cut_max)
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing only particles complying with the pseudo-rapidity cut
-            for all events
-        """
-        self.particle_list_ = pseudorapidity_cut(self.particle_list_, cut_value)
-        self.__update_num_output_per_event_after_filter()
-
-        return self
-
-    def multiplicity_cut(self, min_multiplicity):
-        """
-        Apply multiplicity cut. Remove all events with a multiplicity lower
-        than min_multiplicity
-
-        Parameters
-        ----------
-        min_multiplicity : int
-            Lower bound for multiplicity. If the multiplicity of an event is
-            lower than min_multiplicity, this event is discarded.
-
-        Returns
-        -------
-        self : Jetscape object
-            Containing only events with a multiplicity >= min_multiplicity
-        """
-        self.particle_list_ = multiplicity_cut(
-            self.particle_list_, min_multiplicity
-        )
-        self.__update_num_output_per_event_after_filter()
-
-        return self
 
     def __get_last_line(self, file_path):
         """
