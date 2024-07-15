@@ -15,15 +15,17 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
     """
     This class implements a reaction plane flow analysis algorithm.
 
-    For this method, the flow is calculated under the assumption that the event 
-    plane angle is constant throughout all events. The flow is calculated as
+    For this method, the flow is calculated under the assumption that the 
+    reaction plane angle is constant throughout all events, i.e., the impact 
+    parameter is always oriented in the same direction. 
+    The flow is calculated as
 
     .. math::
 
         v_n = \\left\\langle \\exp{in\\phi_i}\\right\\rangle,
 
-    where we average over all particles of all events. We return complex numbers, 
-    which contain the information about the position of the event plane.
+    where we average over all particles of all events. We return complex 
+    numbers, which contain the information about the magnitude and the angle.
     If a weight is set for the particles in the `Particle` objects, then this 
     is used in the flow calculation.
 
