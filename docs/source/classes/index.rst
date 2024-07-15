@@ -10,6 +10,7 @@ Classes
    EventCharacteristics/index
    flow/index
    Histogram/index
+   Jackknife/index
    JetAnalysis/index
    Jetscape/index
    Lattice3D/index

@@ -6,5 +6,5 @@ MultiParticlePtCorrelations
 .. currentmodule:: MultiParticlePtCorrelations
 .. autoclass:: MultiParticlePtCorrelations
 
-.. automethod:: MultiParticlePtCorrelations.compute_mean_pt_correlations
-.. automethod:: MultiParticlePtCorrelations.compute_mean_pt_cumulants
+.. automethod:: MultiParticlePtCorrelations.mean_pt_correlations
+.. automethod:: MultiParticlePtCorrelations.mean_pt_cumulants
