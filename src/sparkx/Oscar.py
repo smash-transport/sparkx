@@ -172,8 +172,10 @@ class Oscar(BaseStorer):
 
     def __init__(self, OSCAR_FILE, **kwargs):
         super().__init__(OSCAR_FILE,**kwargs)
-        self.oscar_format=self.loader_.oscar_format()
+        self.PATH_OSCAR_ = OSCAR_FILE
+        self.oscar_format_=self.loader_.oscar_format()
         self.event_end_lines_ = self.loader_.event_end_lines()  
+        del self.loader_
 
     def create_loader(self, OSCAR_FILE):
         self.loader_= OscarLoader(OSCAR_FILE)
