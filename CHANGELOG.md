@@ -28,6 +28,7 @@ Date: XXX
 * Particle: Include changes for parton read in from Jetscape class, multiply quark charges by 3 to make them integers
 * MultiParticlePtCorrelations: Class to compute higher order mean transverse momentum correlations and the corresponding cumulants
 * Jackknife: Implement class to compute uncertainty estimates with a delete-d Jackknife
+* Sparkx: Add `autopep8` code formatter and require the correct format for merges to `main` and `sparkx_devel`
 
 ### Fixed
 * QCumulantFlow and LeeYangZeroFlow: Fix bug in the calculation of the differential flow
