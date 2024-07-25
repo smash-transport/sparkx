@@ -18,8 +18,8 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
-## v1.2.2-Newton
-Date: XXX
+## v1.3.0-Newton
+Date: 2024-07-25
 
 ### Added
 * ReactionPlaneFlow: Returns also the angle, not only the flow value
@@ -34,7 +34,7 @@ Date: XXX
 * QCumulantFlow and LeeYangZeroFlow: Fix bug in the calculation of the differential flow
 
 
-[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.2.2)
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.3.0)
 
 ## v1.2.1-Newton
 Date: 2024-05-08
