@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "sparkx"
@@ -32,10 +32,14 @@ dependencies = [
     "matplotlib>=3.7.1"
 ]
 
+[tool.autopep8]
+max_line_length = 80
+in-place = true
+recursive = true
+aggressive = 3
+
 
 [project.urls]
 "Repository" = "https://github.com/smash-transport/sparkx"
 "Bug Tracker" = "https://github.com/smash-transport/sparkx/issues"
 "Documentation" = "https://smash-transport.github.io/sparkx/"
-
-
