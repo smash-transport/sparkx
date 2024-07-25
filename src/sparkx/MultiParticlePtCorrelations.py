@@ -235,13 +235,14 @@ class MultiParticlePtCorrelations:
         for event in particle_list_all_events:
             self._transverse_momentum_correlations_event_num_denom(event)
 
-    def _compute_mean_pt_correlations(self, data: np.ndarray) -> float:
+    def _compute_mean_pt_correlations(self, numerator_denominator_array: np.ndarray) -> float:
         """
-        Compute mean transverse momentum correlations from data.
+        Compute mean transverse momentum correlations from the array containing
+        the numerator and denominator.
 
         Parameters
         ----------
-        data : np.ndarray
+        numerator_denominator_array : np.ndarray
             Array of shape (num_events, 2) containing numerators and denominators.
 
         Returns
@@ -251,9 +252,9 @@ class MultiParticlePtCorrelations:
         """
         sum_numerator = 0.0
         sum_denominator = 0.0
-        for i in range(data.shape[0]):
-            sum_numerator += data[i, 0]
-            sum_denominator += data[i, 1]
+        for i in range(numerator_denominator_array.shape[0]):
+            sum_numerator += numerator_denominator_array[i, 0]
+            sum_denominator += numerator_denominator_array[i, 1]
 
         return sum_numerator / sum_denominator
 
@@ -317,12 +318,13 @@ class MultiParticlePtCorrelations:
         mean_pt_correlations_error_store = np.zeros(self.max_order)
         for order in range(self.max_order):
             # combine the numerator and denominator for each order in an array
-            data = np.array([self.N_events[:, order], self.D_events[:, order]]).T
-            mean_pt_correlations_store[order] = self._compute_mean_pt_correlations(data)
+            numerator_denominator_array = np.array([self.N_events[:, order], self.D_events[:, order]]).T
+            mean_pt_correlations_store[order] = self._compute_mean_pt_correlations(numerator_denominator_array)
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                mean_pt_correlations_error_store[order] = jackknife.compute_jackknife_estimates(data, function=self._compute_mean_pt_correlations)
+                mean_pt_correlations_error_store[order] = jackknife.compute_jackknife_estimates(
+                    numerator_denominator_array, function=self._compute_mean_pt_correlations)
 
         self.mean_pt_correlation = mean_pt_correlations_store
         if compute_error:
