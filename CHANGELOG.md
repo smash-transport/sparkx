@@ -19,7 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v1.3.0-Newton
-Date: XXX
+Date: 2024-07-25
 
 ### Added
 * ReactionPlaneFlow: Returns also the angle, not only the flow value
