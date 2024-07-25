@@ -26,4 +26,4 @@ jobs:
 
     - name: Check code formatting
       run: |
-        autopep8 --diff --recursive --max-line-length 80 --aggressive src/sparkx tests/
+        autopep8 --diff --recursive --max-line-length 80 --aggressive --global-config /dev/null src/sparkx tests/
