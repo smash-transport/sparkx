@@ -6,8 +6,7 @@
 #    GNU General Public License (GPLv3 or later)
 #
 # ===================================================
-
-from sparkx.Particle import Particle
+    
 from sparkx.Filter import *
 import numpy as np
 from sparkx.Loader.JetscapeLoader import JetscapeLoader
