@@ -20,6 +20,6 @@ setup(
     author_email="goetz@itp.uni-frankfurt.de, hroch@wayne.edu, nsass@itp.uni-frankfurt.de",
     url="https://smash-transport.github.io/sparkx/",
     download_url="https://github.com/smash-transport/sparkx",
-    license='MIT',
+    license='GNU General Public License v3.0',
     include_package_data = True
 )
