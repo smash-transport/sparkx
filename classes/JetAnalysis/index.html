@@ -23,8 +23,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Histogram" href="../Histogram/index.html" />
-    <link rel="prev" title="Jetscape" href="../Jetscape/index.html" /> 
+    <link rel="next" title="Jetscape" href="../Jetscape/index.html" />
+    <link rel="prev" title="Jackknife" href="../Jackknife/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,9 +49,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">JetAnalysis</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#JetAnalysis.JetAnalysis"><code class="docutils literal notranslate"><span class="pre">JetAnalysis</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#JetAnalysis.JetAnalysis.perform_jet_finding"><code class="docutils literal notranslate"><span class="pre">JetAnalysis.perform_jet_finding()</span></code></a></li>
@@ -64,11 +66,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -110,9 +112,9 @@
 <a class="reference external" href="https://fastjet.readthedocs.io/en/latest/">fastjet</a> python package.
 For further information on the jet finding algorithms please have a look
 at the documentation.</p>
-<p><strong>Attention</strong>: For a proper jet hole subtraction the <cite>status</cite> of the 
+<p><strong>Attention</strong>: For a proper jet hole subtraction the <cite>status</cite> of the
 particles has to be set. This is only given for read in from Jetscape
-output. With Oscar read in this has to be set by hand before doing the 
+output. With Oscar read in this has to be set by hand before doing the
 jet finding.</p>
 <p class="rubric">Notes</p>
 <p>The columns of the output file include the following quantities:</p>
@@ -244,7 +246,7 @@ hadrons in the jet cone.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>hadron_data: list</strong></dt><dd><p>List of hadron data for each event.
-Use the for example the Jetscape class and generate 
+Use the for example the Jetscape class and generate
 a <code class="code docutils literal notranslate"><span class="pre">particle_objects_list</span></code>.</p>
 </dd>
 <dt><strong>jet_R: float</strong></dt><dd><p>Jet radius parameter.</p>
@@ -260,17 +262,17 @@ and the upper one to <span class="math notranslate nohighlight">\(+\infty\)</spa
 </dd>
 <dt><strong>output_filename: str</strong></dt><dd><p>Filename for the jet output.</p>
 </dd>
-<dt><strong>assoc_only_charged: bool</strong></dt><dd><p>Selects if the associated particles are only charged ones. 
+<dt><strong>assoc_only_charged: bool</strong></dt><dd><p>Selects if the associated particles are only charged ones.
 Default is True.</p>
 </dd>
-<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding. 
+<dt><strong>jet_algorithm: fastjet.JetAlgorithm, optional</strong></dt><dd><p>Jet algorithm for jet finding.
 Default is <code class="code docutils literal notranslate"><span class="pre">fastjet.antikt_algorithm</span></code>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The standard recombination scheme <code class="code docutils literal notranslate"><span class="pre">E_scheme</span></code> of the fastjet 
+<p>The standard recombination scheme <code class="code docutils literal notranslate"><span class="pre">E_scheme</span></code> of the fastjet
 package is fixed here.</p>
 </dd></dl>
 
@@ -350,7 +352,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
 </dd>
 <dt><strong>event: int</strong></dt><dd><p>The event index.</p>
 </dd>
-<dt><strong>status_selection: str</strong></dt><dd><p>The selection status to find the associated particles. This can be 
+<dt><strong>status_selection: str</strong></dt><dd><p>The selection status to find the associated particles. This can be
 ‘negative’ or ‘positive’ hadrons status.</p>
 </dd>
 <dt><strong>only_charged: bool</strong></dt><dd><p>Select only charged particles as associated particles.</p>
@@ -372,8 +374,8 @@ element of the list (<code class="code docutils literal notranslate"><span class
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../Jetscape/index.html" class="btn btn-neutral float-left" title="Jetscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../Histogram/index.html" class="btn btn-neutral float-right" title="Histogram" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../Jackknife/index.html" class="btn btn-neutral float-left" title="Jackknife" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Jetscape/index.html" class="btn btn-neutral float-right" title="Jetscape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

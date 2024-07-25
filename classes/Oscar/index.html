@@ -22,8 +22,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Jetscape" href="../Jetscape/index.html" />
-    <link rel="prev" title="Particle" href="../Particle/index.html" /> 
+    <link rel="next" title="Particle" href="../Particle/index.html" />
+    <link rel="prev" title="MultiParticlePtCorrelations" href="../MultiParticlePtCorrelations/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,7 +48,15 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Oscar</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Oscar.Oscar"><code class="docutils literal notranslate"><span class="pre">Oscar</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Oscar.Oscar.particle_list"><code class="docutils literal notranslate"><span class="pre">Oscar.particle_list()</span></code></a></li>
@@ -74,13 +82,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -181,7 +183,7 @@ which they appear in the dictionary.</p></td>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the <code class="code docutils literal notranslate"><span class="pre">filters</span></code> keyword with the <code class="code docutils literal notranslate"><span class="pre">spacetime_cut</span></code> is used, then a list 
+<p>If the <code class="code docutils literal notranslate"><span class="pre">filters</span></code> keyword with the <code class="code docutils literal notranslate"><span class="pre">spacetime_cut</span></code> is used, then a list
 specifying the dimension to be cut in the first entry and the tuple with the cut
 boundaries in the second entry is needed. For all other filters, the dictionary
 only needs the filter name as key and the filter argument as value.
@@ -230,7 +232,7 @@ multiplicity &gt; 500:</p>
 <p><strong>3. Constructor cuts</strong></p>
 <p>Cuts can be performed directly in the constructor by passing a dictionary. This
 has the advantage that memory is saved because the cuts are applied after reading
-each single event. This is achieved by the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code>, which 
+each single event. This is achieved by the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code>, which
 contains the filter dictionary. Filters are applied in the order in which they appear.
 Let’s assume we only want to keep participant pions in events with a
 multiplicity &gt; 500:</p>
@@ -569,7 +571,7 @@ energy threshold.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Oscar.Oscar.pt_cut">
 <span class="sig-prename descclassname"><span class="pre">Oscar.</span></span><span class="sig-name descname"><span class="pre">pt_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_value_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Oscar.html#Oscar.pt_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Oscar.Oscar.pt_cut" title="Link to this definition"></a></dt>
-<dd><p>Apply transverse momentum cut to all events by passing an acceptance 
+<dd><p>Apply transverse momentum cut to all events by passing an acceptance
 range by ::code`cut_value_tuple`. All particles outside this range will
 be removed.</p>
 <dl class="field-list simple">
@@ -584,7 +586,7 @@ or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the transverse momentum 
+<dt><strong>self</strong><span class="classifier">Oscar object</span></dt><dd><p>Containing only particles complying with the transverse momentum
 cut for all events</p>
 </dd>
 </dl>
@@ -719,8 +721,8 @@ with the same format as the input file</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../Particle/index.html" class="btn btn-neutral float-left" title="Particle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../Jetscape/index.html" class="btn btn-neutral float-right" title="Jetscape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../MultiParticlePtCorrelations/index.html" class="btn btn-neutral float-left" title="MultiParticlePtCorrelations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Particle/index.html" class="btn btn-neutral float-right" title="Particle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

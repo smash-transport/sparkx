@@ -22,8 +22,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Flow" href="../flow/index.html" />
-    <link rel="prev" title="JetAnalysis" href="../JetAnalysis/index.html" /> 
+    <link rel="next" title="Jackknife" href="../Jackknife/index.html" />
+    <link rel="prev" title="ScalarProductFlow" href="../flow/ScalarProductFlow/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,10 +48,9 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Histogram</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Histogram.Histogram"><code class="docutils literal notranslate"><span class="pre">Histogram</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Histogram.Histogram.histogram"><code class="docutils literal notranslate"><span class="pre">Histogram.histogram()</span></code></a></li>
@@ -78,10 +77,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -386,7 +388,7 @@ array of numbers.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>value: int, float, np.number, list, numpy.ndarray</strong></dt><dd><p>Value(s) which are supposed to be added to the histogram instance.</p>
 </dd>
-<dt><strong>weight: int, float, np.number, list, numpy.ndarray, optional</strong></dt><dd><p>Weight(s) associated with the value(s). If provided, it should have 
+<dt><strong>weight: int, float, np.number, list, numpy.ndarray, optional</strong></dt><dd><p>Weight(s) associated with the value(s). If provided, it should have
 the same length as the value parameter.</p>
 </dd>
 </dl>
@@ -418,8 +420,8 @@ to the last histogram.</p>
 <dt class="sig sig-object py" id="Histogram.Histogram.make_density">
 <span class="sig-prename descclassname"><span class="pre">Histogram.</span></span><span class="sig-name descname"><span class="pre">make_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Histogram.html#Histogram.make_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Histogram.Histogram.make_density" title="Link to this definition"></a></dt>
 <dd><p>Make a probability density from the last histogram.
-The result represents the probability density function in a given bin. 
-It is normalized such that the integral over the whole histogram 
+The result represents the probability density function in a given bin.
+It is normalized such that the integral over the whole histogram
 yields 1. This behavior is similar to the one of numpy histograms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -440,17 +442,13 @@ yields 1. This behavior is similar to the one of numpy histograms.</p>
 <p>When this function is called the previously generated histograms are
 averaged with the unit weights and they are overwritten by the
 averaged histogram.
-The standard error of the averaged histograms is computed.</p>
+The standard error of the averaged histograms is computed.
+<code class="docutils literal notranslate"><span class="pre">histogram_raw_counts</span></code> is summed over all histograms.
+<code class="docutils literal notranslate"><span class="pre">scaling_</span></code> is set to the value of the first histogram.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>Histogram</dt><dd><p>Returns a Histogram object.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>TypeError</dt><dd><p>if there is only one histogram</p>
 </dd>
 </dl>
 </dd>
@@ -464,7 +462,9 @@ The standard error of the averaged histograms is computed.</p>
 <p>When this function is called the previously generated histograms are
 averaged with the given weights and they are overwritten by the
 averaged histogram.
-The standard error of the histograms is computed.</p>
+The weighted standard error of the histograms is computed.
+<code class="docutils literal notranslate"><span class="pre">histogram_raw_counts</span></code> is summed over all histograms.
+<code class="docutils literal notranslate"><span class="pre">scaling_</span></code> is set to the value of the first histogram.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -475,12 +475,6 @@ The standard error of the histograms is computed.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>Histogram</dt><dd><p>Returns a Histogram object.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>TypeError</dt><dd><p>if there is only one histogram</p>
 </dd>
 </dl>
 </dd>
@@ -509,7 +503,7 @@ This assumes Poisson distributed counts in each bin and independent draws.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>2D Array containing the statistical error (standard deviation) for 
+<dt>numpy.ndarray</dt><dd><p>2D Array containing the statistical error (standard deviation) for
 each bin and histogram.</p>
 </dd>
 </dl>
@@ -641,8 +635,8 @@ Then the same dictionary is used for all histograms.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../JetAnalysis/index.html" class="btn btn-neutral float-left" title="JetAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../flow/index.html" class="btn btn-neutral float-right" title="Flow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../flow/ScalarProductFlow/index.html" class="btn btn-neutral float-left" title="ScalarProductFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Jackknife/index.html" class="btn btn-neutral float-right" title="Jackknife" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

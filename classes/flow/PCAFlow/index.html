@@ -22,8 +22,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="GenerateFlow" href="../GenerateFlow/index.html" />
-    <link rel="prev" title="QCumulantFlow" href="../QCumulantFlow/index.html" /> 
+    <link rel="next" title="QCumulantFlow" href="../QCumulantFlow/index.html" />
+    <link rel="prev" title="LeeYangZeroFlow" href="../LeeYangZeroFlow/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,27 +48,29 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../EventPlaneFlow/index.html">EventPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">PCAFlow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#PCAFlow.PCAFlow"><code class="docutils literal notranslate"><span class="pre">PCAFlow</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -107,11 +109,11 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="PCAFlow.PCAFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">PCAFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_subcalc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow" title="Link to this definition"></a></dt>
-<dd><p>This class implements the flow analysis with Principal Component 
+<dd><p>This class implements the flow analysis with Principal Component
 Analysis (PCA).</p>
-<p>PCAFlow is designed for analyzing anisotropic flow in high-energy nuclear 
+<p>PCAFlow is designed for analyzing anisotropic flow in high-energy nuclear
 collisions using two-particle correlations.
-It uses Principal Component Analysis (PCA) to extract flow information from 
+It uses Principal Component Analysis (PCA) to extract flow information from
 particle data.</p>
 <p>This class implements the method proposed in:</p>
 <ul class="simple">
@@ -126,10 +128,10 @@ particle data.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>n</strong><span class="classifier">int, optional</span></dt><dd><p>The flow harmonic to compute. Must be a positive integer. Default is 2.</p>
 </dd>
-<dt><strong>alpha</strong><span class="classifier">int, optional</span></dt><dd><p>The order in sub-leading flow up to which the flow is computed. 
+<dt><strong>alpha</strong><span class="classifier">int, optional</span></dt><dd><p>The order in sub-leading flow up to which the flow is computed.
 Must be an integer greater than or equal to 1. Default is 2.</p>
 </dd>
-<dt><strong>number_subcalc</strong><span class="classifier">int, optional</span></dt><dd><p>The number of sub-calculations to estimate the error of the flow. 
+<dt><strong>number_subcalc</strong><span class="classifier">int, optional</span></dt><dd><p>The number of sub-calculations to estimate the error of the flow.
 Must be an integer greater than or equal to 2. Default is 4.</p>
 </dd>
 </dl>
@@ -138,7 +140,7 @@ Must be an integer greater than or equal to 2. Default is 4.</p>
 <dd class="field-even"><dl class="simple">
 <dt>TypeError</dt><dd><p>If n, alpha, or number_subcalc is not an integer.</p>
 </dd>
-<dt>ValueError</dt><dd><p>If n is not a positive integer, alpha is less than 1, 
+<dt>ValueError</dt><dd><p>If n is not a positive integer, alpha is less than 1,
 or number_subcalc is less than 2.</p>
 </dd>
 </dl>
@@ -159,7 +161,7 @@ or number_subcalc is less than 2.</p>
 </dd>
 <dt><strong>bin_multiplicity_total_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Total multiplicity in each bin across all events.</p>
 </dd>
-<dt><strong>sigma_multiplicity_total_</strong><span class="classifier">list of numpy.ndarray</span></dt><dd><p>List of arrays containing the multiplicity in each bin for each 
+<dt><strong>sigma_multiplicity_total_</strong><span class="classifier">list of numpy.ndarray</span></dt><dd><p>List of arrays containing the multiplicity in each bin for each
 sub-calculation.</p>
 </dd>
 <dt><strong>number_events_subcalc_</strong><span class="classifier">None or numpy.ndarray</span></dt><dd><p>Number of events used in each sub-calculation.</p>
@@ -213,14 +215,14 @@ sub-calculation.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity” 
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”
 or “pseudorapidity”).</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list of numpy.ndarrays</dt><dd><p>A list containing the differential flow and its uncertainty. 
+<dt>list of numpy.ndarrays</dt><dd><p>A list containing the differential flow and its uncertainty.
 Each array in the list corresponds:</p>
 <ul class="simple">
 <li><p>anisotropic flow of order alpha (float): Differential flow magnitude for the bin.</p></li>
@@ -264,8 +266,8 @@ Each array in the list corresponds:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../QCumulantFlow/index.html" class="btn btn-neutral float-left" title="QCumulantFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../GenerateFlow/index.html" class="btn btn-neutral float-right" title="GenerateFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../LeeYangZeroFlow/index.html" class="btn btn-neutral float-left" title="LeeYangZeroFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../QCumulantFlow/index.html" class="btn btn-neutral float-right" title="QCumulantFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

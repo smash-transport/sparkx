@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiParticlePtCorrelations &mdash; sparkx 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ca842793"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Oscar" href="../Oscar/index.html" />
+    <link rel="prev" title="Lattice3D" href="../Lattice3D/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MultiParticlePtCorrelations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations"><code class="docutils literal notranslate"><span class="pre">MultiParticlePtCorrelations</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_correlations"><code class="docutils literal notranslate"><span class="pre">MultiParticlePtCorrelations.mean_pt_correlations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_cumulants"><code class="docutils literal notranslate"><span class="pre">MultiParticlePtCorrelations.mean_pt_cumulants()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Classes</a></li>
+      <li class="breadcrumb-item active">MultiParticlePtCorrelations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/classes/MultiParticlePtCorrelations/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multiparticleptcorrelations">
+<span id="id1"></span><h1>MultiParticlePtCorrelations<a class="headerlink" href="#multiparticleptcorrelations" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="MultiParticlePtCorrelations.MultiParticlePtCorrelations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MultiParticlePtCorrelations.</span></span><span class="sig-name descname"><span class="pre">MultiParticlePtCorrelations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MultiParticlePtCorrelations.html#MultiParticlePtCorrelations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations" title="Link to this definition"></a></dt>
+<dd><p>Compute multi-particle transverse momentum correlations and cumulants up
+to the 8th order. This class is based on the following paper:</p>
+<ul class="simple">
+<li><p>[1] <a class="reference external" href="https://inspirehep.net/literature/2729183">Eur. Phys. J. A 60 (2024) 2, 38 [2312.00492 [nucl-th]]</a></p></li>
+</ul>
+<p>For the computation of transverse momentum correlations and cumulants, the
+implementation closely follows the equations and methods described in Ref. [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>max_order</strong><span class="classifier">int</span></dt><dd><p>Maximum order of correlations and cumulants to compute (must be between 1 and 8).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A demonstration of how to use the MultiParticlePtCorrelations class to
+calculate transverse momentum correlations and cumulants.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Maximum order for correlations and cumulants</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">max_order</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a MultiParticlePtCorrelations object</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="n">corr_obj</span> <span class="o">=</span> <span class="n">MultiParticlePtCorrelations</span><span class="p">(</span><span class="n">max_order</span><span class="o">=</span><span class="n">max_order</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># List of events, where each event is a list of particle objects</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle_list</span> <span class="o">=</span> <span class="n">Jetscape</span><span class="p">(</span><span class="s2">&quot;./particles.dat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">particle_object_list</span><span class="p">()</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute mean transverse momentum correlations</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">mean_pt_correlations</span> <span class="o">=</span> <span class="n">corr_obj</span><span class="o">.</span><span class="n">mean_pt_correlations</span><span class="p">(</span><span class="n">particle_list_all_events</span><span class="p">)</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mean_pt_correlations</span><span class="p">)</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">15</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute mean transverse momentum cumulants</span>
+<span class="linenos">16</span><span class="gp">&gt;&gt;&gt; </span><span class="n">mean_pt_cumulants</span> <span class="o">=</span> <span class="n">corr_obj</span><span class="o">.</span><span class="n">mean_pt_cumulants</span><span class="p">(</span><span class="n">particle_list_all_events</span><span class="p">)</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mean_pt_cumulants</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mean_pt_correlation</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>Mean transverse momentum correlations for each order up to <cite>max_order</cite>.</p>
+</dd>
+<dt><strong>mean_pt_correlation_error</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>Error estimates (if computed) for mean transverse momentum correlations.</p>
+</dd>
+<dt><strong>kappa</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>Mean transverse momentum cumulants for each order up to <cite>max_order</cite>.</p>
+</dd>
+<dt><strong>kappa_error</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>Error estimates (if computed) for mean transverse momentum cumulants.</p>
+</dd>
+<dt><strong>N_events</strong><span class="classifier">list</span></dt><dd><p>List to store numerators (N) of correlations for each event.</p>
+</dd>
+<dt><strong>D_events</strong><span class="classifier">list</span></dt><dd><p>List to store denominators (D) of correlations for each event.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>mean_pt_correlations:</strong></p></td>
+<td><p>Computes the mean transverse momentum correlations for each order k across all events.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>mean_pt_cumulants:</strong></p></td>
+<td><p>Computes the mean transverse momentum cumulants for each order k from the correlations.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_correlations">
+<span class="sig-prename descclassname"><span class="pre">MultiParticlePtCorrelations.</span></span><span class="sig-name descname"><span class="pre">mean_pt_correlations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_list_all_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MultiParticlePtCorrelations.html#MultiParticlePtCorrelations.mean_pt_correlations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_correlations" title="Link to this definition"></a></dt>
+<dd><p>Computes mean transverse momentum correlations for each order up to
+max_order using Eq. [14] in Ref. [1].
+The weight is chosen to be <span class="math notranslate nohighlight">\(W^{\prime}_{m} = D\langle m\rangle_{p_{\mathrm{T}}}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_list_all_events</strong><span class="classifier">list</span></dt><dd><p>List of events, where each event is a list of particle objects.</p>
+</dd>
+<dt><strong>compute_error</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to compute error estimates (default is True).</p>
+</dd>
+<dt><strong>delete_fraction</strong><span class="classifier">float, optional</span></dt><dd><p>Fraction of data to delete for jackknife method (default is 0.4).</p>
+</dd>
+<dt><strong>number_samples</strong><span class="classifier">int, optional</span></dt><dd><p>Number of jackknife samples (default is 100).</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int, optional</span></dt><dd><p>Random seed for reproducibility (default is 42).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray or tuple</dt><dd><p>Mean transverse momentum correlations for each order.
+If compute_error is True, returns a tuple (mean_pt_correlation, mean_pt_correlation_error).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If delete_fraction is not a float.
+If number_samples is not an integer.
+If seed is not an integer.
+If compute_error is not a boolean.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If delete_fraction is not between 0 and 1.
+If number_samples is not greater than 0.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_cumulants">
+<span class="sig-prename descclassname"><span class="pre">MultiParticlePtCorrelations.</span></span><span class="sig-name descname"><span class="pre">mean_pt_cumulants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_list_all_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MultiParticlePtCorrelations.html#MultiParticlePtCorrelations.mean_pt_cumulants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_cumulants" title="Link to this definition"></a></dt>
+<dd><p>Computes the mean transverse momentum cumulants for each order k
+from Eqs. B9-B16 in Ref. [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_list_all_events</strong><span class="classifier">list</span></dt><dd><p>List of events, where each event is a list of particle objects.</p>
+</dd>
+<dt><strong>compute_error</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to compute error estimates (default is True).</p>
+</dd>
+<dt><strong>delete_fraction</strong><span class="classifier">float, optional</span></dt><dd><p>Fraction of data to delete for jackknife method (default is 0.4).</p>
+</dd>
+<dt><strong>number_samples</strong><span class="classifier">int, optional</span></dt><dd><p>Number of jackknife samples (default is 100).</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int, optional</span></dt><dd><p>Random seed for reproducibility (default is 42).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray or tuple</dt><dd><p>Mean transverse momentum cumulants for each order.
+If compute_error is True, returns a tuple (kappa, kappa_error).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If delete_fraction is not a float.
+If number_samples is not an integer.
+If seed is not an integer.
+If compute_error is not a boolean.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If delete_fraction is not between 0 and 1.
+If number_samples is not greater than 0.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Lattice3D/index.html" class="btn btn-neutral float-left" title="Lattice3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Oscar/index.html" class="btn btn-neutral float-right" title="Oscar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

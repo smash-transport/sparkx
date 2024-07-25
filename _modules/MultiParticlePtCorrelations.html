@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiParticlePtCorrelations &mdash; sparkx 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=ca842793"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MultiParticlePtCorrelations</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MultiParticlePtCorrelations</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1"># ===================================================</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sparkx.Jackknife</span> <span class="kn">import</span> <span class="n">Jackknife</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+
+
+<div class="viewcode-block" id="MultiParticlePtCorrelations">
+<a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations">[docs]</a>
+<span class="k">class</span> <span class="nc">MultiParticlePtCorrelations</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute multi-particle transverse momentum correlations and cumulants up</span>
+<span class="sd">    to the 8th order. This class is based on the following paper:</span>
+
+<span class="sd">    - [1] `Eur. Phys. J. A 60 (2024) 2, 38 [2312.00492 [nucl-th]] &lt;https://inspirehep.net/literature/2729183&gt;`__</span>
+
+<span class="sd">    For the computation of transverse momentum correlations and cumulants, the</span>
+<span class="sd">    implementation closely follows the equations and methods described in Ref. [1].</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    max_order : int</span>
+<span class="sd">        Maximum order of correlations and cumulants to compute (must be between 1 and 8).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean_pt_correlation : np.ndarray, optional</span>
+<span class="sd">        Mean transverse momentum correlations for each order up to `max_order`.</span>
+<span class="sd">    mean_pt_correlation_error : np.ndarray, optional</span>
+<span class="sd">        Error estimates (if computed) for mean transverse momentum correlations.</span>
+<span class="sd">    kappa : np.ndarray, optional</span>
+<span class="sd">        Mean transverse momentum cumulants for each order up to `max_order`.</span>
+<span class="sd">    kappa_error : np.ndarray, optional</span>
+<span class="sd">        Error estimates (if computed) for mean transverse momentum cumulants.</span>
+<span class="sd">    N_events : list</span>
+<span class="sd">        List to store numerators (N) of correlations for each event.</span>
+<span class="sd">    D_events : list</span>
+<span class="sd">        List to store denominators (D) of correlations for each event.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_pt_correlations:</span>
+<span class="sd">        Computes the mean transverse momentum correlations for each order k</span>
+<span class="sd">        across all events.</span>
+
+<span class="sd">    mean_pt_cumulants:</span>
+<span class="sd">        Computes the mean transverse momentum cumulants for each order k</span>
+<span class="sd">        from the correlations.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A demonstration of how to use the MultiParticlePtCorrelations class to</span>
+<span class="sd">    calculate transverse momentum correlations and cumulants.</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; from sparkx import *</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Maximum order for correlations and cumulants</span>
+<span class="sd">        &gt;&gt;&gt; max_order = 8</span>
+<span class="sd">        &gt;&gt;&gt; # Create a MultiParticlePtCorrelations object</span>
+<span class="sd">        &gt;&gt;&gt; corr_obj = MultiParticlePtCorrelations(max_order=max_order)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # List of events, where each event is a list of particle objects</span>
+<span class="sd">        &gt;&gt;&gt; particle_list = Jetscape(&quot;./particles.dat&quot;).particle_object_list()</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Compute mean transverse momentum correlations</span>
+<span class="sd">        &gt;&gt;&gt; mean_pt_correlations = corr_obj.mean_pt_correlations(particle_list_all_events)</span>
+<span class="sd">        &gt;&gt;&gt; print(mean_pt_correlations)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Compute mean transverse momentum cumulants</span>
+<span class="sd">        &gt;&gt;&gt; mean_pt_cumulants = corr_obj.mean_pt_cumulants(particle_list_all_events)</span>
+<span class="sd">        &gt;&gt;&gt; print(mean_pt_cumulants)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">=</span> <span class="n">max_order</span>
+        <span class="c1"># Check if max_order is an integer</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;max_order must be an integer&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that max_order is greater than 0 and less than 9</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_order must be greater than 0 and less than 9&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_pt_correlation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_pt_correlation_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kappa_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_P_W_k</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This implements Eq. 7 in [1].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list_event : list</span>
+<span class="sd">            List of particle objects in a single event.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of np.ndarray</span>
+<span class="sd">            Pk : ndarray</span>
+<span class="sd">                Transverse momentum for each order.</span>
+<span class="sd">            Wk : ndarray</span>
+<span class="sd">                Weights for each order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Pk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="n">Wk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_list_event</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">):</span>
+                <span class="c1"># if particle.weight is np.nan, then set it to 1</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">weight</span><span class="p">):</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">Pk</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">())</span><span class="o">**</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">Wk</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">weight</span><span class="o">**</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">Pk</span><span class="p">,</span> <span class="n">Wk</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transverse_momentum_correlations_event_num_denom</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the transverse momentum correlations for a single event.</span>
+
+<span class="sd">        Computes the numerators and denominators of Eqs. A1-A7 in Ref. [1]</span>
+<span class="sd">        separately.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list_event : list</span>
+<span class="sd">            List of particle objects in a single event.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Pk</span><span class="p">,</span> <span class="n">Wk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_W_k</span><span class="p">(</span><span class="n">particle_list_event</span><span class="p">)</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># k = 1</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pk</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Wk</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># k = 2</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># k = 3</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># k = 4</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+                            <span class="o">+</span> <span class="mf">8.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+                            <span class="o">+</span> <span class="mf">8.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># k = 5</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">-</span>
+                    <span class="mf">10.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">+</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">20.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">20.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">30.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">24.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">-</span>
+                    <span class="mf">10.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">+</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">20.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">20.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">30.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">24.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>  <span class="c1"># k = 6</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">6.</span> <span class="o">-</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">45.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">40.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">120.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">40.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">90.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">90.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">144.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">120.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">6.</span> <span class="o">-</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">45.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">15.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">40.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">120.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">40.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">90.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">90.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">144.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">120.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>  <span class="c1"># k = 7</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">7.</span> <span class="o">-</span>
+                    <span class="mf">21.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">+</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">70.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">280.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">630.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">504.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">504.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">840.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">720.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">7.</span> <span class="o">-</span>
+                    <span class="mf">21.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">+</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">70.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">280.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">630.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">504.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">504.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">840.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">720.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>  <span class="c1"># k = 8</span>
+                <span class="n">N</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">8.</span> <span class="o">-</span>
+                    <span class="mf">28.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">6.</span> <span class="o">-</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">112.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">+</span>
+                    <span class="mf">1680.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">2520.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">1260.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">1260.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">1344.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">4032.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">2688.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">5760.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">5040.</span> <span class="o">*</span>
+                    <span class="n">Pk</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">8.</span> <span class="o">-</span>
+                    <span class="mf">28.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">6.</span> <span class="o">-</span>
+                    <span class="mf">210.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">105.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">112.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">5.</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">+</span>
+                    <span class="mf">1680.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">1120.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">420.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">4.</span> <span class="o">+</span>
+                    <span class="mf">2520.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">1260.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">1260.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">1344.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">3.</span> <span class="o">-</span>
+                    <span class="mf">4032.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">2688.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span>
+                    <span class="mf">3360.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                    <span class="mf">5760.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                    <span class="mf">5040.</span> <span class="o">*</span>
+                    <span class="n">Wk</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_numerator_denominator_all_events</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute numerators and denominators of correlations for all events.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list_all_events : list</span>
+<span class="sd">            List of events, where each event is a list of particle objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">particle_list_all_events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transverse_momentum_correlations_event_num_denom</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_mean_pt_correlations</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">numerator_denominator_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mean transverse momentum correlations from the array containing</span>
+<span class="sd">        the numerator and denominator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        numerator_denominator_array : np.ndarray</span>
+<span class="sd">            Array of shape (num_events, 2) containing numerators and denominators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Mean transverse momentum correlations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sum_numerator</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">sum_denominator</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numerator_denominator_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">sum_numerator</span> <span class="o">+=</span> <span class="n">numerator_denominator_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">sum_denominator</span> <span class="o">+=</span> <span class="n">numerator_denominator_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">sum_numerator</span> <span class="o">/</span> <span class="n">sum_denominator</span>
+
+<div class="viewcode-block" id="MultiParticlePtCorrelations.mean_pt_correlations">
+<a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_correlations">[docs]</a>
+    <span class="k">def</span> <span class="nf">mean_pt_correlations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
+                             <span class="n">compute_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="n">delete_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+                             <span class="n">number_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                             <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                                      <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                                            <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes mean transverse momentum correlations for each order up to</span>
+<span class="sd">        max_order using Eq. [14] in Ref. [1].</span>
+<span class="sd">        The weight is chosen to be :math:`W^{\\prime}_{m} = D\\langle m\\rangle_{p_{\\mathrm{T}}}`.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list_all_events : list</span>
+<span class="sd">            List of events, where each event is a list of particle objects.</span>
+<span class="sd">        compute_error : bool, optional</span>
+<span class="sd">            Whether to compute error estimates (default is True).</span>
+<span class="sd">        delete_fraction : float, optional</span>
+<span class="sd">            Fraction of data to delete for jackknife method (default is 0.4).</span>
+<span class="sd">        number_samples : int, optional</span>
+<span class="sd">            Number of jackknife samples (default is 100).</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Random seed for reproducibility (default is 42).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or tuple</span>
+<span class="sd">            Mean transverse momentum correlations for each order.</span>
+<span class="sd">            If compute_error is True, returns a tuple (mean_pt_correlation, mean_pt_correlation_error).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If delete_fraction is not a float.</span>
+<span class="sd">            If number_samples is not an integer.</span>
+<span class="sd">            If seed is not an integer.</span>
+<span class="sd">            If compute_error is not a boolean.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If delete_fraction is not between 0 and 1.</span>
+<span class="sd">            If number_samples is not greater than 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be a float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">delete_fraction</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;number_samples must be an integer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">number_samples</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number_samples must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;seed must be an integer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compute_error</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;compute_error must be a boolean&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_numerator_denominator_all_events</span><span class="p">(</span><span class="n">particle_list_all_events</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">)</span>
+
+        <span class="n">mean_pt_correlations_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="n">mean_pt_correlations_error_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">):</span>
+            <span class="c1"># combine the numerator and denominator for each order in an array</span>
+            <span class="n">numerator_denominator_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">[:,</span> <span class="n">order</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">[:,</span> <span class="n">order</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">mean_pt_correlations_store</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mean_pt_correlations</span><span class="p">(</span>
+                <span class="n">numerator_denominator_array</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">compute_error</span><span class="p">:</span>
+                <span class="n">jackknife</span> <span class="o">=</span> <span class="n">Jackknife</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="n">number_samples</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+                <span class="n">mean_pt_correlations_error_store</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">jackknife</span><span class="o">.</span><span class="n">compute_jackknife_estimates</span><span class="p">(</span>
+                    <span class="n">numerator_denominator_array</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_mean_pt_correlations</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_pt_correlation</span> <span class="o">=</span> <span class="n">mean_pt_correlations_store</span>
+        <span class="k">if</span> <span class="n">compute_error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean_pt_correlation_error</span> <span class="o">=</span> <span class="n">mean_pt_correlations_error_store</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">mean_pt_correlations_store</span><span class="p">,</span>
+                <span class="n">mean_pt_correlations_error_store</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mean_pt_correlations_store</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_kappa_cumulant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute cumulant kappa from correlations C up to order k</span>
+<span class="sd">        (Eqns. B9-B16 in [1]).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        C : np.ndarray</span>
+<span class="sd">            Array of correlations up to order k.</span>
+<span class="sd">        k : int</span>
+<span class="sd">            Order of cumulant to compute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Cumulant kappa for the given order k.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span>
+                <span class="mf">4.</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                <span class="mf">3.</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                <span class="mf">12.</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span>
+                <span class="mf">6.</span> <span class="o">*</span>
+                <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="mf">5.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">30.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">20.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">-</span> <span class="mf">60.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">24.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="mf">6.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">15.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                     <span class="o">-</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">30.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">30.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">+</span> <span class="mf">120.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">270.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">-</span> <span class="mf">120.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">360.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span>
+                     <span class="o">-</span> <span class="mf">120.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">-</span> <span class="mf">7.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">21.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">42.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">35.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">210.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">210.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
+                     <span class="o">+</span> <span class="mf">140.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">210.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">-</span> <span class="mf">1260.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">840.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span>
+                     <span class="o">-</span> <span class="mf">630.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2520.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
+                     <span class="o">-</span> <span class="mf">2520.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mf">720.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">7</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">-</span> <span class="mf">8.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">28.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">56.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">56.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">336.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">336.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
+                     <span class="o">-</span> <span class="mf">35.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">560.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">420.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2520.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">+</span> <span class="mf">1680.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mf">560.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                     <span class="o">-</span> <span class="mf">1680.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">5040.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                     <span class="o">+</span> <span class="mf">13440.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">-</span> <span class="mf">6720.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">5</span>
+                     <span class="o">-</span> <span class="mf">630.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mf">10080.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+                     <span class="o">-</span> <span class="mf">25200.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mf">20160.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">6</span>
+                     <span class="o">-</span> <span class="mf">5040.</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid order k for cumulant calculation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kappa</span>
+
+    <span class="k">def</span> <span class="nf">_compute_mean_pt_cumulants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute mean transverse momentum cumulants from data at order k.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : np.ndarray</span>
+<span class="sd">            Array of shape (num_events, 2*(k+1)) containing numerators and</span>
+<span class="sd">            denominators up to order k.</span>
+<span class="sd">        k : int</span>
+<span class="sd">            Order of cumulant to compute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Mean transverse momentum cumulant for order k.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kappa_store</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">sum_numerator_tmp</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">sum_denominator_tmp</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">sum_numerator_tmp</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">order</span><span class="p">]</span>
+                <span class="n">sum_denominator_tmp</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">C_order</span> <span class="o">=</span> <span class="n">sum_numerator_tmp</span> <span class="o">/</span> <span class="n">sum_denominator_tmp</span>
+            <span class="n">C</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">C_order</span>
+        <span class="n">kappa_store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kappa_cumulant</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kappa_store</span>
+
+<div class="viewcode-block" id="MultiParticlePtCorrelations.mean_pt_cumulants">
+<a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pt_cumulants">[docs]</a>
+    <span class="k">def</span> <span class="nf">mean_pt_cumulants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
+                          <span class="n">compute_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="n">delete_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+                          <span class="n">number_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                          <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                                   <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                                         <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean transverse momentum cumulants for each order k</span>
+<span class="sd">        from Eqs. B9-B16 in Ref. [1].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list_all_events : list</span>
+<span class="sd">            List of events, where each event is a list of particle objects.</span>
+<span class="sd">        compute_error : bool, optional</span>
+<span class="sd">            Whether to compute error estimates (default is True).</span>
+<span class="sd">        delete_fraction : float, optional</span>
+<span class="sd">            Fraction of data to delete for jackknife method (default is 0.4).</span>
+<span class="sd">        number_samples : int, optional</span>
+<span class="sd">            Number of jackknife samples (default is 100).</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Random seed for reproducibility (default is 42).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or tuple</span>
+<span class="sd">            Mean transverse momentum cumulants for each order.</span>
+<span class="sd">            If compute_error is True, returns a tuple (kappa, kappa_error).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If delete_fraction is not a float.</span>
+<span class="sd">            If number_samples is not an integer.</span>
+<span class="sd">            If seed is not an integer.</span>
+<span class="sd">            If compute_error is not a boolean.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If delete_fraction is not between 0 and 1.</span>
+<span class="sd">            If number_samples is not greater than 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be a float&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">delete_fraction</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;number_samples must be an integer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">number_samples</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number_samples must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;seed must be an integer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compute_error</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;compute_error must be a boolean&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_numerator_denominator_all_events</span><span class="p">(</span><span class="n">particle_list_all_events</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">)</span>
+
+        <span class="n">kappa_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="n">kappa_store_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_order</span><span class="p">):</span>
+            <span class="n">dataN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">dataD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="c1"># combine the numerator and denominator for each order in data</span>
+            <span class="c1"># always alternate the columns of the numerator and denominator</span>
+            <span class="n">combined_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">dataN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">dataN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                 <span class="n">dataD</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dataN</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">combined_data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataN</span>
+            <span class="n">combined_data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataD</span>
+            <span class="n">kappa_store</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mean_pt_cumulants</span><span class="p">(</span>
+                <span class="n">combined_data</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">compute_error</span><span class="p">:</span>
+                <span class="n">jackknife</span> <span class="o">=</span> <span class="n">Jackknife</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="n">number_samples</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+                <span class="n">kappa_store_error</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">jackknife</span><span class="o">.</span><span class="n">compute_jackknife_estimates</span><span class="p">(</span>
+                    <span class="n">combined_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_mean_pt_cumulants</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">kappa_store</span>
+        <span class="k">if</span> <span class="n">compute_error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kappa_error</span> <span class="o">=</span> <span class="n">kappa_store_error</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">kappa_store</span><span class="p">,</span> <span class="n">kappa_store_error</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">kappa_store</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

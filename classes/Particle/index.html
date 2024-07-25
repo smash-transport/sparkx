@@ -23,8 +23,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Oscar" href="../Oscar/index.html" />
-    <link rel="prev" title="Classes" href="../index.html" /> 
+    <link rel="next" title="Utilities" href="../../utilities/index.html" />
+    <link rel="prev" title="Oscar" href="../Oscar/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,6 +49,16 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Particle</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Particle.Particle"><code class="docutils literal notranslate"><span class="pre">Particle</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.print_particle"><code class="docutils literal notranslate"><span class="pre">Particle.print_particle()</span></code></a></li>
@@ -74,14 +84,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -124,14 +126,18 @@
 OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
 they stay <cite>np.nan</cite> to throw an error if one tries to access a non existing
 quantity.
-If a particle with an unknown PDG is provided, a warning is thrown and and 
+If a particle with an unknown PDG is provided, a warning is thrown and and
 <cite>np.nan</cite> is returned for charge, spin, and spin degeneracy.</p>
 <p class="rubric">Notes</p>
 <p>If a member of the Particle class is not set or a quantity should be computed
 and the needed member variables are not set, then <cite>np.nan</cite> is returned by default.
 All quantities are saved in a numpy array member variable <cite>data_</cite>. The datatype
-of this array is float, therefore casting is required when int or bool values are 
+of this array is float, therefore casting is required when int or bool values are
 required.</p>
+<p>When JETSCAPE creates particle objects, which are partons, the charge is multiplied
+by 3 to make it an integer.
+The functions <cite>is_strange()</cite> and <cite>is_heavy_flavor()</cite> should not be used in this
+case.</p>
 <p class="rubric">Examples</p>
 <p>To use the particle class a particle has to be created and the attributes
 can be set or obtained with the corresponding functions.</p>
@@ -153,7 +159,7 @@ Supported formats include:</p>
 <li><p>“JETSCAPE”</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle_quantity_JETSCAPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2114</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mf">2.01351754</span><span class="p">,</span><span class="mf">1.30688601</span><span class="p">,</span><span class="o">-</span><span class="mf">0.422958786</span><span class="p">,</span><span class="o">-</span><span class="mf">0.512249773</span><span class="p">])</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">input_format</span><span class="o">=</span><span class="s2">&quot;JETSCAPE&quot;</span><span class="p">,</span> <span class="n">particle_array</span><span class="o">=</span><span class="n">particle_array_oscar2013</span><span class="p">)</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="n">input_format</span><span class="o">=</span><span class="s2">&quot;JETSCAPE&quot;</span><span class="p">,</span> <span class="n">particle_array</span><span class="o">=</span><span class="n">particle_quantity_JETSCAPE</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -664,8 +670,8 @@ is returned.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../Oscar/index.html" class="btn btn-neutral float-right" title="Oscar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../Oscar/index.html" class="btn btn-neutral float-left" title="Oscar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../utilities/index.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

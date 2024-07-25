@@ -23,8 +23,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="QCumulantFlow" href="../QCumulantFlow/index.html" />
-    <link rel="prev" title="EventPlaneFlow" href="../EventPlaneFlow/index.html" /> 
+    <link rel="next" title="PCAFlow" href="../PCAFlow/index.html" />
+    <link rel="prev" title="GenerateFlow" href="../GenerateFlow/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,27 +49,29 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../EventPlaneFlow/index.html">EventPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">LeeYangZeroFlow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#LeeYangZeroFlow.LeeYangZeroFlow"><code class="docutils literal notranslate"><span class="pre">LeeYangZeroFlow</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -108,14 +110,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="LeeYangZeroFlow.LeeYangZeroFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">LeeYangZeroFlow.</span></span><span class="sig-name descname"><span class="pre">LeeYangZeroFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/LeeYangZeroFlow.html#LeeYangZeroFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LeeYangZeroFlow.LeeYangZeroFlow" title="Link to this definition"></a></dt>
-<dd><p>Compute integrated and differential anisotropic flow using the Lee-Yang 
+<dd><p>Compute integrated and differential anisotropic flow using the Lee-Yang
 zero method from</p>
 <ul class="simple">
 <li><p>[1] <a class="reference external" href="https://inspirehep.net/literature/622649">Phys. Lett. B 580 (2004) 157  [nucl-th/0307018]</a></p></li>
 <li><p>[2] <a class="reference external" href="https://inspirehep.net/literature/629783">Nucl. Phys. A 727 (2003) 373  [nucl-th/0310016]</a></p></li>
 <li><p>[3] <a class="reference external" href="https://inspirehep.net/literature/644572">J. Phys. G: Nucl. Part. Phys. 30 (2004) S1213  [nucl-th/0402053]</a></p></li>
 </ul>
-<p>For the computation of the anisotropic flow it is important to have an 
+<p>For the computation of the anisotropic flow it is important to have an
 estimate on how large the anisotropic flow will be. To set up the correct
 range of radial values along which the generating function is calculated.</p>
 <p>For a practical guide of the implementation we refer to Ref. [3], where all
@@ -209,7 +211,7 @@ relevant equations are given.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated 
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated
 (“pt”, “rapidity”, or “pseudorapidity”).</p>
 </dd>
 <dt><strong>poi_pdg</strong><span class="classifier">list</span></dt><dd><p>List of PDG id for identified particle differential flow.</p>
@@ -218,7 +220,7 @@ relevant equations are given.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list</dt><dd><p>A list containing the differential flow for each bin. 
+<dt>list</dt><dd><p>A list containing the differential flow for each bin.
 Each element in the list corresponds to a bin and contains:</p>
 <ul class="simple">
 <li><p>vn_inf (float): Differential flow magnitude for the bin.</p></li>
@@ -243,8 +245,8 @@ lead to wrong results.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../EventPlaneFlow/index.html" class="btn btn-neutral float-left" title="EventPlaneFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../QCumulantFlow/index.html" class="btn btn-neutral float-right" title="QCumulantFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../GenerateFlow/index.html" class="btn btn-neutral float-left" title="GenerateFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../PCAFlow/index.html" class="btn btn-neutral float-right" title="PCAFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

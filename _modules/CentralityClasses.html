@@ -75,17 +75,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for CentralityClasses</h1><div class="highlight"><pre>
-<span></span><span class="c1">#===================================================</span>
+<span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1">#    Copyright (c) 2023-2024</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
 <span class="c1">#</span>
-<span class="c1">#===================================================</span>
-    
+<span class="c1"># ===================================================</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 
 <div class="viewcode-block" id="CentralityClasses">
@@ -141,17 +142,22 @@
 <span class="sd">        1</span>
 <span class="sd">        &gt;&gt;&gt; centrality_obj.output_centrality_classes(&#39;centrality_output.txt&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">events_multiplicity</span><span class="p">,</span><span class="n">centrality_bins</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">events_multiplicity</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;events_multiplicity&#39; is not list or numpy.ndarray&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events_multiplicity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                 <span class="n">centrality_bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">events_multiplicity</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;events_multiplicity&#39; is not list or numpy.ndarray&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; is not list or numpy.ndarray&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Check if centrality_bins is sorted</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; is not sorted. Sorting automatically.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">centrality_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;centrality_bins&#39; is not sorted. Sorting automatically.&quot;</span><span class="p">)</span>
             <span class="n">centrality_bins</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        
+
         <span class="c1"># Check for uniqueness of values</span>
         <span class="c1"># Remove duplicates from the list</span>
         <span class="n">unique_bins</span> <span class="o">=</span> <span class="p">[]</span>
@@ -165,23 +171,25 @@
                 <span class="n">multiple_same_entries</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">multiple_same_entries</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; contains duplicate values. They are removed automatically.&quot;</span><span class="p">)</span>
-        
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;centrality_bins&#39; contains duplicate values. They are removed automatically.&quot;</span><span class="p">)</span>
+
         <span class="c1"># Check for negative values and values greater than 100</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mf">100.0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">centrality_bins</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;centrality_bins&#39; contains values less than 0 or greater than 100.&quot;</span><span class="p">)</span>
-        
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;centrality_bins&#39; contains values less than 0 or greater than 100.&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">events_multiplicity_</span> <span class="o">=</span> <span class="n">events_multiplicity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span> <span class="o">=</span> <span class="n">unique_bins</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMax_</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvg_</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvgErr_</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMax_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvg_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvgErr_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__create_centrality_classes</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__create_centrality_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__create_centrality_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create centrality classes based on event multiplicity.</span>
 
@@ -220,7 +228,8 @@
         <span class="c1"># distribute the numbers evenly</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">multiplicity</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_multiplicity_</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multiplicity in &#39;events_multiplicity&#39; is negative&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Multiplicity in &#39;events_multiplicity&#39; is negative&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">event_sample_A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -237,8 +246,12 @@
 
         <span class="n">MinRecord</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_events</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">)):</span>
-            
-            <span class="n">MaxRecord</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_events</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
+
+            <span class="n">MaxRecord</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                <span class="n">number_events</span> <span class="o">/</span>
+                <span class="mi">4</span> <span class="o">*</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span>
+                <span class="mf">100.0</span><span class="p">)</span>
 
             <span class="n">AvgA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">event_sample_A</span><span class="p">[</span><span class="n">MinRecord</span><span class="p">:</span><span class="n">MaxRecord</span><span class="p">])</span>
             <span class="n">AvgB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">event_sample_B</span><span class="p">[</span><span class="n">MinRecord</span><span class="p">:</span><span class="n">MaxRecord</span><span class="p">])</span>
@@ -246,14 +259,16 @@
             <span class="n">AvgD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">event_sample_D</span><span class="p">[</span><span class="n">MinRecord</span><span class="p">:</span><span class="n">MaxRecord</span><span class="p">])</span>
 
             <span class="n">Avg</span> <span class="o">=</span> <span class="p">(</span><span class="n">AvgA</span> <span class="o">+</span> <span class="n">AvgB</span> <span class="o">+</span> <span class="n">AvgC</span> <span class="o">+</span> <span class="n">AvgD</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
-            <span class="n">Err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">AvgA</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">AvgB</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">AvgC</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">AvgD</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
+            <span class="n">Err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">AvgA</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">AvgB</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                          <span class="p">(</span><span class="n">AvgC</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">AvgD</span> <span class="o">-</span> <span class="n">Avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvg_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Avg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvgErr_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Err</span><span class="p">)</span>
 
             <span class="n">MinRecord</span> <span class="o">=</span> <span class="n">MaxRecord</span>
 
-        <span class="c1"># sort events by multiplicity and determine boundaries of centrality classes</span>
+        <span class="c1"># sort events by multiplicity and determine boundaries of centrality</span>
+        <span class="c1"># classes</span>
         <span class="n">global_event_record</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_multiplicity_</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">MinRecord</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_events</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
@@ -267,7 +282,7 @@
 
 <div class="viewcode-block" id="CentralityClasses.get_centrality_class">
 <a class="viewcode-back" href="../classes/CentralityClasses/index.html#CentralityClasses.CentralityClasses.get_centrality_class">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_centrality_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dNchdEta</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_centrality_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dNchdEta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function determines the index of the centrality bin for a given</span>
 <span class="sd">        multiplicity value based on the predefined centrality classes.</span>
@@ -297,18 +312,21 @@
         <span class="k">if</span> <span class="n">dNchdEta</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="c1"># check if the multiplicity is in the most peripheral bin</span>
-        <span class="k">elif</span> <span class="n">dNchdEta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">dNchdEta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="c1"># check if the multiplicity is in one of the intermediate bins</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">dNchdEta</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dNchdEta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="k">return</span> <span class="n">i</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">dNchdEta</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="n">dNchdEta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">return</span> <span class="n">i</span>
+        <span class="c1"># default case to satisfy mypy&#39;s requirement for a return statement</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
 
-                
+
 <div class="viewcode-block" id="CentralityClasses.output_centrality_classes">
 <a class="viewcode-back" href="../classes/CentralityClasses/index.html#CentralityClasses.CentralityClasses.output_centrality_classes">[docs]</a>
-    <span class="k">def</span> <span class="nf">output_centrality_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fname</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_centrality_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write centrality class information to a file.</span>
 
@@ -343,14 +361,14 @@
 
         <span class="c1"># Write the information to the file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_stream</span><span class="p">:</span>
-            <span class="n">out_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# CentralityMin CentralityMax dNchdEtaMin dNchdEtaMax dNchdEtaAvg dNchdEtaAvgErr</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+            <span class="n">out_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;# CentralityMin CentralityMax dNchdEtaMin dNchdEtaMax dNchdEtaAvg dNchdEtaAvgErr</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">)):</span>
                 <span class="n">out_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">centrality_bins_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMin_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaMax_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvg_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvgErr_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="p">)</span></div>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvg_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dNchdetaAvgErr_</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

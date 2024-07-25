@@ -23,8 +23,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="CentralityClasses" href="../CentralityClasses/index.html" />
-    <link rel="prev" title="Lattice3D" href="../Lattice3D/index.html" /> 
+    <link rel="next" title="Flow" href="../flow/index.html" />
+    <link rel="prev" title="CentralityClasses" href="../CentralityClasses/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,13 +49,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">EventCharacteristics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#EventCharacteristics.EventCharacteristics"><code class="docutils literal notranslate"><span class="pre">EventCharacteristics</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#EventCharacteristics.EventCharacteristics.set_event_data"><code class="docutils literal notranslate"><span class="pre">EventCharacteristics.set_event_data()</span></code></a></li>
@@ -66,7 +60,15 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -103,13 +105,13 @@
 <span id="event-characteristics"></span><h1>EventCharacteristics<a class="headerlink" href="#eventcharacteristics" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">EventCharacteristics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">EventCharacteristics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">object_</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Lattice3D</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics" title="Link to this definition"></a></dt>
 <dd><p>This class computes event-by-event characteristics, e.g., eccentricities
 or certain densities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>event_data: list, numpy.ndarray or Lattice3D</strong></dt><dd><p>List or array containing particle objects for one event, or a lattice 
+<dt><strong>event_data: list, numpy.ndarray or Lattice3D</strong></dt><dd><p>List or array containing particle objects for one event, or a lattice
 containing the relevant densities.</p>
 </dd>
 </dl>
@@ -132,10 +134,10 @@ containing the relevant densities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>event_data_: list, numpy.ndarray or Lattice3D</strong></dt><dd><p>List or array containing particle objects for one event, or a lattice 
+<dt><strong>event_data_: list, numpy.ndarray or Lattice3D</strong></dt><dd><p>List or array containing particle objects for one event, or a lattice
 containing the relevant densities.</p>
 </dd>
-<dt><strong>has_lattice_: bool</strong></dt><dd><p>Contains information if characteristics are derived from a lattice or 
+<dt><strong>has_lattice_: bool</strong></dt><dd><p>Contains information if characteristics are derived from a lattice or
 particles</p>
 </dd>
 </dl>
@@ -168,7 +170,7 @@ particles</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics.set_event_data">
-<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">set_event_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.set_event_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.set_event_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">set_event_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">object_</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Lattice3D</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.set_event_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.set_event_data" title="Link to this definition"></a></dt>
 <dd><p>Overwrites the event data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -191,7 +193,7 @@ If at least one element in the input is not of type Particle.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics.eccentricity">
-<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">eccentricity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonic_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'energy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.eccentricity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.eccentricity" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">eccentricity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonic_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'energy'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">complex</span></span></span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.eccentricity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.eccentricity" title="Link to this definition"></a></dt>
 <dd><p>Computes the spatial eccentricity.</p>
 <div class="math notranslate nohighlight">
 \[\varepsilon_{m,n}e^{\mathrm{i}n\Phi_{m,n}} = -\frac{\lbrace{r^{m}e^{\mathrm{i}n\phi}\rbrace}}{\lbrace{r^{m}\rbrace}}\]</div>
@@ -227,10 +229,10 @@ Default is “energy”.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC">
-<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">generate_eBQS_densities_Milne_from_OSCAR_IC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_smear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IC_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC" title="Link to this definition"></a></dt>
-<dd><p>Generates energy, baryon, charge, and strangeness densities in Milne 
+<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">generate_eBQS_densities_Milne_from_OSCAR_IC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ny</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_smear</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IC_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC" title="Link to this definition"></a></dt>
+<dd><p>Generates energy, baryon, charge, and strangeness densities in Milne
 coordinates from OSCAR initial conditions.</p>
-<p>The total energy in GeV can be obtained by integrating the energy 
+<p>The total energy in GeV can be obtained by integrating the energy
 density with <span class="math notranslate nohighlight">\(\tau \mathrm{d}x\mathrm{d}y\mathrm{d}\eta\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -239,17 +241,17 @@ density with <span class="math notranslate nohighlight">\(\tau \mathrm{d}x\mathr
 </dd>
 <dt><strong>Nx, Ny, Nz</strong><span class="classifier">int</span></dt><dd><p>Number of grid points in the x, y, and z directions.</p>
 </dd>
-<dt><strong>n_sigma_x, n_sigma_y, n_sigma_z</strong><span class="classifier">float</span></dt><dd><p>Width of the smearing in the x, y, and z directions in units of 
+<dt><strong>n_sigma_x, n_sigma_y, n_sigma_z</strong><span class="classifier">float</span></dt><dd><p>Width of the smearing in the x, y, and z directions in units of
 sigma_smear.</p>
 </dd>
 <dt><strong>sigma_smear</strong><span class="classifier">float</span></dt><dd><p>Smearing parameter for particle data.</p>
 </dd>
-<dt><strong>eta_range</strong><span class="classifier">list, tuple</span></dt><dd><p>A list containing the minimum and maximum values of spacetime 
+<dt><strong>eta_range</strong><span class="classifier">list, tuple</span></dt><dd><p>A list containing the minimum and maximum values of spacetime
 rapidity (eta) and the number of grid points.</p>
 </dd>
 <dt><strong>output_filename</strong><span class="classifier">str</span></dt><dd><p>The name of the output file where the densities will be saved.</p>
 </dd>
-<dt><strong>IC_info</strong><span class="classifier">str</span></dt><dd><p>A string containing info about the initial condition, e.g., 
+<dt><strong>IC_info</strong><span class="classifier">str</span></dt><dd><p>A string containing info about the initial condition, e.g.,
 collision energy or centrality.</p>
 </dd>
 </dl>
@@ -271,10 +273,10 @@ with a lattice.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC">
-<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">generate_eBQS_densities_Minkowski_from_OSCAR_IC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_smear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IC_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC" title="Link to this definition"></a></dt>
-<dd><p>Generates energy, baryon, charge, and strangeness densities in 
+<span class="sig-prename descclassname"><span class="pre">EventCharacteristics.</span></span><span class="sig-name descname"><span class="pre">generate_eBQS_densities_Minkowski_from_OSCAR_IC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ny</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigma_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_smear</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IC_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/EventCharacteristics.html#EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC" title="Link to this definition"></a></dt>
+<dd><p>Generates energy, baryon, charge, and strangeness densities in
 Minkowski coordinates from OSCAR initial conditions.</p>
-<p>The total energy in GeV can be obtained by integrating the energy 
+<p>The total energy in GeV can be obtained by integrating the energy
 density with <span class="math notranslate nohighlight">\(\mathrm{d}x\mathrm{d}y\mathrm{d}z\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -283,14 +285,14 @@ density with <span class="math notranslate nohighlight">\(\mathrm{d}x\mathrm{d}y
 </dd>
 <dt><strong>Nx, Ny, Nz</strong><span class="classifier">int</span></dt><dd><p>Number of grid points in the x, y, and z directions.</p>
 </dd>
-<dt><strong>n_sigma_x, n_sigma_y, n_sigma_z</strong><span class="classifier">float</span></dt><dd><p>Width of the smearing in the x, y, and z directions in units of 
+<dt><strong>n_sigma_x, n_sigma_y, n_sigma_z</strong><span class="classifier">float</span></dt><dd><p>Width of the smearing in the x, y, and z directions in units of
 sigma_smear.</p>
 </dd>
 <dt><strong>sigma_smear</strong><span class="classifier">float</span></dt><dd><p>Smearing parameter for particle data.</p>
 </dd>
 <dt><strong>output_filename</strong><span class="classifier">str</span></dt><dd><p>The name of the output file where the densities will be saved.</p>
 </dd>
-<dt><strong>IC_info</strong><span class="classifier">str</span></dt><dd><p>A string containing info about the initial condition, e.g., 
+<dt><strong>IC_info</strong><span class="classifier">str</span></dt><dd><p>A string containing info about the initial condition, e.g.,
 collision energy or centrality.</p>
 </dd>
 </dl>
@@ -316,8 +318,8 @@ with a lattice.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../Lattice3D/index.html" class="btn btn-neutral float-left" title="Lattice3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../CentralityClasses/index.html" class="btn btn-neutral float-right" title="CentralityClasses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../CentralityClasses/index.html" class="btn btn-neutral float-left" title="CentralityClasses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../flow/index.html" class="btn btn-neutral float-right" title="Flow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

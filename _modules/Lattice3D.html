@@ -75,15 +75,15 @@
            <div itemprop="articleBody">
              
   <h1>Source code for Lattice3D</h1><div class="highlight"><pre>
-<span></span><span class="c1">#===================================================</span>
+<span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1">#    Copyright (c) 2023-2024</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
 <span class="c1">#</span>
-<span class="c1">#===================================================</span>
-    
+<span class="c1"># ===================================================</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interpn</span>
@@ -92,6 +92,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 <span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+
 
 <div class="viewcode-block" id="Lattice3D">
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D">[docs]</a>
@@ -178,12 +179,12 @@
 <span class="sd">    set_value:</span>
 <span class="sd">        Set the value at the specified coordinates in the lattice.</span>
 <span class="sd">    set_value_nearest_neighbor:</span>
-<span class="sd">        Set the value at the nearest neighbor of the specified coordinates </span>
+<span class="sd">        Set the value at the nearest neighbor of the specified coordinates</span>
 <span class="sd">        within the lattice.</span>
 <span class="sd">    get_value:</span>
 <span class="sd">        Get the value at the specified coordinates in the lattice.</span>
 <span class="sd">    get_value_nearest_neighbor:</span>
-<span class="sd">        Get the value of the nearest neighbor at the specified coordinates </span>
+<span class="sd">        Get the value of the nearest neighbor at the specified coordinates</span>
 <span class="sd">        within the lattice.</span>
 <span class="sd">    get_coordinates:</span>
 <span class="sd">        Get the coordinates corresponding to the given indices.</span>
@@ -221,7 +222,21 @@
 <span class="sd">        Add particle data to the lattice.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span><span class="p">,</span> <span class="n">n_sigma_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">x_min</span><span class="p">,</span>
+            <span class="n">x_max</span><span class="p">,</span>
+            <span class="n">y_min</span><span class="p">,</span>
+            <span class="n">y_max</span><span class="p">,</span>
+            <span class="n">z_min</span><span class="p">,</span>
+            <span class="n">z_max</span><span class="p">,</span>
+            <span class="n">num_points_x</span><span class="p">,</span>
+            <span class="n">num_points_y</span><span class="p">,</span>
+            <span class="n">num_points_z</span><span class="p">,</span>
+            <span class="n">n_sigma_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">n_sigma_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">n_sigma_z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span> <span class="o">=</span> <span class="n">x_min</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span> <span class="o">=</span> <span class="n">x_max</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span> <span class="o">=</span> <span class="n">y_min</span>
@@ -231,7 +246,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span> <span class="o">=</span> <span class="n">num_points_x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span> <span class="o">=</span> <span class="n">num_points_y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span> <span class="o">=</span> <span class="n">num_points_z</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell_volume_</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">x_max</span><span class="o">-</span><span class="n">x_min</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">y_max</span><span class="o">-</span><span class="n">y_min</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">z_max</span><span class="o">-</span><span class="n">z_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">num_points_x</span><span class="o">*</span><span class="n">num_points_y</span><span class="o">*</span><span class="n">num_points_z</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_volume_</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_max</span> <span class="o">-</span> <span class="n">y_min</span><span class="p">)</span> <span class="o">*</span> \
+                                <span class="p">(</span><span class="n">z_max</span> <span class="o">-</span> <span class="n">z_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">num_points_x</span> <span class="o">*</span> <span class="n">num_points_y</span> <span class="o">*</span> <span class="n">num_points_z</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">)</span>
@@ -243,12 +259,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma_y_</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_sigma_y</span><span class="p">)</span> <span class="k">if</span> <span class="n">n_sigma_y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma_z_</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_sigma_z</span><span class="p">)</span> <span class="k">if</span> <span class="n">n_sigma_z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">3</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_x</span> <span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span>  <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_y</span> <span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span>  <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_z</span> <span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span>  <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">density_x_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">density_y_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">density_z_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span>
+            <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_x</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span>
+            <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_y</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span>
+            <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_points_z</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density_x_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density_y_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density_z_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span>
 
     <span class="k">def</span> <span class="nf">__is_valid_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -357,10 +376,10 @@
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
-    
+
     <span class="k">def</span> <span class="nf">__get_index_nearest_neighbor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the index corresponding to the nearest neighbor of a given value </span>
+<span class="sd">        Get the index corresponding to the nearest neighbor of a given value</span>
 <span class="sd">        within a specified range.</span>
 
 <span class="sd">        Parameters</span>
@@ -373,7 +392,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
-<span class="sd">            The index corresponding to the nearest neighbor of a given value </span>
+<span class="sd">            The index corresponding to the nearest neighbor of a given value</span>
 <span class="sd">            within the specified range.</span>
 
 <span class="sd">        Raises</span>
@@ -416,10 +435,10 @@
         <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_index</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_index</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span>
-    
+
     <span class="k">def</span> <span class="nf">__get_indices_nearest_neighbor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the indices corresponding to the nearest neighbor </span>
+<span class="sd">        Get the indices corresponding to the nearest neighbor</span>
 <span class="sd">        given coordinates within the lattice.</span>
 
 <span class="sd">        Parameters</span>
@@ -477,7 +496,7 @@
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.set_value_nearest_neighbor">[docs]</a>
     <span class="k">def</span> <span class="nf">set_value_nearest_neighbor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the value at the nearest neighbor of the </span>
+<span class="sd">        Set the value at the nearest neighbor of the</span>
 <span class="sd">        specified coordinates within the lattice.</span>
 
 <span class="sd">        Parameters</span>
@@ -518,8 +537,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int or float or None</span>
-<span class="sd">            The value at the specified coordinates. </span>
-<span class="sd">            </span>
+<span class="sd">            The value at the specified coordinates.</span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
@@ -528,12 +547,12 @@
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_by_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="Lattice3D.get_value_nearest_neighbor">
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.get_value_nearest_neighbor">[docs]</a>
     <span class="k">def</span> <span class="nf">get_value_nearest_neighbor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the value of the nearest neighbor at the specified coordinates </span>
+<span class="sd">        Get the value of the nearest neighbor at the specified coordinates</span>
 <span class="sd">        within the lattice.</span>
 
 <span class="sd">        Parameters</span>
@@ -549,7 +568,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        int or float or None</span>
 <span class="sd">            The value at the specified coordinates.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
@@ -639,7 +658,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">value</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">index</span>
-    
+
     <span class="k">def</span> <span class="nf">__is_within_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the given coordinates are within the defined range.</span>
@@ -723,9 +742,15 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Provided position is outside the lattice range.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="c1"># Perform interpolation </span>
-        <span class="n">xi</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">interpn</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="c1"># Perform interpolation</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">interpn</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">,</span>
+            <span class="n">xi</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
     <span class="k">def</span> <span class="nf">__operate_on_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">operation</span><span class="p">):</span>
@@ -754,13 +779,22 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Lattice3D</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unsupported operand type. The operand must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Unsupported operand type. The operand must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The lattices must have the same shape.&quot;</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
 
         <span class="n">result</span><span class="o">.</span><span class="n">grid_</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">grid_</span><span class="p">)</span>
 
@@ -874,10 +908,10 @@
 <span class="sd">            &gt;&gt;&gt; lattice1 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,</span>
 <span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
 <span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt; lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, </span>
+<span class="sd">            &gt;&gt;&gt; lattice2 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,</span>
 <span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
 <span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt; lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0, </span>
+<span class="sd">            &gt;&gt;&gt; lattice3 = Lattice3D(x_min=0, x_max=1, y_min=0, y_max=1, z_min=0,</span>
 <span class="sd">            &gt;&gt;&gt;    z_max=1, num_points_x=10, num_points_y=10, num_points_z=10)</span>
 <span class="sd">            &gt;&gt;&gt;</span>
 <span class="sd">            &gt;&gt;&gt; lattice1=lattice1.average(lattice2, lattice3)</span>
@@ -887,16 +921,25 @@
 
         <span class="k">for</span> <span class="n">lattice</span> <span class="ow">in</span> <span class="n">all_lattices</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">Lattice3D</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unsupported operand type. All operands must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unsupported operand type. All operands must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The lattices must have the same shape.&quot;</span><span class="p">)</span>
 
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
-
-        <span class="n">result</span><span class="o">.</span><span class="n">grid_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span> <span class="k">for</span> <span class="n">lattice</span> <span class="ow">in</span> <span class="n">all_lattices</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">grid_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span> <span class="k">for</span> <span class="n">lattice</span> <span class="ow">in</span> <span class="n">all_lattices</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -936,13 +979,21 @@
 <span class="sd">        None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">])</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">])</span>
 
         <span class="c1"># Reshape metadata to have 1 row and as many columns as necessary</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># Reshape the flattened grid to have 1 row and as many columns as necessary</span>
+        <span class="c1"># Reshape the flattened grid to have 1 row and as many columns as</span>
+        <span class="c1"># necessary</span>
         <span class="n">grid_flattened</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">metadata</span><span class="p">,</span> <span class="n">grid_flattened</span><span class="p">))</span>
@@ -971,7 +1022,16 @@
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
         <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span> <span class="o">=</span> <span class="n">metadata</span>
 
-        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_points_z</span><span class="p">))</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
+            <span class="n">x_min</span><span class="p">,</span>
+            <span class="n">x_max</span><span class="p">,</span>
+            <span class="n">y_min</span><span class="p">,</span>
+            <span class="n">y_max</span><span class="p">,</span>
+            <span class="n">z_min</span><span class="p">,</span>
+            <span class="n">z_max</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">num_points_x</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">num_points_y</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">num_points_z</span><span class="p">))</span>
 
         <span class="n">grid_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span>
         <span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span> <span class="o">=</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -1057,21 +1117,21 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the X-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;Y-Z Plane at X = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Y-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;X-Z Plane at Y = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Z-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
-            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">)</span>
+            <span class="n">slice_values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">)</span>
             <span class="n">slice_label</span> <span class="o">=</span> <span class="s1">&#39;X-Y Plane at Z = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis. Must be &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;.&quot;</span><span class="p">)</span>
@@ -1106,27 +1166,50 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the X-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in Y-Z Plane at X = </span><span class="si">{}</span><span class="s2">. Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">)</span><span class="o">+</span>\
-                <span class="s2">&quot;ny: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz:</span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;#Slice in Y-Z Plane at X = </span><span class="si">{}</span><span class="s2">. Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;ny: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz:</span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Y-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in X-Z Plane at Y = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span><span class="o">+</span>\
-                <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;#Slice in X-Z Plane at Y = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Zmin: </span><span class="si">{}</span><span class="s2"> Zmax: </span><span class="si">{}</span><span class="s2"> nz: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid index for the Z-axis.&quot;</span><span class="p">)</span>
 
             <span class="n">slice_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
-            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;#Slice in X-Y Plane at Z = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span><span class="o">+</span>\
-                <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> ny: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;#Slice in X-Y Plane at Z = </span><span class="si">{}</span><span class="s2">. Xmin: </span><span class="si">{}</span><span class="s2"> Xmax: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_values_</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;nx: </span><span class="si">{}</span><span class="s2"> Ymin: </span><span class="si">{}</span><span class="s2"> Ymax: </span><span class="si">{}</span><span class="s2"> ny: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis. Must be &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;.&quot;</span><span class="p">)</span>
 
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">slice_data</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span>
+            <span class="n">slice_data</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+            <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice3D.interpolate_to_lattice">
@@ -1157,9 +1240,18 @@
 <span class="sd">        current lattice data and the desired number of points along each axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Create a new Lattice3D object with the desired number of points and resolution</span>
-        <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
-                                <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span><span class="p">)</span>
+        <span class="c1"># Create a new Lattice3D object with the desired number of points and</span>
+        <span class="c1"># resolution</span>
+        <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">,</span>
+            <span class="n">num_points_x</span><span class="p">,</span>
+            <span class="n">num_points_y</span><span class="p">,</span>
+            <span class="n">num_points_z</span><span class="p">)</span>
 
         <span class="c1"># Generate the new grid coordinates</span>
         <span class="n">x_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">)</span>
@@ -1178,7 +1270,17 @@
 
 <div class="viewcode-block" id="Lattice3D.interpolate_to_lattice_new_extent">
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.interpolate_to_lattice_new_extent">[docs]</a>
-    <span class="k">def</span> <span class="nf">interpolate_to_lattice_new_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">interpolate_to_lattice_new_extent</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_points_x</span><span class="p">,</span>
+            <span class="n">num_points_y</span><span class="p">,</span>
+            <span class="n">num_points_z</span><span class="p">,</span>
+            <span class="n">x_min</span><span class="p">,</span>
+            <span class="n">x_max</span><span class="p">,</span>
+            <span class="n">y_min</span><span class="p">,</span>
+            <span class="n">y_max</span><span class="p">,</span>
+            <span class="n">z_min</span><span class="p">,</span>
+            <span class="n">z_max</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interpolate the current lattice data to a new lattice with the specified</span>
 <span class="sd">        number of points and extent.</span>
@@ -1217,7 +1319,8 @@
 <span class="sd">        each axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Create a new Lattice3D object with the desired number of points and extent</span>
+        <span class="c1"># Create a new Lattice3D object with the desired number of points and</span>
+        <span class="c1"># extent</span>
         <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span>
                                 <span class="n">num_points_x</span><span class="p">,</span> <span class="n">num_points_y</span><span class="p">,</span> <span class="n">num_points_z</span><span class="p">)</span>
 
@@ -1277,27 +1380,49 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Lattice3D</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unsupported operand type. The operand must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Unsupported operand type. The operand must be of type &#39;Lattice3D&#39;.&quot;</span><span class="p">)</span>
         <span class="c1"># Check if both lattices have the same spacing</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="n">other</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">spacing_x_</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span> <span class="n">other</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">spacing_y_</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-3</span> <span class="p">)</span> 
-            <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">spacing_z_</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1e-3</span> <span class="p">)):</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">other</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span> <span class="o">-</span>
+                                             <span class="n">other</span><span class="o">.</span><span class="n">spacing_x_</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span> <span class="o">-</span>
+                                                                                                            <span class="n">other</span><span class="o">.</span><span class="n">spacing_y_</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span> <span class="o">-</span>
+                                                                                                                                                                           <span class="n">other</span><span class="o">.</span><span class="n">spacing_z_</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-                <span class="n">posx</span><span class="p">,</span> <span class="n">posy</span><span class="p">,</span> <span class="n">posz</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">posx</span><span class="p">,</span> <span class="n">posy</span><span class="p">,</span> <span class="n">posz</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                 <span class="n">posx</span> <span class="o">=</span> <span class="n">posx</span> <span class="o">+</span> <span class="n">center_x</span>
                 <span class="n">posy</span> <span class="o">=</span> <span class="n">posy</span> <span class="o">+</span> <span class="n">center_y</span>
                 <span class="n">posz</span> <span class="o">=</span> <span class="n">posz</span> <span class="o">+</span> <span class="n">center_z</span>
-                <span class="k">if</span><span class="p">(</span><span class="n">posx</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span> <span class="ow">or</span> <span class="n">posx</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span> <span class="ow">or</span> <span class="n">posy</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span> <span class="ow">or</span> <span class="n">posy</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span> <span class="ow">or</span> <span class="n">posz</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span> <span class="ow">or</span> <span class="n">posz</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">posx</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_min_</span> <span class="ow">or</span> <span class="n">posx</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max_</span> <span class="ow">or</span> <span class="n">posy</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_min_</span> <span class="ow">or</span> <span class="n">posy</span> <span class="o">&gt;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">y_max_</span> <span class="ow">or</span> <span class="n">posz</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_min_</span> <span class="ow">or</span> <span class="n">posz</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max_</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">set_value_nearest_neighbor</span><span class="p">(</span><span class="n">posx</span><span class="p">,</span><span class="n">posy</span><span class="p">,</span><span class="n">posz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">get_value_nearest_neighbor</span><span class="p">(</span><span class="n">posx</span><span class="p">,</span><span class="n">posy</span><span class="p">,</span><span class="n">posz</span><span class="p">)</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_value_nearest_neighbor</span><span class="p">(</span>
+                        <span class="n">posx</span><span class="p">,</span>
+                        <span class="n">posy</span><span class="p">,</span>
+                        <span class="n">posz</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_value_nearest_neighbor</span><span class="p">(</span>
+                            <span class="n">posx</span><span class="p">,</span>
+                            <span class="n">posy</span><span class="p">,</span>
+                            <span class="n">posz</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">other</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span>
+                            <span class="n">i</span><span class="p">,</span>
+                            <span class="n">j</span><span class="p">,</span>
+                            <span class="n">k</span><span class="p">])</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided lattices do not have identical spacing.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The provided lattices do not have identical spacing.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice3D.add_particle_data">
 <a class="viewcode-back" href="../classes/Lattice3D/index.html#Lattice3D.Lattice3D.add_particle_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_particle_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;covariant&quot;</span><span class="p">,</span> <span class="n">add</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_particle_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">sigma</span><span class="p">,</span>
+            <span class="n">quantity</span><span class="p">,</span>
+            <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;covariant&quot;</span><span class="p">,</span>
+            <span class="n">add</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add particle data to the lattice.</span>
 
@@ -1343,9 +1468,9 @@
 <span class="sd">        - &#39;strangeness_density&#39;: Uses the particle&#39;s strangeness as the value to be added to the lattice.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#delete old data?</span>
+        <span class="c1"># delete old data?</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">add</span><span class="p">:</span>
-             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">x</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">y</span>
@@ -1369,33 +1494,40 @@
 
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Particle data contains NaN values.&quot;</span><span class="p">)</span>
-            
-            <span class="k">if</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
                 <span class="c1"># Calculate the Gaussian kernel centered at (x, y, z)</span>
-                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-            <span class="k">elif</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;covariant&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">):</span>
+                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span>
+                    <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;covariant&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Particle data contains NaN values.&quot;</span><span class="p">)</span>
-                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">kernel_value</span> <span class="o">=</span> <span class="n">multivariate_normal</span><span class="p">(</span>
+                    <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown kernel type for lattice.&quot;</span><span class="p">)</span>
 
-             <span class="c1"># Determine the range of cells within the boundary</span>
+            <span class="c1"># Determine the range of cells within the boundary</span>
             <span class="n">range_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma_x_</span> <span class="o">*</span> <span class="n">sigma</span>
             <span class="n">num_x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">range_x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span><span class="p">)</span>
             <span class="n">range_x</span> <span class="o">=</span> <span class="n">num_x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_x_</span>
-            
+
             <span class="n">range_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma_y_</span> <span class="o">*</span> <span class="n">sigma</span>
             <span class="n">num_y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">range_y</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span><span class="p">)</span>
             <span class="n">range_y</span> <span class="o">=</span> <span class="n">num_y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_y_</span>
-            
+
             <span class="n">range_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma_z_</span> <span class="o">*</span> <span class="n">sigma</span>
             <span class="n">num_z</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">range_z</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span><span class="p">)</span>
-            <span class="n">range_z</span> <span class="o">=</span><span class="n">num_z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span> 
-                
+            <span class="n">range_z</span> <span class="o">=</span> <span class="n">num_z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_z_</span>
+
             <span class="n">norm</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="c1">#we have now the right spacing, but the lattice points do not coincide</span>
-            <span class="n">temp_lattice</span><span class="o">=</span><span class="n">Lattice3D</span><span class="p">(</span><span class="o">-</span><span class="n">range_x</span><span class="p">,</span> <span class="n">range_x</span><span class="p">,</span> <span class="o">-</span><span class="n">range_y</span><span class="p">,</span> <span class="n">range_y</span><span class="p">,</span> <span class="o">-</span><span class="n">range_z</span><span class="p">,</span> <span class="n">range_z</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">num_x</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">num_y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">num_z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># we have now the right spacing, but the lattice points do not</span>
+            <span class="c1"># coincide</span>
+            <span class="n">temp_lattice</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="o">-</span><span class="n">range_x</span><span class="p">,</span> <span class="n">range_x</span><span class="p">,</span> <span class="o">-</span><span class="n">range_y</span><span class="p">,</span> <span class="n">range_y</span><span class="p">,</span> <span class="o">-</span>
+                                     <span class="n">range_z</span><span class="p">,</span> <span class="n">range_z</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num_z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">):</span>
@@ -1404,28 +1536,32 @@
                         <span class="n">xi</span><span class="p">,</span> <span class="n">yj</span><span class="p">,</span> <span class="n">zk</span> <span class="o">=</span> <span class="n">temp_lattice</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
                         <span class="c1"># Calculate the value to add to the grid at (i, j, k)</span>
-                        <span class="k">if</span><span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="n">xi</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="n">yj</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">zk</span><span class="o">+</span><span class="n">z</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">xi</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">yj</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">zk</span> <span class="o">+</span> <span class="n">z</span><span class="p">])</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="n">diff_space</span> <span class="o">=</span> <span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">yj</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">zk</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-                            <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">particle</span><span class="o">.</span><span class="n">p_abs</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-                            <span class="n">diff_velocity</span> <span class="o">=</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="o">*</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">+</span><span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="o">*</span><span class="p">(</span><span class="n">yj</span><span class="p">)</span><span class="o">+</span><span class="n">particle</span><span class="o">.</span><span class="n">pz</span><span class="o">*</span><span class="p">(</span><span class="n">zk</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">gamma</span><span class="o">*</span><span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
-                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">([</span><span class="n">diff_space</span><span class="p">,</span><span class="n">diff_velocity</span><span class="p">])</span>
+                            <span class="n">diff_space</span> <span class="o">=</span> <span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">yj</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">zk</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                            <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                                <span class="mi">1</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">p_abs</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                            <span class="n">diff_velocity</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">particle</span><span class="o">.</span><span class="n">px</span> <span class="o">*</span> <span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">py</span> <span class="o">*</span> <span class="p">(</span><span class="n">yj</span><span class="p">)</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">pz</span> <span class="o">*</span> <span class="p">(</span><span class="n">zk</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+                            <span class="n">smearing_factor</span> <span class="o">=</span> <span class="n">kernel_value</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">diff_space</span><span class="p">,</span> <span class="n">diff_velocity</span><span class="p">])</span>
                         <span class="n">norm</span> <span class="o">+=</span> <span class="n">smearing_factor</span>
                         <span class="n">value_to_add</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">smearing_factor</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_volume_</span>
-                        
+
                         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value_to_add</span><span class="p">):</span>
-                            <span class="n">value_to_add</span><span class="o">=</span><span class="mf">0.</span>
+                            <span class="n">value_to_add</span> <span class="o">=</span> <span class="mf">0.</span>
                         <span class="c1"># Add the value to the grid</span>
                         <span class="n">temp_lattice</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value_to_add</span>
-                            
+
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_x_</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_y_</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temp_lattice</span><span class="o">.</span><span class="n">num_points_z_</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">1e-15</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-15</span><span class="p">:</span>
                             <span class="n">temp_lattice</span><span class="o">.</span><span class="n">grid_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span>
-            <span class="n">xi</span> <span class="p">,</span><span class="n">yi</span> <span class="p">,</span><span class="n">zi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_closest_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-            <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">xi</span> <span class="p">,</span><span class="n">yi</span> <span class="p">,</span><span class="n">zi</span><span class="p">)</span>
+            <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_closest_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_same_spaced_grid</span><span class="p">(</span><span class="n">temp_lattice</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">z_grid</span><span class="p">)</span></div>
 </div>
 

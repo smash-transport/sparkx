@@ -22,8 +22,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="EventCharacteristics" href="../EventCharacteristics/index.html" />
-    <link rel="prev" title="GenerateFlow" href="../flow/GenerateFlow/index.html" /> 
+    <link rel="next" title="MultiParticlePtCorrelations" href="../MultiParticlePtCorrelations/index.html" />
+    <link rel="prev" title="Jetscape" href="../Jetscape/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,12 +48,13 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Lattice3D</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Lattice3D.Lattice3D"><code class="docutils literal notranslate"><span class="pre">Lattice3D</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Lattice3D.Lattice3D.set_value_by_index"><code class="docutils literal notranslate"><span class="pre">Lattice3D.set_value_by_index()</span></code></a></li>
@@ -81,8 +82,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -343,7 +345,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="Lattice3D.Lattice3D.set_value_nearest_neighbor">
 <span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">set_value_nearest_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.set_value_nearest_neighbor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.set_value_nearest_neighbor" title="Link to this definition"></a></dt>
-<dd><p>Set the value at the nearest neighbor of the 
+<dd><p>Set the value at the nearest neighbor of the
 specified coordinates within the lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -400,7 +402,7 @@ specified coordinates within the lattice.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Lattice3D.Lattice3D.get_value_nearest_neighbor">
 <span class="sig-prename descclassname"><span class="pre">Lattice3D.</span></span><span class="sig-name descname"><span class="pre">get_value_nearest_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Lattice3D.html#Lattice3D.get_value_nearest_neighbor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Lattice3D.Lattice3D.get_value_nearest_neighbor" title="Link to this definition"></a></dt>
-<dd><p>Get the value of the nearest neighbor at the specified coordinates 
+<dd><p>Get the value of the nearest neighbor at the specified coordinates
 within the lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -543,10 +545,10 @@ position is outside the lattice range, None is returned.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice1</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">z_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_points_x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_z</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice2</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice2</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">z_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_points_x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_z</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt;</span>
-<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice3</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice3</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span><span class="n">x_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">z_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">z_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_points_x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_points_z</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice1</span><span class="o">=</span><span class="n">lattice1</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">lattice2</span><span class="p">,</span> <span class="n">lattice3</span><span class="p">)</span>
@@ -840,8 +842,8 @@ values are added to the corresponding grid points in the lattice.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../flow/GenerateFlow/index.html" class="btn btn-neutral float-left" title="GenerateFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../EventCharacteristics/index.html" class="btn btn-neutral float-right" title="EventCharacteristics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../Jetscape/index.html" class="btn btn-neutral float-left" title="Jetscape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../MultiParticlePtCorrelations/index.html" class="btn btn-neutral float-right" title="MultiParticlePtCorrelations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

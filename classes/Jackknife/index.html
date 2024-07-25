@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jackknife &mdash; sparkx 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=ca842793"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="JetAnalysis" href="../JetAnalysis/index.html" />
+    <link rel="prev" title="Histogram" href="../Histogram/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Jackknife</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Jackknife.Jackknife"><code class="docutils literal notranslate"><span class="pre">Jackknife</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Jackknife.Jackknife.compute_jackknife_estimates"><code class="docutils literal notranslate"><span class="pre">Jackknife.compute_jackknife_estimates()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Classes</a></li>
+      <li class="breadcrumb-item active">Jackknife</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/classes/Jackknife/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jackknife">
+<span id="id1"></span><h1>Jackknife<a class="headerlink" href="#jackknife" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Jackknife.Jackknife">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Jackknife.</span></span><span class="sig-name descname"><span class="pre">Jackknife</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Jackknife.html#Jackknife"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jackknife.Jackknife" title="Link to this definition"></a></dt>
+<dd><p>Delete-d Jackknife class for computation of confidence intervals for many different
+statistics. The Jackknife method is similar to a bootstrap method, but
+instead of replacing the data with random samples, it deletes a fraction
+of the data and computes the statistic on the reduced data.</p>
+<p>Literature on the method can be found in:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/1606.00497">Avery McIntosh “The Jackknife Estimation Method” arXiv:1606.00497</a>.</p></li>
+<li><ol class="upperalpha simple" start="10">
+<li><p>Shao and D. Tu “The Jackknife and Bootstrap” Springer Series in Statistics, 0172-739, 1995.</p></li>
+</ol>
+</li>
+</ul>
+<p>The code supports parallel processing for the computation of the Jackknife
+samples.</p>
+<p>If the function applied to the data needs multi-dimensional data, the data
+array is truncated along axis 0.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is the user’s responsibility to ensure that the function applied to
+the data is well-defined and that the data array is in the correct
+input format for the specific function. This code always dilutes the
+data along axis 0.
+This class only checks that the function is callable and that the return
+value is a single number (int or float).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>delete_fraction</strong><span class="classifier">float</span></dt><dd><p>The fraction of the data to be randomly deleted.</p>
+</dd>
+<dt><strong>number_samples</strong><span class="classifier">int</span></dt><dd><p>The number of Jackknife samples to be computed.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int, optional</span></dt><dd><p>The random seed to be used for the Jackknife computation. The default
+is 42.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If delete_fraction is less than 0 or greater than or equal to 1.
+If number_samples is less than 1.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If delete_fraction is not a float.
+If number_samples is not an integer.
+If seed is not an integer.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A demonstration how to the Jackknife class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jackknife</span> <span class="kn">import</span> <span class="n">Jackknife</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_Gaussian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jackknife</span> <span class="o">=</span> <span class="n">Jackknife</span><span class="p">(</span><span class="n">delete_fraction</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">number_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="linenos">5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jackknife</span><span class="o">.</span><span class="n">compute_jackknife_estimates</span><span class="p">(</span><span class="n">data_Gaussian</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>delete_fraction</strong><span class="classifier">float</span></dt><dd><p>The fraction of the data to be randomly deleted.</p>
+</dd>
+<dt><strong>number_samples</strong><span class="classifier">int</span></dt><dd><p>The number of Jackknife samples to be computed.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int</span></dt><dd><p>The random seed to be used for the Jackknife computation.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>compute_jackknife_estimates:</strong></p></td>
+<td><p>Compute the Jackknife estimates</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Jackknife.Jackknife.compute_jackknife_estimates">
+<span class="sig-prename descclassname"><span class="pre">Jackknife.</span></span><span class="sig-name descname"><span class="pre">compute_jackknife_estimates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">~numpy.ndarray,</span> <span class="pre">function:</span> <span class="pre">~typing.Callable[[...],</span> <span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">num_cores:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">*args,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Jackknife.html#Jackknife.compute_jackknife_estimates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jackknife.Jackknife.compute_jackknife_estimates" title="Link to this definition"></a></dt>
+<dd><p>Compute the Jackknife uncertainty estimates for a function applied to
+a data array. The default function is np.mean, but it can be changed to
+any other function that accepts a numpy array as input. Multiple
+other arguments can be passed to the function as args and kwargs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">np.ndarray</span></dt><dd><p>The data to be used to compute the Jackknife samples. The data is
+truncated along axis 0.</p>
+</dd>
+<dt><strong>function</strong><span class="classifier">function, optional</span></dt><dd><p>The function to be applied to the reduced data. The function can
+accept additional arguments and keyword arguments. The default is
+np.mean. It has to return a single number (int or float).</p>
+</dd>
+<dt><strong>num_cores</strong><span class="classifier">int, optional</span></dt><dd><p>The number of cores to be used for parallel processing. The default
+is None, which means that all available cores will be used.</p>
+</dd>
+<dt><strong>*args</strong><span class="classifier">tuple</span></dt><dd><p>Additional arguments to be passed to the function.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional keyword arguments to be passed to the function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>The Jackknife estimate for the standard deviation of the function
+applied to the data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If delete_n_points is less than 1 (delete_fraction too small).</p>
+</dd>
+<dt>TypeError</dt><dd><p>If data is not a numpy array or if function is not callable.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If the function does not return a single number (float or int).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Histogram/index.html" class="btn btn-neutral float-left" title="Histogram" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../JetAnalysis/index.html" class="btn btn-neutral float-right" title="JetAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -75,15 +75,15 @@
            <div itemprop="articleBody">
              
   <h1>Source code for LeeYangZeroFlow</h1><div class="highlight"><pre>
-<span></span><span class="c1">#===================================================</span>
+<span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1">#    Copyright (c) 2023-2024</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
 <span class="c1">#</span>
-<span class="c1">#===================================================</span>
-    
+<span class="c1"># ===================================================</span>
+
 <span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
@@ -91,18 +91,19 @@
 
 <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="LeeYangZeroFlow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow">[docs]</a>
 <span class="k">class</span> <span class="nc">LeeYangZeroFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute integrated and differential anisotropic flow using the Lee-Yang </span>
+<span class="sd">    Compute integrated and differential anisotropic flow using the Lee-Yang</span>
 <span class="sd">    zero method from</span>
 
 <span class="sd">    - [1] `Phys. Lett. B 580 (2004) 157  [nucl-th/0307018] &lt;https://inspirehep.net/literature/622649&gt;`__</span>
 <span class="sd">    - [2] `Nucl. Phys. A 727 (2003) 373  [nucl-th/0310016] &lt;https://inspirehep.net/literature/629783&gt;`__</span>
 <span class="sd">    - [3] `J. Phys. G: Nucl. Part. Phys. 30 (2004) S1213  [nucl-th/0402053] &lt;https://inspirehep.net/literature/644572&gt;`__</span>
 
-<span class="sd">    For the computation of the anisotropic flow it is important to have an </span>
+<span class="sd">    For the computation of the anisotropic flow it is important to have an</span>
 <span class="sd">    estimate on how large the anisotropic flow will be. To set up the correct</span>
 <span class="sd">    range of radial values along which the generating function is calculated.</span>
 
@@ -112,7 +113,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    If a result contains `np.nan` or `np.inf`, the corresponding value is set to `None`.</span>
-<span class="sd">    </span>
+
 <span class="sd">    A few remarks from Ref. [2] about the applicability of the method and the resolution parameter :math:`\\chi`:</span>
 <span class="sd">        - :math:`\\chi &gt; 1`:  The statistical error on the flow is not significantly larger than with the standard method. At the same time systematic errors due to nonflow effects are much smaller. The present method should be used, and statistics will not be a problem.</span>
 <span class="sd">        - :math:`0.5 &lt; \\chi &lt; 1`: The method is applicable, but the weights should be optimized to increase :math:`\\chi`. This is not possible with the current implementation of the flow analysis method.</span>
@@ -158,27 +159,32 @@
 <span class="sd">        &gt;&gt;&gt; result = flow_instance.integrated_flow(particle_data)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">vstep</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">vstep</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">j01_</span> <span class="o">=</span> <span class="mf">2.4048256</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span> <span class="o">=</span> <span class="mf">0.5191147</span> <span class="c1"># J1(j01)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span> <span class="o">=</span> <span class="mf">0.5191147</span>  <span class="c1"># J1(j01)</span>
 
         <span class="k">if</span> <span class="n">vmin</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;vmin&#39; is larger than &#39;vmax&#39;&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">vmax</span><span class="o">-</span><span class="n">vmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">vstep</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;vstep&#39; is larger than the difference between minimum and maximum flow&quot;</span><span class="p">)</span>
-        
+        <span class="k">if</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">vstep</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;vstep&#39; is larger than the difference between minimum and maximum flow&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;n has to be int&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;n-th harmonic with value n&lt;=0 can not be computed&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;n-th harmonic with value n&lt;=0 can not be computed&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">=</span> <span class="n">n</span>
 
         <span class="c1"># define the r_space_ such that one achieves the wanted precision vstep</span>
-        <span class="n">number_interpolation_points_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">vmax</span><span class="o">-</span><span class="n">vmin</span><span class="p">)</span><span class="o">/</span><span class="n">vstep</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span> <span class="o">/</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vstep</span> <span class="o">*</span> <span class="n">r_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">r_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">number_interpolation_points_r</span><span class="p">))])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># equally spaced between 0 and pi/n</span>
+        <span class="n">number_interpolation_points_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">vstep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span> <span class="o">/</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vstep</span> <span class="o">*</span> <span class="n">r_i</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">r_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">number_interpolation_points_r</span><span class="p">))])</span>
+        <span class="c1"># equally spaced between 0 and pi/n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">computed_integrated_flow_</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chi_</span> <span class="o">=</span> <span class="kc">None</span>
@@ -188,10 +194,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerator_event_avg_diff_</span> <span class="o">=</span> <span class="kc">None</span>
 
-
     <span class="k">def</span> <span class="nf">__g_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the generating function g^{\\theta}(\\mathrm{i}r) defined by </span>
+<span class="sd">        Calculate the generating function g^{\\theta}(\\mathrm{i}r) defined by</span>
 <span class="sd">        Eq. (3) in Ref. [3].</span>
 
 <span class="sd">        Parameters</span>
@@ -215,17 +220,20 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the </span>
+<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the</span>
 <span class="sd">            lengths of weight_j and phi_j differ.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phi_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">weight_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">phi_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not the correct input format for g_theta&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight_j</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phi_j</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weight_j and phi_j do not have the same length&quot;</span><span class="p">)</span>
 
         <span class="n">g_theta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weight_j</span><span class="p">)):</span>
-            <span class="n">g_theta</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)))</span>
+            <span class="n">g_theta</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span>
+                        <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">g_theta</span>
 
     <span class="k">def</span> <span class="nf">__Q_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">):</span>
@@ -249,10 +257,12 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the </span>
+<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the</span>
 <span class="sd">            lengths of weight_j and phi_j differ.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight_j</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phi_j</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">weight_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">phi_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not the correct input format for g_theta&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight_j</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phi_j</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;weight_j and phi_j do not have the same length&#39;</span><span class="p">)</span>
@@ -261,7 +271,7 @@
             <span class="n">Q_x</span> <span class="o">+=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">Q_x</span>
 
-    <span class="k">def</span> <span class="nf">__Q_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__Q_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the quantity Q_y defined by Eq. (4) in Ref. [3].</span>
 
@@ -282,10 +292,12 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the </span>
+<span class="sd">            If input formats for weight_j or phi_j are incorrect, or if the</span>
 <span class="sd">            lengths of weight_j and phi_j differ.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight_j</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phi_j</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">weight_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">phi_j</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not the correct input format for g_theta&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight_j</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phi_j</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;weight_j and phi_j do not have the same length&#39;</span><span class="p">)</span>
@@ -294,7 +306,7 @@
             <span class="n">Q_y</span> <span class="o">+=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">Q_y</span>
 
-    <span class="k">def</span> <span class="nf">__sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">QxSqPQySq</span><span class="p">,</span><span class="n">Qx</span><span class="p">,</span><span class="n">Qy</span><span class="p">,</span><span class="n">VnInfty</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">QxSqPQySq</span><span class="p">,</span> <span class="n">Qx</span><span class="p">,</span> <span class="n">Qy</span><span class="p">,</span> <span class="n">VnInfty</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the value of :math:`\\sigma` based on Eq. (7) in Ref. [3].</span>
 
@@ -307,7 +319,7 @@
 <span class="sd">        Qy : float</span>
 <span class="sd">            The value of :math:`Q_y`..</span>
 <span class="sd">        VnInfty : float</span>
-<span class="sd">            The value of :math:`V_n\{\\infty\}`.</span>
+<span class="sd">            The value of :math:`V_n\\{\\infty\\}`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -317,15 +329,15 @@
         <span class="c1"># Eq. 7 in Ref. [3]</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">QxSqPQySq</span> <span class="o">-</span> <span class="n">Qx</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">Qy</span><span class="o">**</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">VnInfty</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">VnInfty</span><span class="p">,</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VnInfty</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the resolution parameter :math:`\\chi` based on the </span>
+<span class="sd">        Calculate the resolution parameter :math:`\\chi` based on the</span>
 <span class="sd">        given parameters.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        VnInfty : float</span>
-<span class="sd">            The value of :math:`V_n\{\\infty\}`.</span>
+<span class="sd">            The value of :math:`V_n\\{\\infty\\}`.</span>
 <span class="sd">        sigma : float</span>
 <span class="sd">            The value of :math:`\\sigma`.</span>
 
@@ -336,7 +348,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">VnInfty</span> <span class="o">/</span> <span class="n">sigma</span>
 
-    <span class="k">def</span> <span class="nf">__relative_Vn_fluctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">NEvents</span><span class="p">,</span><span class="n">chi</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__relative_Vn_fluctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NEvents</span><span class="p">,</span> <span class="n">chi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the relative flow fluctuation based on the given parameters.</span>
 <span class="sd">        This is based on Eq. (8) in Ref. [3].</span>
@@ -353,7 +365,8 @@
 <span class="sd">        float</span>
 <span class="sd">            The computed relative flow fluctuation based on Eq. (8) in Ref. [3].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">NEvents</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">chi</span><span class="o">*</span><span class="n">chi</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">chi</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.2375362</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">NEvents</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span> <span class="o">**</span>
+                                                                                    <span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">chi</span> <span class="o">*</span> <span class="n">chi</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">chi</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.2375362</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__sample_random_reaction_planes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -368,7 +381,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span> <span class="o">=</span> <span class="p">[</span><span class="n">rd</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span> <span class="o">=</span> <span class="p">[</span><span class="n">rd</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+            <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="p">)]</span>
 
 <div class="viewcode-block" id="LeeYangZeroFlow.integrated_flow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow.integrated_flow">[docs]</a>
@@ -399,32 +413,39 @@
         <span class="n">AvgQy</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">AvgQxSqPQySq</span> <span class="o">=</span> <span class="mf">0.</span>
 
-        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">len</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__sample_random_reaction_planes</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
             <span class="n">event_multiplicity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
-            <span class="n">mean_multiplicity</span> <span class="o">+=</span><span class="n">event_multiplicity</span>
+            <span class="n">mean_multiplicity</span> <span class="o">+=</span> <span class="n">event_multiplicity</span>
 
             <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">weight_j</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
                 <span class="n">phi_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
-                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">event_multiplicity</span><span class="p">)</span>
-            
-            <span class="c1"># randomize the event plane</span>
-            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">event_multiplicity</span><span class="p">)</span>
 
-            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+            <span class="c1"># randomize the event plane</span>
+            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">len</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">)):</span>
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)):</span>
-                    <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">[</span><span class="n">r</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">)</span>
+                    <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">)</span>
                     <span class="n">G</span><span class="p">[</span><span class="n">theta</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="o">+=</span> <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="o">/</span> <span class="n">number_events</span>
 
-            <span class="n">Qx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q_x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">)</span> <span class="c1"># event flow vector</span>
-            <span class="n">Qy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q_y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">)</span> <span class="c1"># event flow vector</span>
-            <span class="n">AvgQx</span> <span class="o">+=</span> <span class="n">Qx</span> <span class="c1"># average event flow vector</span>
-            <span class="n">AvgQy</span> <span class="o">+=</span> <span class="n">Qy</span> <span class="c1"># average event flow vector</span>
+            <span class="n">Qx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q_x</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">)</span>  <span class="c1"># event flow vector</span>
+            <span class="n">Qy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q_y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span> <span class="n">weight_j</span><span class="p">,</span> <span class="n">phi_j</span><span class="p">)</span>  <span class="c1"># event flow vector</span>
+            <span class="n">AvgQx</span> <span class="o">+=</span> <span class="n">Qx</span>  <span class="c1"># average event flow vector</span>
+            <span class="n">AvgQy</span> <span class="o">+=</span> <span class="n">Qy</span>  <span class="c1"># average event flow vector</span>
             <span class="n">AvgQxSqPQySq</span> <span class="o">+=</span> <span class="p">(</span><span class="n">Qx</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">Qy</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
 
         <span class="n">mean_multiplicity</span> <span class="o">/=</span> <span class="n">number_events</span>
@@ -436,10 +457,11 @@
         <span class="n">min_r0_theta</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">theta</span><span class="p">,</span> <span class="n">G_theta_values</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">G</span><span class="p">)):</span>
             <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">while</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">G_theta_values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">G_theta_values</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">G_theta_values</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="k">while</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">G_theta_values</span><span class="p">)</span> <span class="o">-</span> \
+                    <span class="mi">1</span> <span class="ow">and</span> <span class="n">G_theta_values</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">G_theta_values</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
                 <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">min_r0_theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_space_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The minimum r0 is at the upper boundary of </span><span class="se">\</span>
 <span class="s2">                              the selected r range. Please choose a smaller </span><span class="se">\</span>
 <span class="s2">                              &#39;vmin&#39;.&quot;</span><span class="p">)</span>
@@ -451,31 +473,39 @@
         <span class="n">vn_inf_theta</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">)):</span>
             <span class="n">vn_inf_theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span> <span class="o">/</span> <span class="n">min_r0_theta</span><span class="p">[</span><span class="n">theta</span><span class="p">])</span>
-        
+
         <span class="n">vn_inf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vn_inf_theta</span><span class="p">)</span>
-        <span class="n">sigma_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sigma</span><span class="p">(</span><span class="n">AvgQxSqPQySq</span><span class="p">,</span><span class="n">AvgQx</span><span class="p">,</span><span class="n">AvgQy</span><span class="p">,</span><span class="n">vn_inf</span><span class="p">)</span>
-        <span class="n">chi_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__chi</span><span class="p">(</span><span class="n">vn_inf</span><span class="p">,</span><span class="n">sigma_value</span><span class="p">)</span>
-        <span class="n">relative_Vn_fluctuation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__relative_Vn_fluctuation</span><span class="p">(</span><span class="n">number_events</span><span class="p">,</span><span class="n">chi_value</span><span class="p">)</span>
+        <span class="n">sigma_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sigma</span><span class="p">(</span><span class="n">AvgQxSqPQySq</span><span class="p">,</span> <span class="n">AvgQx</span><span class="p">,</span> <span class="n">AvgQy</span><span class="p">,</span> <span class="n">vn_inf</span><span class="p">)</span>
+        <span class="n">chi_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__chi</span><span class="p">(</span><span class="n">vn_inf</span><span class="p">,</span> <span class="n">sigma_value</span><span class="p">)</span>
+        <span class="n">relative_Vn_fluctuation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__relative_Vn_fluctuation</span><span class="p">(</span>
+            <span class="n">number_events</span><span class="p">,</span> <span class="n">chi_value</span><span class="p">)</span>
 
         <span class="c1"># set the members for the differential flow computation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">computed_integrated_flow_</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chi_</span> <span class="o">=</span> <span class="n">chi_value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Vntheta_</span> <span class="o">=</span> <span class="n">vn_inf_theta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span> <span class="o">=</span> <span class="n">min_r0_theta</span>
-        
+
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vn_inf</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">vn_inf</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># factor 1/2 because the statistical error on Vninf is a factor 2 smaller</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">vn_inf</span><span class="p">,</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vn_inf</span><span class="o">*</span><span class="n">relative_Vn_fluctuation</span><span class="p">),</span><span class="n">chi_value</span><span class="p">]</span></div>
+            <span class="c1"># factor 1/2 because the statistical error on Vninf is a factor 2</span>
+            <span class="c1"># smaller</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">vn_inf</span><span class="p">,</span>
+                <span class="mf">0.5</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">vn_inf</span> <span class="o">*</span>
+                    <span class="n">relative_Vn_fluctuation</span><span class="p">),</span>
+                <span class="n">chi_value</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span> <span class="nf">__compute_reference_differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_reference_differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function computes the event average in the denominator of Eq. (9) in Ref. [3].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">number_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
-        
+
         <span class="n">denominator_event_avg</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
             <span class="n">event_multiplicity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])</span>
@@ -484,19 +514,26 @@
             <span class="n">weight_j</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
                 <span class="n">phi_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
-                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">event_multiplicity</span><span class="p">)</span>
-            
-            <span class="c1"># randomize the event plane</span>
-            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">event_multiplicity</span><span class="p">)</span>
 
-            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+            <span class="c1"># randomize the event plane</span>
+            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">)):</span>
-                <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">)</span>
+                <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span>
+                    <span class="n">weight_j</span><span class="p">,</span>
+                    <span class="n">phi_j</span><span class="p">)</span>
 
                 <span class="n">sum_j</span> <span class="o">=</span> <span class="mf">0.</span>
                 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_multiplicity</span><span class="p">):</span>
-                    <span class="n">numerator</span> <span class="o">=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
-                    <span class="n">denominator</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
+                    <span class="n">numerator</span> <span class="o">=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> \
+                        <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
+                    <span class="n">denominator</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
                     <span class="n">sum_j</span> <span class="o">+=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span>
 
                 <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*=</span> <span class="n">sum_j</span>
@@ -505,7 +542,7 @@
         <span class="n">denominator_event_avg</span> <span class="o">/=</span> <span class="n">number_events</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span> <span class="o">=</span> <span class="n">denominator_event_avg</span>
 
-    <span class="k">def</span> <span class="nf">__vn_differential_uncertainty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number_particles_tot</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__vn_differential_uncertainty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_particles_tot</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the differential flow uncertainty.</span>
 
@@ -519,12 +556,13 @@
 <span class="sd">        float</span>
 <span class="sd">            The calculated differential flow uncertainty.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">err_sq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">number_particles_tot</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">chi_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">chi_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.2375362</span><span class="p">))</span>
+        <span class="n">err_sq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">number_particles_tot</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">J1rootJ0_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span>
+                                                                                  <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi_</span><span class="o">**</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.2375362</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">err_sq</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__compute_differential_flow_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data_bin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_differential_flow_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data_bin</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the differential flow in the given phase space bin with Eq. (9) </span>
+<span class="sd">        Computes the differential flow in the given phase space bin with Eq. (9)</span>
 <span class="sd">        in Ref. [3].</span>
 
 <span class="sd">        Parameters</span>
@@ -535,11 +573,11 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
-<span class="sd">            A list containing the computed values of differential flow </span>
+<span class="sd">            A list containing the computed values of differential flow</span>
 <span class="sd">            (vn_differential) and its uncertainty (vn_differential_uncertainty).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">number_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data_bin</span><span class="p">)</span>
-        
+
         <span class="n">number_particles_tot</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">numerator_particle_avg</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_events</span><span class="p">):</span>
@@ -550,21 +588,28 @@
             <span class="n">weight_j</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particle_data_bin</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
                 <span class="n">phi_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
-                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">event_multiplicity</span><span class="p">)</span>
-            
-            <span class="c1"># randomize the event plane</span>
-            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+                <span class="n">weight_j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">event_multiplicity</span><span class="p">)</span>
 
-            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+            <span class="c1"># randomize the event plane</span>
+            <span class="n">phi_j</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">[</span><span class="n">event</span><span class="p">]</span> <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">phi_j</span><span class="p">]</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">)):</span>
-                <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span><span class="n">weight_j</span><span class="p">,</span><span class="n">phi_j</span><span class="p">)</span>
+                <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__g_theta</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">],</span>
+                    <span class="n">weight_j</span><span class="p">,</span>
+                    <span class="n">phi_j</span><span class="p">)</span>
 
                 <span class="n">sum_j</span> <span class="o">=</span> <span class="mf">0.</span>
                 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_multiplicity</span><span class="p">):</span>
-                    <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="o">*</span><span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
-                    <span class="n">denominator</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
+                    <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
+                    <span class="n">denominator</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">r0theta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi_j</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
                     <span class="n">sum_j</span> <span class="o">+=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span>
-                
+
                 <span class="n">g</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*=</span> <span class="n">sum_j</span>
 
             <span class="n">numerator_particle_avg</span> <span class="o">+=</span> <span class="n">g</span>
@@ -574,20 +619,31 @@
 
         <span class="n">vn_theta</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_space_</span><span class="p">)):</span>
-            <span class="n">vn_theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vntheta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerator_event_avg_diff_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
-        
+            <span class="n">vn_theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Vntheta_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">numerator_event_avg_diff_</span><span class="p">[</span><span class="n">theta</span><span class="p">]</span> <span class="o">/</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span><span class="p">[</span><span class="n">theta</span><span class="p">]))</span>
+
         <span class="n">vn_differential</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vn_theta</span><span class="p">)</span>
-        <span class="c1"># factor 1/2 because the statistical error on Vninf is a factor 2 smaller</span>
-        <span class="n">vn_differential_uncertainty</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__vn_differential_uncertainty</span><span class="p">(</span><span class="n">number_particles_tot</span><span class="p">)</span>
+        <span class="c1"># factor 1/2 because the statistical error on Vninf is a factor 2</span>
+        <span class="c1"># smaller</span>
+        <span class="n">vn_differential_uncertainty</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">__vn_differential_uncertainty</span><span class="p">(</span><span class="n">number_particles_tot</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vn_differential</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">vn_differential_uncertainty</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">vn_differential</span><span class="p">,</span><span class="n">vn_differential_uncertainty</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">vn_differential</span><span class="p">,</span> <span class="n">vn_differential_uncertainty</span><span class="p">]</span>
 
 <div class="viewcode-block" id="LeeYangZeroFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="n">poi_pdg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">bins</span><span class="p">,</span>
+            <span class="n">flow_as_function_of</span><span class="p">,</span>
+            <span class="n">poi_pdg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the differential flow.</span>
 
@@ -598,7 +654,7 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the differential flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated </span>
+<span class="sd">            Variable on which the flow is calculated</span>
 <span class="sd">            (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
 <span class="sd">        poi_pdg : list</span>
 <span class="sd">            List of PDG id for identified particle differential flow.</span>
@@ -606,13 +662,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
-<span class="sd">            A list containing the differential flow for each bin. </span>
+<span class="sd">            A list containing the differential flow for each bin.</span>
 <span class="sd">            Each element in the list corresponds to a bin and contains:</span>
 
 <span class="sd">            - vn_inf (float): Differential flow magnitude for the bin.</span>
 <span class="sd">            - vn_inf_error (float): Error on the differential flow magnitude for the bin.</span>
-<span class="sd">            </span>
-<span class="sd">        If a bin has no events, the corresponding element in the result list is </span>
+
+<span class="sd">        If a bin has no events, the corresponding element in the result list is</span>
 <span class="sd">        set to `None`.</span>
 
 <span class="sd">        Notes</span>
@@ -622,25 +678,26 @@
 <span class="sd">        Make sure that the same `particle_data` is used. Otherwise this could</span>
 <span class="sd">        lead to wrong results.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bins has to be list or np.ndarray&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;flow_as_function_of is not a string&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">poi_pdg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">poi_pdg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">poi_pdg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg has to be list or np.ndarray&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;poi_pdg elements must be integers&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
-        
+        <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
+
         <span class="c1"># differential flow needs the integrated flow as reference</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">computed_integrated_flow_</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">computed_integrated_flow_</span><span class="p">:</span>
             <span class="n">integrated_flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrated_flow</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
 
         <span class="n">particle_data_bin</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">events_bin</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
                 <span class="n">particles_event</span> <span class="o">=</span> <span class="p">[]</span>
@@ -652,8 +709,9 @@
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span>
                     <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">:</span>
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
-                        <span class="n">particles_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">poi_pdg</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">poi_pdg</span><span class="p">:</span>
+                            <span class="n">particles_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particles_event</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">events_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">particles_event</span><span class="p">])</span>
             <span class="n">particle_data_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">events_bin</span><span class="p">])</span>
@@ -663,7 +721,9 @@
         <span class="n">flow_bins</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data_bin</span><span class="p">)):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">flow_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__compute_differential_flow_bin</span><span class="p">(</span><span class="n">particle_data_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">]))</span>
+                <span class="n">flow_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__compute_differential_flow_bin</span><span class="p">(</span>
+                        <span class="n">particle_data_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">flow_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">flow_bins</span></div>

@@ -23,8 +23,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="LeeYangZeroFlow" href="../LeeYangZeroFlow/index.html" />
-    <link rel="prev" title="ScalarProductFlow" href="../ScalarProductFlow/index.html" /> 
+    <link rel="next" title="GenerateFlow" href="../GenerateFlow/index.html" />
+    <link rel="prev" title="Flow" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,27 +49,29 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">EventPlaneFlow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#EventPlaneFlow.EventPlaneFlow"><code class="docutils literal notranslate"><span class="pre">EventPlaneFlow</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ReactionPlaneFlow/index.html">ReactionPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -110,10 +112,10 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EventPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">EventPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/EventPlaneFlow.html#EventPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EventPlaneFlow.EventPlaneFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a event plane flow analysis algorithm
 <a class="reference external" href="https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws">Poskanzer, Arthur M., and Sergei A. Voloshin. “Methods for analyzing anisotropic flow in relativistic nuclear collisions.” Physical Review C 58.3 (1998): 1671.</a>.</p>
-<p>For this method, the flow is calculated by calculating the nth harmonic of 
-the angle the event plane <span class="math notranslate nohighlight">\(Q\)</span>, relative to the event plane angle 
+<p>For this method, the flow is calculated by calculating the nth harmonic of
+the angle the event plane <span class="math notranslate nohighlight">\(Q\)</span>, relative to the event plane angle
 determined from the flow itself.
-Since finite multiplicity limits the estimation of the angle of the reaction 
+Since finite multiplicity limits the estimation of the angle of the reaction
 plane, the flow is corrected for the event plane resolution for each harmonic.</p>
 <p>In summary, this class calculates the following:</p>
 <div class="math notranslate nohighlight">
@@ -121,10 +123,10 @@ plane, the flow is corrected for the event plane resolution for each harmonic.</
 <p>with</p>
 <div class="math notranslate nohighlight">
 \[v_{n}^{\mathrm{obs}} = \langle \cos(n (\phi_i -\Psi_n)) \rangle\]</div>
-<p>where we average over all particles of all events. <span class="math notranslate nohighlight">\(R_n\)</span> is the 
-resolution, which we calculate in an iterative method according to the 
-mentioned reference. This is done by using two sub-events, which we assume 
-to be of same size and which are determined by splitting the event into 
+<p>where we average over all particles of all events. <span class="math notranslate nohighlight">\(R_n\)</span> is the
+resolution, which we calculate in an iterative method according to the
+mentioned reference. This is done by using two sub-events, which we assume
+to be of same size and which are determined by splitting the event into
 subsets of positive and negative pseudorapidity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -140,9 +142,9 @@ Default is 0.0.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>A demonstration how to calculate flow according to the event plane of a 
+<p>A demonstration how to calculate flow according to the event plane of a
 separate particle list.
-The same particle list can also be used to determine the event plane and 
+The same particle list can also be used to determine the event plane and
 the flow.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
 <span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.flow.EventPlaneFlow</span> <span class="kn">import</span> <span class="n">EventPlaneFlow</span>
@@ -196,8 +198,9 @@ Default is True.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>tuple</dt><dd><p>A tuple containing the integrated flow value and the corresponding 
-uncertainty.</p>
+<dt>tuple</dt><dd><p>A tuple containing the integrated flow value and the corresponding
+uncertainty. The third and fourth element are the event plane angle
+and the corresponding uncertainty.</p>
 </dd>
 </dl>
 </dd>
@@ -215,7 +218,7 @@ uncertainty.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated 
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated
 (“pt”, “rapidity”, or “pseudorapidity”).</p>
 </dd>
 <dt><strong>particle_data_event_plane</strong><span class="classifier">list</span></dt><dd><p>List of particle data for the event plane calculation.</p>
@@ -227,8 +230,9 @@ Default is True.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>list</dt><dd><p>A list of tuples containing the flow values and uncertainties for 
-each bin.</p>
+<dt>list</dt><dd><p>A list of tuples containing the flow values and uncertainties for
+each bin. The third and fourth element are the event plane angle
+and the corresponding uncertainty.</p>
 </dd>
 </dl>
 </dd>
@@ -241,8 +245,8 @@ each bin.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../ScalarProductFlow/index.html" class="btn btn-neutral float-left" title="ScalarProductFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../LeeYangZeroFlow/index.html" class="btn btn-neutral float-right" title="LeeYangZeroFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Flow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../GenerateFlow/index.html" class="btn btn-neutral float-right" title="GenerateFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ScalarProductFlow" href="../ScalarProductFlow/index.html" />
-    <link rel="prev" title="Flow" href="../index.html" /> 
+    <link rel="prev" title="QCumulantFlow" href="../QCumulantFlow/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,27 +49,29 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../EventPlaneFlow/index.html">EventPlaneFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ReactionPlaneFlow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ReactionPlaneFlow.ReactionPlaneFlow"><code class="docutils literal notranslate"><span class="pre">ReactionPlaneFlow</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../ScalarProductFlow/index.html">ScalarProductFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../EventPlaneFlow/index.html">EventPlaneFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../LeeYangZeroFlow/index.html">LeeYangZeroFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../QCumulantFlow/index.html">QCumulantFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../PCAFlow/index.html">PCAFlow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../GenerateFlow/index.html">GenerateFlow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -109,13 +111,15 @@
 <dt class="sig sig-object py" id="ReactionPlaneFlow.ReactionPlaneFlow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ReactionPlaneFlow.</span></span><span class="sig-name descname"><span class="pre">ReactionPlaneFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ReactionPlaneFlow.html#ReactionPlaneFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ReactionPlaneFlow.ReactionPlaneFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a reaction plane flow analysis algorithm.</p>
-<p>For this method, the flow is calculated under the assumption that the event 
-plane angle is constant throughout all events. The flow is calculated as</p>
+<p>For this method, the flow is calculated under the assumption that the
+reaction plane angle is constant throughout all events, i.e., the impact
+parameter is always oriented in the same direction.
+The flow is calculated as</p>
 <div class="math notranslate nohighlight">
 \[v_n = \left\langle \exp{in\phi_i}\right\rangle,\]</div>
-<p>where we average over all particles of all events. We return complex numbers, 
-which contain the information about the position of the event plane.
-If a weight is set for the particles in the <cite>Particle</cite> objects, then this 
+<p>where we average over all particles of all events. We return complex
+numbers, which contain the information about the magnitude and the angle.
+If a weight is set for the particles in the <cite>Particle</cite> objects, then this
 is used in the flow calculation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -209,7 +213,7 @@ is used in the flow calculation.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Flow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../QCumulantFlow/index.html" class="btn btn-neutral float-left" title="QCumulantFlow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../ScalarProductFlow/index.html" class="btn btn-neutral float-right" title="ScalarProductFlow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

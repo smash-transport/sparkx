@@ -22,8 +22,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="JetAnalysis" href="../JetAnalysis/index.html" />
-    <link rel="prev" title="Oscar" href="../Oscar/index.html" /> 
+    <link rel="next" title="Lattice3D" href="../Lattice3D/index.html" />
+    <link rel="prev" title="JetAnalysis" href="../JetAnalysis/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,8 +48,12 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Jetscape</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Jetscape.Jetscape"><code class="docutils literal notranslate"><span class="pre">Jetscape</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.particle_list"><code class="docutils literal notranslate"><span class="pre">Jetscape.particle_list()</span></code></a></li>
@@ -73,12 +77,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../Histogram/index.html">Histogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -170,6 +172,12 @@ memory. The names of the filters are the same as the names of <br />
 the filter methods. All filters are applied in the order in <br />
 which they appear in the dictionary.</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">particletype</span></code> (str)</p></td>
+<td><p>This parameter allows to switch from the standard hadron file <br />
+to the parton output of JETSCAPE. The parameter can be set to <br />
+<code class="code docutils literal notranslate"><span class="pre">particletype='hadron'</span></code> (default) or <code class="code docutils literal notranslate"><span class="pre">particletype='parton'</span></code>.
+Quark charges are multiplied by 3 to make them integer values.</p></td>
+</tr>
 </tbody>
 </table>
 </dd>
@@ -177,7 +185,7 @@ which they appear in the dictionary.</p></td>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>All filters with the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code> need the usual 
+<p>All filters with the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code> need the usual
 parameters for the filter functions in the dictionary.
 All filter functions without arguments need a <code class="code docutils literal notranslate"><span class="pre">True</span></code> in the dictionary.</p>
 <p class="rubric">Examples</p>
@@ -224,7 +232,7 @@ multiplicity &gt; 500:</p>
 <p><strong>3. Constructor cuts</strong></p>
 <p>Cuts can be performed directly in the constructor by passing a dictionary. This
 has the advantage that memory is saved because the cuts are applied after reading
-each single event. This is achieved by the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code>, which 
+each single event. This is achieved by the keyword argument <code class="code docutils literal notranslate"><span class="pre">filters</span></code>, which
 contains the filter dictionary. Filters are applied in the order in which they appear.
 Let’s assume we only want to keep pions in events with a
 multiplicity &gt; 500:</p>
@@ -534,7 +542,7 @@ or <code class="code docutils literal notranslate"><span class="pre">(cut_min,</
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the transverse momentum 
+<dt><strong>self</strong><span class="classifier">Jetscape object</span></dt><dd><p>Containing only particles complying with the transverse momentum
 cut for all events</p>
 </dd>
 </dl>
@@ -665,8 +673,8 @@ with the same format as the input file</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../Oscar/index.html" class="btn btn-neutral float-left" title="Oscar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../JetAnalysis/index.html" class="btn btn-neutral float-right" title="JetAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../JetAnalysis/index.html" class="btn btn-neutral float-left" title="JetAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Lattice3D/index.html" class="btn btn-neutral float-right" title="Lattice3D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

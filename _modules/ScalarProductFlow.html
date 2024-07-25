@@ -75,17 +75,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ScalarProductFlow</h1><div class="highlight"><pre>
-<span></span><span class="c1">#===================================================</span>
+<span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1">#    Copyright (c) 2023-2024</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
 <span class="c1">#</span>
-<span class="c1">#===================================================</span>
-    
+<span class="c1"># ===================================================</span>
+
 <span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 
 <div class="viewcode-block" id="ScalarProductFlow">
 <a class="viewcode-back" href="../classes/flow/ScalarProductFlow/index.html#ScalarProductFlow.ScalarProductFlow">[docs]</a>
@@ -96,11 +97,11 @@
 <span class="sd">    `Adler, C., et al. &quot;Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV.&quot; Physical Review C 66.3 (2002): 034904 &lt;https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A&gt;`__.</span>
 
 
-<span class="sd">    For this method, the flow is calculated by correlating the event </span>
-<span class="sd">    vector :math:`Q` with the conjugated unit momentum vector of the particle. </span>
-<span class="sd">    This is normalized by square root of the scalar product of the event vectors </span>
-<span class="sd">    of two equal-sized sub-events. We choose here to divide the sub-events by </span>
-<span class="sd">    positive and negative pseudorapidity. Note that for asymmetric systems, this </span>
+<span class="sd">    For this method, the flow is calculated by correlating the event</span>
+<span class="sd">    vector :math:`Q` with the conjugated unit momentum vector of the particle.</span>
+<span class="sd">    This is normalized by square root of the scalar product of the event vectors</span>
+<span class="sd">    of two equal-sized sub-events. We choose here to divide the sub-events by</span>
+<span class="sd">    positive and negative pseudorapidity. Note that for asymmetric systems, this</span>
 <span class="sd">    will not be sufficient.</span>
 
 <span class="sd">    In summary, this class calculates the following:</span>
@@ -131,9 +132,9 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    A demonstration how to calculate flow according to the event plane of a </span>
+<span class="sd">    A demonstration how to calculate flow according to the event plane of a</span>
 <span class="sd">    separate particle list.</span>
-<span class="sd">    The same particle list can also be used to determine the event plane and </span>
+<span class="sd">    The same particle list can also be used to determine the event plane and</span>
 <span class="sd">    the flow.</span>
 
 <span class="sd">    .. highlight:: python</span>
@@ -162,7 +163,8 @@
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span><span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;pt2&quot;</span><span class="p">,</span> <span class="n">pseudorapidity_gap</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the ScalarProductFlow object.</span>
 
@@ -180,21 +182,24 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;n has to be int&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;n-th harmonic with value n&lt;=0 can not be computed&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;n-th harmonic with value n&lt;=0 can not be computed&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">=</span> <span class="n">n</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;weight has to be a string&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">weight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;pt2&quot;</span><span class="p">,</span> <span class="s2">&quot;ptn&quot;</span><span class="p">,</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid weight given, choose one of the following: &#39;pt&#39;, &#39;pt2&#39;, &#39;ptn&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid weight given, choose one of the following: &#39;pt&#39;, &#39;pt2&#39;, &#39;ptn&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weight_</span> <span class="o">=</span> <span class="n">weight</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pseudorapidity_gap</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;n has to be int&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">pseudorapidity_gap</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pseudorapidity value with gap &lt; 0 can not be computed&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;pseudorapidity value with gap &lt; 0 can not be computed&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span> <span class="o">=</span> <span class="n">pseudorapidity_gap</span>
 
@@ -224,7 +229,8 @@
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
             <span class="n">Q_vector_val</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">+</span> <span class="mf">0.</span><span class="n">j</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
-                <span class="n">Q_vector_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
+                <span class="n">Q_vector_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                    <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
             <span class="n">Q_vector</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Q_vector_val</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Q_vector</span>
@@ -238,8 +244,10 @@
             <span class="n">relevant_weights_A_event</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
-                <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span><span class="p">:</span>
-                    <span class="n">Q_vector_A_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">(</span>
+                <span class="p">)</span> <span class="o">&gt;=</span> <span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span><span class="p">:</span>
+                    <span class="n">Q_vector_A_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                        <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
                     <span class="n">relevant_weights_A_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">])</span>
             <span class="n">Q_vector_A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Q_vector_A_val</span><span class="p">)</span>
             <span class="n">relevant_weights_A</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">relevant_weights_A_event</span><span class="p">])</span>
@@ -247,37 +255,52 @@
         <span class="c1"># Q vector sub-event B</span>
         <span class="n">Q_vector_B</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">relevant_weights_B</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1">#count=0</span>
+        <span class="c1"># count=0</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
             <span class="n">Q_vector_B_val</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">+</span> <span class="mf">0.</span><span class="n">j</span>
             <span class="n">relevant_weights_B_event</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
-                <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span><span class="p">:</span>
-                    <span class="n">Q_vector_B_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">(</span>
+                <span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span><span class="p">:</span>
+                    <span class="n">Q_vector_B_val</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                        <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">phi</span><span class="p">())</span>
                     <span class="n">relevant_weights_B_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">])</span>
-                    <span class="c1">#count+=1</span>
+                    <span class="c1"># count+=1</span>
             <span class="n">Q_vector_B</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Q_vector_B_val</span><span class="p">)</span>
             <span class="n">relevant_weights_B</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">relevant_weights_B_event</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">Q_vector_A</span><span class="p">,</span> <span class="n">Q_vector_B</span>
 
     <span class="k">def</span> <span class="nf">__compute_u_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">):</span>
-        <span class="n">u_vectors</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># [event][particle]</span>
+        <span class="n">u_vectors</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># [event][particle]</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">particle_data</span><span class="p">:</span>
             <span class="n">u_vector_event</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
-                <span class="n">u_vector_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span><span class="n">j</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span><span class="o">*</span><span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()))</span>
+                <span class="n">u_vector_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                        <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span>
+                        <span class="nb">float</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span> <span class="o">*</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()))</span>
             <span class="n">u_vectors</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">u_vector_event</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">u_vectors</span>
 
     <span class="k">def</span> <span class="nf">__compute_event_plane_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q_vector_A</span><span class="p">,</span> <span class="n">Q_vector_B</span><span class="p">):</span>
         <span class="c1"># implements Eq.15 from arXiv:0809.2949</span>
-        <span class="n">QnSquared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">Q_vector_A</span><span class="p">[</span><span class="n">event</span><span class="p">])</span> <span class="o">*</span> <span class="n">Q_vector_B</span><span class="p">[</span><span class="n">event</span><span class="p">])</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Q_vector_A</span><span class="p">))])</span>
+        <span class="n">QnSquared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">Q_vector_A</span><span class="p">[</span><span class="n">event</span><span class="p">])</span> <span class="o">*</span>
+                                 <span class="n">Q_vector_B</span><span class="p">[</span><span class="n">event</span><span class="p">])</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Q_vector_A</span><span class="p">))])</span>
         <span class="n">QnSquaredSum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">QnSquared</span><span class="p">)</span>
-        <span class="k">return</span>  <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">QnSquaredSum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">QnSquaredSum</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__compute_flow_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">Q_vector</span><span class="p">,</span> <span class="n">u_vectors</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">self_corr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_flow_particles</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">weights</span><span class="p">,</span>
+            <span class="n">Q_vector</span><span class="p">,</span>
+            <span class="n">u_vectors</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="p">,</span>
+            <span class="n">self_corr</span><span class="p">):</span>
         <span class="n">flow_values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
             <span class="n">flow_values_event</span> <span class="o">=</span> <span class="p">[]</span>
@@ -285,7 +308,8 @@
                 <span class="n">weight_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">])</span>
                 <span class="n">Q_vector_particle</span> <span class="o">=</span> <span class="n">Q_vector</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">self_corr</span><span class="p">):</span>
-                    <span class="n">Q_vector_particle</span> <span class="o">-=</span> <span class="n">weight_particle</span><span class="o">*</span><span class="n">u_vectors</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="c1"># avoid autocorrelation</span>
+                    <span class="n">Q_vector_particle</span> <span class="o">-=</span> <span class="n">weight_particle</span> <span class="o">*</span> \
+                        <span class="n">u_vectors</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span>  <span class="c1"># avoid autocorrelation</span>
                 <span class="n">u_vector</span> <span class="o">=</span> <span class="n">u_vectors</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span>
 
                 <span class="n">vn_obs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">u_vector</span><span class="p">)</span> <span class="o">*</span> <span class="n">Q_vector_particle</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
@@ -295,18 +319,33 @@
         <span class="k">return</span> <span class="n">flow_values</span>
 
     <span class="k">def</span> <span class="nf">__calculate_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data_event_plane</span><span class="p">):</span>
-        <span class="n">event_weights_event_plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_particle_weights</span><span class="p">(</span><span class="n">particle_data_event_plane</span><span class="p">)</span>
-        <span class="n">Q_vector_A</span><span class="p">,</span> <span class="n">Q_vector_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_event_angles_sub_events</span><span class="p">(</span><span class="n">particle_data_event_plane</span><span class="p">,</span><span class="n">event_weights_event_plane</span><span class="p">)</span>
-        <span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_event_plane_resolution</span><span class="p">(</span><span class="n">Q_vector_A</span><span class="p">,</span><span class="n">Q_vector_B</span><span class="p">)</span>
-        <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_flow_vectors</span><span class="p">(</span><span class="n">particle_data_event_plane</span><span class="p">,</span><span class="n">event_weights_event_plane</span><span class="p">)</span>
+        <span class="n">event_weights_event_plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_particle_weights</span><span class="p">(</span>
+            <span class="n">particle_data_event_plane</span><span class="p">)</span>
+        <span class="n">Q_vector_A</span><span class="p">,</span> <span class="n">Q_vector_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_event_angles_sub_events</span><span class="p">(</span>
+            <span class="n">particle_data_event_plane</span><span class="p">,</span> <span class="n">event_weights_event_plane</span><span class="p">)</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_event_plane_resolution</span><span class="p">(</span>
+            <span class="n">Q_vector_A</span><span class="p">,</span> <span class="n">Q_vector_B</span><span class="p">)</span>
+        <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_flow_vectors</span><span class="p">(</span>
+            <span class="n">particle_data_event_plane</span><span class="p">,</span> <span class="n">event_weights_event_plane</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span>
 
-    <span class="k">def</span> <span class="nf">__calculate_particle_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span><span class="p">,</span> <span class="n">self_corr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__calculate_particle_flow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="p">,</span>
+            <span class="n">Q_vector</span><span class="p">,</span>
+            <span class="n">self_corr</span><span class="p">):</span>
         <span class="n">event_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_particle_weights</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
         <span class="n">u_vectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_u_vectors</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_flow_particles</span><span class="p">(</span><span class="n">particle_data</span><span class="p">,</span><span class="n">event_weights</span><span class="p">,</span><span class="n">Q_vector</span><span class="p">,</span><span class="n">u_vectors</span><span class="p">,</span><span class="n">resolution</span><span class="p">,</span> <span class="n">self_corr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_flow_particles</span><span class="p">(</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">event_weights</span><span class="p">,</span>
+            <span class="n">Q_vector</span><span class="p">,</span>
+            <span class="n">u_vectors</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="p">,</span>
+            <span class="n">self_corr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__calculate_flow_event_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">flow_particle_list</span><span class="p">):</span>
         <span class="c1"># compute the integrated flow</span>
@@ -315,10 +354,11 @@
         <span class="n">flowvalue_squared</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flow_particle_list</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flow_particle_list</span><span class="p">[</span><span class="n">event</span><span class="p">])):</span>
-                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="k">else</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span>
+                    <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="k">else</span> <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">.</span><span class="n">weight</span>
                 <span class="n">number_of_particles</span> <span class="o">+=</span> <span class="n">weight</span>
-                <span class="n">flowvalue</span> <span class="o">+=</span> <span class="n">flow_particle_list</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">*</span><span class="n">weight</span>
-                <span class="n">flowvalue_squared</span> <span class="o">+=</span> <span class="n">flow_particle_list</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">weight</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="n">flowvalue</span> <span class="o">+=</span> <span class="n">flow_particle_list</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight</span>
+                <span class="n">flowvalue_squared</span> <span class="o">+=</span> <span class="n">flow_particle_list</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">particle</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">weight</span><span class="o">**</span><span class="mf">2.</span>
 
         <span class="n">vn_integrated</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -335,7 +375,11 @@
 
 <div class="viewcode-block" id="ScalarProductFlow.integrated_flow">
 <a class="viewcode-back" href="../classes/flow/ScalarProductFlow/index.html#ScalarProductFlow.ScalarProductFlow.integrated_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">particle_data</span><span class="p">,</span><span class="n">particle_data_event_plane</span><span class="p">,</span> <span class="n">self_corr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">particle_data_event_plane</span><span class="p">,</span>
+            <span class="n">self_corr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the integrated flow.</span>
 
@@ -352,19 +396,27 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tuple</span>
-<span class="sd">            A tuple containing the integrated flow value and the corresponding </span>
+<span class="sd">            A tuple containing the integrated flow value and the corresponding</span>
 <span class="sd">            uncertainty.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">self_corr</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;self_corr has to be bool&#39;</span><span class="p">)</span>
-        <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_reference</span><span class="p">(</span><span class="n">particle_data_event_plane</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_flow_event_average</span><span class="p">(</span><span class="n">particle_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_particle_flow</span><span class="p">(</span><span class="n">particle_data</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span><span class="p">,</span> <span class="n">self_corr</span><span class="p">))</span></div>
-
+        <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_reference</span><span class="p">(</span>
+            <span class="n">particle_data_event_plane</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_flow_event_average</span><span class="p">(</span>
+            <span class="n">particle_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_particle_flow</span><span class="p">(</span>
+                <span class="n">particle_data</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span><span class="p">,</span> <span class="n">self_corr</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ScalarProductFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/ScalarProductFlow/index.html#ScalarProductFlow.ScalarProductFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">flow_as_function_of</span><span class="p">,</span> <span class="n">particle_data_event_plane</span><span class="p">,</span> <span class="n">self_corr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">particle_data</span><span class="p">,</span>
+            <span class="n">bins</span><span class="p">,</span>
+            <span class="n">flow_as_function_of</span><span class="p">,</span>
+            <span class="n">particle_data_event_plane</span><span class="p">,</span>
+            <span class="n">self_corr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the differential flow.</span>
 
@@ -375,7 +427,7 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the differential flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated </span>
+<span class="sd">            Variable on which the flow is calculated</span>
 <span class="sd">            (&quot;pt&quot;, &quot;rapidity&quot;, or &quot;pseudorapidity&quot;).</span>
 <span class="sd">        particle_data_event_plane : list</span>
 <span class="sd">            List of particle data for the event plane calculation.</span>
@@ -386,20 +438,21 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
-<span class="sd">            A list of tuples containing the flow values and uncertainties for </span>
+<span class="sd">            A list of tuples containing the flow values and uncertainties for</span>
 <span class="sd">            each bin.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">self_corr</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;self_corr has to be bool&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bins has to be list or np.ndarray&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;flow_as_function_of is not a string&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
 
         <span class="n">particles_bin</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">events_bin</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)):</span>
                 <span class="n">particles_event</span> <span class="o">=</span> <span class="p">[]</span>
@@ -411,21 +464,27 @@
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span>
                     <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">:</span>
                         <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">bins</span><span class="p">[</span><span class="nb">bin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
                         <span class="n">particles_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
                 <span class="n">events_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">particles_event</span><span class="p">])</span>
             <span class="n">particles_bin</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">events_bin</span><span class="p">])</span>
 
-        <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_reference</span><span class="p">(</span><span class="n">particle_data_event_plane</span><span class="p">)</span>
+        <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_reference</span><span class="p">(</span>
+            <span class="n">particle_data_event_plane</span><span class="p">)</span>
 
         <span class="n">flow_bin</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">flow_bin</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__calculate_flow_event_average</span><span class="p">(</span><span class="n">particle_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_particle_flow</span><span class="p">(</span><span class="n">particles_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">],</span><span class="n">resolution</span><span class="p">,</span><span class="n">Q_vector</span><span class="p">,</span><span class="n">self_corr</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">flow_bin</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_flow_event_average</span><span class="p">(</span>
+                    <span class="n">particle_data</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_particle_flow</span><span class="p">(</span>
+                        <span class="n">particles_bin</span><span class="p">[</span><span class="nb">bin</span><span class="p">],</span>
+                        <span class="n">resolution</span><span class="p">,</span>
+                        <span class="n">Q_vector</span><span class="p">,</span>
+                        <span class="n">self_corr</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">flow_bin</span></div>
 </div>
-
-
 
 </pre></div>
 

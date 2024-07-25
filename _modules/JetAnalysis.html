@@ -75,20 +75,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for JetAnalysis</h1><div class="highlight"><pre>
-<span></span><span class="c1">#===================================================</span>
+<span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
 <span class="c1">#    Copyright (c) 2023-2024</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
 <span class="c1">#</span>
-<span class="c1">#===================================================</span>
-    
+<span class="c1"># ===================================================</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">fastjet</span> <span class="k">as</span> <span class="nn">fj</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+
 
 <div class="viewcode-block" id="JetAnalysis">
 <a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis">[docs]</a>
@@ -99,9 +100,9 @@
 <span class="sd">    For further information on the jet finding algorithms please have a look</span>
 <span class="sd">    at the documentation.</span>
 
-<span class="sd">    **Attention**: For a proper jet hole subtraction the `status` of the </span>
+<span class="sd">    **Attention**: For a proper jet hole subtraction the `status` of the</span>
 <span class="sd">    particles has to be set. This is only given for read in from Jetscape</span>
-<span class="sd">    output. With Oscar read in this has to be set by hand before doing the </span>
+<span class="sd">    output. With Oscar read in this has to be set by hand before doing the</span>
 <span class="sd">    jet finding.</span>
 
 <span class="sd">    Attributes</span>
@@ -215,6 +216,7 @@
 
 <span class="sd">           &lt;br /&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hadron_data_</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span> <span class="o">=</span> <span class="kc">None</span>
@@ -222,8 +224,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jet_data_</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__initialize_and_check_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="p">,</span> 
-                                          <span class="n">jet_pt_range</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__initialize_and_check_parameters</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">hadron_data</span><span class="p">,</span>
+            <span class="n">jet_R</span><span class="p">,</span>
+            <span class="n">jet_eta_range</span><span class="p">,</span>
+            <span class="n">jet_pt_range</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize and check the parameters for jet analysis.</span>
 
@@ -231,7 +237,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        hadron_data: list</span>
 <span class="sd">            List of hadron data for each event.</span>
-<span class="sd">            Use the for example the Jetscape class and generate </span>
+<span class="sd">            Use the for example the Jetscape class and generate</span>
 <span class="sd">            a :code:`particle_objects_list`.</span>
 <span class="sd">        jet_R: float</span>
 <span class="sd">            Jet radius parameter.</span>
@@ -254,23 +260,25 @@
 
         <span class="c1"># check jet eta range</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">jet_eta_range</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;jet_eta_range is not a tuple. &quot;</span> <span class="o">+</span>\
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;jet_eta_range is not a tuple. &quot;</span> <span class="o">+</span>
                             <span class="s2">&quot;It must contain either values or None.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">jet_eta_range</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jet_eta_range must contain exactly two values.&quot;</span><span class="p">)</span>
 
-        <span class="n">lower_cut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">upper_cut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">lower_cut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="s1">&#39;-inf&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">upper_cut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jet_eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">lower_cut</span> <span class="o">&lt;</span> <span class="n">upper_cut</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span> <span class="o">=</span> <span class="p">(</span><span class="n">lower_cut</span><span class="p">,</span> <span class="n">upper_cut</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_cut</span><span class="p">,</span> <span class="n">lower_cut</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The lower jet eta cut value is larger than the &quot;</span> <span class="o">+</span>\
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The lower jet eta cut value is larger than the &quot;</span> <span class="o">+</span>
                           <span class="s2">&quot;upper one. They are interchanged automatically.&quot;</span><span class="p">)</span>
 
         <span class="c1"># check the jet pt range</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">jet_pt_range</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;jet_pt_range is not a tuple. &quot;</span> <span class="o">+</span>\
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;jet_pt_range is not a tuple. &quot;</span> <span class="o">+</span>
                             <span class="s2">&quot;It must contain either values or None.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">jet_pt_range</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jet_pt_range must contain exactly two values.&quot;</span><span class="p">)</span>
@@ -283,7 +291,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span> <span class="o">=</span> <span class="p">(</span><span class="n">lower_cut</span><span class="p">,</span> <span class="n">upper_cut</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_cut</span><span class="p">,</span> <span class="n">lower_cut</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The lower jet pt cut value is larger than the &quot;</span> <span class="o">+</span>\
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The lower jet pt cut value is larger than the &quot;</span> <span class="o">+</span>
                           <span class="s2">&quot;upper one. They are interchanged automatically.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JetAnalysis.create_fastjet_PseudoJets">
@@ -311,7 +319,12 @@
 
 <div class="viewcode-block" id="JetAnalysis.fill_associated_particles">
 <a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.fill_associated_particles">[docs]</a>
-    <span class="k">def</span> <span class="nf">fill_associated_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">event</span><span class="p">,</span><span class="n">status_selection</span><span class="p">,</span><span class="n">only_charged</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fill_associated_particles</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">jet</span><span class="p">,</span>
+            <span class="n">event</span><span class="p">,</span>
+            <span class="n">status_selection</span><span class="p">,</span>
+            <span class="n">only_charged</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select particles in the jet cone.</span>
 
@@ -322,7 +335,7 @@
 <span class="sd">        event: int</span>
 <span class="sd">            The event index.</span>
 <span class="sd">        status_selection: str</span>
-<span class="sd">            The selection status to find the associated particles. This can be </span>
+<span class="sd">            The selection status to find the associated particles. This can be</span>
 <span class="sd">            &#39;negative&#39; or &#39;positive&#39; hadrons status.</span>
 <span class="sd">        only_charged: bool</span>
 <span class="sd">            Select only charged particles as associated particles.</span>
@@ -338,11 +351,11 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Hadron status not set&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">status_selection</span> <span class="o">==</span> <span class="s1">&#39;negative&#39;</span> <span class="ow">and</span> <span class="n">hadron</span><span class="o">.</span><span class="n">status</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> \
                 <span class="p">(</span><span class="n">status_selection</span> <span class="o">==</span> <span class="s1">&#39;positive&#39;</span> <span class="ow">and</span> <span class="n">hadron</span><span class="o">.</span><span class="n">status</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> \
-                <span class="p">(</span><span class="n">only_charged</span> <span class="ow">and</span> <span class="n">hadron</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="p">(</span><span class="n">only_charged</span> <span class="ow">and</span> <span class="n">hadron</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="k">continue</span>
 
-            <span class="n">fastjet_particle</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">hadron</span><span class="o">.</span><span class="n">px</span><span class="p">,</span><span class="n">hadron</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>\
-                                            <span class="n">hadron</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span><span class="n">hadron</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+            <span class="n">fastjet_particle</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">hadron</span><span class="o">.</span><span class="n">px</span><span class="p">,</span> <span class="n">hadron</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>
+                                            <span class="n">hadron</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span> <span class="n">hadron</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
             <span class="n">delta_eta</span> <span class="o">=</span> <span class="n">fastjet_particle</span><span class="o">.</span><span class="n">eta</span><span class="p">()</span> <span class="o">-</span> <span class="n">jet</span><span class="o">.</span><span class="n">eta</span><span class="p">()</span>
             <span class="n">delta_phi</span> <span class="o">=</span> <span class="n">fastjet_particle</span><span class="o">.</span><span class="n">delta_phi_to</span><span class="p">(</span><span class="n">jet</span><span class="p">)</span>
             <span class="n">delta_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta_eta</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">delta_phi</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
@@ -352,23 +365,23 @@
         <span class="k">return</span> <span class="n">associated_hadrons</span></div>
 
 
-    <span class="k">def</span> <span class="nf">jet_hole_subtraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">holes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">jet_hole_subtraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jet</span><span class="p">,</span> <span class="n">holes</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subtract energy-momentum contributions from holes in the jet.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        jet : fastjet.PseudoJet</span>
-<span class="sd">            The jet object from which energy-momentum contributions will be </span>
+<span class="sd">            The jet object from which energy-momentum contributions will be</span>
 <span class="sd">            subtracted.</span>
 <span class="sd">        holes : list</span>
-<span class="sd">            List of hadrons representing holes contributing to the jet&#39;s </span>
+<span class="sd">            List of hadrons representing holes contributing to the jet&#39;s</span>
 <span class="sd">            energy-momentum.</span>
-<span class="sd">    </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        fastjet.PseudoJet</span>
-<span class="sd">            The jet object after subtracting energy-momentum contributions </span>
+<span class="sd">            The jet object after subtracting energy-momentum contributions</span>
 <span class="sd">            from holes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">E</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -390,7 +403,7 @@
         <span class="n">jet</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">jet_px</span><span class="p">,</span> <span class="n">jet_py</span><span class="p">,</span> <span class="n">jet_pz</span><span class="p">,</span> <span class="n">jet_E</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jet</span>
 
-    <span class="k">def</span> <span class="nf">write_jet_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_filename</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">associated_hadrons</span><span class="p">,</span><span class="n">event</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">write_jet_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">jet</span><span class="p">,</span> <span class="n">associated_hadrons</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span>
                          <span class="n">new_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write the jet and associated hadron information to a CSV file.</span>
@@ -420,16 +433,16 @@
         <span class="n">output_list</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">jet</span><span class="o">.</span><span class="n">perp</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">output_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="n">jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span><span class="n">jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span><span class="n">jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span><span class="n">jet_status</span><span class="p">,</span>\
-                            <span class="n">jet_pid</span><span class="p">,</span><span class="n">jet</span><span class="o">.</span><span class="n">e</span><span class="p">(),</span><span class="n">event</span><span class="p">]]</span>
+            <span class="n">output_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span> <span class="n">jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span> <span class="n">jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span> <span class="n">jet_status</span><span class="p">,</span>
+                            <span class="n">jet_pid</span><span class="p">,</span> <span class="n">jet</span><span class="o">.</span><span class="n">e</span><span class="p">(),</span> <span class="n">event</span><span class="p">]]</span>
 
             <span class="c1"># associated hadrons</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">associated</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">associated_hadrons</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-                <span class="n">pseudo_jet</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">associated</span><span class="o">.</span><span class="n">px</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>\
-                                          <span class="n">associated</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">pseudo_jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span><span class="n">pseudo_jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span>\
-                          <span class="n">pseudo_jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span><span class="n">associated</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>\
-                            <span class="n">associated</span><span class="o">.</span><span class="n">pdg</span><span class="p">,</span><span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">,</span><span class="n">event</span><span class="p">]</span>
+                <span class="n">pseudo_jet</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">PseudoJet</span><span class="p">(</span><span class="n">associated</span><span class="o">.</span><span class="n">px</span><span class="p">,</span> <span class="n">associated</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>
+                                          <span class="n">associated</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span> <span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">pseudo_jet</span><span class="o">.</span><span class="n">perp</span><span class="p">(),</span> <span class="n">pseudo_jet</span><span class="o">.</span><span class="n">eta</span><span class="p">(),</span>
+                          <span class="n">pseudo_jet</span><span class="o">.</span><span class="n">phi</span><span class="p">(),</span> <span class="n">associated</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                          <span class="n">associated</span><span class="o">.</span><span class="n">pdg</span><span class="p">,</span> <span class="n">associated</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">event</span><span class="p">]</span>
                 <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
         <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">new_file</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span>
@@ -442,9 +455,15 @@
 
 <div class="viewcode-block" id="JetAnalysis.perform_jet_finding">
 <a class="viewcode-back" href="../classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.perform_jet_finding">[docs]</a>
-    <span class="k">def</span> <span class="nf">perform_jet_finding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="p">,</span> <span class="n">jet_pt_range</span><span class="p">,</span> 
-                            <span class="n">output_filename</span><span class="p">,</span> <span class="n">assoc_only_charged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-                            <span class="n">jet_algorithm</span><span class="o">=</span><span class="n">fj</span><span class="o">.</span><span class="n">antikt_algorithm</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">perform_jet_finding</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">hadron_data</span><span class="p">,</span>
+            <span class="n">jet_R</span><span class="p">,</span>
+            <span class="n">jet_eta_range</span><span class="p">,</span>
+            <span class="n">jet_pt_range</span><span class="p">,</span>
+            <span class="n">output_filename</span><span class="p">,</span>
+            <span class="n">assoc_only_charged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">jet_algorithm</span><span class="o">=</span><span class="n">fj</span><span class="o">.</span><span class="n">antikt_algorithm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform the jet analysis for multiple events. The function generates a</span>
 <span class="sd">        file containing the jets consisting of a leading particle and associated</span>
@@ -454,7 +473,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        hadron_data: list</span>
 <span class="sd">            List of hadron data for each event.</span>
-<span class="sd">            Use the for example the Jetscape class and generate </span>
+<span class="sd">            Use the for example the Jetscape class and generate</span>
 <span class="sd">            a :code:`particle_objects_list`.</span>
 <span class="sd">        jet_R: float</span>
 <span class="sd">            Jet radius parameter.</span>
@@ -470,27 +489,30 @@
 <span class="sd">        output_filename: str</span>
 <span class="sd">            Filename for the jet output.</span>
 <span class="sd">        assoc_only_charged: bool</span>
-<span class="sd">            Selects if the associated particles are only charged ones. </span>
+<span class="sd">            Selects if the associated particles are only charged ones.</span>
 <span class="sd">            Default is True.</span>
 <span class="sd">        jet_algorithm: fastjet.JetAlgorithm, optional</span>
-<span class="sd">            Jet algorithm for jet finding. </span>
+<span class="sd">            Jet algorithm for jet finding.</span>
 <span class="sd">            Default is :code:`fastjet.antikt_algorithm`.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The standard recombination scheme :code:`E_scheme` of the fastjet </span>
+<span class="sd">        The standard recombination scheme :code:`E_scheme` of the fastjet</span>
 <span class="sd">        package is fixed here.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__initialize_and_check_parameters</span><span class="p">(</span><span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="p">,</span> <span class="n">jet_pt_range</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__initialize_and_check_parameters</span><span class="p">(</span>
+            <span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="p">,</span> <span class="n">jet_pt_range</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">event</span><span class="p">,</span> <span class="n">hadron_data_event</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hadron_data_</span><span class="p">):</span>
             <span class="n">new_file</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">event_PseudoJets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fastjet_PseudoJets</span><span class="p">(</span><span class="n">hadron_data_event</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">jet_algorithm</span> <span class="o">==</span> <span class="n">fj</span><span class="o">.</span><span class="n">ee_genkt_algorithm</span> <span class="ow">or</span> <span class="n">jet_algorithm</span> <span class="o">==</span> <span class="n">fj</span><span class="o">.</span><span class="n">genkt_algorithm</span><span class="p">:</span>
-                <span class="n">jet_definition</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">JetDefinition</span><span class="p">(</span><span class="n">jet_algorithm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+                <span class="n">jet_definition</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">JetDefinition</span><span class="p">(</span>
+                    <span class="n">jet_algorithm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">jet_definition</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">JetDefinition</span><span class="p">(</span><span class="n">jet_algorithm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_R_</span><span class="p">)</span>
-            <span class="n">jet_selector</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">SelectorEtaRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">jet_selector</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">SelectorEtaRange</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_eta_range_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;jet definition is:&quot;</span><span class="p">,</span> <span class="n">jet_definition</span><span class="p">)</span>
@@ -500,21 +522,21 @@
 
             <span class="c1"># perform the jet finding algorithm</span>
             <span class="n">cluster</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">ClusterSequence</span><span class="p">(</span><span class="n">event_PseudoJets</span><span class="p">,</span> <span class="n">jet_definition</span><span class="p">)</span>
-            <span class="n">jets</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">sorted_by_pt</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">inclusive_jets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">jets</span> <span class="o">=</span> <span class="n">fj</span><span class="o">.</span><span class="n">sorted_by_pt</span><span class="p">(</span>
+                <span class="n">cluster</span><span class="o">.</span><span class="n">inclusive_jets</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">jet_pt_range_</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="n">jets</span> <span class="o">=</span> <span class="n">jet_selector</span><span class="p">(</span><span class="n">jets</span><span class="p">)</span>
 
             <span class="c1"># get the associated particles in the jet cone</span>
             <span class="k">for</span> <span class="n">jet</span> <span class="ow">in</span> <span class="n">jets</span><span class="p">:</span>
-                <span class="n">holes_in_jet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_associated_particles</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> 
-                                        <span class="n">status_selection</span><span class="o">=</span><span class="s1">&#39;negative&#39;</span><span class="p">,</span>
-                                        <span class="n">only_charged</span><span class="o">=</span><span class="n">assoc_only_charged</span><span class="p">)</span>
-                <span class="n">associated_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_associated_particles</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> 
-                                                <span class="n">status_selection</span><span class="o">=</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span>
-                                                <span class="n">only_charged</span><span class="o">=</span><span class="n">assoc_only_charged</span><span class="p">)</span>
+                <span class="n">holes_in_jet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_associated_particles</span><span class="p">(</span>
+                    <span class="n">jet</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">status_selection</span><span class="o">=</span><span class="s1">&#39;negative&#39;</span><span class="p">,</span> <span class="n">only_charged</span><span class="o">=</span><span class="n">assoc_only_charged</span><span class="p">)</span>
+                <span class="n">associated_particles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_associated_particles</span><span class="p">(</span>
+                    <span class="n">jet</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">status_selection</span><span class="o">=</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="n">only_charged</span><span class="o">=</span><span class="n">assoc_only_charged</span><span class="p">)</span>
                 <span class="n">jet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jet_hole_subtraction</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span> <span class="n">holes_in_jet</span><span class="p">)</span>
-                <span class="n">new_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_jet_output</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">jet</span><span class="p">,</span>\
-                                                <span class="n">associated_particles</span><span class="p">,</span>\
-                                                <span class="n">event</span><span class="p">,</span><span class="n">new_file</span><span class="p">)</span></div>
+                <span class="n">new_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_jet_output</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">jet</span><span class="p">,</span>
+                                                 <span class="n">associated_particles</span><span class="p">,</span>
+                                                 <span class="n">event</span><span class="p">,</span> <span class="n">new_file</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="JetAnalysis.read_jet_data">
@@ -538,9 +560,9 @@
                 <span class="k">if</span> <span class="n">jet_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">current_jet</span><span class="p">:</span>
                     <span class="n">jet_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_jet</span><span class="p">)</span>
                     <span class="n">current_jet</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">current_jet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
-                                     <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>\
-                                          <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">7</span><span class="p">])])</span>
+                <span class="n">current_jet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                                    <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+                                    <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">7</span><span class="p">])])</span>
             <span class="k">if</span> <span class="n">current_jet</span><span class="p">:</span>
                 <span class="n">jet_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_jet</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jet_data_</span> <span class="o">=</span> <span class="n">jet_data</span></div>
