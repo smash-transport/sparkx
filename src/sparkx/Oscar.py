@@ -7,10 +7,8 @@
 #
 #===================================================
     
-from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
-import os
 from sparkx.Loader.OscarLoader import OscarLoader
 from sparkx.Storer.BaseStorer import BaseStorer
 

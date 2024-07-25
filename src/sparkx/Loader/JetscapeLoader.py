@@ -9,7 +9,6 @@
 
 from sparkx.Loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
-import os
 
 class JetscapeLoader(BaseLoader):
         
