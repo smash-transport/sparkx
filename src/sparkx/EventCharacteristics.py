@@ -11,6 +11,7 @@ import numpy as np
 from sparkx.Particle import Particle
 from sparkx.Lattice3D import Lattice3D
 import warnings
+from typing import Union, List, Optional, Any
 
 class EventCharacteristics:
     """
@@ -69,10 +70,17 @@ class EventCharacteristics:
         >>> eps2 = event_characterization.eccentricity(2, weight_quantity = "number")
 
     """
-    def __init__(self, event_data):
+    event_data_: Union[Lattice3D, List[Particle], np.ndarray[Any, np.dtype[np.object_]]]
+    has_lattice_: bool
+
+    def __init__(self, event_data: Union[List[Particle], 
+                                         np.ndarray[Any, np.dtype[np.object_]], 
+                                         Lattice3D]) -> None:
         self.set_event_data(event_data)
 
-    def set_event_data(self, event_data):
+    def set_event_data(self, event_data: Union[List[Particle], 
+                                            np.ndarray[Any, np.dtype[np.object_]],
+                                            Lattice3D]) -> None:
         """
         Overwrites the event data.
 
@@ -104,7 +112,9 @@ class EventCharacteristics:
             self.event_data_ = event_data
             self.has_lattice_ = False
 
-    def eccentricity_from_particles(self,harmonic_n, harmonic_m = None, weight_quantity = "energy"):
+    def eccentricity_from_particles(self,harmonic_n: int, 
+                                    harmonic_m: Optional[int] = None, 
+                                    weight_quantity: str = "energy") -> complex:
         """
         Computes the spatial eccentricity from particles.
 
@@ -135,8 +145,12 @@ class EventCharacteristics:
         norm = 0.
         if harmonic_n < 1:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
-        if harmonic_m != None and harmonic_m < 1:
+        if harmonic_m is not None and harmonic_m < 1:
             raise ValueError("harmonic_m must be positive")
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for particle in self.event_data_:
             if weight_quantity == "energy":
                 weight = particle.E
@@ -153,12 +167,14 @@ class EventCharacteristics:
             x = particle.x
             y = particle.y
             #Exception for dipole asymmetry
-            if harmonic_n == 1 and harmonic_m == None:
+            if harmonic_n == 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(3/2.)
-            elif harmonic_n != 1 and harmonic_m == None:
+            elif harmonic_n != 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(harmonic_n/2.)
-            else:
+            elif harmonic_m is not None:
                 rn = (x**2 + y**2)**(harmonic_m/2.)
+            else:
+                raise ValueError("harmonic_m or harmonic_n must be provided")
 
             phi = np.arctan2(y,x)
             real_eps += rn*np.cos(harmonic_n*phi)*weight
@@ -167,7 +183,8 @@ class EventCharacteristics:
 
         return -(real_eps/norm + (imag_eps/norm)*1j)
 
-    def eccentricity_from_lattice(self,harmonic_n,harmonic_m = None):
+    def eccentricity_from_lattice(self,harmonic_n: int,
+                                  harmonic_m: Optional[int] = None) -> complex:
         """
         Computes the spatial eccentricity from a 3D lattice. Takes all z-values
         into account.
@@ -194,17 +211,23 @@ class EventCharacteristics:
         norm = 0.
         if harmonic_n < 1:
             raise ValueError("Eccentricity is only defined for positive expansion orders.")
-        if harmonic_m != None and harmonic_m < 1:
+        if harmonic_m is not None and harmonic_m < 1:
             raise ValueError("harmonic_m must be positive")
+        if  isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a grid.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for i, j, k in np.ndindex(self.event_data_.grid_.shape):
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             #Exception for dipole asymmetry
-            if harmonic_n == 1 and harmonic_m == None:
+            if harmonic_n == 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(3/2.)
-            elif harmonic_n != 1 and harmonic_m == None:
+            elif harmonic_n != 1 and harmonic_m is None:
                 rn = (x**2 + y**2)**(harmonic_n/2.)
-            else:
+            elif harmonic_m is not None:
                 rn = (x**2 + y**2)**(harmonic_m/2.)
+            else:
+                raise ValueError("harmonic_m or harmonic_n must be provided")
 
             phi = np.arctan2(y,x)
             lattice_density = self.event_data_.get_value_by_index(i, j, k)
@@ -214,7 +237,9 @@ class EventCharacteristics:
 
         return -(real_eps/norm + (imag_eps/norm)*1j)
 
-    def eccentricity(self,harmonic_n,harmonic_m = None,weight_quantity = "energy"):
+    def eccentricity(self,harmonic_n: int,
+                     harmonic_m: Optional[int] = None,
+                     weight_quantity: str = "energy") -> complex:
         """
         Computes the spatial eccentricity.
 
@@ -251,7 +276,23 @@ class EventCharacteristics:
         else:
             return self.eccentricity_from_particles(harmonic_n=harmonic_n, harmonic_m=harmonic_m, weight_quantity=weight_quantity)
 
-    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,eta_range,output_filename,IC_info=None):
+    def generate_eBQS_densities_Milne_from_OSCAR_IC(self,x_min: float,
+                                                    x_max: float,
+                                                    y_min: float,
+                                                    y_max: float,
+                                                    z_min: float,
+                                                    z_max: float,
+                                                    Nx: int,
+                                                    Ny: int,
+                                                    Nz: int,
+                                                    n_sigma_x: float,
+                                                    n_sigma_y: float,
+                                                    n_sigma_z: float,
+                                                    sigma_smear: float,
+                                                    eta_range: Union[list, tuple],
+                                                    output_filename: str,
+                                                    IC_info: Optional[str] = None
+                                                    ) -> None:
         """
         Generates energy, baryon, charge, and strangeness densities in Milne 
         coordinates from OSCAR initial conditions.
@@ -311,9 +352,10 @@ class EventCharacteristics:
             raise TypeError("output_filename must be a string")
         if (IC_info is not None) and not isinstance(IC_info,str):
             raise TypeError("The given IC_info is not a string")
-
         if self.has_lattice_:
             raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
 
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
@@ -366,7 +408,23 @@ class EventCharacteristics:
 
                         output_file.write(f"{tau:g} {x_val:g} {y_val:g} {eta_val:g} {value_energy_density:g} {value_baryon_density:g} {value_charge_density:g} {value_strangeness_density:g}\n")
 
-    def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,x_min,x_max,y_min,y_max,z_min,z_max,Nx,Ny,Nz,n_sigma_x,n_sigma_y,n_sigma_z,sigma_smear,output_filename,IC_info=None):
+    def generate_eBQS_densities_Minkowski_from_OSCAR_IC(self,
+                                                        x_min: float,
+                                                        x_max: float,
+                                                        y_min: float,
+                                                        y_max: float,
+                                                        z_min: float,
+                                                        z_max: float,
+                                                        Nx: int,
+                                                        Ny: int,
+                                                        Nz: int,
+                                                        n_sigma_x: float,
+                                                        n_sigma_y: float,
+                                                        n_sigma_z: float,
+                                                        sigma_smear: float,
+                                                        output_filename: str,
+                                                        IC_info: Optional[str] = None
+                                                        ) -> None:
         """
         Generates energy, baryon, charge, and strangeness densities in 
         Minkowski coordinates from OSCAR initial conditions.
@@ -416,10 +474,11 @@ class EventCharacteristics:
             warnings.warn("The given IC_info is not a string")
         if not isinstance(output_filename, str):
             raise TypeError("output_filename must be a string")
-
         if self.has_lattice_:
             raise TypeError("The smearing function only works with EventCharacteristics derived from particles.")
-
+        if not isinstance(self.event_data_, (list, np.ndarray)):
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        
         energy_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         baryon_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
         charge_density = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny, Nz, n_sigma_x, n_sigma_y, n_sigma_z)
