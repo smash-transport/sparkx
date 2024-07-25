@@ -1,16 +1,17 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2023-2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
-    
+# ===================================================
+
 import numpy as np
 import math
 from particle import PDGID
 import warnings
+
 
 class Particle:
     """Defines a particle object.
@@ -19,7 +20,7 @@ class Particle:
     OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
     they stay `np.nan` to throw an error if one tries to access a non existing
     quantity.
-    If a particle with an unknown PDG is provided, a warning is thrown and and 
+    If a particle with an unknown PDG is provided, a warning is thrown and and
     `np.nan` is returned for charge, spin, and spin degeneracy.
 
     Attributes
@@ -164,7 +165,7 @@ class Particle:
         Total spin :math:`J` of the particle.
     spin_degeneracy:
         Total spin :math:`2J + 1` of the particle.
-    
+
 
     Examples
     --------
@@ -192,9 +193,9 @@ class Particle:
     * "Oscar2013Extended_IC"
 
     * "Oscar2013Extended_Photons"
-    
+
     * "JETSCAPE"
-    
+
     .. highlight:: python
     .. code-block:: python
         :linenos:
@@ -207,7 +208,7 @@ class Particle:
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then `np.nan` is returned by default.
     All quantities are saved in a numpy array member variable `data_`. The datatype
-    of this array is float, therefore casting is required when int or bool values are 
+    of this array is float, therefore casting is required when int or bool values are
     required.
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
@@ -215,19 +216,20 @@ class Particle:
     The functions `is_strange()` and `is_heavy_flavor()` should not be used in this
     case.
     """
-    __slots__ = ['data_'] 
-    def __init__(self,input_format=None,particle_array=None):
-        self.data_ = np.array(25*[np.nan],dtype=float)
+    __slots__ = ['data_']
+
+    def __init__(self, input_format=None, particle_array=None):
+        self.data_ = np.array(25 * [np.nan], dtype=float)
         self.pdg_valid = False
 
-        if ((input_format is not None) and (particle_array is None)) or ((input_format is None) and (particle_array is not None)):
+        if ((input_format is not None) and (particle_array is None)) or (
+                (input_format is None) and (particle_array is not None)):
             raise ValueError("'input_format' or 'particle_array' not given")
 
         if (input_format is not None) and (particle_array is not None):
-            self.__initialize_from_array(input_format,particle_array)
+            self.__initialize_from_array(input_format, particle_array)
 
-
-    def __initialize_from_array(self,input_format,particle_array):
+    def __initialize_from_array(self, input_format, particle_array):
         """
         Initialize instance attributes based on the provided input format and array.
 
@@ -251,124 +253,144 @@ class Particle:
 
         Notes
         -----
-        For each supported input format, this method expects a specific order 
-        of elements in the particle_array and assigns them to the corresponding 
+        For each supported input format, this method expects a specific order
+        of elements in the particle_array and assigns them to the corresponding
         attributes of the Particle instance.
 
-        If the input format is "JETSCAPE," additional attributes (mass_ and 
+        If the input format is "JETSCAPE," additional attributes (mass_ and
         charge_) are computed based on energy-momentum and PDG code.
         If the JETSCAPE class is created with parton output, then the charge is
         multiplied by 3 to make it an integer.
 
         """
-        #first entry: index in data array
-        #second entry: index in line
+        # first entry: index in data array
+        # second entry: index in line
         attribute_mapping = {
             "Oscar2013": {
-                "t_": [0,0],
-                "x_": [1,1],
-                "y_": [2,2],
-                "z_": [3,3],
-                "mass_": [4,4],
-                "E_": [5,5],
-                "px_": [6,6],
-                "py_": [7,7],
-                "pz_": [8,8],
-                "pdg_": [9,9],
-                "ID_": [11,10],
-                "charge_": [12,11],
+                "t_": [0, 0],
+                "x_": [1, 1],
+                "y_": [2, 2],
+                "z_": [3, 3],
+                "mass_": [4, 4],
+                "E_": [5, 5],
+                "px_": [6, 6],
+                "py_": [7, 7],
+                "pz_": [8, 8],
+                "pdg_": [9, 9],
+                "ID_": [11, 10],
+                "charge_": [12, 11],
             },
             "Oscar2013Extended": {
-                "t_": [0,0],
-                "x_": [1,1],
-                "y_": [2,2],
-                "z_": [3,3],
-                "mass_": [4,4],
-                "E_": [5,5],
-                "px_": [6,6],
-                "py_": [7,7],
-                "pz_": [8,8],
-                "pdg_": [9,9],
-                "ID_": [11,10],
-                "charge_": [12,11],
-                "ncoll_": [13,12],
-                "form_time_": [14,13],
-                "xsecfac_": [15,14],
-                "proc_id_origin_": [16,15],
-                "proc_type_origin_": [17,16],
-                "t_last_coll_": [18,17],
-                "pdg_mother1_": [19,18],
-                "pdg_mother2_": [20,19],
-                "baryon_number_": [22,20],
-                "strangeness_": [23,21],
+                "t_": [0, 0],
+                "x_": [1, 1],
+                "y_": [2, 2],
+                "z_": [3, 3],
+                "mass_": [4, 4],
+                "E_": [5, 5],
+                "px_": [6, 6],
+                "py_": [7, 7],
+                "pz_": [8, 8],
+                "pdg_": [9, 9],
+                "ID_": [11, 10],
+                "charge_": [12, 11],
+                "ncoll_": [13, 12],
+                "form_time_": [14, 13],
+                "xsecfac_": [15, 14],
+                "proc_id_origin_": [16, 15],
+                "proc_type_origin_": [17, 16],
+                "t_last_coll_": [18, 17],
+                "pdg_mother1_": [19, 18],
+                "pdg_mother2_": [20, 19],
+                "baryon_number_": [22, 20],
+                "strangeness_": [23, 21],
             },
             "Oscar2013Extended_IC": {
-                "t_": [0,0],
-                "x_": [1,1],
-                "y_": [2,2],
-                "z_": [3,3],
-                "mass_": [4,4],
-                "E_": [5,5],
-                "px_": [6,6],
-                "py_": [7,7],
-                "pz_": [8,8],
-                "pdg_": [9,9],
-                "ID_": [11,10],
-                "charge_": [12,11],
-                "ncoll_": [13,12],
-                "form_time_": [14,13],
-                "xsecfac_": [15,14],
-                "proc_id_origin_": [16,15],
-                "proc_type_origin_": [17,16],
-                "t_last_coll_": [18,17],
-                "pdg_mother1_": [19,18],
-                "pdg_mother2_": [20,19],
-                "baryon_number_": [22,20],
-                "strangeness_": [23,21],
+                "t_": [0, 0],
+                "x_": [1, 1],
+                "y_": [2, 2],
+                "z_": [3, 3],
+                "mass_": [4, 4],
+                "E_": [5, 5],
+                "px_": [6, 6],
+                "py_": [7, 7],
+                "pz_": [8, 8],
+                "pdg_": [9, 9],
+                "ID_": [11, 10],
+                "charge_": [12, 11],
+                "ncoll_": [13, 12],
+                "form_time_": [14, 13],
+                "xsecfac_": [15, 14],
+                "proc_id_origin_": [16, 15],
+                "proc_type_origin_": [17, 16],
+                "t_last_coll_": [18, 17],
+                "pdg_mother1_": [19, 18],
+                "pdg_mother2_": [20, 19],
+                "baryon_number_": [22, 20],
+                "strangeness_": [23, 21],
             },
             "Oscar2013Extended_Photons": {
-                 "t_": [0,0],
-                "x_": [1,1],
-                "y_": [2,2],
-                "z_": [3,3],
-                "mass_": [4,4],
-                "E_": [5,5],
-                "px_": [6,6],
-                "py_": [7,7],
-                "pz_": [8,8],
-                "pdg_": [9,9],
-                "ID_": [11,10],
-                "charge_": [12,11],
-                "ncoll_": [13,12],
-                "form_time_": [14,13],
-                "xsecfac_": [15,14],
-                "proc_id_origin_": [16,15],
-                "proc_type_origin_": [17,16],
-                "t_last_coll_": [18,17],
-                "pdg_mother1_": [19,18],
-                "pdg_mother2_": [20,19],
-                "weight_": [24,20],
+                "t_": [0, 0],
+                "x_": [1, 1],
+                "y_": [2, 2],
+                "z_": [3, 3],
+                "mass_": [4, 4],
+                "E_": [5, 5],
+                "px_": [6, 6],
+                "py_": [7, 7],
+                "pz_": [8, 8],
+                "pdg_": [9, 9],
+                "ID_": [11, 10],
+                "charge_": [12, 11],
+                "ncoll_": [13, 12],
+                "form_time_": [14, 13],
+                "xsecfac_": [15, 14],
+                "proc_id_origin_": [16, 15],
+                "proc_type_origin_": [17, 16],
+                "t_last_coll_": [18, 17],
+                "pdg_mother1_": [19, 18],
+                "pdg_mother2_": [20, 19],
+                "weight_": [24, 20],
             },
             "JETSCAPE": {
-                "ID_": [11,0],
-                "pdg_": [9,1],
-                "status_": [21,2],
-                "E_": [5,3],
-                "px_": [6,4],
-                "py_": [7,5],
-                "pz_": [8,6],
+                "ID_": [11, 0],
+                "pdg_": [9, 1],
+                "status_": [21, 2],
+                "E_": [5, 3],
+                "px_": [6, 4],
+                "py_": [7, 5],
+                "pz_": [8, 6],
             },
         }
         if (input_format in attribute_mapping):
-            if (len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]
-                 and len(particle_array) <= len(attribute_mapping[input_format])
-                    and len(particle_array) >= len(attribute_mapping[input_format])-2)):
+            if (
+                len(particle_array) == len(
+                    attribute_mapping[input_format]) or (
+                    input_format in [
+                        "Oscar2013Extended",
+                        "Oscar2013Extended_IC"] and len(particle_array) <= len(
+                    attribute_mapping[input_format]) and len(particle_array) >= len(
+                        attribute_mapping[input_format]) -
+                    2)):
                 for attribute, index in attribute_mapping[input_format].items():
-                    if len(particle_array)<=(index[1]):
+                    if len(particle_array) <= (index[1]):
                         continue
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
-                    # to ensure similar behaving as if we were reading in data into ints.
-                    if attribute in ["t_", "x_", "y_", "z_", "mass_", "E_", "px_", "py_", "pz_", "form_time_", "xsecfac_", "t_last_coll_", "weight_"]:
+                    # to ensure similar behaving as if we were reading in data
+                    # into ints.
+                    if attribute in [
+                        "t_",
+                        "x_",
+                        "y_",
+                        "z_",
+                        "mass_",
+                        "E_",
+                        "px_",
+                        "py_",
+                        "pz_",
+                        "form_time_",
+                        "xsecfac_",
+                        "t_last_coll_",
+                            "weight_"]:
                         self.data_[index[0]] = float(particle_array[index[1]])
                     elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
                         self.data_[index[0]] = int(particle_array[index[1]])
@@ -376,23 +398,27 @@ class Particle:
                         self.data_[index[0]] = int(particle_array[index[1]])
 
                 # It is important for JETSCAPE particles to compute pdg_valid
-                # here because the compute_charge_from_pdg function depends on it. 
+                # here because the compute_charge_from_pdg function depends on
+                # it.
                 self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
                     self.mass = self.compute_mass_from_energy_momentum()
                     self.charge = self.compute_charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
-                        warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
+                        warnings.warn('The PDG code ' + str(int(self.pdg)) + \
+                                      ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
             else:
                 raise ValueError("The input file is corrupted! " +
-                                 "A line with wrong number of columns "+str(len(particle_array))+" was found.")
+                                 "A line with wrong number of columns " +
+                                 str(len(particle_array)) +
+                                 " was found.")
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
 
-        if(not self.pdg_valid):
-             warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
-                           'All properties extracted from the PDG are set to default values.')
+        if (not self.pdg_valid):
+            warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. ' +
+                          'All properties extracted from the PDG are set to default values.')
 
     @property
     def t(self):
@@ -405,7 +431,7 @@ class Particle:
         return self.data_[0]
 
     @t.setter
-    def t(self,value):
+    def t(self, value):
         self.data_[0] = value
 
     @property
@@ -419,7 +445,7 @@ class Particle:
         return self.data_[1]
 
     @x.setter
-    def x(self,value):
+    def x(self, value):
         self.data_[1] = value
 
     @property
@@ -433,7 +459,7 @@ class Particle:
         return self.data_[2]
 
     @y.setter
-    def y(self,value):
+    def y(self, value):
         self.data_[2] = value
 
     @property
@@ -447,7 +473,7 @@ class Particle:
         return self.data_[3]
 
     @z.setter
-    def z(self,value):
+    def z(self, value):
         self.data_[3] = value
 
     @property
@@ -461,7 +487,7 @@ class Particle:
         return self.data_[4]
 
     @mass.setter
-    def mass(self,value):
+    def mass(self, value):
         self.data_[4] = value
 
     @property
@@ -475,7 +501,7 @@ class Particle:
         return self.data_[5]
 
     @E.setter
-    def E(self,value):
+    def E(self, value):
         self.data_[5] = value
 
     @property
@@ -489,7 +515,7 @@ class Particle:
         return self.data_[6]
 
     @px.setter
-    def px(self,value):
+    def px(self, value):
         self.data_[6] = value
 
     @property
@@ -503,7 +529,7 @@ class Particle:
         return self.data_[7]
 
     @py.setter
-    def py(self,value):
+    def py(self, value):
         self.data_[7] = value
 
     @property
@@ -517,7 +543,7 @@ class Particle:
         return self.data_[8]
 
     @pz.setter
-    def pz(self,value):
+    def pz(self, value):
         self.data_[8] = value
 
     @property
@@ -533,13 +559,15 @@ class Particle:
         return int(self.data_[9])
 
     @pdg.setter
-    def pdg(self,value):
+    def pdg(self, value):
         self.data_[9] = value
         self.pdg_valid = PDGID(self.pdg).is_valid
-        
-        if(not self.pdg_valid):
-             warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. '+
-                           'All properties extracted from the PDG are set to nan.')
+
+        if (not self.pdg_valid):
+            warnings.warn('The PDG code ' +
+                          str(int(self.pdg)) +
+                          ' is not valid. ' +
+                          'All properties extracted from the PDG are set to nan.')
 
     @property
     def ID(self):
@@ -556,7 +584,7 @@ class Particle:
         return int(self.data_[11])
 
     @ID.setter
-    def ID(self,value):
+    def ID(self, value):
         self.data_[11] = value
 
     @property
@@ -572,7 +600,7 @@ class Particle:
         return int(self.data_[12])
 
     @charge.setter
-    def charge(self,value):
+    def charge(self, value):
         # this is for the case a parton is created from the JETSCAPE reader
         # handle quarks with 3 times the charge to make it integer
         if np.abs(value) < 1:
@@ -589,10 +617,10 @@ class Particle:
         """
         if (np.isnan(self.data_[13])):
             return np.nan
-        return int(self.data_[13]) 
+        return int(self.data_[13])
 
     @ncoll.setter
-    def ncoll(self,value):
+    def ncoll(self, value):
         self.data_[13] = value
 
     @property
@@ -603,10 +631,10 @@ class Particle:
         -------
         form_time : float
         """
-        return self.data_[14] 
+        return self.data_[14]
 
     @form_time.setter
-    def form_time(self,value):
+    def form_time(self, value):
         self.data_[14] = value
 
     @property
@@ -617,10 +645,10 @@ class Particle:
         -------
         xsecfac : float
         """
-        return self.data_[15] 
+        return self.data_[15]
 
     @xsecfac.setter
-    def xsecfac(self,value):
+    def xsecfac(self, value):
         self.data_[15] = value
 
     @property
@@ -636,7 +664,7 @@ class Particle:
         return int(self.data_[16])
 
     @proc_id_origin.setter
-    def proc_id_origin(self,value):
+    def proc_id_origin(self, value):
         self.data_[16] = value
 
     @property
@@ -652,7 +680,7 @@ class Particle:
         return int(self.data_[17])
 
     @proc_type_origin.setter
-    def proc_type_origin(self,value):
+    def proc_type_origin(self, value):
         self.data_[17] = value
 
     @property
@@ -666,7 +694,7 @@ class Particle:
         return self.data_[18]
 
     @t_last_coll.setter
-    def t_last_coll(self,value):
+    def t_last_coll(self, value):
         self.data_[18] = value
 
     @property
@@ -682,7 +710,7 @@ class Particle:
         return int(self.data_[19])
 
     @pdg_mother1.setter
-    def pdg_mother1(self,value):
+    def pdg_mother1(self, value):
         self.data_[19] = value
 
     @property
@@ -698,7 +726,7 @@ class Particle:
         return int(self.data_[20])
 
     @pdg_mother2.setter
-    def pdg_mother2(self,value):
+    def pdg_mother2(self, value):
         self.data_[20] = value
 
     @property
@@ -716,7 +744,7 @@ class Particle:
         return int(self.data_[21])
 
     @status.setter
-    def status(self,value):
+    def status(self, value):
         self.data_[21] = value
 
     @property
@@ -730,9 +758,9 @@ class Particle:
         if np.isnan(self.data_[22]):
             return np.nan
         return int(self.data_[22])
- 
+
     @baryon_number.setter
-    def baryon_number(self,value):
+    def baryon_number(self, value):
         self.data_[22] = value
 
     @property
@@ -748,7 +776,7 @@ class Particle:
         return int(self.data_[23])
 
     @strangeness.setter
-    def strangeness(self,value):
+    def strangeness(self, value):
         self.data_[23] = value
 
     @property
@@ -762,7 +790,7 @@ class Particle:
         return self.data_[24]
 
     @weight.setter
-    def weight(self,value):
+    def weight(self, value):
         self.data_[24] = value
 
     @property
@@ -776,7 +804,7 @@ class Particle:
         return bool(self.data_[10])
 
     @pdg_valid.setter
-    def pdg_valid(self,value):
+    def pdg_valid(self, value):
         self.data_[10] = 1 if value else 0
 
     def print_particle(self):
@@ -814,10 +842,10 @@ class Particle:
         Notes
         -----
         If one of the needed particle quantities is not given, then `np.nan`
-        is returned. 
+        is returned.
         """
         if np.isnan(self.x) or np.isnan(self.y) or np.isnan(self.z)\
-            or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
+                or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
             r = [self.x, self.y, self.z]
@@ -832,7 +860,7 @@ class Particle:
         -------
         float
             momentum rapidity
-        
+
         Notes
         -----
         If one of the needed particle quantities is not given, then `np.nan`
@@ -842,7 +870,8 @@ class Particle:
             return np.nan
         else:
             if abs(self.E - self.pz) < 1e-10:
-                denominator = (self.E - self.pz) + 1e-10  # Adding a small positive value
+                # Adding a small positive value
+                denominator = (self.E - self.pz) + 1e-10
             else:
                 denominator = (self.E - self.pz)
 
@@ -856,7 +885,7 @@ class Particle:
         -------
         float
             absolute momentum
-        
+
         Notes
         -----
         If one of the needed particle quantities is not given, then `np.nan`
@@ -865,7 +894,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            return np.sqrt(self.px**2.+self.py**2.+self.pz**2.)
+            return np.sqrt(self.px**2. + self.py**2. + self.pz**2.)
 
     def pt_abs(self):
         """
@@ -875,7 +904,7 @@ class Particle:
         -------
         float
             absolute transverse momentum
-        
+
         Notes
         -----
         If one of the needed particle quantities is not given, then `np.nan`
@@ -884,7 +913,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
-            return np.sqrt(self.px**2.+self.py**2.)
+            return np.sqrt(self.px**2. + self.py**2.)
 
     def phi(self):
         """
@@ -906,7 +935,7 @@ class Particle:
             if (np.abs(self.px) < 1e-6) and (np.abs(self.py) < 1e-6):
                 return 0.
             else:
-                return math.atan2(self.py,self.px)
+                return math.atan2(self.py, self.px)
 
     def theta(self):
         """
@@ -932,7 +961,7 @@ class Particle:
 
     def pseudorapidity(self):
         """
-        Compute the pseudorapidity :math:`\eta=\\frac{1}{2}\\ln\\left(\\frac{|\\vec{p}|+p_z}{|\\vec{p}|-p_z}\\right)` of the particle.
+        Compute the pseudorapidity :math:`\\eta=\\frac{1}{2}\\ln\\left(\\frac{|\\vec{p}|+p_z}{|\\vec{p}|-p_z}\\right)` of the particle.
 
         Returns
         -------
@@ -948,11 +977,12 @@ class Particle:
             return np.nan
         else:
             if abs(self.p_abs() - self.pz) < 1e-10:
-                denominator = (self.p_abs() - self.pz) + 1e-10  # Adding a small positive value
+                denominator = (self.p_abs() - self.pz) + \
+                    1e-10  # Adding a small positive value
             else:
                 denominator = (self.p_abs() - self.pz)
 
-            return 0.5 * np.log((self.p_abs()+self.pz) / denominator)
+            return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
 
     def spatial_rapidity(self):
         """
@@ -972,7 +1002,7 @@ class Particle:
             return np.nan
         else:
             if self.t > np.abs(self.z):
-                return 0.5 * np.log((self.t+self.z) / (self.t-self.z))
+                return 0.5 * np.log((self.t + self.z) / (self.t - self.z))
             else:
                 raise ValueError("|z| < t not fulfilled")
 
@@ -994,7 +1024,7 @@ class Particle:
             return np.nan
         else:
             if self.t > np.abs(self.z):
-                return np.sqrt(self.t**2.-self.z**2.)
+                return np.sqrt(self.t**2. - self.z**2.)
             else:
                 raise ValueError("|z| < t not fulfilled")
 
@@ -1014,12 +1044,16 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if np.isnan(self.E) or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
+        if np.isnan(
+            self.E) or np.isnan(
+            self.px) or np.isnan(
+            self.py) or np.isnan(
+                self.pz):
             return np.nan
         else:
             if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
-                  self.E**2. - self.p_abs()**2. > 0.:
-                return np.sqrt(self.E**2.-self.p_abs()**2.)
+                    self.E**2. - self.p_abs()**2. > 0.:
+                return np.sqrt(self.E**2. - self.p_abs()**2.)
             else:
                 return 0.
 
@@ -1033,7 +1067,7 @@ class Particle:
         -------
         float
             charge
-        
+
         Notes
         -----
         If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
@@ -1101,7 +1135,7 @@ class Particle:
         -------
         bool
             True, False
-        
+
         Notes
         -----
         If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
@@ -1126,7 +1160,7 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         if PDGID(self.pdg).has_charm or PDGID(self.pdg).has_bottom\
-              or PDGID(self.pdg).has_top:
+                or PDGID(self.pdg).has_top:
             return True
         else:
             return False
@@ -1139,7 +1173,7 @@ class Particle:
         -------
         float
             Total spin :math:`J`
-        
+
         Notes
         -----
         If the PDG ID is not known by `PDGID`, then `np.nan` is returned.

@@ -1,17 +1,18 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
+# ===================================================
 
 import os
 import random as rd
 import numpy as np
 from multiprocessing import Pool
 from typing import Callable, Optional, Any
+
 
 class Jackknife:
     """
@@ -34,7 +35,7 @@ class Jackknife:
     .. note::
         It is the user's responsibility to ensure that the function applied to
         the data is well-defined and that the data array is in the correct
-        input format for the specific function. This code always dilutes the 
+        input format for the specific function. This code always dilutes the
         data along axis 0.
         This class only checks that the function is callable and that the return
         value is a single number (int or float).
@@ -89,8 +90,12 @@ class Jackknife:
         >>> jackknife.compute_jackknife_estimates(data_Gaussian, function=np.mean)
     """
 
-    def __init__(self, delete_fraction: float, number_samples: int, seed: int=42) -> None:
-        
+    def __init__(
+            self,
+            delete_fraction: float,
+            number_samples: int,
+            seed: int = 42) -> None:
+
         if not isinstance(delete_fraction, float):
             raise TypeError("delete_fraction must be a float.")
         if not isinstance(number_samples, int):
@@ -105,7 +110,7 @@ class Jackknife:
 
         self.delete_fraction: float = delete_fraction
         self.number_samples: int = number_samples
-        
+
         self.seed: int = seed
         self._init_random()
 
@@ -117,7 +122,7 @@ class Jackknife:
 
     def _randomly_delete_data(self, data: np.ndarray) -> np.ndarray:
         """
-        Randomly delete a fraction of the data along axis 0 and return the 
+        Randomly delete a fraction of the data along axis 0 and return the
         remaining data.
 
         Parameters
@@ -131,12 +136,17 @@ class Jackknife:
             The remaining data after randomly deleting a fraction of it.
         """
         data = data.copy()
-        delete_indices = rd.sample(range(len(data)), 
+        delete_indices = rd.sample(range(len(data)),
                                    int(self.delete_fraction * len(data)))
         data = np.delete(data, delete_indices, axis=0)
         return data
-    
-    def _apply_function_to_reduced_data(self, reduced_data: np.ndarray, function: Callable[..., Any], *args, **kwargs) -> Any:
+
+    def _apply_function_to_reduced_data(self,
+                                        reduced_data: np.ndarray,
+                                        function: Callable[...,
+                                                           Any],
+                                        *args,
+                                        **kwargs) -> Any:
         """
         Apply a function to the reduced data.
 
@@ -158,8 +168,9 @@ class Jackknife:
             The result of applying the function to the reduced data.
         """
         return function(reduced_data, *args, **kwargs)
-    
-    def _compute_one_jackknife_sample(self, data: np.ndarray, function: Callable[..., Any], *args, **kwargs) -> Any:
+
+    def _compute_one_jackknife_sample(
+            self, data: np.ndarray, function: Callable[..., Any], *args, **kwargs) -> Any:
         """
         Compute one Jackknife sample.
 
@@ -181,10 +192,17 @@ class Jackknife:
             The result of applying the function to the reduced data.
         """
         reduced_data = self._randomly_delete_data(data)
-        return self._apply_function_to_reduced_data(reduced_data, function, *args, **kwargs)
-    
+        return self._apply_function_to_reduced_data(
+            reduced_data, function, *args, **kwargs)
+
     @staticmethod
-    def _helper_unpack(instance, index: int, data: np.ndarray, function: Callable[..., Any], args: tuple, kwargs: dict) -> Any:
+    def _helper_unpack(instance,
+                       index: int,
+                       data: np.ndarray,
+                       function: Callable[...,
+                                          Any],
+                       args: tuple,
+                       kwargs: dict) -> Any:
         """
         Helper function to unpack the arguments for parallel processing.
 
@@ -203,15 +221,16 @@ class Jackknife:
             Additional arguments to be passed to the function.
         kwargs : dict
             Additional keyword arguments to be passed to the function.
-        
+
         Returns
         -------
         any
             The result of applying _compute_one_jackknife_sample.
         """
         rd.seed(instance.seed + index)
-        return instance._compute_one_jackknife_sample(data, function, *args, **kwargs)
-    
+        return instance._compute_one_jackknife_sample(
+            data, function, *args, **kwargs)
+
     def _init_random_subprocess(self, seed: int) -> None:
         """
         Initialize random seed for subprocesses.
@@ -227,7 +246,13 @@ class Jackknife:
         """
         rd.seed(seed)
 
-    def _compute_jackknife_samples(self, data: np.ndarray, function: Callable[..., Any], num_cores: Optional[int]=None, *args, **kwargs) -> np.ndarray:
+    def _compute_jackknife_samples(self,
+                                   data: np.ndarray,
+                                   function: Callable[...,
+                                                      Any],
+                                   num_cores: Optional[int] = None,
+                                   *args,
+                                   **kwargs) -> np.ndarray:
         """
         Compute all Jackknife samples.
 
@@ -262,13 +287,19 @@ class Jackknife:
             num_cores = os.cpu_count()
 
         with Pool(num_cores, initializer=self._init_random_subprocess, initargs=(self.seed,)) as pool:
-            results = pool.starmap(self._helper_unpack, 
-                                   [(self, index, data, function, args, kwargs) 
+            results = pool.starmap(self._helper_unpack,
+                                   [(self, index, data, function, args, kwargs)
                                     for index in range(self.number_samples)]
-                                    )
+                                   )
         return np.array(results)
-    
-    def compute_jackknife_estimates(self, data: np.ndarray, function: Callable[..., Any]=np.mean, num_cores: Optional[int]=None, *args, **kwargs) -> float:
+
+    def compute_jackknife_estimates(self,
+                                    data: np.ndarray,
+                                    function: Callable[...,
+                                                       Any] = np.mean,
+                                    num_cores: Optional[int] = None,
+                                    *args,
+                                    **kwargs) -> float:
         """
         Compute the Jackknife uncertainty estimates for a function applied to
         a data array. The default function is np.mean, but it can be changed to
@@ -278,10 +309,10 @@ class Jackknife:
         Parameters
         ----------
         data : np.ndarray
-            The data to be used to compute the Jackknife samples. The data is 
+            The data to be used to compute the Jackknife samples. The data is
             truncated along axis 0.
         function : function, optional
-            The function to be applied to the reduced data. The function can 
+            The function to be applied to the reduced data. The function can
             accept additional arguments and keyword arguments. The default is
             np.mean. It has to return a single number (int or float).
         num_cores : int, optional
@@ -314,13 +345,14 @@ class Jackknife:
             raise TypeError("data must be a numpy array.")
         if not callable(function):
             raise TypeError("function must be a callable object.")
-        
+
         # Check if the function returns a single number
-        test_result = function(data[:max(1, len(data)//100)], *args, **kwargs)
+        test_result = function(data[:max(1, len(data) // 100)], *args, **kwargs)
         if not isinstance(test_result, (int, float)):
             raise TypeError("function must return a single number.")
 
-        jackknife_samples = self._compute_jackknife_samples(data, function, num_cores, *args, **kwargs)
+        jackknife_samples = self._compute_jackknife_samples(
+            data, function, num_cores, *args, **kwargs)
 
         # mean of jackknife samples
         mean_samples = np.mean(jackknife_samples)
@@ -330,8 +362,10 @@ class Jackknife:
             variance_samples = (jackknife_samples[i] - mean_samples)**2.
 
         if delete_n_points == 1:
-            variance_samples *= ((len(jackknife_samples) - 1) / len(jackknife_samples))
+            variance_samples *= ((len(jackknife_samples) -
+                                 1) / len(jackknife_samples))
         else:
-            variance_samples *= (len(data) - delete_n_points) / (delete_n_points * len(jackknife_samples))
+            variance_samples *= (len(data) - delete_n_points) / \
+                (delete_n_points * len(jackknife_samples))
 
         return np.sqrt(variance_samples)

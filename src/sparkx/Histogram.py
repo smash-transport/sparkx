@@ -1,12 +1,12 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2023-2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
-    
+# ===================================================
+
 import numpy as np
 import csv
 import warnings
@@ -135,6 +135,7 @@ class Histogram:
         >>> # Store the histograms in hist as numpy.ndarray
         >>> hist = histObj.histogram()
     """
+
     def __init__(self, bin_boundaries):
         self.number_of_bins_ = None
         self.bin_edges_ = None
@@ -153,11 +154,11 @@ class Histogram:
             if hist_min > hist_max or hist_min == hist_max:
                 raise ValueError('hist_min must be smaller than hist_max')
 
-            elif not isinstance(num_bins,int) or num_bins <= 0:
+            elif not isinstance(num_bins, int) or num_bins <= 0:
                 raise ValueError('Number of bins must be a positive integer')
 
             self.number_of_bins_ = num_bins
-            self.bin_edges_ = np.linspace(hist_min, hist_max, num=num_bins+1)
+            self.bin_edges_ = np.linspace(hist_min, hist_max, num=num_bins + 1)
             self.histograms_ = np.asarray([np.zeros(num_bins)])
             self.histograms_raw_count_ = np.asarray([np.zeros(num_bins)])
             self.scaling_ = np.asarray([np.ones(num_bins)])
@@ -166,17 +167,20 @@ class Histogram:
 
         elif isinstance(bin_boundaries, (list, np.ndarray)):
 
-            self.number_of_bins_ = len(bin_boundaries)-1
+            self.number_of_bins_ = len(bin_boundaries) - 1
             self.bin_edges_ = np.asarray(bin_boundaries)
             self.histograms_ = np.asarray([np.zeros(self.number_of_bins_)])
-            self.histograms_raw_count_ = np.asarray([np.zeros(self.number_of_bins_)])
+            self.histograms_raw_count_ = np.asarray(
+                [np.zeros(self.number_of_bins_)])
             self.scaling_ = np.asarray([np.ones(self.number_of_bins_)])
             self.error_ = np.asarray([np.zeros(self.number_of_bins_)])
-            self.systematic_error_ = np.asarray([np.zeros(self.number_of_bins_)])
+            self.systematic_error_ = np.asarray(
+                [np.zeros(self.number_of_bins_)])
 
         else:
-            raise TypeError('Input must be a tuple (hist_min, hist_max, num_bins) '+
-                            'or a list/numpy.ndarray containing the bin edges!')
+            raise TypeError(
+                'Input must be a tuple (hist_min, hist_max, num_bins) ' +
+                'or a list/numpy.ndarray containing the bin edges!')
 
     def histogram(self):
         """
@@ -267,7 +271,7 @@ class Histogram:
             Array containing the bin boundaries.
         """
         return np.asarray(self.bin_edges_)
-    
+
     def remove_bin(self, index):
         """
         Remove a bin from all histograms, starting from the 0th bin.
@@ -291,17 +295,23 @@ class Histogram:
                 raise ValueError("Bin number in remove_bin is out of range.")
         else:
             raise TypeError("Bin number in remove_bin must be an integer.")
-        
+
         self.number_of_bins_ -= 1
         self.bin_edges_ = np.delete(self.bin_edges_, index)
 
         self.histograms_ = [np.delete(hist, index) for hist in self.histograms_]
         self.error_ = [np.delete(err, index) for err in self.error_]
-        self.histograms_raw_count_ = [np.delete(raw_count, index) for raw_count in self.histograms_raw_count_]
-        self.systematic_error_ = [np.delete(sys_err, index) for sys_err in self.systematic_error_]
-       
+        self.histograms_raw_count_ = [
+            np.delete(
+                raw_count,
+                index) for raw_count in self.histograms_raw_count_]
+        self.systematic_error_ = [
+            np.delete(
+                sys_err,
+                index) for sys_err in self.systematic_error_]
+
         return self
-    
+
     def add_bin(self, index, bin_edge):
         """
         Add a bin to all histograms at the specified index.
@@ -327,7 +337,7 @@ class Histogram:
 
         if not isinstance(index, int):
             raise TypeError("Index in add_bin must be an integer.")
-        if not isinstance(bin_edge, (int,float)):
+        if not isinstance(bin_edge, (int, float)):
             raise TypeError("Bin edge in add_bin must be a float or int.")
         if index < 0 or index >= len(self.bin_edges_):
             raise ValueError("Index in add_bin is out of range.")
@@ -339,13 +349,17 @@ class Histogram:
         self.number_of_bins_ += 1
         self.bin_edges_ = np.insert(self.bin_edges_, index, bin_edge)
 
-        self.histograms_ = np.asarray([np.insert(hist, index, 0) for hist in self.histograms_])
-        self.error_ = np.asarray([np.insert(err, index, 0) for err in self.error_])
-        self.histograms_raw_count_ = np.asarray([np.insert(raw_count, index, 0).tolist() for raw_count in self.histograms_raw_count_])
-        self.systematic_error_ = np.asarray([np.insert(sys_err, index, 0).tolist() for sys_err in self.systematic_error_])
+        self.histograms_ = np.asarray(
+            [np.insert(hist, index, 0) for hist in self.histograms_])
+        self.error_ = np.asarray([np.insert(err, index, 0)
+                                 for err in self.error_])
+        self.histograms_raw_count_ = np.asarray([np.insert(
+            raw_count, index, 0).tolist() for raw_count in self.histograms_raw_count_])
+        self.systematic_error_ = np.asarray(
+            [np.insert(sys_err, index, 0).tolist() for sys_err in self.systematic_error_])
 
         return self
-    
+
     def add_value(self, value, weight=None):
         """
         Add value(s) to the latest histogram.
@@ -358,7 +372,7 @@ class Histogram:
         value: int, float, np.number, list, numpy.ndarray
             Value(s) which are supposed to be added to the histogram instance.
         weight: int, float, np.number, list, numpy.ndarray, optional
-            Weight(s) associated with the value(s). If provided, it should have 
+            Weight(s) associated with the value(s). If provided, it should have
             the same length as the value parameter.
 
         Raises
@@ -370,20 +384,23 @@ class Histogram:
         ValueError
             if the input `weight` has not the same dimension as `value`
         ValueError
-            if a `weight` value is `np.nan` 
+            if a `weight` value is `np.nan`
         """
         # Check if weight has the same length as value
         if weight is not None:
             if isinstance(weight, (int, float, np.number)):
                 if not isinstance(value, (int, float, np.number)):
-                    raise ValueError("Value must be numeric when weight is scalar.")
+                    raise ValueError(
+                        "Value must be numeric when weight is scalar.")
                 if np.isnan(weight):
-                    raise ValueError("Value cannot be NaN when weight is scalar.")
+                    raise ValueError(
+                        "Value cannot be NaN when weight is scalar.")
             elif len(weight) != np.atleast_1d(value).shape[0]:
                 raise ValueError("Weight must have the same length as value.")
             else:
                 if np.isnan(value).any():
-                    raise ValueError("Value cannot contain NaN when weight is not scalar.")
+                    raise ValueError(
+                        "Value cannot contain NaN when weight is not scalar.")
 
         # Case 1.1: value is a single number
         if isinstance(value, (int, float, np.number)):
@@ -391,28 +408,29 @@ class Histogram:
                 raise ValueError("Input value in add_value is NaN.")
 
             counter_warnings = 0
-            if (value < self.bin_edges_[0] or value > self.bin_edges_[-1]) and counter_warnings == 0:
-                warn_msg = 'One or more values lie outside the histogram '+\
-                          'range ['+str(self.bin_edges_[0])+','+str(self.bin_edges_[-1])+\
-                          ']. Exceeding values are ignored. Increase histogram range!'
+            if (value < self.bin_edges_[
+                    0] or value > self.bin_edges_[-1]) and counter_warnings == 0:
+                warn_msg = 'One or more values lie outside the histogram ' +\
+                    'range [' + str(self.bin_edges_[0]) + ',' + str(self.bin_edges_[-1]) +\
+                    ']. Exceeding values are ignored. Increase histogram range!'
                 warnings.warn(warn_msg)
 
-            
             bin_index = np.digitize(value, self.bin_edges_)
             if bin_index == 0 or bin_index > self.number_of_bins_:
                 pass
             else:
                 if weight is not None:
-                    self.histograms_[-1,bin_index-1] += weight
-                    self.histograms_raw_count_[-1,bin_index-1] += weight
+                    self.histograms_[-1, bin_index - 1] += weight
+                    self.histograms_raw_count_[-1, bin_index - 1] += weight
                 else:
-                    self.histograms_[-1,bin_index-1] += 1
-                    self.histograms_raw_count_[-1,bin_index-1] += 1
+                    self.histograms_[-1, bin_index - 1] += 1
+                    self.histograms_raw_count_[-1, bin_index - 1] += 1
 
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
             if np.isnan(value).any():
-                raise ValueError("At least one input value in add_value is NaN.")
+                raise ValueError(
+                    "At least one input value in add_value is NaN.")
             if weight is not None:
                 for element, w in zip(value, weight):
                     self.add_value(element, weight=w)
@@ -422,15 +440,15 @@ class Histogram:
 
         # Case 1.3: value has an invalid input type
         else:
-            err_msg = 'Invalid input type! Input value must have one of the '+\
+            err_msg = 'Invalid input type! Input value must have one of the ' +\
                       'following types: (int, float, np.number, list, np.ndarray)'
             raise TypeError(err_msg)
 
     def make_density(self):
         """
         Make a probability density from the last histogram.
-        The result represents the probability density function in a given bin. 
-        It is normalized such that the integral over the whole histogram 
+        The result represents the probability density function in a given bin.
+        It is normalized such that the integral over the whole histogram
         yields 1. This behavior is similar to the one of numpy histograms.
 
         Raises
@@ -443,7 +461,6 @@ class Histogram:
         if self.number_of_histograms_ == 0:
             raise ValueError("No histograms available to compute density.")
 
-      
         last_histogram = self.histograms_[-1]
 
         bin_widths = self.bin_width()
@@ -465,10 +482,13 @@ class Histogram:
         """
         empty_histogram = np.zeros(self.number_of_bins_)
         self.histograms_ = np.vstack((self.histograms_, empty_histogram))
-        self.histograms_raw_count_ = np.vstack((self.histograms_raw_count_, empty_histogram))
-        self.scaling_ = np.vstack((self.scaling_, np.ones(self.number_of_bins_)))
+        self.histograms_raw_count_ = np.vstack(
+            (self.histograms_raw_count_, empty_histogram))
+        self.scaling_ = np.vstack(
+            (self.scaling_, np.ones(self.number_of_bins_)))
         self.error_ = np.vstack((self.error_, np.zeros(self.number_of_bins_)))
-        self.systematic_error_ = np.vstack((self.systematic_error_, np.zeros(self.number_of_bins_)))
+        self.systematic_error_ = np.vstack(
+            (self.systematic_error_, np.zeros(self.number_of_bins_)))
         self.number_of_histograms_ += 1
 
         return self
@@ -493,7 +513,7 @@ class Histogram:
         self.average_weighted(np.ones(self.number_of_histograms_))
         return self
 
-    def average_weighted(self,weights):
+    def average_weighted(self, weights):
         """
         Weighted average over all histograms.
 
@@ -516,18 +536,25 @@ class Histogram:
 
         """
         average = np.average(self.histograms_, axis=0, weights=weights)
-        variance = np.average((self.histograms_ - average)**2., axis=0, weights=weights)
-        
+        variance = np.average(
+            (self.histograms_ - average)**2.,
+            axis=0,
+            weights=weights)
+
         self.histograms_ = average
         self.error_ = np.sqrt(variance)
-        self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0, weights=weights))
-        self.histogram_raw_count_= np.sum(self.histograms_raw_count_, axis=0)
-        self.scaling_= self.scaling_[0]
+        self.systematic_error_ = np.sqrt(
+            np.average(
+                self.systematic_error_**2.,
+                axis=0,
+                weights=weights))
+        self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
+        self.scaling_ = self.scaling_[0]
 
         self.number_of_histograms_ = 1
-        
+
         return self
-    
+
     def average_weighted_by_error(self):
         """
         Weighted average over all histograms, where each entry is weighted by its associated error.
@@ -550,14 +577,19 @@ class Histogram:
             if the error is zero for any entry.
         """
         if np.any(self.error_ == 0):
-            raise TypeError("Error cannot be zero for any entry when averaging by error.")
+            raise TypeError(
+                "Error cannot be zero for any entry when averaging by error.")
 
         weights = 1 / self.error_**2
         average = np.average(self.histograms_, axis=0, weights=weights)
 
         self.histograms_ = average
         self.error_ = np.sqrt(1. / np.sum(1. / np.square(self.error_), axis=0))
-        self.systematic_error_ = np.sqrt(np.average(self.systematic_error_**2., axis=0, weights=weights))
+        self.systematic_error_ = np.sqrt(
+            np.average(
+                self.systematic_error_**2.,
+                axis=0,
+                weights=weights))
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
         self.scaling_ = self.scaling_[0]
 
@@ -584,7 +616,7 @@ class Histogram:
         Returns
         -------
         numpy.ndarray
-            2D Array containing the statistical error (standard deviation) for 
+            2D Array containing the statistical error (standard deviation) for
             each bin and histogram.
         """
         counter_histogram = 0
@@ -593,7 +625,7 @@ class Histogram:
             counter_histogram += 1
         return self.error_
 
-    def scale_histogram(self,value):
+    def scale_histogram(self, value):
         """
         Scale the latest histogram by a factor.
 
@@ -608,11 +640,14 @@ class Histogram:
             Scaling factor for the histogram.
         """
         if isinstance(value, (int, float, np.number)) and value < 0:
-            raise ValueError("The scaling factor of the histogram cannot be negative")
+            raise ValueError(
+                "The scaling factor of the histogram cannot be negative")
         elif isinstance(value, (list, np.ndarray)) and sum(1 for number in value if number < 0) > 0:
-            raise ValueError("The scaling factor of the histogram cannot be negative")
+            raise ValueError(
+                "The scaling factor of the histogram cannot be negative")
         elif isinstance(value, (list, np.ndarray)) and len(value) != self.number_of_bins_:
-            raise ValueError("The length of list/array not compatible with number_of_bins_ of the histogram")
+            raise ValueError(
+                "The length of list/array not compatible with number_of_bins_ of the histogram")
 
         if isinstance(value, (int, float, np.number)):
             self.histograms_[-1] *= value
@@ -624,7 +659,7 @@ class Histogram:
             self.scaling_[-1] *= np.asarray(value)
             self.scaling_[-1] *= np.asarray(value)
 
-    def set_error(self,own_error):
+    def set_error(self, own_error):
         """
         Sets the histogram error by hand. This is helpful for weighted
         histograms where the weight has also an uncertainty.
@@ -638,13 +673,13 @@ class Histogram:
             Values for the uncertainties of the individual bins.
         """
         if len(own_error) != self.number_of_bins_ or\
-              not isinstance(own_error, (list,np.ndarray)):
+                not isinstance(own_error, (list, np.ndarray)):
             error_message = "The input error has a different length than the"\
-                 + " number of histogram bins or it is not a list/numpy.ndarray"
+                + " number of histogram bins or it is not a list/numpy.ndarray"
             raise ValueError(error_message)
         self.error_[-1] = own_error
 
-    def set_systematic_error(self,own_error):
+    def set_systematic_error(self, own_error):
         """
         Sets the systematic histogram error of the last created histogram by hand.
 
@@ -654,11 +689,11 @@ class Histogram:
             Values for the systematic uncertainties of the individual bins.
         """
         if len(own_error) != self.number_of_bins_ or\
-              not isinstance(own_error, (list,np.ndarray)):
+                not isinstance(own_error, (list, np.ndarray)):
             error_message = "The input error has a different length than the"\
-                 + " number of histogram bins or it is not a list/numpy.ndarray"
+                + " number of histogram bins or it is not a list/numpy.ndarray"
             raise ValueError(error_message)
-       
+
         self.systematic_error_[-1] = own_error
 
     def print_histogram(self):
@@ -695,7 +730,7 @@ class Histogram:
                 - 'stat_err-': Label for the statistical error (negative).
                 - 'sys_err+': Label for the systematic error (positive).
                 - 'sys_err-': Label for the systematic error (negative).
-            
+
             Other keys are possible if non-default columns are used.
 
         comment : str, optional
@@ -727,25 +762,47 @@ class Histogram:
             is greater than 1 and the number of provided dictionaries is 1.
             Then the same dictionary is used for all histograms.
         """
-        if not isinstance(hist_labels, list) or not all(isinstance(hist_label, dict) for hist_label in hist_labels):
+        if not isinstance(
+                hist_labels,
+                list) or not all(
+                isinstance(
+                hist_label,
+                dict) for hist_label in hist_labels):
             raise TypeError("hist_labels must be a list of dictionaries")
-        
-        if columns is not None and ( not isinstance(columns, list) or not all(isinstance(col, str) for col in columns)):
+
+        if columns is not None and (
+            not isinstance(
+                columns,
+                list) or not all(
+                isinstance(
+                col,
+                str) for col in columns)):
             raise TypeError("columns must be a list of strings")
-        
-        if columns is not None and not all(col in hist_labels[0].keys() for col in columns):
-            raise TypeError("columns must contain only keys present in hist_labels")
+
+        if columns is not None and not all(
+                col in hist_labels[0].keys() for col in columns):
+            raise TypeError(
+                "columns must contain only keys present in hist_labels")
 
         if self.number_of_histograms_ > 1 and len(hist_labels) == 1:
             error_message = "Print multiple histograms to file, only one header"\
                             + " provided. Use the header for all histograms."
             warnings.warn(error_message)
         elif self.number_of_histograms_ > 1 and (len(hist_labels) > 1 and len(hist_labels) < self.number_of_histograms_):
-            raise ValueError("Print multiple histograms to file, more than one,"
-                            +" but less than number of histograms headers provided.")
+            raise ValueError(
+                "Print multiple histograms to file, more than one," +
+                " but less than number of histograms headers provided.")
 
         if columns is None:
-            columns = ['bin_center', 'bin_low', 'bin_high', 'distribution', 'stat_err+', 'stat_err-', 'sys_err+', 'sys_err-']
+            columns = [
+                'bin_center',
+                'bin_low',
+                'bin_high',
+                'distribution',
+                'stat_err+',
+                'stat_err-',
+                'sys_err+',
+                'sys_err-']
 
         with open(filename, 'w') as f:
             writer = csv.writer(f)
@@ -754,13 +811,19 @@ class Histogram:
                 f.write('\n')
 
             for idx in range(self.number_of_histograms_):
-                header = [hist_labels[0][col] if len(hist_labels) == 1 else hist_labels[idx][col] for col in columns]
+                header = [hist_labels[0][col] if len(
+                    hist_labels) == 1 else hist_labels[idx][col] for col in columns]
                 writer.writerow(header)
                 for i in range(self.number_of_bins_):
-                    data = [self.bin_centers()[i], self.bin_bounds_left()[i], self.bin_bounds_right()[i],
-                            self.histograms_[idx][i], self.error_[idx][i], self.error_[idx][i],
-                            self.systematic_error_[idx][i], self.systematic_error_[idx][i]]
+                    data = [
+                        self.bin_centers()[i],
+                        self.bin_bounds_left()[i],
+                        self.bin_bounds_right()[i],
+                        self.histograms_[idx][i],
+                        self.error_[idx][i],
+                        self.error_[idx][i],
+                        self.systematic_error_[idx][i],
+                        self.systematic_error_[idx][i]]
                     data = [data[columns.index(col)] for col in columns]
                     writer.writerow(data)
                 f.write('\n')
-        

@@ -1,15 +1,16 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
+# ===================================================
 
 from sparkx.Jackknife import Jackknife
 import numpy as np
 import pytest
+
 
 def test_Jackknife_initialization():
     delete_fraction = 0.1
@@ -36,15 +37,18 @@ def test_Jackknife_initialization():
     with pytest.raises(TypeError):
         Jackknife(delete_fraction, number_samples, "42")
 
+
 def generate_data(n, mean=0, std=1):
     # set the seed for reproducibility
     np.random.seed(42)
     return np.random.normal(mean, std, n)
 
+
 def generate_2d_data(n, mean=0, std=1):
     # set the seed for reproducibility
     np.random.seed(42)
     return np.random.normal(mean, std, (n, 2))
+
 
 def test_Jackknife_random_deletion():
     data = generate_data(100)
@@ -63,8 +67,10 @@ def test_Jackknife_random_deletion():
     # Test for 2D data
     data_2d = generate_2d_data(100)
     reduced_data_2d = jackknife._randomly_delete_data(data_2d)
-    assert reduced_data_2d.shape[0] == int(data_2d.shape[0] * (1 - delete_fraction))
+    assert reduced_data_2d.shape[0] == int(
+        data_2d.shape[0] * (1 - delete_fraction))
     assert reduced_data_2d.shape[1] == data_2d.shape[1]
+
 
 def test_Jackknife_apply_function():
     data = generate_data(100)
@@ -79,6 +85,7 @@ def test_Jackknife_apply_function():
     assert isinstance(result, float)
     assert np.isclose(result, np.mean(reduced_data), atol=1e-6)
 
+
 def test_Jackknife_single_sample():
     data = generate_data(100)
     delete_fraction = 0.1
@@ -89,6 +96,7 @@ def test_Jackknife_single_sample():
     result = jackknife._compute_one_jackknife_sample(data, np.mean)
 
     assert isinstance(result, float)
+
 
 def test_Jackknife_compute_jackknife_estimates():
     # generate data
@@ -104,10 +112,13 @@ def test_Jackknife_compute_jackknife_estimates():
     std_jackknife = jackknife.compute_jackknife_estimates(data)
     assert np.isclose(std_jackknife, std_err_mean_data, atol=0.01)
 
-    std_var_jackknife = jackknife.compute_jackknife_estimates(data, function=np.std)
-    assert np.isclose(std_var_jackknife, np.std(data, ddof=1) / np.sqrt(2*(len(data)-1)), atol=0.01)
+    std_var_jackknife = jackknife.compute_jackknife_estimates(
+        data, function=np.std)
+    assert np.isclose(std_var_jackknife, np.std(
+        data, ddof=1) / np.sqrt(2 * (len(data) - 1)), atol=0.01)
 
-    # Test for TypeError on invalid function output (function returns list instead of float or int)
+    # Test for TypeError on invalid function output (function returns list
+    # instead of float or int)
     with pytest.raises(TypeError):
         jackknife.compute_jackknife_estimates(data, function=lambda x: [1, 2])
 
@@ -115,13 +126,14 @@ def test_Jackknife_compute_jackknife_estimates():
     jackknife1 = Jackknife(delete_fraction, number_samples, seed)
     with pytest.raises(ValueError):
         jackknife1.compute_jackknife_estimates(data)
-    
+
     with pytest.raises(TypeError):
-        jackknife.compute_jackknife_estimates([1,2,3])
+        jackknife.compute_jackknife_estimates([1, 2, 3])
 
     with pytest.raises(TypeError):
         jackknife.compute_jackknife_estimates(data, function=1)
-    
+
+
 def test_Jackknife_single_vs_two_cores():
     data = generate_data(100)
     delete_fraction = 0.5
@@ -134,8 +146,10 @@ def test_Jackknife_single_vs_two_cores():
 
     assert np.isclose(std_single_core, std_two_cores, atol=1e-6)
 
+
 def custom_mean_function(input_data):
     return np.mean(input_data)
+
 
 def test_Jacknife_2d_array_input():
     data = generate_2d_data(100)
@@ -144,12 +158,15 @@ def test_Jacknife_2d_array_input():
     seed = 42
 
     jackknife = Jackknife(delete_fraction, number_samples, seed)
-    
-    std = jackknife.compute_jackknife_estimates(data, function=custom_mean_function)
+
+    std = jackknife.compute_jackknife_estimates(
+        data, function=custom_mean_function)
     assert isinstance(std, float)
+
 
 def weighted_mean(data, weight):
     return np.mean(data) * weight
+
 
 def test_jackknife_with_additional_argument():
     data = np.random.normal(0, 1, 100)
@@ -159,7 +176,9 @@ def test_jackknife_with_additional_argument():
 
     jackknife = Jackknife(delete_fraction, number_samples, seed)
     weight = 2.0
-    jackknife_std_err = jackknife.compute_jackknife_estimates(data, function=weighted_mean, weight=weight)
+    jackknife_std_err = jackknife.compute_jackknife_estimates(
+        data, function=weighted_mean, weight=weight)
 
-    # this is just testing that the propagation of parameters for the function works
+    # this is just testing that the propagation of parameters for the function
+    # works
     assert isinstance(jackknife_std_err, float)
