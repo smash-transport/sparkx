@@ -6,12 +6,14 @@ Classes
 .. toctree::
    :maxdepth: 2
 
-   Particle/index
-   Oscar/index
-   Jetscape/index
-   JetAnalysis/index
-   Histogram/index
-   flow/index
-   Lattice3D/index
-   EventCharacteristics/index
    CentralityClasses/index
+   EventCharacteristics/index
+   flow/index
+   Histogram/index
+   Jackknife/index
+   JetAnalysis/index
+   Jetscape/index
+   Lattice3D/index
+   MultiParticlePtCorrelations/index
+   Oscar/index
+   Particle/index

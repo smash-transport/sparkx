@@ -26,6 +26,11 @@ Date: XXX
 * Histogram: Add possibility to add and remove bins
 * Jetscape: Possibility to read in parton output files with optional `particletype` parameter in constructor
 * Particle: Include changes for parton read in from Jetscape class, multiply quark charges by 3 to make them integers
+* MultiParticlePtCorrelations: Class to compute higher order mean transverse momentum correlations and the corresponding cumulants
+* Jackknife: Implement class to compute uncertainty estimates with a delete-d Jackknife
+
+### Fixed
+* QCumulantFlow and LeeYangZeroFlow: Fix bug in the calculation of the differential flow
 
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.1...v1.2.2)
@@ -35,7 +40,6 @@ Date: 2024-05-08
 
 ### Fixed
 * Jetscape: Fix for Jetscape charged particle filtering
-* QCumulantFlow and LeeYangZeroFlow: Fix bug in the calculation of the differential flow
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.2.0...v1.2.1)
 
