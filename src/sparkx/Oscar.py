@@ -163,7 +163,15 @@ class Oscar(BaseStorer):
     Notes
     -----
     If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list 
-    specifying the dimension to be cut in the first entry and the tuple with the cut
+    specifying the dimensiAR_FILE, **kwargs):
+        super().__init__(OSCAR_FILE,**kwargs)
+        self.PATH_OSCAR_ = OSCAR_FILE
+        self.oscar_format_=self.loader_.oscar_format()
+        self.event_end_lines_ = self.loader_.event_end_lines()  
+        del self.loader_
+
+    def create_loader(self, OSCAR_FILE):
+        self.loader_= OscarLoader(OSCAR_FILE)on to be cut in the first entry and the tuple with the cut
     boundaries in the second entry is needed. For all other filters, the dictionary
     only needs the filter name as key and the filter argument as value.
     All filter functions without arguments need a :code:`True` in the dictionary.
@@ -171,8 +179,10 @@ class Oscar(BaseStorer):
     """
     def __init__(self, OSCAR_FILE, **kwargs):
         super().__init__(OSCAR_FILE,**kwargs)
-        self.oscar_format=self.loader_.oscar_format()
+        self.PATH_OSCAR_ = OSCAR_FILE
+        self.oscar_format_=self.loader_.oscar_format()
         self.event_end_lines_ = self.loader_.event_end_lines()  
+        del self.loader_
 
     def create_loader(self, OSCAR_FILE):
         self.loader_= OscarLoader(OSCAR_FILE)
