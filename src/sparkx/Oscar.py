@@ -1,16 +1,17 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2023-2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
-    
+# ===================================================
+
 from sparkx.Particle import Particle
 from sparkx.Filter import *
 import numpy as np
 import os
+
 
 class Oscar:
     """
@@ -182,7 +183,7 @@ class Oscar:
 
     Cuts can be performed directly in the constructor by passing a dictionary. This
     has the advantage that memory is saved because the cuts are applied after reading
-    each single event. This is achieved by the keyword argument :code:`filters`, which 
+    each single event. This is achieved by the keyword argument :code:`filters`, which
     contains the filter dictionary. Filters are applied in the order in which they appear.
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
@@ -194,13 +195,14 @@ class Oscar:
 
     Notes
     -----
-    If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list 
+    If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list
     specifying the dimension to be cut in the first entry and the tuple with the cut
     boundaries in the second entry is needed. For all other filters, the dictionary
     only needs the filter name as key and the filter argument as value.
     All filter functions without arguments need a :code:`True` in the dictionary.
-    
+
     """
+
     def __init__(self, OSCAR_FILE, **kwargs):
         """
         Parameters
@@ -220,9 +222,10 @@ class Oscar:
         None
         """
 
-        if not '.oscar' in OSCAR_FILE:
-            raise FileNotFoundError('Input file is not in the OSCAR format. Input '
-                                    'file must have the ending .oscar')
+        if '.oscar' not in OSCAR_FILE:
+            raise FileNotFoundError(
+                'Input file is not in the OSCAR format. Input '
+                'file must have the ending .oscar')
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
@@ -236,10 +239,14 @@ class Oscar:
             if keys not in ['events', 'filters']:
                 raise ValueError('Unknown keyword argument used in constructor')
 
-        if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
-            self.__check_that_tuple_contains_integers_only(self.optional_arguments_['events'])
-            if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
-                raise ValueError('First value of event number tuple must be smaller than second value')
+        if 'events' in self.optional_arguments_.keys() and isinstance(
+                self.optional_arguments_['events'], tuple):
+            self.__check_that_tuple_contains_integers_only(
+                self.optional_arguments_['events'])
+            if self.optional_arguments_[
+                    'events'][0] > self.optional_arguments_['events'][1]:
+                raise ValueError(
+                    'First value of event number tuple must be smaller than second value')
             elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
                 raise ValueError('Event numbers must be positive')
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
@@ -267,7 +274,8 @@ class Oscar:
             If one or more elements inside the event tuple are not integers.
         """
         if not all(isinstance(event, int) for event in events_tuple):
-            raise TypeError("All elements inside the event tuple must be integers.")
+            raise TypeError(
+                "All elements inside the event tuple must be integers.")
 
     def __get_num_skip_lines(self):
         """
@@ -288,7 +296,7 @@ class Oscar:
             else:
                 cumulate_lines = 0
                 for i in range(0, self.optional_arguments_['events']):
-                    cumulate_lines += self.num_output_per_event_[i,1] + 2
+                    cumulate_lines += self.num_output_per_event_[i, 1] + 2
                 skip_lines = 3 + cumulate_lines
         elif isinstance(self.optional_arguments_['events'], tuple):
             line_start = self.optional_arguments_['events'][0]
@@ -297,14 +305,13 @@ class Oscar:
             else:
                 cumulate_lines = 0
                 for i in range(0, line_start):
-                    cumulate_lines += self.num_output_per_event_[i,1] + 2
+                    cumulate_lines += self.num_output_per_event_[i, 1] + 2
                 skip_lines = 3 + cumulate_lines
         else:
             raise TypeError('Value given as flag "events" is not of type ' +
                             'int or a tuple of two int values')
 
         return skip_lines
-
 
     def __skip_lines(self, fname):
         """
@@ -323,7 +330,6 @@ class Oscar:
         for i in range(0, num_skip):
             fname.readline()
 
-
     def __get_num_read_lines(self):
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
@@ -332,19 +338,19 @@ class Oscar:
 
         elif isinstance(self.optional_arguments_['events'], int):
             read_event = self.optional_arguments_['events']
-            cumulated_lines = int(self.num_output_per_event_[read_event,1] + 2)
+            cumulated_lines = int(self.num_output_per_event_[read_event, 1] + 2)
 
         elif isinstance(self.optional_arguments_['events'], tuple):
             cumulated_lines = 0
             event_start = self.optional_arguments_['events'][0]
             event_end = self.optional_arguments_['events'][1]
-            for i in range(event_start, event_end+1):
+            for i in range(event_start, event_end + 1):
                 cumulated_lines += int(self.num_output_per_event_[i, 1] + 2)
         else:
-            raise TypeError('Value given as flag events is not of type int or a tuple')
+            raise TypeError(
+                'Value given as flag events is not of type int or a tuple')
 
         return cumulated_lines
-
 
     def __particle_as_list(self, particle):
         particle_list = []
@@ -380,13 +386,15 @@ class Oscar:
                     particle_list.append(int(particle.weight))
 
         elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
-            raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
+            raise TypeError(
+                'Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
 
         return particle_list
 
     def __update_num_output_per_event_after_filter(self):
         for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1]=len(self.particle_list_[event])
+            self.num_output_per_event_[event][1] = len(
+                self.particle_list_[event])
 
     def __apply_kwargs_filters(self, event, filters_dict):
         if not isinstance(filters_dict, dict) or len(filters_dict.keys()) == 0:
@@ -402,9 +410,11 @@ class Oscar:
                 if filters_dict['strange_particles']:
                     event = strange_particles(event)
             elif i == 'particle_species':
-                event = particle_species(event, filters_dict['particle_species'])
+                event = particle_species(
+                    event, filters_dict['particle_species'])
             elif i == 'remove_particle_species':
-                event = remove_particle_species (event, filters_dict['remove_particle_species'])
+                event = remove_particle_species(
+                    event, filters_dict['remove_particle_species'])
             elif i == 'participants':
                 if filters_dict['participants']:
                     event = participants(event)
@@ -412,19 +422,26 @@ class Oscar:
                 if filters_dict['spectators']:
                     event = spectators(event)
             elif i == 'lower_event_energy_cut':
-                event = lower_event_energy_cut(event, filters_dict['lower_event_energy_cut'])
+                event = lower_event_energy_cut(
+                    event, filters_dict['lower_event_energy_cut'])
             elif i == 'spacetime_cut':
-                event = spacetime_cut(event, filters_dict['spacetime_cut'][0],filters_dict['spacetime_cut'][1])
+                event = spacetime_cut(
+                    event,
+                    filters_dict['spacetime_cut'][0],
+                    filters_dict['spacetime_cut'][1])
             elif i == 'pt_cut':
                 event = pt_cut(event, filters_dict['pt_cut'])
             elif i == 'rapidity_cut':
                 event = rapidity_cut(event, filters_dict['rapidity_cut'])
             elif i == 'pseudorapidity_cut':
-                event = pseudorapidity_cut(event, filters_dict['pseudorapidity_cut'])
+                event = pseudorapidity_cut(
+                    event, filters_dict['pseudorapidity_cut'])
             elif i == 'spatial_rapidity_cut':
-                event = spatial_rapidity_cut(event, filters_dict['spatial_rapidity_cut'])
+                event = spatial_rapidity_cut(
+                    event, filters_dict['spatial_rapidity_cut'])
             elif i == 'multiplicity_cut':
-                event = multiplicity_cut(event, filters_dict['multiplicity_cut'])
+                event = multiplicity_cut(
+                    event, filters_dict['multiplicity_cut'])
             else:
                 raise ValueError('The cut is unknown!')
 
@@ -441,33 +458,38 @@ class Oscar:
             for i in range(0, num_read_lines):
                 line = oscar_file.readline()
                 if not line:
-                    raise IndexError('Index out of range of OSCAR file. This most likely happened because ' +
-                                     'the particle number specified by the comments in the OSCAR ' +
-                                     'file differs from the actual number of particles in the event.')
+                    raise IndexError(
+                        'Index out of range of OSCAR file. This most likely happened because ' +
+                        'the particle number specified by the comments in the OSCAR ' +
+                        'file differs from the actual number of particles in the event.')
                 elif i == 0 and '#' not in line and 'out' not in line:
-                    raise ValueError('First line of the event is not a comment ' +
-                                     'line or does not contain "out"')
+                    raise ValueError(
+                        'First line of the event is not a comment ' +
+                        'line or does not contain "out"')
                 elif 'event' in line and ('out' in line or 'in ' in line):
                     continue
                 elif '#' in line and 'end' in line:
                     if 'filters' in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters([data],kwargs['filters'])[0]
-                        self.num_output_per_event_[len(particle_list)]=(len(particle_list),len(data))
+                        data = self.__apply_kwargs_filters(
+                            [data], kwargs['filters'])[0]
+                        self.num_output_per_event_[len(particle_list)] = (
+                            len(particle_list), len(data))
                     particle_list.append(data)
                     data = []
                 elif '#' in line:
-                    raise ValueError('Comment line unexpectedly found: '+line)
+                    raise ValueError('Comment line unexpectedly found: ' + line)
                 else:
-                    line = line.replace('\n','').split(' ')
+                    line = line.replace('\n', '').split(' ')
                     particle = Particle(self.oscar_format_, line)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
-                raise IndexError('Number of events in OSCAR file does not match the '+
-                                 'number of events specified by the comments in the '+
-                                    'OSCAR file!')
+                raise IndexError(
+                    'Number of events in OSCAR file does not match the ' +
+                    'number of events specified by the comments in the ' +
+                    'OSCAR file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
             self.num_output_per_event_ = [update]
@@ -475,9 +497,9 @@ class Oscar:
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
             event_end = kwargs['events'][1]
-            update = self.num_output_per_event_[event_start : event_end+1]
+            update = self.num_output_per_event_[event_start: event_end + 1]
             self.num_output_per_event_ = update
-            self.num_events_ = int(event_end - event_start+1)
+            self.num_events_ = int(event_end - event_start + 1)
 
         if not kwargs or 'events' not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
@@ -485,7 +507,6 @@ class Oscar:
             self.particle_list_ = particle_list
         else:
             self.particle_list_ = particle_list
-            
 
     def set_oscar_format(self):
         with open(self.PATH_OSCAR_, 'r') as file:
@@ -494,21 +515,22 @@ class Oscar:
 
         if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
             self.oscar_format_ = 'Oscar2013'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='SMASH_IC':
+        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1] == 'SMASH_IC':
             self.oscar_format_ = 'Oscar2013Extended_IC'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='Photons':
+        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1] == 'Photons':
             self.oscar_format_ = 'Oscar2013Extended_Photons'
         elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
             self.oscar_format_ = 'Oscar2013Extended'
         else:
-            raise TypeError('Input file must follow the Oscar2013, '+
-                            'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
-
+            raise TypeError(
+                'Input file must follow the Oscar2013, ' +
+                'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
 
     def set_num_output_per_event_and_event_footers(self):
         with open(self.PATH_OSCAR_, 'r') as oscar_file:
             event_output = []
-            if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
+            if (self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ !=
+                    'Oscar2013Extended_Photons'):
                 while True:
                     line = oscar_file.readline()
                     if not line:
@@ -516,53 +538,52 @@ class Oscar:
                     elif '#' in line and 'end ' in line:
                         self.event_end_lines_.append(line)
                     elif '#' in line and 'out' in line:
-                        line_str = line.replace('\n','').split(' ')
+                        line_str = line.replace('\n', '').split(' ')
                         event = line_str[2]
                         num_output = line_str[4]
                         event_output.append([event, num_output])
                     else:
                         continue
             elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
-                line_counter=0
-                event=0
+                line_counter = 0
+                event = 0
                 while True:
-                    line_counter+=1
+                    line_counter += 1
                     line = oscar_file.readline()
                     if not line:
                         break
                     elif '#' in line and 'end' in line:
                         self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter-2])
+                        event_output.append([event, line_counter - 2])
                     elif '#' in line and 'in' in line:
-                        line_str = line.replace('\n','').split(' ')
+                        line_str = line.replace('\n', '').split(' ')
                         event = line_str[2]
-                        line_counter=0
+                        line_counter = 0
                     else:
                         continue
-    
+
             elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
-                line_counter=0
-                event=0
-                line_memory=0
+                line_counter = 0
+                event = 0
+                line_memory = 0
                 while True:
-                    line_counter+=1
-                    line_memory+=1
+                    line_counter += 1
+                    line_memory += 1
                     line = oscar_file.readline()
                     if not line:
                         break
                     elif '#' in line and 'end' in line:
-                        if(line_memory==1):
+                        if (line_memory == 1):
                             continue
                         self.event_end_lines_.append(line)
-                        line_str = line.replace('\n','').split(' ')
+                        line_str = line.replace('\n', '').split(' ')
                         event = line_str[2]
-                        event_output.append([event, line_counter-1])
+                        event_output.append([event, line_counter - 1])
                     elif '#' in line and 'out' in line:
-                        line_counter=0
+                        line_counter = 0
                     else:
                         continue
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
-
 
     def set_num_events(self):
         # Read the file in binary mode to search for last line. In this way one
@@ -575,8 +596,8 @@ class Oscar:
         if last_line[0] == '#' and 'event' in last_line:
             self.num_events_ = int(last_line[2]) + 1
         else:
-            raise TypeError('Input file does not end with a comment line '+
-                            'including the events. File might be incomplete '+
+            raise TypeError('Input file does not end with a comment line ' +
+                            'including the events. File might be incomplete ' +
                             'or corrupted.')
 
     def particle_list(self):
@@ -594,11 +615,11 @@ class Oscar:
 
         """
         num_events = self.num_events_
-        
+
         if num_events == 1:
             num_particles = self.num_output_per_event_[0][1]
         else:
-            num_particles = self.num_output_per_event_[:,1]
+            num_particles = self.num_output_per_event_[:, 1]
 
         particle_array = []
 
@@ -616,7 +637,6 @@ class Oscar:
 
         return particle_array
 
-
     def particle_objects_list(self):
         """
         Returns a nested python list containing all particles from
@@ -633,7 +653,6 @@ class Oscar:
         """
         return self.particle_list_
 
-
     def oscar_format(self):
         """
         Get the Oscar format of the input file.
@@ -646,7 +665,6 @@ class Oscar:
 
         """
         return self.oscar_format_
-
 
     def num_output_per_event(self):
         """
@@ -666,7 +684,6 @@ class Oscar:
         """
         return self.num_output_per_event_
 
-
     def num_events(self):
         """
         Returns the number of events in particle_list
@@ -681,7 +698,6 @@ class Oscar:
         """
         return self.num_events_
 
-
     def charged_particles(self):
         """
         Keep only charged particles in particle_list
@@ -693,16 +709,15 @@ class Oscar:
         """
 
         self.particle_list_ = charged_particles(self.particle_list_)
-        
+
         # for i in range(0, self.num_events_):
         #     self.particle_list_[i] = [elem for elem in self.particle_list_[i]
-        #                                 if (elem.charge != 0 and elem.charge != np.nan)]
+        # if (elem.charge != 0 and elem.charge != np.nan)]
 
         # new_length = len(self.particle_list_[i])
         # self.num_output_per_event_[i, 1] = new_length
         self.__update_num_output_per_event_after_filter()
         return self
-
 
     def uncharged_particles(self):
         """
@@ -725,7 +740,6 @@ class Oscar:
 
         return self
 
-
     def strange_particles(self):
         """
         Keep only strange particles in particle_list
@@ -740,7 +754,6 @@ class Oscar:
         self.__update_num_output_per_event_after_filter()
 
         return self
-
 
     def particle_species(self, pdg_list):
         """
@@ -764,9 +777,8 @@ class Oscar:
 
         self.particle_list_ = particle_species(self.particle_list_, pdg_list)
         self.__update_num_output_per_event_after_filter()
-        
-        return self
 
+        return self
 
     def remove_particle_species(self, pdg_list):
         """
@@ -789,11 +801,11 @@ class Oscar:
 
         """
 
-        self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
+        self.particle_list_ = remove_particle_species(
+            self.particle_list_, pdg_list)
         self.__update_num_output_per_event_after_filter()
-        
-        return self
 
+        return self
 
     def participants(self):
         """
@@ -810,7 +822,6 @@ class Oscar:
 
         return self
 
-
     def spectators(self):
         """
         Keep only spectators in particle_list
@@ -826,7 +837,7 @@ class Oscar:
 
         return self
 
-    def lower_event_energy_cut(self,minimum_event_energy):
+    def lower_event_energy_cut(self, minimum_event_energy):
         """
         Filters out events with total energy lower than a threshold.
 
@@ -849,7 +860,8 @@ class Oscar:
             If the minimum_event_energy parameter is less than or equal to 0.
         """
 
-        self.particle_list_ = lower_event_energy_cut(self.particle_list_, minimum_event_energy)
+        self.particle_list_ = lower_event_energy_cut(
+            self.particle_list_, minimum_event_energy)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -867,7 +879,7 @@ class Oscar:
             Options: 't','x','y','z'
         cut_value_tuple : tuple
             Tuple with the upper and lower limits of the coordinate space
-            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
+            acceptance range :code:`(cut_min, cut_max)`. If one of the limits
             is not required, set it to :code:`None`, i.e.
             :code:`(None, cut_max)` or :code:`(cut_min, None)`.
 
@@ -877,14 +889,15 @@ class Oscar:
             Containing only particles complying with the spacetime cut for all events
         """
 
-        self.particle_list_ = spacetime_cut(self.particle_list_, dim, cut_value_tuple)
+        self.particle_list_ = spacetime_cut(
+            self.particle_list_, dim, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
 
         return self
 
     def pt_cut(self, cut_value_tuple):
         """
-        Apply transverse momentum cut to all events by passing an acceptance 
+        Apply transverse momentum cut to all events by passing an acceptance
         range by ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
@@ -899,7 +912,7 @@ class Oscar:
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the transverse momentum 
+            Containing only particles complying with the transverse momentum
             cut for all events
         """
 
@@ -907,7 +920,6 @@ class Oscar:
         self.__update_num_output_per_event_after_filter()
 
         return self
-
 
     def rapidity_cut(self, cut_value):
         """
@@ -932,12 +944,11 @@ class Oscar:
             Containing only particles complying with the rapidity cut
             for all events
         """
-    
+
         self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
         self.__update_num_output_per_event_after_filter()
 
         return self
-
 
     def pseudorapidity_cut(self, cut_value):
         """
@@ -968,7 +979,6 @@ class Oscar:
 
         return self
 
-
     def spatial_rapidity_cut(self, cut_value):
         """
         Apply spatial rapidity (space-time rapidity) cut to all events and
@@ -993,7 +1003,8 @@ class Oscar:
             for all events
         """
 
-        self.particle_list_ = spatial_rapidity_cut(self.particle_list_, cut_value)
+        self.particle_list_ = spatial_rapidity_cut(
+            self.particle_list_, cut_value)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -1014,8 +1025,9 @@ class Oscar:
         self : Oscar object
             Containing only events with a multiplicity >= min_multiplicity
         """
-    
-        self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
+
+        self.particle_list_ = multiplicity_cut(
+            self.particle_list_, min_multiplicity)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -1036,12 +1048,12 @@ class Oscar:
         format_oscar2013 = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
         format_oscar2013_extended = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d'
 
-        with open(self.PATH_OSCAR_,'r') as oscar_file:
+        with open(self.PATH_OSCAR_, 'r') as oscar_file:
             counter_line = 0
             while True:
                 line = oscar_file.readline()
-                line_splitted = line.replace('\n','').split(' ')
-    
+                line_splitted = line.replace('\n', '').split(' ')
+
                 if counter_line < 3:
                     header.append(line)
                 elif line_splitted[0] == '#' and line_splitted[3] == 'end':
@@ -1053,42 +1065,74 @@ class Oscar:
                     raise RuntimeError(err_msg)
                 counter_line += 1
 
-        event_footer = event_footer.replace('\n','').split(' ')
+        event_footer = event_footer.replace('\n', '').split(' ')
         with open(output_file, "w") as f_out:
             for i in range(3):
                 f_out.write(header[i])
 
         with open(output_file, "a") as f_out:
-            if(self.num_events_>1):
+            if (self.num_events_ > 1):
                 for i in range(self.num_events_):
-                    event = self.num_output_per_event_[i,0]
-                    num_out = self.num_output_per_event_[i,1]
+                    event = self.num_output_per_event_[i, 0]
+                    num_out = self.num_output_per_event_[i, 1]
                     particle_output = np.asarray(self.particle_list()[i])
-                    f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                    f_out.write(
+                        '# event ' +
+                        str(event) +
+                        ' out ' +
+                        str(num_out) +
+                        '\n')
                     if len(particle_output) == 0:
                         f_out.write(self.event_end_lines_[event])
                         continue
-                    elif (i == 0 and len(particle_output[0])>20 and self.oscar_format_ == 'Oscar2013Extended'):
-                        format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
+                    elif (i == 0 and len(particle_output[0]) > 20 and self.oscar_format_ == 'Oscar2013Extended'):
+                        format_oscar2013_extended = format_oscar2013_extended + \
+                            (len(particle_output[0]) - 20) * ' %d'
                     if self.oscar_format_ == 'Oscar2013':
-                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
+                        np.savetxt(
+                            f_out,
+                            particle_output,
+                            delimiter=' ',
+                            newline='\n',
+                            fmt=format_oscar2013)
                     elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
-                        np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
+                        np.savetxt(
+                            f_out,
+                            particle_output,
+                            delimiter=' ',
+                            newline='\n',
+                            fmt=format_oscar2013_extended)
                     f_out.write(self.event_end_lines_[event])
             else:
                 event = 0
                 num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(self.particle_list())
-                f_out.write('# event '+ str(event)+' out '+ str(num_out)+'\n')
+                f_out.write(
+                    '# event ' +
+                    str(event) +
+                    ' out ' +
+                    str(num_out) +
+                    '\n')
                 if len(particle_output) == 0:
                     f_out.write(self.event_end_lines_[event])
                     f_out.close()
                     return
-                elif (len(particle_output[0])>20 and self.oscar_format_ == 'Oscar2013Extended'):
-                        format_oscar2013_extended = format_oscar2013_extended + (len(particle_output[0])-20)*' %d'
+                elif (len(particle_output[0]) > 20 and self.oscar_format_ == 'Oscar2013Extended'):
+                    format_oscar2013_extended = format_oscar2013_extended + \
+                        (len(particle_output[0]) - 20) * ' %d'
                 if self.oscar_format_ == 'Oscar2013':
-                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013)
+                    np.savetxt(
+                        f_out,
+                        particle_output,
+                        delimiter=' ',
+                        newline='\n',
+                        fmt=format_oscar2013)
                 elif self.oscar_format_ == 'Oscar2013Extended' or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
-                    np.savetxt(f_out, particle_output, delimiter=' ', newline='\n', fmt=format_oscar2013_extended)
+                    np.savetxt(
+                        f_out,
+                        particle_output,
+                        delimiter=' ',
+                        newline='\n',
+                        fmt=format_oscar2013_extended)
                 f_out.write(self.event_end_lines_[event])
         f_out.close()

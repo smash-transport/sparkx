@@ -15,6 +15,7 @@ setuptools>=68.0.0
 
 # Development and testing dependencies
 pytest>=7.4.3
+autopep8>=2.3.1
 
 # Editable Sparkx install
 -e .

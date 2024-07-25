@@ -1,14 +1,15 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2023-2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
-    
+# ===================================================
+
 import particle.data
 import csv
+
 
 def pdg_to_latex(pdg_id):
     """
@@ -41,14 +42,14 @@ def pdg_to_latex(pdg_id):
         >>> latex_names = pdg_to_latex(pdg_ids)
         >>> print(latex_names)
 
-        ['n', '\overline{\Sigma}^{+}', '\Xi_{c}^{+}']
+        ['n', '\\overline{\\Sigma}^{+}', '\\Xi_{c}^{+}']
     """
 
     if isinstance(pdg_id, int):
         pdg_id = [pdg_id]
 
     path = particle.data.basepath / "particle2022.csv"
-    latex_names = [0]*len(pdg_id)
+    latex_names = [0] * len(pdg_id)
 
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
