@@ -147,7 +147,7 @@ class Particle:
         Compute proper time
     mass_from_energy_momentum:
         Compute mass from energy momentum relation
-    compute_charge_from_pdg:
+    charge_from_pdg:
         Compute charge from PDG code
     mT:
         Compute transverse mass
@@ -400,13 +400,13 @@ class Particle:
                         self.data_[index[0]] = int(particle_array[index[1]])
 
                 # It is important for JETSCAPE particles to compute pdg_valid
-                # here because the compute_charge_from_pdg function depends on
+                # here because the charge_from_pdg function depends on
                 # it.
                 self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
                     self.mass = self.mass_from_energy_momentum()
-                    self.charge = self.compute_charge_from_pdg()
+                    self.charge = self.charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
                         warnings.warn('The PDG code ' + str(int(self.pdg)) + \
                                       ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
@@ -1060,7 +1060,7 @@ class Particle:
                               'The mass is set to nan.')
                 return np.nan
 
-    def compute_charge_from_pdg(self):
+    def charge_from_pdg(self):
         """
         Compute the charge from the PDG code.
 

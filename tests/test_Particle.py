@@ -781,23 +781,23 @@ def test_mT_valid_values():
 
         assert np.isclose(result, expected_result)
 
-def test_compute_charge_from_pdg_valid_values():
+def test_charge_from_pdg_valid_values():
     p = Particle()
     p.pdg = 211  # Assuming PDG code for a positive pion
 
-    result = p.compute_charge_from_pdg()
+    result = p.charge_from_pdg()
 
     expected_result = PDGID(211).charge
 
     assert result == expected_result
 
 
-def test_compute_charge_from_pdg_invalid_values():
+def test_charge_from_pdg_invalid_values():
     p = Particle()
     p.pdg_valid = False
     # Leave pdg as an invalid value
 
-    result = p.compute_charge_from_pdg()
+    result = p.charge_from_pdg()
 
     assert np.isnan(result)
 
