@@ -434,34 +434,34 @@ def test_angular_momentum_zero_position():
     assert np.array_equal(result, [0.0, 0.0, 0.0])
 
 
-def test_momentum_rapidity_Y_valid_values():
+def test_rapidity_valid_values():
     p = Particle()
     p.E = 10.0
     p.pz = 5.0
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
 
     expected_result = 0.5 * np.log((10.0 + 5.0) / (10.0 - 5.0))
 
     assert np.isclose(result, expected_result)
 
 
-def test_momentum_rapidity_Y_zero_denominator():
+def test_rapidity_zero_denominator():
     p = Particle()
     p.E = 5.0
     p.pz = 5.0  # E == pz, should add a small positive value
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
     expected_result = 0.5 * np.log((5.0 + 5.0) / (1e-10))
 
     assert np.isclose(result, expected_result)
 
 
-def test_momentum_rapidity_Y_missing_values():
+def test_rapidity_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
 
     assert np.isnan(result)
 

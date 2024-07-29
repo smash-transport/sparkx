@@ -572,8 +572,8 @@ def rapidity_cut(particle_list, cut_value):
         for i in range(0, len(particle_list)):
             particle_list_tmp = [
                 elem for elem in particle_list[i] if (
-                    lim_min <= elem.momentum_rapidity_Y() <= lim_max and not np.isnan(
-                        elem.momentum_rapidity_Y()))]
+                    lim_min <= elem.rapidity() <= lim_max and not np.isnan(
+                        elem.rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
     elif isinstance(cut_value, (int, float)):
@@ -583,8 +583,8 @@ def rapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (-limit <= elem.momentum_rapidity_Y() <= limit
-                                  and not np.isnan(elem.momentum_rapidity_Y()))]
+                                 (-limit <= elem.rapidity() <= limit
+                                  and not np.isnan(elem.rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
     else:

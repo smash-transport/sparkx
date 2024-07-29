@@ -129,7 +129,7 @@ class Particle:
         Print the particle as CSV to terminal
     angular_momentum:
         Compute angular momentum
-    momentum_rapidity_Y:
+    rapidity:
         Compute momentum rapidity
     p_abs:
         Compute absolute momentum
@@ -854,7 +854,7 @@ class Particle:
             p = [self.px, self.py, self.pz]
             return np.cross(r, p)
 
-    def momentum_rapidity_Y(self):
+    def rapidity(self):
         """
         Compute the momentum rapidity :math:`Y=\\frac{1}{2}\\ln\\left(\\frac{E+p_z}{E-p_z}\\right)` of the particle.
 

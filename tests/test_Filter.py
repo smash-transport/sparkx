@@ -367,7 +367,7 @@ def test_mT_cut(particle_list_mT):
 
 
 @pytest.fixture
-def particle_list_momentum_rapidity():
+def particle_list_rapidity():
     particle_list = []
     for i in range(5):
         p = Particle()
@@ -377,11 +377,11 @@ def particle_list_momentum_rapidity():
     return [particle_list]
 
 
-def test_rapidity_cut(particle_list_momentum_rapidity):
+def test_rapidity_cut(particle_list_rapidity):
     test_cases = [
         # Test cases for valid input
-        (0.05, None, None, [[particle_list_momentum_rapidity[0][0]]]),
-        ((-0.05, 0.05), None, None, [[particle_list_momentum_rapidity[0][0]]]),
+        (0.05, None, None, [[particle_list_rapidity[0][0]]]),
+        ((-0.05, 0.05), None, None, [[particle_list_rapidity[0][0]]]),
         # Test cases for invalid input
         ((0.1, 1.0, 2.0), None, TypeError, None),
         (True, None, TypeError, None),
@@ -393,13 +393,13 @@ def test_rapidity_cut(particle_list_momentum_rapidity):
         if expected_warning:
             with pytest.warns(expected_warning):
                 result = rapidity_cut(
-                    particle_list_momentum_rapidity, cut_value)
+                    particle_list_rapidity, cut_value)
         elif expected_error:
             with pytest.raises(expected_error):
                 result = rapidity_cut(
-                    particle_list_momentum_rapidity, cut_value)
+                    particle_list_rapidity, cut_value)
         else:
-            result = rapidity_cut(particle_list_momentum_rapidity, cut_value)
+            result = rapidity_cut(particle_list_rapidity, cut_value)
             assert result == expected_result
 
 

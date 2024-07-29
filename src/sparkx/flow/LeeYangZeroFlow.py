@@ -622,7 +622,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
                     elif flow_as_function_of == "rapidity":
-                        val = particle.momentum_rapidity_Y()
+                        val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin + 1]:

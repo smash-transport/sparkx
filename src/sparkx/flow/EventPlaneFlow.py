@@ -149,7 +149,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
                 elif self.weight_ == "ptn":
                     weight = particle.pt_abs()**self.n_
                 elif self.weight_ == "rapidity":
-                    weight = particle.momentum_rapidity_Y()
+                    weight = particle.rapidity()
                 elif self.weight_ == "pseudorapidity":
                     weight = particle.pseudorapidity()
                 particle_weights.append(weight)
@@ -475,7 +475,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
                     elif flow_as_function_of == "rapidity":
-                        val = particle.momentum_rapidity_Y()
+                        val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin + 1]:

@@ -8,7 +8,7 @@ Particle
 
 .. automethod:: Particle.print_particle
 .. automethod:: Particle.angular_momentum
-.. automethod:: Particle.momentum_rapidity_Y
+.. automethod:: Particle.rapidity
 .. automethod:: Particle.p_abs
 .. automethod:: Particle.pt_abs
 .. automethod:: Particle.phi
