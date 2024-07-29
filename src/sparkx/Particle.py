@@ -145,7 +145,7 @@ class Particle:
         Compute space-time rapidity
     proper_time:
         Compute proper time
-    compute_mass_from_energy_momentum:
+    mass_from_energy_momentum:
         Compute mass from energy momentum relation
     compute_charge_from_pdg:
         Compute charge from PDG code
@@ -405,7 +405,7 @@ class Particle:
                 self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
-                    self.mass = self.compute_mass_from_energy_momentum()
+                    self.mass = self.mass_from_energy_momentum()
                     self.charge = self.compute_charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
                         warnings.warn('The PDG code ' + str(int(self.pdg)) + \
@@ -1030,7 +1030,7 @@ class Particle:
             else:
                 raise ValueError("|z| < t not fulfilled")
 
-    def compute_mass_from_energy_momentum(self):
+    def mass_from_energy_momentum(self):
         """
         Compute the mass from the energy momentum relation.
 

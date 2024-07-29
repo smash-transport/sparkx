@@ -699,14 +699,14 @@ def test_proper_time_invalid_values():
         p.proper_time()
 
 
-def test_compute_mass_from_energy_momentum_valid_values():
+def test_mass_from_energy_momentum_valid_values():
     p = Particle()
     p.E = 3.0
     p.px = 1.0
     p.py = 2.0
     p.pz = 2.0
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     expected_result = np.sqrt(3.0**2 - (1.0**2 + 2.0**2 + 2.0**2))
 
@@ -723,23 +723,23 @@ def test_compute_mass_from_energy_momentum_invalid_values():
         assert np.isnan(p.compute_mass_from_energy_momentum())
 
 
-def test_compute_mass_from_energy_momentum_missing_values():
+def test_mass_from_energy_momentum_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     assert np.isnan(result)
 
 
-def test_compute_mass_from_energy_momentum_zero_energy():
+def test_mass_from_energy_momentum_zero_energy():
     p = Particle()
     p.E = 0.0
     p.px = 0.0
     p.py = 0.0
     p.pz = 0.0
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     assert np.isclose(result, 0.0)
 
