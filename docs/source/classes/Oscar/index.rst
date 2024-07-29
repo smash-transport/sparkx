@@ -22,6 +22,6 @@ Oscar
 .. automethod:: Oscar.pt_cut
 .. automethod:: Oscar.rapidity_cut
 .. automethod:: Oscar.pseudorapidity_cut
-.. automethod:: Oscar.spatial_rapidity_cut
+.. automethod:: Oscar.spacetime_rapidity_cut
 .. automethod:: Oscar.multiplicity_cut
 .. automethod:: Oscar.print_particle_lists_to_file

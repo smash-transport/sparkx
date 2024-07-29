@@ -442,7 +442,7 @@ def test_pseudorapidity_cut(particle_list_pseudorapidity):
 
 
 @pytest.fixture
-def particle_list_spatial_rapidity():
+def particle_list_spacetime_rapidity():
     particle_list = []
     for i in range(5):
         p = Particle()
@@ -452,11 +452,11 @@ def particle_list_spatial_rapidity():
     return [particle_list]
 
 
-def test_rapidity_cut(particle_list_spatial_rapidity):
+def test_rapidity_cut(particle_list_spacetime_rapidity):
     test_cases = [
         # Test cases for valid input
-        (0.5, None, None, [[particle_list_spatial_rapidity[0][0]]]),
-        ((-0.5, 0.5), None, None, [[particle_list_spatial_rapidity[0][0]]]),
+        (0.5, None, None, [[particle_list_spacetime_rapidity[0][0]]]),
+        ((-0.5, 0.5), None, None, [[particle_list_spacetime_rapidity[0][0]]]),
         # Test cases for invalid input
         ((0.1, 1.0, 2.0), None, TypeError, None),
         (True, None, TypeError, None),
@@ -467,15 +467,15 @@ def test_rapidity_cut(particle_list_spatial_rapidity):
     for cut_value, expected_warning, expected_error, expected_result in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = spatial_rapidity_cut(
-                    particle_list_spatial_rapidity, cut_value)
+                result = spacetime_rapidity_cut(
+                    particle_list_spacetime_rapidity, cut_value)
         elif expected_error:
             with pytest.raises(expected_error):
-                result = spatial_rapidity_cut(
-                    particle_list_spatial_rapidity, cut_value)
+                result = spacetime_rapidity_cut(
+                    particle_list_spacetime_rapidity, cut_value)
         else:
-            result = spatial_rapidity_cut(
-                particle_list_spatial_rapidity, cut_value)
+            result = spacetime_rapidity_cut(
+                particle_list_spacetime_rapidity, cut_value)
             assert result == expected_result
 
 

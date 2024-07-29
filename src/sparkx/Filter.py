@@ -651,10 +651,10 @@ def pseudorapidity_cut(particle_list, cut_value):
     return updated_particle_list
 
 
-def spatial_rapidity_cut(particle_list, cut_value):
+def spacetime_rapidity_cut(particle_list, cut_value):
     """
-    Apply spatial rapidity (space-time rapidity) cut to all events and
-    remove all particles with spatial rapidity not complying with cut_value.
+    Apply space-time rapidity cut to all events and remove all particles with
+    space-time rapidity not complying with cut_value.
 
     Parameters
     ----------
@@ -668,7 +668,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         in [-1.0, 1.0] are kept.
 
     cut_value : tuple
-        To specify an asymmetric acceptance range for the spatial rapidity
+        To specify an asymmetric acceptance range for the space-time rapidity
         of particles, pass a tuple (cut_min, cut_max)
 
     Returns
@@ -686,8 +686,8 @@ def spatial_rapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (lim_min <= elem.spatial_rapidity() <= lim_max
-                                  and not np.isnan(elem.spatial_rapidity()))]
+                                 (lim_min <= elem.spacetime_rapidity() <= lim_max
+                                  and not np.isnan(elem.spacetime_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
     elif isinstance(cut_value, (int, float)):
@@ -697,8 +697,8 @@ def spatial_rapidity_cut(particle_list, cut_value):
         updated_particle_list = []
         for i in range(0, len(particle_list)):
             particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (-limit <= elem.spatial_rapidity() <= limit
-                                  and not np.isnan(elem.spatial_rapidity()))]
+                                 (-limit <= elem.spacetime_rapidity() <= limit
+                                  and not np.isnan(elem.spacetime_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
     else:

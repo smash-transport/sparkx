@@ -123,8 +123,8 @@ class Oscar:
         Apply rapidity cut to all particles
     pseudorapidity_cut:
         Apply pseudorapidity cut to all particles
-    spatial_rapidity_cut:
-        Apply spatial rapidity (space-time rapidity) cut to all particles
+    spacetime_rapidity_cut:
+        Apply space-time rapidity cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
     print_particle_lists_to_file:
@@ -438,9 +438,9 @@ class Oscar:
             elif i == 'pseudorapidity_cut':
                 event = pseudorapidity_cut(
                     event, filters_dict['pseudorapidity_cut'])
-            elif i == 'spatial_rapidity_cut':
-                event = spatial_rapidity_cut(
-                    event, filters_dict['spatial_rapidity_cut'])
+            elif i == 'spacetime_rapidity_cut':
+                event = spacetime_rapidity_cut(
+                    event, filters_dict['spacetime_rapidity_cut'])
             elif i == 'multiplicity_cut':
                 event = multiplicity_cut(
                     event, filters_dict['multiplicity_cut'])
@@ -1007,10 +1007,10 @@ class Oscar:
 
         return self
 
-    def spatial_rapidity_cut(self, cut_value):
+    def spacetime_rapidity_cut(self, cut_value):
         """
-        Apply spatial rapidity (space-time rapidity) cut to all events and
-        remove all particles with spatial rapidity not complying with cut_value
+        Apply space-time rapidity cut to all events and remove all particles
+        with space-time rapidity not complying with cut_value
 
         Parameters
         ----------
@@ -1027,11 +1027,11 @@ class Oscar:
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the spatial rapidity cut
+            Containing only particles complying with the space-time rapidity cut
             for all events
         """
 
-        self.particle_list_ = spatial_rapidity_cut(
+        self.particle_list_ = spacetime_rapidity_cut(
             self.particle_list_, cut_value)
         self.__update_num_output_per_event_after_filter()
 

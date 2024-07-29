@@ -381,9 +381,9 @@ class Jetscape:
             elif i == 'pseudorapidity_cut':
                 event = pseudorapidity_cut(
                     event, filters_dict['pseudorapidity_cut'])
-            elif i == 'spatial_rapidity_cut':
-                event = spatial_rapidity_cut(
-                    event, filters_dict['spatial_rapidity_cut'])
+            elif i == 'spacetime_rapidity_cut':
+                event = spacetime_rapidity_cut(
+                    event, filters_dict['spacetime_rapidity_cut'])
             elif i == 'multiplicity_cut':
                 event = multiplicity_cut(
                     event, filters_dict['multiplicity_cut'])

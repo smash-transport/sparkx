@@ -141,8 +141,8 @@ class Particle:
         Compute polar angle
     pseudorapidity:
         Compute pseudorapidity
-    spatial_rapidity:
-        Compute spatial rapidity
+    spacetime_rapidity:
+        Compute space-time rapidity
     proper_time:
         Compute proper time
     compute_mass_from_energy_momentum:
@@ -986,14 +986,14 @@ class Particle:
 
             return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
 
-    def spatial_rapidity(self):
+    def spacetime_rapidity(self):
         """
-        Compute the spatial rapidity :math:`y=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
+        Compute the space-time rapidity :math:`\\eta_s=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
 
         Returns
         -------
         float
-            spatial rapidity
+            space-time rapidity
 
         Notes
         -----

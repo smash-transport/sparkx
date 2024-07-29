@@ -14,7 +14,7 @@ Particle
 .. automethod:: Particle.phi
 .. automethod:: Particle.theta
 .. automethod:: Particle.pseudorapidity
-.. automethod:: Particle.spatial_rapidity
+.. automethod:: Particle.spacetime_rapidity
 .. automethod:: Particle.proper_time
 .. automethod:: Particle.compute_mass_from_energy_momentum
 .. automethod:: Particle.compute_charge_from_pdg

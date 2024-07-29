@@ -639,34 +639,34 @@ def test_pseudorapidity_zero_momentum():
     assert np.isclose(result, expected_result)
 
 
-def test_spatial_rapidity_valid_values():
+def test_spacetime_rapidity_valid_values():
     p = Particle()
     p.t = 5.0
     p.z = 3.0
 
-    result = p.spatial_rapidity()
+    result = p.spacetime_rapidity()
 
     expected_result = 0.5 * np.log((5.0 + 3.0) / (5.0 - 3.0))
 
     assert np.isclose(result, expected_result)
 
 
-def test_spatial_rapidity_missing_values():
+def test_spacetime_rapidity_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.spatial_rapidity()
+    result = p.spacetime_rapidity()
 
     assert np.isnan(result)
 
 
-def test_spatial_rapidity_invalid_values():
+def test_spacetime_rapidity_invalid_values():
     p = Particle()
     p.t = 3.0
     p.z = 5.0
 
     with pytest.raises(ValueError, match=r"|z| < t not fulfilled"):
-        p.spatial_rapidity()
+        p.spacetime_rapidity()
 
 
 def test_proper_time_valid_values():
