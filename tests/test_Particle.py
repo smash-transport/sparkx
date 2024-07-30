@@ -741,10 +741,24 @@ def test_mT_missing_values():
 
     assert np.isnan(result)
 
-def test_mT_valid_values():
-    for i in range(10):
-        p = Particle()
+def test_mT_invalid_values():
+    p = Particle()
+    p.E = 11.2
+    p.pz = 11.3
 
+    with pytest.raises(ValueError, match=r"|E| >= |pz| not fulfilled"):
+        p.mT()
+
+def test_mT_valid_values():
+    p = Particle()
+
+    # Test for zero
+    p.E = 0.0
+    p.pz = 0.0
+    assert np.isclose(p.mT(), 0.0)
+
+    # Test for a few random values
+    for i in range(10):
         energy = np.random.uniform(5.0, 10.0)
         p_z = np.random.uniform(0.1, 5.0)
 
@@ -755,7 +769,6 @@ def test_mT_valid_values():
         expected_result = np.sqrt(energy**2 - p_z**2)
 
         assert np.isclose(result, expected_result)
-        del p
 
 def test_compute_charge_from_pdg_valid_values():
     p = Particle()

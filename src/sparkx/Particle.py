@@ -1094,8 +1094,10 @@ class Particle:
         """
         if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
-        else:
+        elif abs(self.E) >= abs(self.pz):
             return np.sqrt(self.E**2. - self.pz**2.)
+        else:
+            raise ValueError("|E| >= |pz| not fulfilled")
 
     def is_meson(self):
         """
