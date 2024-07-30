@@ -9,6 +9,7 @@
 
 from sparkx.Jetscape import Jetscape
 from sparkx.JetAnalysis import JetAnalysis
+import HelperFunctions as hf
 import pytest
 import os
 import csv
@@ -47,7 +48,10 @@ def test_jet_analysis(jet_analysis_instance, test_data, tmp_path):
             generated_jet_finding_content.append(row)
 
     # Compare the two contents
-    assert test_jet_finding_content == generated_jet_finding_content
+    list_from_file = hf.convert_nested_list_to_numerical(test_jet_finding_content)
+    generated_list = hf.convert_nested_list_to_numerical(generated_jet_finding_content)
+
+    assert hf.compare_nested_lists(list_from_file, generated_list)
 
 
 def test_read_jet_data(jet_analysis_instance, tmp_path):
