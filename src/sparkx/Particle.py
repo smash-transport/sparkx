@@ -149,6 +149,8 @@ class Particle:
         Compute mass from energy momentum relation
     compute_charge_from_pdg:
         Compute charge from PDG code
+    mT:
+        Compute transverse mass
     is_meson:
         Is the particle a meson?
     is_baryon:
@@ -1075,6 +1077,25 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).charge
+
+    def mT(self):
+        """
+        Compute the transverse mass :math:`m_{T}=\\sqrt{m^2-p_z^2}` of the particle.
+
+        Returns
+        -------
+        float
+            transverse mass
+
+        Notes
+        -----
+        If one of the needed particle quantities is not given, then `np.nan`
+        is returned.
+        """
+        if np.isnan(self.mass) or np.isnan(self.pz):
+            return np.nan
+        else:
+            return np.sqrt(self.mass**2. - self.pz**2.)
 
     def is_meson(self):
         """
