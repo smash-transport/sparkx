@@ -820,7 +820,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                 for particle in particle_data[event]:
                     val = 0.
                     if flow_as_function_of == "pt":
-                        val = particle.pt_abs()
+                        val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
                         val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":

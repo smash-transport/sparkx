@@ -467,8 +467,8 @@ def pt_cut(particle_list, cut_value_tuple):
     updated_particle_list = []
     for i in range(0, len(particle_list)):
         particle_list_tmp = [elem for elem in particle_list[i] if
-                             (lim_min <= elem.pt_abs() <= lim_max
-                              and not np.isnan(elem.pt_abs()))]
+                             (lim_min <= elem.pT_abs() <= lim_max
+                              and not np.isnan(elem.pT_abs()))]
         updated_particle_list.append(particle_list_tmp)
 
     return updated_particle_list

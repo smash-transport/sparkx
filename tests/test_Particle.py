@@ -499,33 +499,33 @@ def test_p_abs_zero_momentum():
     assert np.isclose(result, 0.0)
 
 
-def test_pt_abs_valid_values():
+def test_pT_abs_valid_values():
     p = Particle()
     p.px = 1.0
     p.py = 2.0
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     expected_result = np.sqrt(1.0**2 + 2.0**2)
 
     assert np.isclose(result, expected_result)
 
 
-def test_pt_abs_missing_values():
+def test_pT_abs_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     assert np.isnan(result)
 
 
-def test_pt_abs_zero_transverse_momentum():
+def test_pT_abs_zero_transverse_momentum():
     p = Particle()
     p.px = 0.0
     p.py = 0.0
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     assert np.isclose(result, 0.0)
 

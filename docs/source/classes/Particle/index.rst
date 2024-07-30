@@ -10,7 +10,7 @@ Particle
 .. automethod:: Particle.angular_momentum
 .. automethod:: Particle.rapidity
 .. automethod:: Particle.p_abs
-.. automethod:: Particle.pt_abs
+.. automethod:: Particle.pT_abs
 .. automethod:: Particle.phi
 .. automethod:: Particle.theta
 .. automethod:: Particle.pseudorapidity

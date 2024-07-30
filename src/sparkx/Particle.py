@@ -133,7 +133,7 @@ class Particle:
         Compute momentum rapidity
     p_abs:
         Compute absolute momentum
-    pt_abs:
+    pT_abs:
         Compute absolute value of transverse momentum
     phi:
         Compute azimuthal angle
@@ -898,7 +898,7 @@ class Particle:
         else:
             return np.sqrt(self.px**2. + self.py**2. + self.pz**2.)
 
-    def pt_abs(self):
+    def pT_abs(self):
         """
         Compute the absolute transverse momentum :math:`|\\vec{p}_{\\mathrm{T}}|=\\sqrt{p_x^2+p_y^2}` of the particle.
 

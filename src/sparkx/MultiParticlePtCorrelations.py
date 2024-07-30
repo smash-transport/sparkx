@@ -124,7 +124,7 @@ class MultiParticlePtCorrelations:
                 # if particle.weight is np.nan, then set it to 1
                 if np.isnan(particle.weight):
                     particle.weight = 1.0
-                Pk[k] += (particle.weight * particle.pt_abs())**(k + 1)
+                Pk[k] += (particle.weight * particle.pT_abs())**(k + 1)
                 Wk[k] += particle.weight**(k + 1)
         return (Pk, Wk)
 

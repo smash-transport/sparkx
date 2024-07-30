@@ -131,11 +131,11 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             for particle in particle_data[event]:
                 weight = 0.
                 if self.weight_ == "pt":
-                    weight = particle.pt_abs()
+                    weight = particle.pT_abs()
                 elif self.weight_ == "pt2":
-                    weight = particle.pt_abs()**2.
+                    weight = particle.pT_abs()**2.
                 elif self.weight_ == "ptn":
-                    weight = particle.pt_abs()**self.n_
+                    weight = particle.pT_abs()**self.n_
                 elif self.weight_ == "rapidity":
                     weight = particle.rapidity()
                 elif self.weight_ == "pseudorapidity":
@@ -375,7 +375,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
                 for particle in particle_data[event]:
                     val = 0.
                     if flow_as_function_of == "pt":
-                        val = particle.pt_abs()
+                        val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
                         val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":
