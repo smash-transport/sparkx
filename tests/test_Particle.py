@@ -733,6 +733,29 @@ def test_compute_mass_from_energy_momentum_zero_energy():
 
     assert np.isclose(result, 0.0)
 
+def test_mT_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.mT()
+
+    assert np.isnan(result)
+
+def test_mT_valid_values():
+    for i in range(10):
+        p = Particle()
+
+        energy = np.random.uniform(5.0, 10.0)
+        p_z = np.random.uniform(0.1, 5.0)
+
+        p.E = energy
+        p.pz = p_z
+
+        result = p.mT()
+        expected_result = np.sqrt(energy**2 - p_z**2)
+
+        assert np.isclose(result, expected_result)
+        del p
 
 def test_compute_charge_from_pdg_valid_values():
     p = Particle()

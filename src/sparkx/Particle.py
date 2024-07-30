@@ -1080,7 +1080,7 @@ class Particle:
 
     def mT(self):
         """
-        Compute the transverse mass :math:`m_{T}=\\sqrt{m^2-p_z^2}` of the particle.
+        Compute the transverse mass :math:`m_{T}=\\sqrt{E^2-p_z^2}` of the particle.
 
         Returns
         -------
@@ -1092,10 +1092,10 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if np.isnan(self.mass) or np.isnan(self.pz):
+        if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         else:
-            return np.sqrt(self.mass**2. - self.pz**2.)
+            return np.sqrt(self.E**2. - self.pz**2.)
 
     def is_meson(self):
         """
