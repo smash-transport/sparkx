@@ -54,19 +54,3 @@ def compare_nested_lists(list1, list2, tol=small_value):
                 if item1 != item2:
                     return False
     return True
-
-def compare_nested_lists(list1, list2, tol=small_value):
-    if len(list1) != len(list2):
-        return False
-
-    for sublist1, sublist2 in zip(list1, list2):
-        if len(sublist1) != len(sublist2):
-            return False
-        for item1, item2 in zip(sublist1, sublist2):
-            if isinstance(item1, (float, int)) and isinstance(item2, (float, int)):
-                if item1 != pytest.approx(item2, abs=tol):
-                    return False
-            else:
-                if item1 != item2:
-                    return False
-    return True
