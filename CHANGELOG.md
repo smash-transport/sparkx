@@ -28,6 +28,18 @@ Date:
 
 ### Changed
 * Filter: Perform general clean up to reduce code duplications
+* Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
+| Old Method Name                     | New Method Name             |
+|-------------------------------------|-----------------------------|
+| momentum_rapidity_Y()               | rapidity()                  |
+| spatial_rapidity()                  | spacetime_rapidity()        |
+| spatial_rapidity_cut()              | spacetime_rapidity_cut()    |
+| pt_abs()                            | pT_abs()                    |
+| compute_mass_from_energy_momentum() | mass_from_energy_momentum() |
+| compute_charge_from_pdg()           | charge_from_pdg()           |
+
+### Added
+* Tests: Add HelperFunctions.py that contains free utility functions used in the tests and add corresponding tests.
 
 ## v1.3.0-Newton
 Date: 2024-07-25
