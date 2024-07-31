@@ -8,6 +8,7 @@
 # ===================================================
 
 import math
+import pytest
 
 """
 This module contains helper functions and global variables that are used in 
@@ -29,17 +30,12 @@ def convert_str_to_number(item):
         else:
             return int(item)
     except ValueError:
-        return item
-
+        raise ValueError(f"{item} cannot be converted to a numerical type.")
 
 # Converts all string elements in a nested list to their respective
 # numerical types.
 def convert_nested_list_to_numerical(nested_list):
     return [[convert_str_to_number(item) for item in sublist] for sublist in nested_list]
-
-# Compares two floating-point numbers within a given tolerance.
-def compare_floats(a, b, tol=small_value):
-    return math.isclose(a, b, abs_tol=tol)
 
 # Compares two nested lists element-wise, with a tolerance for
 # floating-point comparisons assuming the lists contain numerical values.
@@ -52,7 +48,7 @@ def compare_nested_lists(list1, list2, tol=small_value):
             return False
         for item1, item2 in zip(sublist1, sublist2):
             if isinstance(item1, float) and isinstance(item2, float):
-                if not compare_floats(item1, item2, tol):
+                if item1 != pytest.approx(item2, abs=tol):
                     return False
             else:
                 if item1 != item2:
