@@ -135,3 +135,20 @@ class BulkObservables:
             return self.differential_yield("pseudorapidity")
         else:
             return self.differential_yield("pseudorapidity", bins)
+
+    def dNdmT(self, bins=None):
+        """
+        Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`
+
+        Args:
+        - bins: Optional tuple (start, stop, num) for histogram binning. If
+          not given, the default of differential_yield() will be used
+
+        Returns:
+        - 1D histogram containing the event averaged particle counts per
+          transverse mass bin.
+        """
+        if bins is None:
+            return self.differential_yield("mT")
+        else:
+            return self.differential_yield("mT", bins)
