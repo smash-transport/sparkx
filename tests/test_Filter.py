@@ -316,6 +316,59 @@ def test_pt_cut(particle_list_pt):
 
 
 @pytest.fixture
+def particle_list_mT():
+    particle_list = []
+    mT_E_pz_pairs = [
+        (3, 5, 4),
+        (4, 5, 3),
+        (5, 13, 12),
+        (6, 10, 8),
+        (7, 25, 24),
+    ]
+    for m_T, energy, p_z in mT_E_pz_pairs:
+        p = Particle()
+        p.E = energy
+        p.pz = p_z
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_mT_cut(particle_list_mT):
+    test_cases = [
+        # Test cases for valid input
+        ((2.5, 3.5), None, None, [[particle_list_mT[0][0]]]),
+        ((5.5, None), None, None, [[particle_list_mT[0][3], particle_list_mT[0][4]]]),
+        ((None, 6.5), None, None, [[particle_list_mT[0][0], particle_list_mT[0][1],
+                                    particle_list_mT[0][2], particle_list_mT[0][3]]]),
+
+        # Test cases for error conditions
+        ((None, None), None, ValueError, None),
+        ((-1, 6), None, ValueError, None),
+        (('a', 5), None, ValueError, None),
+        ((5.7, 3.3), UserWarning, None, [[particle_list_mT[0][1], particle_list_mT[0][2]]]),
+        ((None, None, None), None, TypeError, None),
+    ]
+
+    for cut_value_tuple, expected_warning, expected_error, expected_result in test_cases:
+        if expected_warning:
+            with pytest.warns(expected_warning):
+                result = mT_cut(particle_list_mT, cut_value_tuple)
+                print("result: ", result[0][0].mT())
+                print("expected_result: ", expected_result[0][0].mT())
+                assert result == expected_result
+
+        elif expected_error:
+            with pytest.raises(expected_error):
+                result = mT_cut(particle_list_mT, cut_value_tuple)
+
+        else:
+            # Apply the mT_cut
+            result = mT_cut(particle_list_mT, cut_value_tuple)
+            # Assert the result matches the expected outcome
+            assert result == expected_result
+
+
+@pytest.fixture
 def particle_list_momentum_rapidity():
     particle_list = []
     for i in range(5):

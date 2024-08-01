@@ -474,6 +474,68 @@ def pt_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
+def mT_cut(particle_list, cut_value_tuple):
+    """
+    Apply transverse mass cut to all events by passing an acceptance range by
+    ::code`cut_value_tuple`. All particles outside this range will
+    be removed.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    cut_value_tuple : tuple
+        Tuple with the upper and lower limits of the mT acceptance
+        range :code:`(cut_min, cut_max)`. If one of the limits is not
+        required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+        or :code:`(cut_min, None)`.
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    if not isinstance(cut_value_tuple, tuple):
+        raise TypeError('Input value must be a tuple containing either ' +
+                        'positive numbers or None of length two')
+
+    _ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+
+    # Check if the cut limits are positive if they are not None
+    if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
+       (cut_value_tuple[1] is not None and cut_value_tuple[1] < 0):
+        raise ValueError('The cut limits must be positive or None')
+
+    # Assign numerical values to the cut limits. Even though we check for
+    # non negative values, we send a left None value to -inf for numerical
+    # reasons. This is still consistent with the logic of the cut, as the
+    # lower cut applies to the absolute value of the pT, which is limited to
+    # positive values.
+    if cut_value_tuple[0] is None:
+        lower_cut = float('-inf')
+    else:
+        lower_cut = cut_value_tuple[0]
+
+    if cut_value_tuple[1] is None:
+        upper_cut = float('inf')
+    else:
+        upper_cut = cut_value_tuple[1]
+
+    # Ensure cut valuea are in the correct order
+    lim_max = max(upper_cut, lower_cut)
+    lim_min = min(upper_cut, lower_cut)
+
+    updated_particle_list = []
+    for i in range(0, len(particle_list)):
+        particle_list_tmp = [elem for elem in particle_list[i] if
+                             (lim_min <= elem.mT() <= lim_max
+                              and not np.isnan(elem.mT()))]
+        updated_particle_list.append(particle_list_tmp)
+
+    return updated_particle_list
+
+
 def rapidity_cut(particle_list, cut_value):
     """
     Apply rapidity cut to all events and remove all particles with rapidity
