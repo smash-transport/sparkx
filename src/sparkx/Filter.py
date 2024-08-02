@@ -12,7 +12,7 @@ from sparkx.Particle import Particle
 import warnings
 
 
-def _ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
+def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
     """
     Validates a tuple for specific conditions.
 
@@ -374,7 +374,7 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
         raise TypeError('Input value must be a tuple containing either ' +
                         'positive numbers or None of length two')
 
-    _ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     if dim not in ("x", "y", "z", "t"):
         raise ValueError('Only "t, x, y and z are possible dimensions.')
@@ -438,7 +438,7 @@ def pt_cut(particle_list, cut_value_tuple):
         raise TypeError('Input value must be a tuple containing either ' +
                         'positive numbers or None of length two')
 
-    _ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     # Check if the cut limits are positive if they are not None
     if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
@@ -500,7 +500,7 @@ def mT_cut(particle_list, cut_value_tuple):
         raise TypeError('Input value must be a tuple containing either ' +
                         'positive numbers or None of length two')
 
-    _ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     # Check if the cut limits are positive if they are not None
     if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
@@ -562,7 +562,7 @@ def rapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        _ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
         # Ensure cut valuea are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
@@ -620,7 +620,7 @@ def pseudorapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        _ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
         # Ensure cut valuea are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
@@ -677,7 +677,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        _ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
         # Ensure cut valuea are in the correct order
         lim_max = max(cut_value[0], cut_value[1])

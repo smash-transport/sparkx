@@ -431,6 +431,8 @@ class Oscar:
                     filters_dict['spacetime_cut'][1])
             elif i == 'pt_cut':
                 event = pt_cut(event, filters_dict['pt_cut'])
+            elif i == 'mT_cut':
+                event = mT_cut(event, filters_dict['mT_cut'])
             elif i == 'rapidity_cut':
                 event = rapidity_cut(event, filters_dict['rapidity_cut'])
             elif i == 'pseudorapidity_cut':
@@ -917,6 +919,32 @@ class Oscar:
         """
 
         self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
+        self.__update_num_output_per_event_after_filter()
+
+        return self
+
+    def mT_cut(self, cut_value_tuple):
+        """
+        Apply transverse mass cut to all events by passing an acceptance
+        range by ::code`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the mT acceptance
+            range :code:`(cut_min, cut_max)`. If one of the limits is not
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+            or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : Oscar object
+            Containing only particles complying with the transverse momentum
+            cut for all events
+        """
+
+        self.particle_list_ = mT_cut(self.particle_list_, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
 
         return self
