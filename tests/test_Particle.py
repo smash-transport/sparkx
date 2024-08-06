@@ -712,6 +712,16 @@ def test_compute_mass_from_energy_momentum_valid_values():
 
     assert np.isclose(result, expected_result)
 
+def test_compute_mass_from_energy_momentum_invalid_values():
+    p = Particle()
+    p.E = 3.0
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 5.0
+
+    with pytest.warns(UserWarning, match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan."):
+        assert np.isnan(p.compute_mass_from_energy_momentum())
+
 
 def test_compute_mass_from_energy_momentum_missing_values():
     p = Particle()
@@ -746,8 +756,9 @@ def test_mT_invalid_values():
     p.E = 11.2
     p.pz = 11.3
 
-    with pytest.raises(ValueError, match=r"|E| >= |pz| not fulfilled"):
-        p.mT()
+    with pytest.warns(UserWarning, match=r"|E| >= |pz| not fulfilled or not within numerical precision! The transverse mass is set to nan."):
+        assert np.isnan(p.mT())
+
 
 def test_mT_valid_values():
     p = Particle()

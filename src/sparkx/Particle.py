@@ -1053,10 +1053,10 @@ class Particle:
                 self.pz):
             return np.nan
         else:
-            if abs(self.E) >= abs(self.pz):
+            if abs(self.E) >= abs(self.p_abs()):
                 return np.sqrt(self.E**2. - self.p_abs()**2.)
             else:
-                warnings.warn('|E| >= |pz| not fulfilled or not within numerical precision! '
+                warnings.warn('|E| >= |p| not fulfilled or not within numerical precision! '
                               'The mass is set to nan.')
                 return np.nan
 
