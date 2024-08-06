@@ -1053,11 +1053,12 @@ class Particle:
                 self.pz):
             return np.nan
         else:
-            if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
-                    self.E**2. - self.p_abs()**2. > 0.:
+            if abs(self.E) >= abs(self.pz):
                 return np.sqrt(self.E**2. - self.p_abs()**2.)
             else:
-                return 0.
+                warnings.warn('|E| >= |pz| not fulfilled or not within numerical precision! '
+                              'The mass is set to nan.')
+                return np.nan
 
     def compute_charge_from_pdg(self):
         """
@@ -1097,7 +1098,9 @@ class Particle:
         elif abs(self.E) >= abs(self.pz):
             return np.sqrt(self.E**2. - self.pz**2.)
         else:
-            raise ValueError("|E| >= |pz| not fulfilled")
+            warnings.warn('|E| >= |pz| not fulfilled or not within numerical precision! '
+                          'The transverse mass is set to nan.')
+            return np.nan
 
     def is_meson(self):
         """

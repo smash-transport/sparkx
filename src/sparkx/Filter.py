@@ -389,7 +389,7 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     else:
         upper_cut = cut_value_tuple[1]
 
-    # Ensure cut valuea are in the correct order
+    # Ensure cut values are in the correct order
     lim_max = max(upper_cut, lower_cut)
     lim_min = min(upper_cut, lower_cut)
 
@@ -460,7 +460,7 @@ def pt_cut(particle_list, cut_value_tuple):
     else:
         upper_cut = cut_value_tuple[1]
 
-    # Ensure cut valuea are in the correct order
+    # Ensure cut values are in the correct order
     lim_max = max(upper_cut, lower_cut)
     lim_min = min(upper_cut, lower_cut)
 
@@ -522,7 +522,7 @@ def mT_cut(particle_list, cut_value_tuple):
     else:
         upper_cut = cut_value_tuple[1]
 
-    # Ensure cut valuea are in the correct order
+    # Ensure cut values are in the correct order
     lim_max = max(upper_cut, lower_cut)
     lim_min = min(upper_cut, lower_cut)
 
@@ -564,7 +564,7 @@ def rapidity_cut(particle_list, cut_value):
     if isinstance(cut_value, tuple):
         __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        # Ensure cut valuea are in the correct order
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 
@@ -622,7 +622,7 @@ def pseudorapidity_cut(particle_list, cut_value):
     if isinstance(cut_value, tuple):
         __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        # Ensure cut valuea are in the correct order
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 
@@ -679,7 +679,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
     if isinstance(cut_value, tuple):
         __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        # Ensure cut valuea are in the correct order
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 

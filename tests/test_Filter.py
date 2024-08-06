@@ -353,8 +353,6 @@ def test_mT_cut(particle_list_mT):
         if expected_warning:
             with pytest.warns(expected_warning):
                 result = mT_cut(particle_list_mT, cut_value_tuple)
-                print("result: ", result[0][0].mT())
-                print("expected_result: ", expected_result[0][0].mT())
                 assert result == expected_result
 
         elif expected_error:

@@ -940,7 +940,7 @@ class Oscar:
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the transverse momentum
+            Containing only particles complying with the transverse mass
             cut for all events
         """
 
