@@ -149,6 +149,8 @@ class Particle:
         Compute mass from energy momentum relation
     compute_charge_from_pdg:
         Compute charge from PDG code
+    mT:
+        Compute transverse mass
     is_meson:
         Is the particle a meson?
     is_baryon:
@@ -1051,11 +1053,12 @@ class Particle:
                 self.pz):
             return np.nan
         else:
-            if np.abs(self.E**2. - self.p_abs()**2.) > 1e-16 and\
-                    self.E**2. - self.p_abs()**2. > 0.:
+            if abs(self.E) >= abs(self.p_abs()):
                 return np.sqrt(self.E**2. - self.p_abs()**2.)
             else:
-                return 0.
+                warnings.warn('|E| >= |p| not fulfilled or not within numerical precision! '
+                              'The mass is set to nan.')
+                return np.nan
 
     def compute_charge_from_pdg(self):
         """
@@ -1075,6 +1078,29 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).charge
+
+    def mT(self):
+        """
+        Compute the transverse mass :math:`m_{T}=\\sqrt{E^2-p_z^2}` of the particle.
+
+        Returns
+        -------
+        float
+            transverse mass
+
+        Notes
+        -----
+        If one of the needed particle quantities is not given, then `np.nan`
+        is returned.
+        """
+        if np.isnan(self.E) or np.isnan(self.pz):
+            return np.nan
+        elif abs(self.E) >= abs(self.pz):
+            return np.sqrt(self.E**2. - self.pz**2.)
+        else:
+            warnings.warn('|E| >= |pz| not fulfilled or not within numerical precision! '
+                          'The transverse mass is set to nan.')
+            return np.nan
 
     def is_meson(self):
         """

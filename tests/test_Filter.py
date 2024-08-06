@@ -233,45 +233,40 @@ def particle_list_positions():
 def test_spacetime_cut(particle_list_positions):
     test_cases = [
         # Test cases for valid input
-        ('t', (0.5, 1.5), [[particle_list_positions[0][0]]]),
-        ('t', (1.5, 2.5), [[]]),
-        ('x',
-         (-0.5,
-          0.5),
+        ('t', (0.5, 1.5), None, None, [[particle_list_positions[0][0]]]),
+        ('t', (1.5, 2.5), None, None, [[]]),
+        ('x',(-0.5, 0.5), None, None,
             [[particle_list_positions[0][0],
               particle_list_positions[0][2],
               particle_list_positions[0][3]]]),
-        ('y', (0.5, None), [[particle_list_positions[0][2]]]),
-        ('z',
-         (None,
-          0.5),
+        ('y', (0.5, None), None, None, [[particle_list_positions[0][2]]]),
+        ('z', (None, 0.5), None, None,
             [[particle_list_positions[0][0],
               particle_list_positions[0][1],
               particle_list_positions[0][2]]]),
 
         # Test cases for error conditions
-        ('t', (None, None), ValueError),
-        ('t', (1.5, 0.5), ValueError),
-        ('t', (0.5,), TypeError),
-        ('t', ('a', 1.5), ValueError),
-        ('w', (0.5, 1.5), ValueError),
-        ('x', (1.5, 0.5), ValueError),
+        ('t', (None, None), None, ValueError, None),
+        ('t', (1.5, 0.5), UserWarning, None, [[particle_list_positions[0][0]]]),
+        ('t', (0.5,), None, TypeError, None),
+        ('t', ('a', 1.5), None, ValueError, None),
+        ('w', (0.5, 1.5), None, ValueError, None),
+        ('x', (1.5, 0.5), UserWarning, None, [[particle_list_positions[0][1]]]),
     ]
 
-    for dim, cut_value_tuple, expected_result in test_cases:
-        if isinstance(
-                expected_result,
-                type) and issubclass(
-                expected_result,
-                Exception):
-            # If expected_result is an Exception, we expect an error to be
-            # raised
-            with pytest.raises(expected_result):
-                spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+    for dim, cut_value_tuple, expected_warning, expected_error, expected_result in test_cases:
+        if expected_warning:
+            with pytest.warns(expected_warning):
+                result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+                assert result == expected_result
+
+        elif expected_error:
+            with pytest.raises(expected_error):
+                result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+
         else:
             # Apply the spacetime cut
-            result = spacetime_cut(
-                particle_list_positions, dim, cut_value_tuple)
+            result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
             # Assert the result matches the expected outcome
             assert result == expected_result
 
@@ -290,32 +285,83 @@ def particle_list_pt():
 def test_pt_cut(particle_list_pt):
     test_cases = [
         # Test cases for valid input
-        ((0.5, 1.5), [[particle_list_pt[0][1]]]),
-        ((2.5, None), [[particle_list_pt[0][3], particle_list_pt[0][4]]]),
-        ((None, 3.5), [[particle_list_pt[0][0], particle_list_pt[0]
+        ((0.5, 1.5), None, None, [[particle_list_pt[0][1]]]),
+        ((2.5, None), None, None, [[particle_list_pt[0][3], particle_list_pt[0][4]]]),
+        ((None, 3.5), None, None, [[particle_list_pt[0][0], particle_list_pt[0]
          [1], particle_list_pt[0][2], particle_list_pt[0][3]]]),
 
         # Test cases for error conditions
-        ((None, None), ValueError),
-        ((-1, 3), ValueError),
-        (('a', 3), ValueError),
-        ((3, 2), ValueError),
-        ((None, None, None), TypeError),
+        ((None, None), None, ValueError, None),
+        ((-1, 3), None, ValueError, None),
+        (('a', 3), None, ValueError, None),
+        ((3, 2), UserWarning, None, [[particle_list_pt[0][2], particle_list_pt[0][3]]]),
+        ((None, None, None), None, TypeError, None),
     ]
 
-    for cut_value_tuple, expected_result in test_cases:
-        if isinstance(
-                expected_result,
-                type) and issubclass(
-                expected_result,
-                Exception):
-            # If expected_result is an Exception, we expect an error to be
-            # raised
-            with pytest.raises(expected_result):
-                pt_cut(particle_list_pt, cut_value_tuple)
+    for cut_value_tuple, expected_warning, expected_error, expected_result in test_cases:
+        if expected_warning:
+            with pytest.warns(expected_warning):
+                result = pt_cut(particle_list_pt, cut_value_tuple)
+                assert result == expected_result
+
+        elif expected_error:
+            with pytest.raises(expected_error):
+                result = pt_cut(particle_list_pt, cut_value_tuple)
+
         else:
             # Apply the pt_cut
             result = pt_cut(particle_list_pt, cut_value_tuple)
+            # Assert the result matches the expected outcome
+            assert result == expected_result
+
+
+@pytest.fixture
+def particle_list_mT():
+    particle_list = []
+    mT_E_pz_pairs = [
+        (3, 5, 4),
+        (4, 5, 3),
+        (5, 13, 12),
+        (6, 10, 8),
+        (7, 25, 24),
+    ]
+    for m_T, energy, p_z in mT_E_pz_pairs:
+        p = Particle()
+        p.E = energy
+        p.pz = p_z
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_mT_cut(particle_list_mT):
+    test_cases = [
+        # Test cases for valid input
+        ((2.5, 3.5), None, None, [[particle_list_mT[0][0]]]),
+        ((5.5, None), None, None, [[particle_list_mT[0][3], particle_list_mT[0][4]]]),
+        ((None, 6.5), None, None, [[particle_list_mT[0][0], particle_list_mT[0][1],
+                                    particle_list_mT[0][2], particle_list_mT[0][3]]]),
+
+        # Test cases for error conditions
+        ((None, None), None, ValueError, None),
+        ((-1, 6), None, ValueError, None),
+        (('a', 5), None, ValueError, None),
+        ((5.7, 3.3), UserWarning, None, [[particle_list_mT[0][1], particle_list_mT[0][2]]]),
+        ((None, None, None), None, TypeError, None),
+    ]
+
+    for cut_value_tuple, expected_warning, expected_error, expected_result in test_cases:
+        if expected_warning:
+            with pytest.warns(expected_warning):
+                result = mT_cut(particle_list_mT, cut_value_tuple)
+                assert result == expected_result
+
+        elif expected_error:
+            with pytest.raises(expected_error):
+                result = mT_cut(particle_list_mT, cut_value_tuple)
+
+        else:
+            # Apply the mT_cut
+            result = mT_cut(particle_list_mT, cut_value_tuple)
             # Assert the result matches the expected outcome
             assert result == expected_result
 

@@ -12,6 +12,53 @@ from sparkx.Particle import Particle
 import warnings
 
 
+def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
+    """
+    Validates a tuple for specific conditions.
+
+    This function checks if the input is a tuple of length two, where both
+    elements are either numbers or None. If allow_none is set to False, the
+    function raises an error if any of the elements is None. If allow_none is
+    set to True, the function raises an error if both elements are None.
+
+    Parameters
+    ----------
+    value_tuple : tuple
+        The tuple to be validated. Expected to be of length two.
+    allow_none : bool, optional
+        Determines whether None values are allowed in the tuple. Default is False.
+
+    Raises
+    ------
+    TypeError
+        If the input value is not a tuple or if it's not of length two.
+    ValueError
+        If non-numeric value is found in the tuple, or if None values are not
+        allowed and found, or if both elements are None when allow_none is True.
+    """
+    if not isinstance(value_tuple, tuple) or len(value_tuple) != 2:
+        raise TypeError('Input value must be a tuple of length two')
+
+    elif any(val is not None and not isinstance(val, (int, float)) for val in value_tuple):
+        raise ValueError('Non-numeric value found in given tuple')
+
+    elif (value_tuple[0] is not None and value_tuple[1] is not None) and \
+         (value_tuple[0] >= value_tuple[1]):
+        warn_msg = (
+            'Lower limit {} is greater than upper limit {}. '
+            'Switched order is assumed in the following.'
+            ).format(value_tuple[0], value_tuple[1])
+        warnings.warn(warn_msg)
+
+    elif not allow_none:
+        if (value_tuple[0] is None or value_tuple[1] is None):
+            raise ValueError('At least one value in the tuple is None')
+
+    elif allow_none:
+        if value_tuple[0] is None and value_tuple[1] is None:
+            raise ValueError('At least one cut limit must be set to a number')
+
+
 def charged_particles(particle_list):
     """
     Keep only charged particles in particle_list.
@@ -323,49 +370,46 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(cut_value_tuple, tuple) or len(cut_value_tuple) != 2:
-        raise TypeError('Input value must be a tuple of length two')
-    elif any(val is not None and not isinstance(val, (int, float)) for val in cut_value_tuple):
-        raise ValueError('Non-numeric value found in cut_value_tuple')
-    elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
-        raise ValueError('At least one cut limit must be a number')
-    elif dim == "t" and cut_value_tuple[0] < 0:
-        raise ValueError('Time boundary must be positive or zero.')
+    if not isinstance(cut_value_tuple, tuple):
+        raise TypeError('Input value must be a tuple containing either ' +
+                        'positive numbers or None of length two')
+
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+
     if dim not in ("x", "y", "z", "t"):
         raise ValueError('Only "t, x, y and z are possible dimensions.')
 
     if cut_value_tuple[0] is None:
-        if (dim != "t"):
-            lower_cut = float('-inf')
-        else:
-            lower_cut = 0.0
+        lower_cut = float('-inf')
     else:
         lower_cut = cut_value_tuple[0]
+
     if cut_value_tuple[1] is None:
         upper_cut = float('inf')
     else:
         upper_cut = cut_value_tuple[1]
 
-    if upper_cut < lower_cut:
-        raise ValueError('The upper cut is smaller than the lower cut!')
+    # Ensure cut values are in the correct order
+    lim_max = max(upper_cut, lower_cut)
+    lim_min = min(upper_cut, lower_cut)
 
     updated_particle_list = []
     for i in range(0, len(particle_list)):
         if (dim == "t"):
             particle_list_tmp = [elem for elem in particle_list[i] if (
-                lower_cut <= elem.t <= upper_cut and not np.isnan(elem.t))]
+                lim_min <= elem.t <= lim_max and not np.isnan(elem.t))]
         elif (dim == "x"):
             particle_list_tmp = [elem for elem in particle_list[i] if (
-                lower_cut <= elem.x <= upper_cut and not np.isnan(elem.x))]
+                lim_min <= elem.x <= lim_max and not np.isnan(elem.x))]
         elif (dim == "y"):
             particle_list_tmp = [elem for elem in particle_list[i] if (
-                lower_cut <= elem.y <= upper_cut and not np.isnan(elem.y))]
+                lim_min <= elem.y <= lim_max and not np.isnan(elem.y))]
         else:
             particle_list_tmp = [elem for elem in particle_list[i] if (
-                lower_cut <= elem.z <= upper_cut and not np.isnan(elem.z))]
+                lim_min <= elem.z <= lim_max and not np.isnan(elem.z))]
         updated_particle_list.append(particle_list_tmp)
-    particle_list = updated_particle_list
-    return particle_list
+
+    return updated_particle_list
 
 
 def pt_cut(particle_list, cut_value_tuple):
@@ -390,37 +434,106 @@ def pt_cut(particle_list, cut_value_tuple):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(cut_value_tuple, tuple) or len(cut_value_tuple) != 2:
+    if not isinstance(cut_value_tuple, tuple):
         raise TypeError('Input value must be a tuple containing either ' +
                         'positive numbers or None of length two')
-    elif any(val is not None and not isinstance(val, (int, float)) for val in cut_value_tuple):
-        raise ValueError('Non-numeric value found in cut_value_tuple')
-    elif (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
-            (cut_value_tuple[1] is not None and cut_value_tuple[1] < 0):
-        raise ValueError('The cut limits must be positive or None')
-    elif cut_value_tuple[0] is None and cut_value_tuple[1] is None:
-        raise ValueError('At least one cut limit must be a number')
 
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+
+    # Check if the cut limits are positive if they are not None
+    if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
+       (cut_value_tuple[1] is not None and cut_value_tuple[1] < 0):
+        raise ValueError('The cut limits must be positive or None')
+
+    # Assign numerical values to the cut limits. Even though we check for
+    # non negative values, we send a left None value to -inf for numerical
+    # reasons. This is still consistent with the logic of the cut, as the
+    # lower cut applies to the absolute value of the pT, which is limited to
+    # positive values.
     if cut_value_tuple[0] is None:
-        lower_cut = 0.0
+        lower_cut = float('-inf')
     else:
         lower_cut = cut_value_tuple[0]
+
     if cut_value_tuple[1] is None:
         upper_cut = float('inf')
     else:
         upper_cut = cut_value_tuple[1]
 
-    if upper_cut < lower_cut:
-        raise ValueError('The upper cut is smaller than the lower cut!')
+    # Ensure cut values are in the correct order
+    lim_max = max(upper_cut, lower_cut)
+    lim_min = min(upper_cut, lower_cut)
 
     updated_particle_list = []
     for i in range(0, len(particle_list)):
         particle_list_tmp = [elem for elem in particle_list[i] if
-                             (lower_cut <= elem.pt_abs() <= upper_cut
+                             (lim_min <= elem.pt_abs() <= lim_max
                               and not np.isnan(elem.pt_abs()))]
         updated_particle_list.append(particle_list_tmp)
-    particle_list = updated_particle_list
-    return particle_list
+
+    return updated_particle_list
+
+
+def mT_cut(particle_list, cut_value_tuple):
+    """
+    Apply transverse mass cut to all events by passing an acceptance range by
+    ::code`cut_value_tuple`. All particles outside this range will
+    be removed.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    cut_value_tuple : tuple
+        Tuple with the upper and lower limits of the mT acceptance
+        range :code:`(cut_min, cut_max)`. If one of the limits is not
+        required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+        or :code:`(cut_min, None)`.
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    if not isinstance(cut_value_tuple, tuple):
+        raise TypeError('Input value must be a tuple containing either ' +
+                        'positive numbers or None of length two')
+
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+
+    # Check if the cut limits are positive if they are not None
+    if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or \
+       (cut_value_tuple[1] is not None and cut_value_tuple[1] < 0):
+        raise ValueError('The cut limits must be positive or None')
+
+    # Assign numerical values to the cut limits. Even though we check for
+    # non negative values, we send a left None value to -inf for numerical
+    # reasons. This is still consistent with the logic of the cut, as the
+    # lower cut applies to the absolute value of the pT, which is limited to
+    # positive values.
+    if cut_value_tuple[0] is None:
+        lower_cut = float('-inf')
+    else:
+        lower_cut = cut_value_tuple[0]
+
+    if cut_value_tuple[1] is None:
+        upper_cut = float('inf')
+    else:
+        upper_cut = cut_value_tuple[1]
+
+    # Ensure cut values are in the correct order
+    lim_max = max(upper_cut, lower_cut)
+    lim_min = min(upper_cut, lower_cut)
+
+    updated_particle_list = []
+    for i in range(0, len(particle_list)):
+        particle_list_tmp = [elem for elem in particle_list[i] if
+                             (lim_min <= elem.mT() <= lim_max
+                              and not np.isnan(elem.mT()))]
+        updated_particle_list.append(particle_list_tmp)
+
+    return updated_particle_list
 
 
 def rapidity_cut(particle_list, cut_value):
@@ -449,32 +562,9 @@ def rapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain ' +
-                            'two numbers')
-        elif any(not isinstance(val, (int, float)) for val in cut_value):
-            raise ValueError('Non-numeric value found in cut_value')
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        if cut_value[0] > cut_value[1]:
-            warn_msg = 'Lower limit {} is greater that upper limit {}. Switched order is assumed in the following.'.format(
-                cut_value[0], cut_value[1])
-            warnings.warn(warn_msg)
-
-    elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
-    if isinstance(cut_value, (int, float)):
-        # cut symmetrically around 0
-        limit = np.abs(cut_value)
-
-        updated_particle_list = []
-        for i in range(0, len(particle_list)):
-            particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (-limit <= elem.momentum_rapidity_Y() <= limit
-                                  and not np.isnan(elem.momentum_rapidity_Y()))]
-            updated_particle_list.append(particle_list_tmp)
-    elif isinstance(cut_value, tuple):
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 
@@ -486,8 +576,22 @@ def rapidity_cut(particle_list, cut_value):
                         elem.momentum_rapidity_Y()))]
             updated_particle_list.append(particle_list_tmp)
 
-    particle_list = updated_particle_list
-    return particle_list
+    elif isinstance(cut_value, (int, float)):
+        # cut symmetrically around 0
+        limit = np.abs(cut_value)
+
+        updated_particle_list = []
+        for i in range(0, len(particle_list)):
+            particle_list_tmp = [elem for elem in particle_list[i] if
+                                 (-limit <= elem.momentum_rapidity_Y() <= limit
+                                  and not np.isnan(elem.momentum_rapidity_Y()))]
+            updated_particle_list.append(particle_list_tmp)
+
+    else:
+        raise TypeError('Input value must be a number or a tuple ' +
+                        'with the cut limits (cut_min, cut_max)')
+
+    return updated_particle_list
 
 
 def pseudorapidity_cut(particle_list, cut_value):
@@ -516,32 +620,9 @@ def pseudorapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain ' +
-                            'two numbers')
-        elif any(not isinstance(val, (int, float)) for val in cut_value):
-            raise ValueError('Non-numeric value found in cut_value')
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        if cut_value[0] > cut_value[1]:
-            warn_msg = 'Lower limit {} is greater that upper limit {}. Switched order is assumed in the following.'.format(
-                cut_value[0], cut_value[1])
-            warnings.warn(warn_msg)
-
-    elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
-    if isinstance(cut_value, (int, float)):
-        # cut symmetrically around 0
-        limit = np.abs(cut_value)
-
-        updated_particle_list = []
-        for i in range(0, len(particle_list)):
-            particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (-limit <= elem.pseudorapidity() <= limit
-                                  and not np.isnan(elem.pseudorapidity()))]
-            updated_particle_list.append(particle_list_tmp)
-    elif isinstance(cut_value, tuple):
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 
@@ -552,8 +633,22 @@ def pseudorapidity_cut(particle_list, cut_value):
                                   and not np.isnan(elem.pseudorapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
-    particle_list = updated_particle_list
-    return particle_list
+    elif isinstance(cut_value, (int, float)):
+        # cut symmetrically around 0
+        limit = np.abs(cut_value)
+
+        updated_particle_list = []
+        for i in range(0, len(particle_list)):
+            particle_list_tmp = [elem for elem in particle_list[i] if
+                                 (-limit <= elem.pseudorapidity() <= limit
+                                  and not np.isnan(elem.pseudorapidity()))]
+            updated_particle_list.append(particle_list_tmp)
+
+    else:
+        raise TypeError('Input value must be a number or a tuple ' +
+                        'with the cut limits (cut_min, cut_max)')
+
+    return updated_particle_list
 
 
 def spatial_rapidity_cut(particle_list, cut_value):
@@ -582,32 +677,9 @@ def spatial_rapidity_cut(particle_list, cut_value):
         Filtered list of lists containing particle objects for each event
     """
     if isinstance(cut_value, tuple):
-        if len(cut_value) != 2:
-            raise TypeError('If input value is a tuple, then it must contain ' +
-                            'two numbers')
-        elif any(not isinstance(val, (int, float)) for val in cut_value):
-            raise ValueError('Non-numeric value found in cut_value')
+        __ensure_tuple_is_valid_else_raise_error(cut_value, allow_none=False)
 
-        if cut_value[0] > cut_value[1]:
-            warn_msg = 'Lower limit {} is greater that upper limit {}. Switched order is assumed in the following.'.format(
-                cut_value[0], cut_value[1])
-            warnings.warn(warn_msg)
-
-    elif not isinstance(cut_value, (int, float)):
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
-    if isinstance(cut_value, (int, float)):
-        # cut symmetrically around 0
-        limit = np.abs(cut_value)
-
-        updated_particle_list = []
-        for i in range(0, len(particle_list)):
-            particle_list_tmp = [elem for elem in particle_list[i] if
-                                 (-limit <= elem.spatial_rapidity() <= limit
-                                  and not np.isnan(elem.spatial_rapidity()))]
-            updated_particle_list.append(particle_list_tmp)
-    elif isinstance(cut_value, tuple):
+        # Ensure cut values are in the correct order
         lim_max = max(cut_value[0], cut_value[1])
         lim_min = min(cut_value[0], cut_value[1])
 
@@ -618,8 +690,22 @@ def spatial_rapidity_cut(particle_list, cut_value):
                                   and not np.isnan(elem.spatial_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
-    particle_list = updated_particle_list
-    return particle_list
+    elif isinstance(cut_value, (int, float)):
+        # cut symmetrically around 0
+        limit = np.abs(cut_value)
+
+        updated_particle_list = []
+        for i in range(0, len(particle_list)):
+            particle_list_tmp = [elem for elem in particle_list[i] if
+                                 (-limit <= elem.spatial_rapidity() <= limit
+                                  and not np.isnan(elem.spatial_rapidity()))]
+            updated_particle_list.append(particle_list_tmp)
+
+    else:
+        raise TypeError('Input value must be a number or a tuple ' +
+                        'with the cut limits (cut_min, cut_max)')
+
+    return updated_particle_list
 
 
 def multiplicity_cut(particle_list, min_multiplicity):

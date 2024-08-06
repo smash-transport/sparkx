@@ -712,6 +712,16 @@ def test_compute_mass_from_energy_momentum_valid_values():
 
     assert np.isclose(result, expected_result)
 
+def test_compute_mass_from_energy_momentum_invalid_values():
+    p = Particle()
+    p.E = 3.0
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 5.0
+
+    with pytest.warns(UserWarning, match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan."):
+        assert np.isnan(p.compute_mass_from_energy_momentum())
+
 
 def test_compute_mass_from_energy_momentum_missing_values():
     p = Particle()
@@ -733,6 +743,43 @@ def test_compute_mass_from_energy_momentum_zero_energy():
 
     assert np.isclose(result, 0.0)
 
+def test_mT_missing_values():
+    p = Particle()
+    # Leave some values as np.nan
+
+    result = p.mT()
+
+    assert np.isnan(result)
+
+def test_mT_invalid_values():
+    p = Particle()
+    p.E = 11.2
+    p.pz = 11.3
+
+    with pytest.warns(UserWarning, match=r"|E| >= |pz| not fulfilled or not within numerical precision! The transverse mass is set to nan."):
+        assert np.isnan(p.mT())
+
+
+def test_mT_valid_values():
+    p = Particle()
+
+    # Test for zero
+    p.E = 0.0
+    p.pz = 0.0
+    assert np.isclose(p.mT(), 0.0)
+
+    # Test for a few random values
+    for i in range(10):
+        energy = np.random.uniform(5.0, 10.0)
+        p_z = np.random.uniform(0.1, 5.0)
+
+        p.E = energy
+        p.pz = p_z
+
+        result = p.mT()
+        expected_result = np.sqrt(energy**2 - p_z**2)
+
+        assert np.isclose(result, expected_result)
 
 def test_compute_charge_from_pdg_valid_values():
     p = Particle()

@@ -18,6 +18,17 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v.2.0.0
+Date:
+
+### Added
+* Particle: Add member function to calculate the transverse mass of a particle
+* Oscar: Add transverse mass cut to methods
+* Jetscape: Add transverse mass cut to methods
+
+### Changed
+* Filter: Perform general clean up to reduce code duplications
+
 ## v1.3.0-Newton
 Date: 2024-07-25
 
