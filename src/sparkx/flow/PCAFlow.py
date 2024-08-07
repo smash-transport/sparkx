@@ -230,9 +230,9 @@ class PCAFlow(FlowInterface.FlowInterface):
         # loop over all event particles and compute the flow vectors in the bins
         for particle in event_data:
             if flow_as_function_of == "pt":
-                val = particle.pt_abs()
+                val = particle.pT_abs()
             elif flow_as_function_of == "rapidity":
-                val = particle.momentum_rapidity_Y()
+                val = particle.rapidity()
             elif flow_as_function_of == "pseudorapidity":
                 val = particle.pseudorapidity()
 

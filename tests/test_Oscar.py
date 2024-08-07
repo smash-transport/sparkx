@@ -87,6 +87,7 @@ def create_temporary_oscar_file(
         data = (200, 1.1998, 2.4656, 66.6003, 0.938, 0.9690, -0.00624, -0.0679,
             0.2335, 2112, 0, 0, 0, -5.769, 1, 0, 0, 0, 0, 0, 1, 0)
         # fmt: on
+
     elif oscar_format == "Oscar2013":
         header_lines = [
             "#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n",

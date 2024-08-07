@@ -17,7 +17,7 @@ Jetscape
 .. automethod:: Jetscape.charged_particles
 .. automethod:: Jetscape.uncharged_particles
 .. automethod:: Jetscape.strange_particles
-.. automethod:: Jetscape.pt_cut
+.. automethod:: Jetscape.pT_cut
 .. automethod:: Jetscape.rapidity_cut
 .. automethod:: Jetscape.pseudorapidity_cut
 .. automethod:: Jetscape.multiplicity_cut

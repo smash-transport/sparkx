@@ -83,7 +83,6 @@ class MultiParticlePtCorrelations:
     """
 
     def __init__(self, max_order: int) -> None:
-
         self.max_order = max_order
         # Check if max_order is an integer
         if not isinstance(self.max_order, int):
@@ -125,7 +124,7 @@ class MultiParticlePtCorrelations:
                 # if particle.weight is np.nan, then set it to 1
                 if np.isnan(particle.weight):
                     particle.weight = 1.0
-                Pk[k] += (particle.weight * particle.pt_abs()) ** (k + 1)
+                Pk[k] += (particle.weight * particle.pT_abs()) ** (k + 1)
                 Wk[k] += particle.weight ** (k + 1)
         return (Pk, Wk)
 

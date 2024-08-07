@@ -8,15 +8,15 @@ Particle
 
 .. automethod:: Particle.print_particle
 .. automethod:: Particle.angular_momentum
-.. automethod:: Particle.momentum_rapidity_Y
+.. automethod:: Particle.rapidity
 .. automethod:: Particle.p_abs
-.. automethod:: Particle.pt_abs
+.. automethod:: Particle.pT_abs
 .. automethod:: Particle.phi
 .. automethod:: Particle.theta
 .. automethod:: Particle.pseudorapidity
-.. automethod:: Particle.spatial_rapidity
+.. automethod:: Particle.spacetime_rapidity
 .. automethod:: Particle.proper_time
-.. automethod:: Particle.compute_mass_from_energy_momentum
+.. automethod:: Particle.mass_from_energy_momentum
 .. automethod:: Particle.compute_charge_from_pdg
 .. automethod:: Particle.mT
 .. automethod:: Particle.is_meson

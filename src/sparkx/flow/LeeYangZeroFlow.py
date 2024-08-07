@@ -82,7 +82,6 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
     """
 
     def __init__(self, vmin, vmax, vstep, n=2):
-
         self.j01_ = 2.4048256
         self.J1rootJ0_ = 0.5191147  # J1(j01)
 
@@ -649,9 +648,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 for particle in particle_data[event]:
                     val = 0.0
                     if flow_as_function_of == "pt":
-                        val = particle.pt_abs()
+                        val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
-                        val = particle.momentum_rapidity_Y()
+                        val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin + 1]:

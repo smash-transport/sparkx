@@ -436,34 +436,34 @@ def test_angular_momentum_zero_position():
     assert np.array_equal(result, [0.0, 0.0, 0.0])
 
 
-def test_momentum_rapidity_Y_valid_values():
+def test_rapidity_valid_values():
     p = Particle()
     p.E = 10.0
     p.pz = 5.0
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
 
     expected_result = 0.5 * np.log((10.0 + 5.0) / (10.0 - 5.0))
 
     assert np.isclose(result, expected_result)
 
 
-def test_momentum_rapidity_Y_zero_denominator():
+def test_rapidity_zero_denominator():
     p = Particle()
     p.E = 5.0
     p.pz = 5.0  # E == pz, should add a small positive value
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
     expected_result = 0.5 * np.log((5.0 + 5.0) / (1e-10))
 
     assert np.isclose(result, expected_result)
 
 
-def test_momentum_rapidity_Y_missing_values():
+def test_rapidity_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.momentum_rapidity_Y()
+    result = p.rapidity()
 
     assert np.isnan(result)
 
@@ -501,33 +501,33 @@ def test_p_abs_zero_momentum():
     assert np.isclose(result, 0.0)
 
 
-def test_pt_abs_valid_values():
+def test_pT_abs_valid_values():
     p = Particle()
     p.px = 1.0
     p.py = 2.0
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     expected_result = np.sqrt(1.0**2 + 2.0**2)
 
     assert np.isclose(result, expected_result)
 
 
-def test_pt_abs_missing_values():
+def test_pT_abs_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     assert np.isnan(result)
 
 
-def test_pt_abs_zero_transverse_momentum():
+def test_pT_abs_zero_transverse_momentum():
     p = Particle()
     p.px = 0.0
     p.py = 0.0
 
-    result = p.pt_abs()
+    result = p.pT_abs()
 
     assert np.isclose(result, 0.0)
 
@@ -643,34 +643,34 @@ def test_pseudorapidity_zero_momentum():
     assert np.isclose(result, expected_result)
 
 
-def test_spatial_rapidity_valid_values():
+def test_spacetime_rapidity_valid_values():
     p = Particle()
     p.t = 5.0
     p.z = 3.0
 
-    result = p.spatial_rapidity()
+    result = p.spacetime_rapidity()
 
     expected_result = 0.5 * np.log((5.0 + 3.0) / (5.0 - 3.0))
 
     assert np.isclose(result, expected_result)
 
 
-def test_spatial_rapidity_missing_values():
+def test_spacetime_rapidity_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.spatial_rapidity()
+    result = p.spacetime_rapidity()
 
     assert np.isnan(result)
 
 
-def test_spatial_rapidity_invalid_values():
+def test_spacetime_rapidity_invalid_values():
     p = Particle()
     p.t = 3.0
     p.z = 5.0
 
     with pytest.raises(ValueError, match=r"|z| < t not fulfilled"):
-        p.spatial_rapidity()
+        p.spacetime_rapidity()
 
 
 def test_proper_time_valid_values():
@@ -703,14 +703,14 @@ def test_proper_time_invalid_values():
         p.proper_time()
 
 
-def test_compute_mass_from_energy_momentum_valid_values():
+def test_mass_from_energy_momentum_valid_values():
     p = Particle()
     p.E = 3.0
     p.px = 1.0
     p.py = 2.0
     p.pz = 2.0
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     expected_result = np.sqrt(3.0**2 - (1.0**2 + 2.0**2 + 2.0**2))
 
@@ -728,26 +728,26 @@ def test_compute_mass_from_energy_momentum_invalid_values():
         UserWarning,
         match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan.",
     ):
-        assert np.isnan(p.compute_mass_from_energy_momentum())
+        assert np.isnan(p.mass_from_energy_momentum())
 
 
-def test_compute_mass_from_energy_momentum_missing_values():
+def test_mass_from_energy_momentum_missing_values():
     p = Particle()
     # Leave some values as np.nan
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     assert np.isnan(result)
 
 
-def test_compute_mass_from_energy_momentum_zero_energy():
+def test_mass_from_energy_momentum_zero_energy():
     p = Particle()
     p.E = 0.0
     p.px = 0.0
     p.py = 0.0
     p.pz = 0.0
 
-    result = p.compute_mass_from_energy_momentum()
+    result = p.mass_from_energy_momentum()
 
     assert np.isclose(result, 0.0)
 
@@ -795,23 +795,23 @@ def test_mT_valid_values():
         assert np.isclose(result, expected_result)
 
 
-def test_compute_charge_from_pdg_valid_values():
+def test_charge_from_pdg_valid_values():
     p = Particle()
     p.pdg = 211  # Assuming PDG code for a positive pion
 
-    result = p.compute_charge_from_pdg()
+    result = p.charge_from_pdg()
 
     expected_result = PDGID(211).charge
 
     assert result == expected_result
 
 
-def test_compute_charge_from_pdg_invalid_values():
+def test_charge_from_pdg_invalid_values():
     p = Particle()
     p.pdg_valid = False
     # Leave pdg as an invalid value
 
-    result = p.compute_charge_from_pdg()
+    result = p.charge_from_pdg()
 
     assert np.isnan(result)
 

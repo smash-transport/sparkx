@@ -451,7 +451,7 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     return updated_particle_list
 
 
-def pt_cut(particle_list, cut_value_tuple):
+def pT_cut(particle_list, cut_value_tuple):
     """
     Apply p_t cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -512,8 +512,8 @@ def pt_cut(particle_list, cut_value_tuple):
             elem
             for elem in particle_list[i]
             if (
-                lim_min <= elem.pt_abs() <= lim_max
-                and not np.isnan(elem.pt_abs())
+                lim_min <= elem.pT_abs() <= lim_max
+                and not np.isnan(elem.pT_abs())
             )
         ]
         updated_particle_list.append(particle_list_tmp)
@@ -626,8 +626,8 @@ def rapidity_cut(particle_list, cut_value):
                 elem
                 for elem in particle_list[i]
                 if (
-                    lim_min <= elem.momentum_rapidity_Y() <= lim_max
-                    and not np.isnan(elem.momentum_rapidity_Y())
+                    lim_min <= elem.rapidity() <= lim_max
+                    and not np.isnan(elem.rapidity())
                 )
             ]
             updated_particle_list.append(particle_list_tmp)
@@ -642,8 +642,8 @@ def rapidity_cut(particle_list, cut_value):
                 elem
                 for elem in particle_list[i]
                 if (
-                    -limit <= elem.momentum_rapidity_Y() <= limit
-                    and not np.isnan(elem.momentum_rapidity_Y())
+                    -limit <= elem.rapidity() <= limit
+                    and not np.isnan(elem.rapidity())
                 )
             ]
             updated_particle_list.append(particle_list_tmp)
@@ -726,10 +726,10 @@ def pseudorapidity_cut(particle_list, cut_value):
     return updated_particle_list
 
 
-def spatial_rapidity_cut(particle_list, cut_value):
+def spacetime_rapidity_cut(particle_list, cut_value):
     """
-    Apply spatial rapidity (space-time rapidity) cut to all events and
-    remove all particles with spatial rapidity not complying with cut_value.
+    Apply space-time rapidity cut to all events and remove all particles with
+    space-time rapidity not complying with cut_value.
 
     Parameters
     ----------
@@ -743,7 +743,7 @@ def spatial_rapidity_cut(particle_list, cut_value):
         in [-1.0, 1.0] are kept.
 
     cut_value : tuple
-        To specify an asymmetric acceptance range for the spatial rapidity
+        To specify an asymmetric acceptance range for the space-time rapidity
         of particles, pass a tuple (cut_min, cut_max)
 
     Returns
@@ -764,8 +764,8 @@ def spatial_rapidity_cut(particle_list, cut_value):
                 elem
                 for elem in particle_list[i]
                 if (
-                    lim_min <= elem.spatial_rapidity() <= lim_max
-                    and not np.isnan(elem.spatial_rapidity())
+                    lim_min <= elem.spacetime_rapidity() <= lim_max
+                    and not np.isnan(elem.spacetime_rapidity())
                 )
             ]
             updated_particle_list.append(particle_list_tmp)
@@ -780,8 +780,8 @@ def spatial_rapidity_cut(particle_list, cut_value):
                 elem
                 for elem in particle_list[i]
                 if (
-                    -limit <= elem.spatial_rapidity() <= limit
-                    and not np.isnan(elem.spatial_rapidity())
+                    -limit <= elem.spacetime_rapidity() <= limit
+                    and not np.isnan(elem.spacetime_rapidity())
                 )
             ]
             updated_particle_list.append(particle_list_tmp)

@@ -117,14 +117,14 @@ class Oscar:
         Keep strange particles only
     spacetime_cut:
         Apply spacetime cut to all particles
-    pt_cut:
+    pT_cut:
         Apply pT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
     pseudorapidity_cut:
         Apply pseudorapidity cut to all particles
-    spatial_rapidity_cut:
-        Apply spatial rapidity (space-time rapidity) cut to all particles
+    spacetime_rapidity_cut:
+        Apply space-time rapidity cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
     print_particle_lists_to_file:
@@ -465,8 +465,8 @@ class Oscar:
                     filters_dict["spacetime_cut"][0],
                     filters_dict["spacetime_cut"][1],
                 )
-            elif i == "pt_cut":
-                event = pt_cut(event, filters_dict["pt_cut"])
+            elif i == "pT_cut":
+                event = pT_cut(event, filters_dict["pT_cut"])
             elif i == "mT_cut":
                 event = mT_cut(event, filters_dict["mT_cut"])
             elif i == "rapidity_cut":
@@ -475,9 +475,9 @@ class Oscar:
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
                 )
-            elif i == "spatial_rapidity_cut":
-                event = spatial_rapidity_cut(
-                    event, filters_dict["spatial_rapidity_cut"]
+            elif i == "spacetime_rapidity_cut":
+                event = spacetime_rapidity_cut(
+                    event, filters_dict["spacetime_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
                 event = multiplicity_cut(
@@ -956,7 +956,7 @@ class Oscar:
 
         return self
 
-    def pt_cut(self, cut_value_tuple):
+    def pT_cut(self, cut_value_tuple):
         """
         Apply transverse momentum cut to all events by passing an acceptance
         range by ::code`cut_value_tuple`. All particles outside this range will
@@ -977,7 +977,7 @@ class Oscar:
             cut for all events
         """
 
-        self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
+        self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -1066,10 +1066,10 @@ class Oscar:
 
         return self
 
-    def spatial_rapidity_cut(self, cut_value):
+    def spacetime_rapidity_cut(self, cut_value):
         """
-        Apply spatial rapidity (space-time rapidity) cut to all events and
-        remove all particles with spatial rapidity not complying with cut_value
+        Apply space-time rapidity cut to all events and remove all particles
+        with space-time rapidity not complying with cut_value
 
         Parameters
         ----------
@@ -1086,11 +1086,11 @@ class Oscar:
         Returns
         -------
         self : Oscar object
-            Containing only particles complying with the spatial rapidity cut
+            Containing only particles complying with the space-time rapidity cut
             for all events
         """
 
-        self.particle_list_ = spatial_rapidity_cut(
+        self.particle_list_ = spacetime_rapidity_cut(
             self.particle_list_, cut_value
         )
         self.__update_num_output_per_event_after_filter()

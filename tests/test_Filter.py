@@ -320,7 +320,7 @@ def particle_list_pt():
     return [particle_list]
 
 
-def test_pt_cut(particle_list_pt):
+def test_pT_cut(particle_list_pt):
     test_cases = [
         # Test cases for valid input
         ((0.5, 1.5), None, None, [[particle_list_pt[0][1]]]),
@@ -364,16 +364,16 @@ def test_pt_cut(particle_list_pt):
     ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = pt_cut(particle_list_pt, cut_value_tuple)
+                result = pT_cut(particle_list_pt, cut_value_tuple)
                 assert result == expected_result
 
         elif expected_error:
             with pytest.raises(expected_error):
-                result = pt_cut(particle_list_pt, cut_value_tuple)
+                result = pT_cut(particle_list_pt, cut_value_tuple)
 
         else:
-            # Apply the pt_cut
-            result = pt_cut(particle_list_pt, cut_value_tuple)
+            # Apply the pT_cut
+            result = pT_cut(particle_list_pt, cut_value_tuple)
             # Assert the result matches the expected outcome
             assert result == expected_result
 
@@ -438,7 +438,7 @@ def test_mT_cut(particle_list_mT):
 
 
 @pytest.fixture
-def particle_list_momentum_rapidity():
+def particle_list_rapidity():
     particle_list = []
     for i in range(5):
         p = Particle()
@@ -448,11 +448,11 @@ def particle_list_momentum_rapidity():
     return [particle_list]
 
 
-def test_rapidity_cut(particle_list_momentum_rapidity):
+def test_rapidity_cut(particle_list_rapidity):
     test_cases = [
         # Test cases for valid input
-        (0.05, None, None, [[particle_list_momentum_rapidity[0][0]]]),
-        ((-0.05, 0.05), None, None, [[particle_list_momentum_rapidity[0][0]]]),
+        (0.05, None, None, [[particle_list_rapidity[0][0]]]),
+        ((-0.05, 0.05), None, None, [[particle_list_rapidity[0][0]]]),
         # Test cases for invalid input
         ((0.1, 1.0, 2.0), None, TypeError, None),
         (True, None, TypeError, None),
@@ -477,7 +477,7 @@ def test_rapidity_cut(particle_list_momentum_rapidity):
                     particle_list_momentum_rapidity, cut_value
                 )
         else:
-            result = rapidity_cut(particle_list_momentum_rapidity, cut_value)
+            result = rapidity_cut(particle_list_rapidity, cut_value)
             assert result == expected_result
 
 
@@ -527,7 +527,7 @@ def test_pseudorapidity_cut(particle_list_pseudorapidity):
 
 
 @pytest.fixture
-def particle_list_spatial_rapidity():
+def particle_list_spacetime_rapidity():
     particle_list = []
     for i in range(5):
         p = Particle()
@@ -537,11 +537,11 @@ def particle_list_spatial_rapidity():
     return [particle_list]
 
 
-def test_rapidity_cut(particle_list_spatial_rapidity):
+def test_rapidity_cut(particle_list_spacetime_rapidity):
     test_cases = [
         # Test cases for valid input
-        (0.5, None, None, [[particle_list_spatial_rapidity[0][0]]]),
-        ((-0.5, 0.5), None, None, [[particle_list_spatial_rapidity[0][0]]]),
+        (0.5, None, None, [[particle_list_spacetime_rapidity[0][0]]]),
+        ((-0.5, 0.5), None, None, [[particle_list_spacetime_rapidity[0][0]]]),
         # Test cases for invalid input
         ((0.1, 1.0, 2.0), None, TypeError, None),
         (True, None, TypeError, None),
@@ -557,17 +557,17 @@ def test_rapidity_cut(particle_list_spatial_rapidity):
     ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = spatial_rapidity_cut(
-                    particle_list_spatial_rapidity, cut_value
+                result = spacetime_rapidity_cut(
+                    particle_list_spacetime_rapidity, cut_value
                 )
         elif expected_error:
             with pytest.raises(expected_error):
-                result = spatial_rapidity_cut(
-                    particle_list_spatial_rapidity, cut_value
+                result = spacetime_rapidity_cut(
+                    particle_list_spacetime_rapidity, cut_value
                 )
         else:
-            result = spatial_rapidity_cut(
-                particle_list_spatial_rapidity, cut_value
+            result = spacetime_rapidity_cut(
+                particle_list_spacetime_rapidity, cut_value
             )
             assert result == expected_result
 

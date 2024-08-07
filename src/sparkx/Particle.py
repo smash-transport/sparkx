@@ -129,11 +129,11 @@ class Particle:
         Print the particle as CSV to terminal
     angular_momentum:
         Compute angular momentum
-    momentum_rapidity_Y:
+    rapidity:
         Compute momentum rapidity
     p_abs:
         Compute absolute momentum
-    pt_abs:
+    pT_abs:
         Compute absolute value of transverse momentum
     phi:
         Compute azimuthal angle
@@ -141,13 +141,13 @@ class Particle:
         Compute polar angle
     pseudorapidity:
         Compute pseudorapidity
-    spatial_rapidity:
-        Compute spatial rapidity
+    spacetime_rapidity:
+        Compute space-time rapidity
     proper_time:
         Compute proper time
-    compute_mass_from_energy_momentum:
+    mass_from_energy_momentum:
         Compute mass from energy momentum relation
-    compute_charge_from_pdg:
+    charge_from_pdg:
         Compute charge from PDG code
     mT:
         Compute transverse mass
@@ -409,13 +409,13 @@ class Particle:
                         self.data_[index[0]] = int(particle_array[index[1]])
 
                 # It is important for JETSCAPE particles to compute pdg_valid
-                # here because the compute_charge_from_pdg function depends on
+                # here because the charge_from_pdg function depends on
                 # it.
                 self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
-                    self.mass = self.compute_mass_from_energy_momentum()
-                    self.charge = self.compute_charge_from_pdg()
+                    self.mass = self.mass_from_energy_momentum()
+                    self.charge = self.charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
                         warnings.warn(
                             "The PDG code "
@@ -886,7 +886,7 @@ class Particle:
             p = [self.px, self.py, self.pz]
             return np.cross(r, p)
 
-    def momentum_rapidity_Y(self):
+    def rapidity(self):
         """
         Compute the momentum rapidity :math:`Y=\\frac{1}{2}\\ln\\left(\\frac{E+p_z}{E-p_z}\\right)` of the particle.
 
@@ -930,7 +930,7 @@ class Particle:
         else:
             return np.sqrt(self.px**2.0 + self.py**2.0 + self.pz**2.0)
 
-    def pt_abs(self):
+    def pT_abs(self):
         """
         Compute the absolute transverse momentum :math:`|\\vec{p}_{\\mathrm{T}}|=\\sqrt{p_x^2+p_y^2}` of the particle.
 
@@ -1019,14 +1019,14 @@ class Particle:
 
             return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
 
-    def spatial_rapidity(self):
+    def spacetime_rapidity(self):
         """
-        Compute the spatial rapidity :math:`y=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
+        Compute the space-time rapidity :math:`\\eta_s=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
 
         Returns
         -------
         float
-            spatial rapidity
+            space-time rapidity
 
         Notes
         -----
@@ -1063,7 +1063,7 @@ class Particle:
             else:
                 raise ValueError("|z| < t not fulfilled")
 
-    def compute_mass_from_energy_momentum(self):
+    def mass_from_energy_momentum(self):
         """
         Compute the mass from the energy momentum relation.
 
@@ -1086,6 +1086,9 @@ class Particle:
             or np.isnan(self.pz)
         ):
             return np.nan
+        # photons and gluons are massless
+        elif self.pdg == 22 or self.pdg == 21:
+            return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
                 return np.sqrt(self.E**2.0 - self.p_abs() ** 2.0)
@@ -1096,7 +1099,7 @@ class Particle:
                 )
                 return np.nan
 
-    def compute_charge_from_pdg(self):
+    def charge_from_pdg(self):
         """
         Compute the charge from the PDG code.
 

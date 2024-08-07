@@ -114,7 +114,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                     if np.isnan(particle_data[event][particle].weight)
                     else particle_data[event][particle].weight
                 )
-                pt = particle_data[event][particle].pt_abs()
+                pt = particle_data[event][particle].pT_abs()
                 phi = particle_data[event][particle].phi()
                 flow_event += weight * np.exp(1j * self.n_ * phi)
                 number_particles += weight
@@ -160,9 +160,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                 for particle in particle_data[event]:
                     val = 0.0
                     if flow_as_function_of == "pt":
-                        val = particle.pt_abs()
+                        val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
-                        val = particle.momentum_rapidity_Y()
+                        val = particle.rapidity()
                     elif flow_as_function_of == "pseudorapidity":
                         val = particle.pseudorapidity()
                     if val >= bins[bin] and val < bins[bin + 1]:
@@ -189,7 +189,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                         )
                         else binned_particle_data[bin][event][particle].weight
                     )
-                    pt = binned_particle_data[bin][event][particle].pt_abs()
+                    pt = binned_particle_data[bin][event][particle].pT_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
                     flow_event += weight * np.exp(1j * self.n_ * phi)
                     number_particles += weight

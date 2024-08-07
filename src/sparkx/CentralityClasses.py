@@ -177,7 +177,6 @@ class CentralityClasses:
 
         MinRecord = int(number_events / 4 * self.centrality_bins_[0] / 100.0)
         for i in range(1, len(self.centrality_bins_)):
-
             MaxRecord = int(
                 number_events / 4 * self.centrality_bins_[i] / 100.0
             )

@@ -1231,7 +1231,17 @@ class Lattice3D:
         for i, x in enumerate(x_new):
             for j, y in enumerate(y_new):
                 for k, z in enumerate(z_new):
-                    value = self.interpolate_value(x, y, z)
+                    if (
+                        x < self.x_min_
+                        or x > self.x_max_
+                        or y < self.y_min_
+                        or y > self.y_max_
+                        or z < self.z_min_
+                        or z > self.z_max_
+                    ):
+                        value = 0
+                    else:
+                        value = self.interpolate_value(x, y, z)
                     new_lattice.set_value_by_index(i, j, k, value)
 
         return new_lattice

@@ -107,7 +107,7 @@ class Jetscape:
         Keep strange particles only
     particle_status:
         Keep only particles with a given status flag
-    pt_cut:
+    pT_cut:
         Apply pT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
@@ -402,8 +402,8 @@ class Jetscape:
                 event = lower_event_energy_cut(
                     event, filters_dict["lower_event_energy_cut"]
                 )
-            elif i == "pt_cut":
-                event = pt_cut(event, filters_dict["pt_cut"])
+            elif i == "pT_cut":
+                event = pT_cut(event, filters_dict["pT_cut"])
             elif i == "mT_cut":
                 event = mT_cut(event, filters_dict["mT_cut"])
             elif i == "rapidity_cut":
@@ -412,9 +412,9 @@ class Jetscape:
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
                 )
-            elif i == "spatial_rapidity_cut":
-                event = spatial_rapidity_cut(
-                    event, filters_dict["spatial_rapidity_cut"]
+            elif i == "spacetime_rapidity_cut":
+                event = spacetime_rapidity_cut(
+                    event, filters_dict["spacetime_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
                 event = multiplicity_cut(
@@ -761,7 +761,7 @@ class Jetscape:
 
         return self
 
-    def pt_cut(self, cut_value_tuple):
+    def pT_cut(self, cut_value_tuple):
         """
         Apply transverse momentum cut to all events by passing an acceptance
         range by ::code`cut_value_tuple`. All particles outside this range will
@@ -781,7 +781,7 @@ class Jetscape:
             Containing only particles complying with the transverse momentum
             cut for all events
         """
-        self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
+        self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
 
         return self

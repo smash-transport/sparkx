@@ -166,7 +166,6 @@ class Histogram:
             self.systematic_error_ = np.asarray([np.zeros(num_bins)])
 
         elif isinstance(bin_boundaries, (list, np.ndarray)):
-
             self.number_of_bins_ = len(bin_boundaries) - 1
             self.bin_edges_ = np.asarray(bin_boundaries)
             self.histograms_ = np.asarray([np.zeros(self.number_of_bins_)])
