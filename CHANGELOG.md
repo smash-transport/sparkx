@@ -35,6 +35,7 @@ Date:
 | spatial_rapidity()                  | spacetime_rapidity()        |
 | spatial_rapidity_cut()              | spacetime_rapidity_cut()    |
 | pt_abs()                            | pT_abs()                    |
+| pt_cut()                            | pT_cut()                    |
 | compute_mass_from_energy_momentum() | mass_from_energy_momentum() |
 | compute_charge_from_pdg()           | charge_from_pdg()           |
 
