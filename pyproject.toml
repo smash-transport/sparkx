@@ -32,11 +32,8 @@ dependencies = [
     "matplotlib>=3.7.1"
 ]
 
-[tool.autopep8]
-max_line_length = 80
-in-place = true
-recursive = true
-aggressive = 3
+[tool.black]
+line-length = 80
 
 
 [project.urls]
