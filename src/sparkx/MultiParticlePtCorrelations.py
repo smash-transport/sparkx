@@ -100,7 +100,8 @@ class MultiParticlePtCorrelations:
         self.D_events: Any = None
 
     def _P_W_k(
-            self, particle_list_event: List[Particle]) -> Tuple[np.ndarray, np.ndarray]:
+        self, particle_list_event: List[Particle]
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         This implements Eq. 7 in [1].
 
@@ -124,12 +125,13 @@ class MultiParticlePtCorrelations:
                 # if particle.weight is np.nan, then set it to 1
                 if np.isnan(particle.weight):
                     particle.weight = 1.0
-                Pk[k] += (particle.weight * particle.pt_abs())**(k + 1)
-                Wk[k] += particle.weight**(k + 1)
+                Pk[k] += (particle.weight * particle.pt_abs()) ** (k + 1)
+                Wk[k] += particle.weight ** (k + 1)
         return (Pk, Wk)
 
     def _transverse_momentum_correlations_event_num_denom(
-            self, particle_list_event: List[Particle]) -> None:
+        self, particle_list_event: List[Particle]
+    ) -> None:
         """
         Compute the transverse momentum correlations for a single event.
 
@@ -154,348 +156,163 @@ class MultiParticlePtCorrelations:
                 N[order] = Pk[order]
                 D[order] = Wk[order]
             elif order == 1:  # k = 2
-                N[order] = Pk[0]**2. - Pk[1]
-                D[order] = Wk[0]**2. - Wk[1]
+                N[order] = Pk[0] ** 2.0 - Pk[1]
+                D[order] = Wk[0] ** 2.0 - Wk[1]
             elif order == 2:  # k = 3
-                N[order] = Pk[0]**3. - 3. * Pk[1] * Pk[0] + 2. * Pk[2]
-                D[order] = Wk[0]**3. - 3. * Wk[1] * Wk[0] + 2. * Wk[2]
+                N[order] = Pk[0] ** 3.0 - 3.0 * Pk[1] * Pk[0] + 2.0 * Pk[2]
+                D[order] = Wk[0] ** 3.0 - 3.0 * Wk[1] * Wk[0] + 2.0 * Wk[2]
             elif order == 3:  # k = 4
-                N[order] = (Pk[0]**4. - 6. * Pk[1]**2. * Pk[0] + 3. * Pk[1]**2.
-                            + 8. * Pk[2] * Pk[0] - 6. * Pk[3])
-                D[order] = (Wk[0]**4. - 6. * Wk[1]**2. * Wk[0] + 3. * Wk[1]**2.
-                            + 8. * Wk[2] * Wk[0] - 6. * Wk[3])
+                N[order] = (
+                    Pk[0] ** 4.0
+                    - 6.0 * Pk[1] ** 2.0 * Pk[0]
+                    + 3.0 * Pk[1] ** 2.0
+                    + 8.0 * Pk[2] * Pk[0]
+                    - 6.0 * Pk[3]
+                )
+                D[order] = (
+                    Wk[0] ** 4.0
+                    - 6.0 * Wk[1] ** 2.0 * Wk[0]
+                    + 3.0 * Wk[1] ** 2.0
+                    + 8.0 * Wk[2] * Wk[0]
+                    - 6.0 * Wk[3]
+                )
             elif order == 4:  # k = 5
                 N[order] = (
-                    Pk[0]**5. -
-                    10. *
-                    Pk[1] *
-                    Pk[0]**3. +
-                    15. *
-                    Pk[1]**2. *
-                    Pk[0] +
-                    20. *
-                    Pk[2] *
-                    Pk[0]**2. -
-                    20. *
-                    Pk[2] *
-                    Pk[1] -
-                    30. *
-                    Pk[3] *
-                    Pk[0] +
-                    24. *
-                    Pk[4])
+                    Pk[0] ** 5.0
+                    - 10.0 * Pk[1] * Pk[0] ** 3.0
+                    + 15.0 * Pk[1] ** 2.0 * Pk[0]
+                    + 20.0 * Pk[2] * Pk[0] ** 2.0
+                    - 20.0 * Pk[2] * Pk[1]
+                    - 30.0 * Pk[3] * Pk[0]
+                    + 24.0 * Pk[4]
+                )
                 D[order] = (
-                    Wk[0]**5. -
-                    10. *
-                    Wk[1] *
-                    Wk[0]**3. +
-                    15. *
-                    Wk[1]**2. *
-                    Wk[0] +
-                    20. *
-                    Wk[2] *
-                    Wk[0]**2. -
-                    20. *
-                    Wk[2] *
-                    Wk[1] -
-                    30. *
-                    Wk[3] *
-                    Wk[0] +
-                    24. *
-                    Wk[4])
+                    Wk[0] ** 5.0
+                    - 10.0 * Wk[1] * Wk[0] ** 3.0
+                    + 15.0 * Wk[1] ** 2.0 * Wk[0]
+                    + 20.0 * Wk[2] * Wk[0] ** 2.0
+                    - 20.0 * Wk[2] * Wk[1]
+                    - 30.0 * Wk[3] * Wk[0]
+                    + 24.0 * Wk[4]
+                )
             elif order == 5:  # k = 6
                 N[order] = (
-                    Pk[0]**6. -
-                    15. *
-                    Pk[1] *
-                    Pk[0]**4. +
-                    45. *
-                    Pk[0]**2. *
-                    Pk[1]**2. -
-                    15. *
-                    Pk[1]**3. -
-                    40. *
-                    Pk[2] *
-                    Pk[0]**3. -
-                    120. *
-                    Pk[2] *
-                    Pk[1] *
-                    Pk[0] +
-                    40. *
-                    Pk[2]**2. -
-                    90. *
-                    Pk[3] *
-                    Pk[0]**2. +
-                    90. *
-                    Pk[3] *
-                    Pk[1] +
-                    144. *
-                    Pk[4] *
-                    Pk[0] -
-                    120. *
-                    Pk[5])
+                    Pk[0] ** 6.0
+                    - 15.0 * Pk[1] * Pk[0] ** 4.0
+                    + 45.0 * Pk[0] ** 2.0 * Pk[1] ** 2.0
+                    - 15.0 * Pk[1] ** 3.0
+                    - 40.0 * Pk[2] * Pk[0] ** 3.0
+                    - 120.0 * Pk[2] * Pk[1] * Pk[0]
+                    + 40.0 * Pk[2] ** 2.0
+                    - 90.0 * Pk[3] * Pk[0] ** 2.0
+                    + 90.0 * Pk[3] * Pk[1]
+                    + 144.0 * Pk[4] * Pk[0]
+                    - 120.0 * Pk[5]
+                )
                 D[order] = (
-                    Wk[0]**6. -
-                    15. *
-                    Wk[1] *
-                    Wk[0]**4. +
-                    45. *
-                    Wk[0]**2. *
-                    Wk[1]**2. -
-                    15. *
-                    Wk[1]**3. -
-                    40. *
-                    Wk[2] *
-                    Wk[0]**3. -
-                    120. *
-                    Wk[2] *
-                    Wk[1] *
-                    Wk[0] +
-                    40. *
-                    Wk[2]**2. -
-                    90. *
-                    Wk[3] *
-                    Wk[0]**2. +
-                    90. *
-                    Wk[3] *
-                    Wk[1] +
-                    144. *
-                    Wk[4] *
-                    Wk[0] -
-                    120. *
-                    Wk[5])
+                    Wk[0] ** 6.0
+                    - 15.0 * Wk[1] * Wk[0] ** 4.0
+                    + 45.0 * Wk[0] ** 2.0 * Wk[1] ** 2.0
+                    - 15.0 * Wk[1] ** 3.0
+                    - 40.0 * Wk[2] * Wk[0] ** 3.0
+                    - 120.0 * Wk[2] * Wk[1] * Wk[0]
+                    + 40.0 * Wk[2] ** 2.0
+                    - 90.0 * Wk[3] * Wk[0] ** 2.0
+                    + 90.0 * Wk[3] * Wk[1]
+                    + 144.0 * Wk[4] * Wk[0]
+                    - 120.0 * Wk[5]
+                )
             elif order == 6:  # k = 7
                 N[order] = (
-                    Pk[0]**7. -
-                    21. *
-                    Pk[1] *
-                    Pk[0]**5. +
-                    105. *
-                    Pk[0]**3. *
-                    Pk[1]**2. -
-                    105. *
-                    Pk[1]**3. *
-                    Pk[0] +
-                    70. *
-                    Pk[2] *
-                    Pk[0]**4. -
-                    420. *
-                    Pk[2] *
-                    Pk[1] *
-                    Pk[0]**2. +
-                    210. *
-                    Pk[2] *
-                    Pk[1]**2. +
-                    280. *
-                    Pk[2]**2. *
-                    Pk[0] -
-                    210. *
-                    Pk[3] *
-                    Pk[0]**3. -
-                    630. *
-                    Pk[3] *
-                    Pk[1] *
-                    Pk[0] -
-                    420. *
-                    Pk[3] *
-                    Pk[2] +
-                    504. *
-                    Pk[4] *
-                    Pk[0]**2. -
-                    504. *
-                    Pk[4] *
-                    Pk[1] -
-                    840. *
-                    Pk[5] *
-                    Pk[0] +
-                    720. *
-                    Pk[6])
+                    Pk[0] ** 7.0
+                    - 21.0 * Pk[1] * Pk[0] ** 5.0
+                    + 105.0 * Pk[0] ** 3.0 * Pk[1] ** 2.0
+                    - 105.0 * Pk[1] ** 3.0 * Pk[0]
+                    + 70.0 * Pk[2] * Pk[0] ** 4.0
+                    - 420.0 * Pk[2] * Pk[1] * Pk[0] ** 2.0
+                    + 210.0 * Pk[2] * Pk[1] ** 2.0
+                    + 280.0 * Pk[2] ** 2.0 * Pk[0]
+                    - 210.0 * Pk[3] * Pk[0] ** 3.0
+                    - 630.0 * Pk[3] * Pk[1] * Pk[0]
+                    - 420.0 * Pk[3] * Pk[2]
+                    + 504.0 * Pk[4] * Pk[0] ** 2.0
+                    - 504.0 * Pk[4] * Pk[1]
+                    - 840.0 * Pk[5] * Pk[0]
+                    + 720.0 * Pk[6]
+                )
                 D[order] = (
-                    Wk[0]**7. -
-                    21. *
-                    Wk[1] *
-                    Wk[0]**5. +
-                    105. *
-                    Wk[0]**3. *
-                    Wk[1]**2. -
-                    105. *
-                    Wk[1]**3. *
-                    Wk[0] +
-                    70. *
-                    Wk[2] *
-                    Wk[0]**4. -
-                    420. *
-                    Wk[2] *
-                    Wk[1] *
-                    Wk[0]**2. +
-                    210. *
-                    Wk[2] *
-                    Wk[1]**2. +
-                    280. *
-                    Wk[2]**2. *
-                    Wk[0] -
-                    210. *
-                    Wk[3] *
-                    Wk[0]**3. -
-                    630. *
-                    Wk[3] *
-                    Wk[1] *
-                    Wk[0] -
-                    420. *
-                    Wk[3] *
-                    Wk[2] +
-                    504. *
-                    Wk[4] *
-                    Wk[0]**2. -
-                    504. *
-                    Wk[4] *
-                    Wk[1] -
-                    840. *
-                    Wk[5] *
-                    Wk[0] +
-                    720. *
-                    Wk[6])
+                    Wk[0] ** 7.0
+                    - 21.0 * Wk[1] * Wk[0] ** 5.0
+                    + 105.0 * Wk[0] ** 3.0 * Wk[1] ** 2.0
+                    - 105.0 * Wk[1] ** 3.0 * Wk[0]
+                    + 70.0 * Wk[2] * Wk[0] ** 4.0
+                    - 420.0 * Wk[2] * Wk[1] * Wk[0] ** 2.0
+                    + 210.0 * Wk[2] * Wk[1] ** 2.0
+                    + 280.0 * Wk[2] ** 2.0 * Wk[0]
+                    - 210.0 * Wk[3] * Wk[0] ** 3.0
+                    - 630.0 * Wk[3] * Wk[1] * Wk[0]
+                    - 420.0 * Wk[3] * Wk[2]
+                    + 504.0 * Wk[4] * Wk[0] ** 2.0
+                    - 504.0 * Wk[4] * Wk[1]
+                    - 840.0 * Wk[5] * Wk[0]
+                    + 720.0 * Wk[6]
+                )
             elif order == 7:  # k = 8
                 N[order] = (
-                    Pk[0]**8. -
-                    28. *
-                    Pk[1] *
-                    Pk[0]**6. -
-                    210. *
-                    Pk[1]**2. *
-                    Pk[0]**4. -
-                    420. *
-                    Pk[1]**3. *
-                    Pk[0]**2. +
-                    105. *
-                    Pk[1]**4. +
-                    112. *
-                    Pk[2] *
-                    Pk[0]**5. +
-                    1120. *
-                    Pk[2] *
-                    Pk[1] *
-                    Pk[0]**3. +
-                    1680. *
-                    Pk[2] *
-                    Pk[1]**2. *
-                    Pk[0] +
-                    1120. *
-                    Pk[2]**2. *
-                    Pk[0]**2. +
-                    1120. *
-                    Pk[2]**2. *
-                    Pk[1] -
-                    420. *
-                    Pk[3] *
-                    Pk[0]**4. +
-                    2520. *
-                    Pk[3] *
-                    Pk[1] *
-                    Pk[0]**2. -
-                    1260. *
-                    Pk[3] *
-                    Pk[1]**2. -
-                    3360. *
-                    Pk[3] *
-                    Pk[2] *
-                    Pk[0] +
-                    1260. *
-                    Pk[4]**2. +
-                    1344. *
-                    Pk[4] *
-                    Pk[0]**3. -
-                    4032. *
-                    Pk[4] *
-                    Pk[1] *
-                    Pk[0] +
-                    2688. *
-                    Pk[4] *
-                    Pk[2] -
-                    3360. *
-                    Pk[5] *
-                    Pk[0]**2. +
-                    3360. *
-                    Pk[5] *
-                    Pk[1] +
-                    5760. *
-                    Pk[6] *
-                    Pk[0] -
-                    5040. *
-                    Pk[7])
+                    Pk[0] ** 8.0
+                    - 28.0 * Pk[1] * Pk[0] ** 6.0
+                    - 210.0 * Pk[1] ** 2.0 * Pk[0] ** 4.0
+                    - 420.0 * Pk[1] ** 3.0 * Pk[0] ** 2.0
+                    + 105.0 * Pk[1] ** 4.0
+                    + 112.0 * Pk[2] * Pk[0] ** 5.0
+                    + 1120.0 * Pk[2] * Pk[1] * Pk[0] ** 3.0
+                    + 1680.0 * Pk[2] * Pk[1] ** 2.0 * Pk[0]
+                    + 1120.0 * Pk[2] ** 2.0 * Pk[0] ** 2.0
+                    + 1120.0 * Pk[2] ** 2.0 * Pk[1]
+                    - 420.0 * Pk[3] * Pk[0] ** 4.0
+                    + 2520.0 * Pk[3] * Pk[1] * Pk[0] ** 2.0
+                    - 1260.0 * Pk[3] * Pk[1] ** 2.0
+                    - 3360.0 * Pk[3] * Pk[2] * Pk[0]
+                    + 1260.0 * Pk[4] ** 2.0
+                    + 1344.0 * Pk[4] * Pk[0] ** 3.0
+                    - 4032.0 * Pk[4] * Pk[1] * Pk[0]
+                    + 2688.0 * Pk[4] * Pk[2]
+                    - 3360.0 * Pk[5] * Pk[0] ** 2.0
+                    + 3360.0 * Pk[5] * Pk[1]
+                    + 5760.0 * Pk[6] * Pk[0]
+                    - 5040.0 * Pk[7]
+                )
                 D[order] = (
-                    Wk[0]**8. -
-                    28. *
-                    Wk[1] *
-                    Wk[0]**6. -
-                    210. *
-                    Wk[1]**2. *
-                    Wk[0]**4. -
-                    420. *
-                    Wk[1]**3. *
-                    Wk[0]**2. +
-                    105. *
-                    Wk[1]**4. +
-                    112. *
-                    Wk[2] *
-                    Wk[0]**5. +
-                    1120. *
-                    Wk[2] *
-                    Wk[1] *
-                    Wk[0]**3. +
-                    1680. *
-                    Wk[2] *
-                    Wk[1]**2. *
-                    Wk[0] +
-                    1120. *
-                    Wk[2]**2. *
-                    Wk[0]**2. +
-                    1120. *
-                    Wk[2]**2. *
-                    Wk[1] -
-                    420. *
-                    Wk[3] *
-                    Wk[0]**4. +
-                    2520. *
-                    Wk[3] *
-                    Wk[1] *
-                    Wk[0]**2. -
-                    1260. *
-                    Wk[3] *
-                    Wk[1]**2. -
-                    3360. *
-                    Wk[3] *
-                    Wk[2] *
-                    Wk[0] +
-                    1260. *
-                    Wk[4]**2. +
-                    1344. *
-                    Wk[4] *
-                    Wk[0]**3. -
-                    4032. *
-                    Wk[4] *
-                    Wk[1] *
-                    Wk[0] +
-                    2688. *
-                    Wk[4] *
-                    Wk[2] -
-                    3360. *
-                    Wk[5] *
-                    Wk[0]**2. +
-                    3360. *
-                    Wk[5] *
-                    Wk[1] +
-                    5760. *
-                    Wk[6] *
-                    Wk[0] -
-                    5040. *
-                    Wk[7])
+                    Wk[0] ** 8.0
+                    - 28.0 * Wk[1] * Wk[0] ** 6.0
+                    - 210.0 * Wk[1] ** 2.0 * Wk[0] ** 4.0
+                    - 420.0 * Wk[1] ** 3.0 * Wk[0] ** 2.0
+                    + 105.0 * Wk[1] ** 4.0
+                    + 112.0 * Wk[2] * Wk[0] ** 5.0
+                    + 1120.0 * Wk[2] * Wk[1] * Wk[0] ** 3.0
+                    + 1680.0 * Wk[2] * Wk[1] ** 2.0 * Wk[0]
+                    + 1120.0 * Wk[2] ** 2.0 * Wk[0] ** 2.0
+                    + 1120.0 * Wk[2] ** 2.0 * Wk[1]
+                    - 420.0 * Wk[3] * Wk[0] ** 4.0
+                    + 2520.0 * Wk[3] * Wk[1] * Wk[0] ** 2.0
+                    - 1260.0 * Wk[3] * Wk[1] ** 2.0
+                    - 3360.0 * Wk[3] * Wk[2] * Wk[0]
+                    + 1260.0 * Wk[4] ** 2.0
+                    + 1344.0 * Wk[4] * Wk[0] ** 3.0
+                    - 4032.0 * Wk[4] * Wk[1] * Wk[0]
+                    + 2688.0 * Wk[4] * Wk[2]
+                    - 3360.0 * Wk[5] * Wk[0] ** 2.0
+                    + 3360.0 * Wk[5] * Wk[1]
+                    + 5760.0 * Wk[6] * Wk[0]
+                    - 5040.0 * Wk[7]
+                )
 
         self.N_events.append(N)
         self.D_events.append(D)
 
     def _compute_numerator_denominator_all_events(
-            self, particle_list_all_events: List[List[Particle]]) -> None:
+        self, particle_list_all_events: List[List[Particle]]
+    ) -> None:
         """
         Compute numerators and denominators of correlations for all events.
 
@@ -508,7 +325,8 @@ class MultiParticlePtCorrelations:
             self._transverse_momentum_correlations_event_num_denom(event)
 
     def _compute_mean_pt_correlations(
-            self, numerator_denominator_array: np.ndarray) -> float:
+        self, numerator_denominator_array: np.ndarray
+    ) -> float:
         """
         Compute mean transverse momentum correlations from the array containing
         the numerator and denominator.
@@ -531,14 +349,14 @@ class MultiParticlePtCorrelations:
 
         return sum_numerator / sum_denominator
 
-    def mean_pt_correlations(self,
-                             particle_list_all_events: List[List[Particle]],
-                             compute_error: bool = True,
-                             delete_fraction: float = 0.4,
-                             number_samples: int = 100,
-                             seed: int = 42) -> Union[np.ndarray,
-                                                      Tuple[np.ndarray,
-                                                            np.ndarray]]:
+    def mean_pt_correlations(
+        self,
+        particle_list_all_events: List[List[Particle]],
+        compute_error: bool = True,
+        delete_fraction: float = 0.4,
+        number_samples: int = 100,
+        seed: int = 42,
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """
         Computes mean transverse momentum correlations for each order up to
         max_order using Eq. [14] in Ref. [1].
@@ -599,21 +417,28 @@ class MultiParticlePtCorrelations:
         for order in range(self.max_order):
             # combine the numerator and denominator for each order in an array
             numerator_denominator_array = np.array(
-                [self.N_events[:, order], self.D_events[:, order]]).T
-            mean_pt_correlations_store[order] = self._compute_mean_pt_correlations(
-                numerator_denominator_array)
+                [self.N_events[:, order], self.D_events[:, order]]
+            ).T
+            mean_pt_correlations_store[order] = (
+                self._compute_mean_pt_correlations(numerator_denominator_array)
+            )
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                mean_pt_correlations_error_store[order] = jackknife.compute_jackknife_estimates(
-                    numerator_denominator_array, function=self._compute_mean_pt_correlations)
+                mean_pt_correlations_error_store[order] = (
+                    jackknife.compute_jackknife_estimates(
+                        numerator_denominator_array,
+                        function=self._compute_mean_pt_correlations,
+                    )
+                )
 
         self.mean_pt_correlation = mean_pt_correlations_store
         if compute_error:
             self.mean_pt_correlation_error = mean_pt_correlations_error_store
             return (
                 mean_pt_correlations_store,
-                mean_pt_correlations_error_store)
+                mean_pt_correlations_error_store,
+            )
         else:
             return mean_pt_correlations_store
 
@@ -637,52 +462,84 @@ class MultiParticlePtCorrelations:
         if k == 1:
             kappa = C[0]
         elif k == 2:
-            kappa = C[1] - C[0]**2
+            kappa = C[1] - C[0] ** 2
         elif k == 3:
-            kappa = C[2] - 3. * C[1] * C[0] + 2. * C[0]**3
+            kappa = C[2] - 3.0 * C[1] * C[0] + 2.0 * C[0] ** 3
         elif k == 4:
             kappa = (
-                C[3] -
-                4. *
-                C[2] *
-                C[0] -
-                3. *
-                C[1]**2 +
-                12. *
-                C[1] *
-                C[0]**2 -
-                6. *
-                C[0]**4)
+                C[3]
+                - 4.0 * C[2] * C[0]
+                - 3.0 * C[1] ** 2
+                + 12.0 * C[1] * C[0] ** 2
+                - 6.0 * C[0] ** 4
+            )
         elif k == 5:
-            kappa = (C[4] - 5. * C[3] * C[0] - 10. * C[2] * C[1]
-                     + 30. * C[1]**2 * C[0] + 20. * C[2] * C[0]**2
-                     - 60. * C[1] * C[0]**3 + 24. * C[0]**5)
+            kappa = (
+                C[4]
+                - 5.0 * C[3] * C[0]
+                - 10.0 * C[2] * C[1]
+                + 30.0 * C[1] ** 2 * C[0]
+                + 20.0 * C[2] * C[0] ** 2
+                - 60.0 * C[1] * C[0] ** 3
+                + 24.0 * C[0] ** 5
+            )
         elif k == 6:
-            kappa = (C[5] - 6. * C[4] * C[0] - 15. * C[3] * C[1]
-                     - 10. * C[2]**2 + 30. * C[1]**3 + 30. * C[3] * C[0]**2
-                     + 120. * C[2] * C[1] * C[0] - 270. * C[1]**2 * C[0]**2
-                     - 120. * C[2] * C[0]**3 + 360. * C[1] * C[0]**4
-                     - 120. * C[0]**6)
+            kappa = (
+                C[5]
+                - 6.0 * C[4] * C[0]
+                - 15.0 * C[3] * C[1]
+                - 10.0 * C[2] ** 2
+                + 30.0 * C[1] ** 3
+                + 30.0 * C[3] * C[0] ** 2
+                + 120.0 * C[2] * C[1] * C[0]
+                - 270.0 * C[1] ** 2 * C[0] ** 2
+                - 120.0 * C[2] * C[0] ** 3
+                + 360.0 * C[1] * C[0] ** 4
+                - 120.0 * C[0] ** 6
+            )
         elif k == 7:
-            kappa = (C[6] - 7. * C[5] * C[0] - 21. * C[4] * C[1]
-                     + 42. * C[4] * C[0]**2 - 35. * C[3] * C[2]
-                     + 210. * C[3] * C[1] * C[0] - 210. * C[3] * C[0]**3
-                     + 140. * C[2]**2 * C[0] + 210. * C[2] * C[1]**2
-                     - 1260. * C[2] * C[1] * C[0]**2 + 840. * C[2] * C[0]**4
-                     - 630. * C[1]**3 * C[0] + 2520. * C[1]**2 * C[0]**3
-                     - 2520. * C[1] * C[0]**5 + 720. * C[0]**7)
+            kappa = (
+                C[6]
+                - 7.0 * C[5] * C[0]
+                - 21.0 * C[4] * C[1]
+                + 42.0 * C[4] * C[0] ** 2
+                - 35.0 * C[3] * C[2]
+                + 210.0 * C[3] * C[1] * C[0]
+                - 210.0 * C[3] * C[0] ** 3
+                + 140.0 * C[2] ** 2 * C[0]
+                + 210.0 * C[2] * C[1] ** 2
+                - 1260.0 * C[2] * C[1] * C[0] ** 2
+                + 840.0 * C[2] * C[0] ** 4
+                - 630.0 * C[1] ** 3 * C[0]
+                + 2520.0 * C[1] ** 2 * C[0] ** 3
+                - 2520.0 * C[1] * C[0] ** 5
+                + 720.0 * C[0] ** 7
+            )
         elif k == 8:
-            kappa = (C[7] - 8. * C[6] * C[0] - 28. * C[5] * C[1]
-                     + 56. * C[5] * C[0]**2 - 56. * C[4] * C[2]
-                     + 336. * C[4] * C[1] * C[0] - 336. * C[4] * C[0]**3
-                     - 35. * C[3]**2 + 560. * C[3] * C[2] * C[0]
-                     + 420. * C[1]**2 * C[3] - 2520. * C[3] * C[1] * C[0]**2
-                     + 1680. * C[3] * C[0]**4 + 560. * C[2]**2 * C[1]
-                     - 1680. * C[2]**2 * C[0]**2 - 5040. * C[2] * C[1]**2 * C[0]
-                     + 13440. * C[2] * C[1] * C[0]**3 - 6720. * C[2] * C[0]**5
-                     - 630. * C[1]**4 + 10080. * C[1]**3 * C[0]**2
-                     - 25200. * C[1]**2 * C[0]**4 + 20160. * C[1] * C[0]**6
-                     - 5040. * C[0]**8)
+            kappa = (
+                C[7]
+                - 8.0 * C[6] * C[0]
+                - 28.0 * C[5] * C[1]
+                + 56.0 * C[5] * C[0] ** 2
+                - 56.0 * C[4] * C[2]
+                + 336.0 * C[4] * C[1] * C[0]
+                - 336.0 * C[4] * C[0] ** 3
+                - 35.0 * C[3] ** 2
+                + 560.0 * C[3] * C[2] * C[0]
+                + 420.0 * C[1] ** 2 * C[3]
+                - 2520.0 * C[3] * C[1] * C[0] ** 2
+                + 1680.0 * C[3] * C[0] ** 4
+                + 560.0 * C[2] ** 2 * C[1]
+                - 1680.0 * C[2] ** 2 * C[0] ** 2
+                - 5040.0 * C[2] * C[1] ** 2 * C[0]
+                + 13440.0 * C[2] * C[1] * C[0] ** 3
+                - 6720.0 * C[2] * C[0] ** 5
+                - 630.0 * C[1] ** 4
+                + 10080.0 * C[1] ** 3 * C[0] ** 2
+                - 25200.0 * C[1] ** 2 * C[0] ** 4
+                + 20160.0 * C[1] * C[0] ** 6
+                - 5040.0 * C[0] ** 8
+            )
         else:
             raise ValueError("Invalid order k for cumulant calculation")
         return kappa
@@ -717,14 +574,14 @@ class MultiParticlePtCorrelations:
         kappa_store = self._kappa_cumulant(C, k + 1)
         return kappa_store
 
-    def mean_pt_cumulants(self,
-                          particle_list_all_events: List[List[Particle]],
-                          compute_error: bool = True,
-                          delete_fraction: float = 0.4,
-                          number_samples: int = 100,
-                          seed: int = 42) -> Union[np.ndarray,
-                                                   Tuple[np.ndarray,
-                                                         np.ndarray]]:
+    def mean_pt_cumulants(
+        self,
+        particle_list_all_events: List[List[Particle]],
+        compute_error: bool = True,
+        delete_fraction: float = 0.4,
+        number_samples: int = 100,
+        seed: int = 42,
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """
         Computes the mean transverse momentum cumulants for each order k
         from Eqs. B9-B16 in Ref. [1].
@@ -781,24 +638,29 @@ class MultiParticlePtCorrelations:
         kappa_store = np.zeros(self.max_order)
         kappa_store_error = np.zeros(self.max_order)
         for order in range(self.max_order):
-            dataN = self.N_events[:, :2 * (order + 1)]
-            dataD = self.D_events[:, :2 * (order + 1)]
+            dataN = self.N_events[:, : 2 * (order + 1)]
+            dataD = self.D_events[:, : 2 * (order + 1)]
             # combine the numerator and denominator for each order in data
             # always alternate the columns of the numerator and denominator
             combined_data = np.empty(
-                (dataN.shape[0],
-                 dataN.shape[1] +
-                 dataD.shape[1]),
-                dtype=dataN.dtype)
+                (dataN.shape[0], dataN.shape[1] + dataD.shape[1]),
+                dtype=dataN.dtype,
+            )
             combined_data[:, 0::2] = dataN
             combined_data[:, 1::2] = dataD
             kappa_store[order] = self._compute_mean_pt_cumulants(
-                combined_data, order)
+                combined_data, order
+            )
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                kappa_store_error[order] = jackknife.compute_jackknife_estimates(
-                    combined_data, function=self._compute_mean_pt_cumulants, k=order)
+                kappa_store_error[order] = (
+                    jackknife.compute_jackknife_estimates(
+                        combined_data,
+                        function=self._compute_mean_pt_cumulants,
+                        k=order,
+                    )
+                )
 
         self.kappa = kappa_store
         if compute_error:

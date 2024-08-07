@@ -22,8 +22,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install autopep8
+        pip install black==24.8.0
 
     - name: Check code formatting
       run: |
-        autopep8 --diff --recursive --max-line-length 80 --aggressive --ignore-local-config src/sparkx tests/
+        black --check --line-length 80 src/sparkx tests/
