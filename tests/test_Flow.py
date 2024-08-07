@@ -55,35 +55,37 @@ def test_EventPlaneFlow_initialization():
 def test_EventPlaneFlow_integrated_flow_errors(test_data):
     with pytest.raises(TypeError):
         # Test invalid type for self_corr
-        EventPlaneFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).integrated_flow(
-            test_data, test_data, self_corr="not_a_bool"
-        )
+        EventPlaneFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).integrated_flow(test_data, test_data, self_corr="not_a_bool")
 
 
 def test_EventPlaneFlow_differential_flow_errors(test_data):
     with pytest.raises(TypeError):
         # Test invalid type for self_corr
-        EventPlaneFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
+        EventPlaneFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(
             test_data, [0, 1, 2], "pt", test_data, self_corr="not_a_bool"
         )
 
     with pytest.raises(TypeError):
         # Test invalid type for bins
-        EventPlaneFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, "not_a_list", "pt", test_data
-        )
+        EventPlaneFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, "not_a_list", "pt", test_data)
 
     with pytest.raises(TypeError):
         # Test invalid type for flow_as_function_of
-        EventPlaneFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, [0, 1, 2], 123, test_data
-        )
+        EventPlaneFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, [0, 1, 2], 123, test_data)
 
     with pytest.raises(ValueError):
         # Test invalid value for flow_as_function_of
-        EventPlaneFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, [0, 1, 2], "invalid_value", test_data
-        )
+        EventPlaneFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, [0, 1, 2], "invalid_value", test_data)
 
 
 def test_ScalarProductFlow_initialization():
@@ -115,35 +117,37 @@ def test_ScalarProductFlow_initialization():
 def test_ScalarProductFlow_integrated_flow_errors(test_data):
     with pytest.raises(TypeError):
         # Test invalid type for self_corr
-        ScalarProductFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).integrated_flow(
-            test_data, test_data, self_corr="not_a_bool"
-        )
+        ScalarProductFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).integrated_flow(test_data, test_data, self_corr="not_a_bool")
 
 
 def test_ScalarProductFlow_differential_flow_errors(test_data):
     with pytest.raises(TypeError):
         # Test invalid type for self_corr
-        ScalarProductFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
+        ScalarProductFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(
             test_data, [0, 1, 2], "pt", test_data, self_corr="not_a_bool"
         )
 
     with pytest.raises(TypeError):
         # Test invalid type for bins
-        ScalarProductFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, "not_a_list", "pt", test_data
-        )
+        ScalarProductFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, "not_a_list", "pt", test_data)
 
     with pytest.raises(TypeError):
         # Test invalid type for flow_as_function_of
-        ScalarProductFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, [0, 1, 2], 123, test_data
-        )
+        ScalarProductFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, [0, 1, 2], 123, test_data)
 
     with pytest.raises(ValueError):
         # Test invalid value for flow_as_function_of
-        ScalarProductFlow(n=2, weight="pt2", pseudorapidity_gap=0.1).differential_flow(
-            test_data, [0, 1, 2], "invalid_value", test_data
-        )
+        ScalarProductFlow(
+            n=2, weight="pt2", pseudorapidity_gap=0.1
+        ).differential_flow(test_data, [0, 1, 2], "invalid_value", test_data)
 
 
 def test_ReactionPlaneFlow_initialization():
@@ -167,7 +171,9 @@ def test_ReactionPlaneFlow_differential_flow_errors(test_data):
 
     with pytest.raises(ValueError):
         # Test invalid value for flow_as_function_of
-        ReactionPlaneFlow(n=2).differential_flow(test_data, [0, 1, 2], "invalid_value")
+        ReactionPlaneFlow(n=2).differential_flow(
+            test_data, [0, 1, 2], "invalid_value"
+        )
 
 
 def test_LeeYangZeroFlow_initialization():
@@ -260,11 +266,15 @@ def test_QCumulant_flow_differential_flow_errors(test_data):
 
     # Test poi_pdg elements not being integers
     with pytest.raises(TypeError):
-        qcf.differential_flow(test_data, [0, 1, 2], "pt", poi_pdg=[1, 2, "not_an_int"])
+        qcf.differential_flow(
+            test_data, [0, 1, 2], "pt", poi_pdg=[1, 2, "not_an_int"]
+        )
 
     # Test flow_as_function_of not in allowed values
     with pytest.raises(ValueError):
-        qcf.differential_flow(test_data, [0, 1, 2], "invalid_value", poi_pdg=[1, 2])
+        qcf.differential_flow(
+            test_data, [0, 1, 2], "invalid_value", poi_pdg=[1, 2]
+        )
 
     # Test k value not in allowed values
     with pytest.raises(ValueError):

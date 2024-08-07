@@ -845,7 +845,9 @@ class Lattice3D:
             self.num_points_z_,
         )
 
-        result.grid_ = np.mean([lattice.grid_ for lattice in all_lattices], axis=0)
+        result.grid_ = np.mean(
+            [lattice.grid_ for lattice in all_lattices], axis=0
+        )
 
         return result
 
@@ -1098,7 +1100,9 @@ class Lattice3D:
         else:
             raise ValueError("Invalid axis. Must be 'x', 'y', or 'z'.")
 
-        np.savetxt(filename, slice_data, delimiter=",", header=header, comments="")
+        np.savetxt(
+            filename, slice_data, delimiter=",", header=header, comments=""
+        )
 
     def interpolate_to_lattice(self, num_points_x, num_points_y, num_points_z):
         """
@@ -1283,7 +1287,10 @@ class Lattice3D:
             )
         # Check if both lattices have the same spacing
         if (
-            (other.spacing_x_ is None or abs(self.spacing_x_ - other.spacing_x_) < 1e-3)
+            (
+                other.spacing_x_ is None
+                or abs(self.spacing_x_ - other.spacing_x_) < 1e-3
+            )
             and (
                 other.spacing_y_ is None
                 or abs(self.spacing_y_ - other.spacing_y_) < 1e-3
@@ -1317,7 +1324,9 @@ class Lattice3D:
                     )
 
         else:
-            raise ValueError("The provided lattices do not have identical spacing.")
+            raise ValueError(
+                "The provided lattices do not have identical spacing."
+            )
 
     def add_particle_data(
         self, particle_data, sigma, quantity, kernel="covariant", add=False
@@ -1448,7 +1457,9 @@ class Lattice3D:
 
                         # Calculate the value to add to the grid at (i, j, k)
                         if kernel == "gaussian":
-                            smearing_factor = kernel_value.pdf([xi + x, yj + y, zk + z])
+                            smearing_factor = kernel_value.pdf(
+                                [xi + x, yj + y, zk + z]
+                            )
                         else:
                             diff_space = (xi) ** 2 + (yj) ** 2 + (zk) ** 2
                             gamma = np.sqrt(
@@ -1463,7 +1474,9 @@ class Lattice3D:
                                 [diff_space, diff_velocity]
                             )
                         norm += smearing_factor
-                        value_to_add = value * smearing_factor / self.cell_volume_
+                        value_to_add = (
+                            value * smearing_factor / self.cell_volume_
+                        )
 
                         if np.isnan(value_to_add):
                             value_to_add = 0.0

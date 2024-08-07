@@ -169,10 +169,14 @@ class Histogram:
             self.number_of_bins_ = len(bin_boundaries) - 1
             self.bin_edges_ = np.asarray(bin_boundaries)
             self.histograms_ = np.asarray([np.zeros(self.number_of_bins_)])
-            self.histograms_raw_count_ = np.asarray([np.zeros(self.number_of_bins_)])
+            self.histograms_raw_count_ = np.asarray(
+                [np.zeros(self.number_of_bins_)]
+            )
             self.scaling_ = np.asarray([np.ones(self.number_of_bins_)])
             self.error_ = np.asarray([np.zeros(self.number_of_bins_)])
-            self.systematic_error_ = np.asarray([np.zeros(self.number_of_bins_)])
+            self.systematic_error_ = np.asarray(
+                [np.zeros(self.number_of_bins_)]
+            )
 
         else:
             raise TypeError(
@@ -300,7 +304,8 @@ class Histogram:
         self.histograms_ = [np.delete(hist, index) for hist in self.histograms_]
         self.error_ = [np.delete(err, index) for err in self.error_]
         self.histograms_raw_count_ = [
-            np.delete(raw_count, index) for raw_count in self.histograms_raw_count_
+            np.delete(raw_count, index)
+            for raw_count in self.histograms_raw_count_
         ]
         self.systematic_error_ = [
             np.delete(sys_err, index) for sys_err in self.systematic_error_
@@ -348,7 +353,9 @@ class Histogram:
         self.histograms_ = np.asarray(
             [np.insert(hist, index, 0) for hist in self.histograms_]
         )
-        self.error_ = np.asarray([np.insert(err, index, 0) for err in self.error_])
+        self.error_ = np.asarray(
+            [np.insert(err, index, 0) for err in self.error_]
+        )
         self.histograms_raw_count_ = np.asarray(
             [
                 np.insert(raw_count, index, 0).tolist()
@@ -394,9 +401,13 @@ class Histogram:
         if weight is not None:
             if isinstance(weight, (int, float, np.number)):
                 if not isinstance(value, (int, float, np.number)):
-                    raise ValueError("Value must be numeric when weight is scalar.")
+                    raise ValueError(
+                        "Value must be numeric when weight is scalar."
+                    )
                 if np.isnan(weight):
-                    raise ValueError("Value cannot be NaN when weight is scalar.")
+                    raise ValueError(
+                        "Value cannot be NaN when weight is scalar."
+                    )
             elif len(weight) != np.atleast_1d(value).shape[0]:
                 raise ValueError("Weight must have the same length as value.")
             else:
@@ -438,7 +449,9 @@ class Histogram:
         # Case 1.2: value is a list of numbers
         elif isinstance(value, (list, np.ndarray)):
             if np.isnan(value).any():
-                raise ValueError("At least one input value in add_value is NaN.")
+                raise ValueError(
+                    "At least one input value in add_value is NaN."
+                )
             if weight is not None:
                 for element, w in zip(value, weight):
                     self.add_value(element, weight=w)
@@ -495,7 +508,9 @@ class Histogram:
         self.histograms_raw_count_ = np.vstack(
             (self.histograms_raw_count_, empty_histogram)
         )
-        self.scaling_ = np.vstack((self.scaling_, np.ones(self.number_of_bins_)))
+        self.scaling_ = np.vstack(
+            (self.scaling_, np.ones(self.number_of_bins_))
+        )
         self.error_ = np.vstack((self.error_, np.zeros(self.number_of_bins_)))
         self.systematic_error_ = np.vstack(
             (self.systematic_error_, np.zeros(self.number_of_bins_))
@@ -593,7 +608,9 @@ class Histogram:
         average = np.average(self.histograms_, axis=0, weights=weights)
 
         self.histograms_ = average
-        self.error_ = np.sqrt(1.0 / np.sum(1.0 / np.square(self.error_), axis=0))
+        self.error_ = np.sqrt(
+            1.0 / np.sum(1.0 / np.square(self.error_), axis=0)
+        )
         self.systematic_error_ = np.sqrt(
             np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
@@ -647,14 +664,19 @@ class Histogram:
             Scaling factor for the histogram.
         """
         if isinstance(value, (int, float, np.number)) and value < 0:
-            raise ValueError("The scaling factor of the histogram cannot be negative")
+            raise ValueError(
+                "The scaling factor of the histogram cannot be negative"
+            )
         elif (
             isinstance(value, (list, np.ndarray))
             and sum(1 for number in value if number < 0) > 0
         ):
-            raise ValueError("The scaling factor of the histogram cannot be negative")
+            raise ValueError(
+                "The scaling factor of the histogram cannot be negative"
+            )
         elif (
-            isinstance(value, (list, np.ndarray)) and len(value) != self.number_of_bins_
+            isinstance(value, (list, np.ndarray))
+            and len(value) != self.number_of_bins_
         ):
             raise ValueError(
                 "The length of list/array not compatible with number_of_bins_ of the histogram"
@@ -795,7 +817,9 @@ class Histogram:
         if columns is not None and not all(
             col in hist_labels[0].keys() for col in columns
         ):
-            raise TypeError("columns must contain only keys present in hist_labels")
+            raise TypeError(
+                "columns must contain only keys present in hist_labels"
+            )
 
         if self.number_of_histograms_ > 1 and len(hist_labels) == 1:
             error_message = (
@@ -804,7 +828,8 @@ class Histogram:
             )
             warnings.warn(error_message)
         elif self.number_of_histograms_ > 1 and (
-            len(hist_labels) > 1 and len(hist_labels) < self.number_of_histograms_
+            len(hist_labels) > 1
+            and len(hist_labels) < self.number_of_histograms_
         ):
             raise ValueError(
                 "Print multiple histograms to file, more than one,"

@@ -72,7 +72,9 @@ class EventCharacteristics:
 
     """
 
-    event_data_: Union[Lattice3D, List[Particle], np.ndarray[Any, np.dtype[np.object_]]]
+    event_data_: Union[
+        Lattice3D, List[Particle], np.ndarray[Any, np.dtype[np.object_]]
+    ]
     has_lattice_: bool
 
     def __init__(
@@ -117,7 +119,8 @@ class EventCharacteristics:
             for particle in event_data:
                 if not isinstance(particle, Particle):
                     raise TypeError(
-                        "At least one element in the input is not a " + "Particle type."
+                        "At least one element in the input is not a "
+                        + "Particle type."
                     )
             self.event_data_ = event_data
             self.has_lattice_ = False
@@ -471,7 +474,9 @@ class EventCharacteristics:
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
         if np.isnan(tau):
-            raise ValueError("The proper time is not defined for the given particles.")
+            raise ValueError(
+                "The proper time is not defined for the given particles."
+            )
         # take the x and y coordinates from the lattice and use the set eta
         # range
         x = energy_density.x_values_
@@ -494,9 +499,7 @@ class EventCharacteristics:
         file_header = "# smeared density from SPARKX in Milne coordinates\n# "
         if IC_info is not None:
             file_header += IC_info
-        file_header += (
-            "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
-        )
+        file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
         file_header += "%d %d %d %g %g %g %g %g %g\n" % (
             Nx,
             Ny,
@@ -521,19 +524,27 @@ class EventCharacteristics:
                         # dz = tau * cosh(eta) * deta
                         milne_conversion = tau * np.cosh(eta_val)
                         value_energy_density = (
-                            energy_density.interpolate_value(x_val, y_val, z_val)
+                            energy_density.interpolate_value(
+                                x_val, y_val, z_val
+                            )
                             * milne_conversion
                         )
                         value_baryon_density = (
-                            baryon_density.interpolate_value(x_val, y_val, z_val)
+                            baryon_density.interpolate_value(
+                                x_val, y_val, z_val
+                            )
                             * milne_conversion
                         )
                         value_charge_density = (
-                            charge_density.interpolate_value(x_val, y_val, z_val)
+                            charge_density.interpolate_value(
+                                x_val, y_val, z_val
+                            )
                             * milne_conversion
                         )
                         value_strangeness_density = (
-                            strangeness_density.interpolate_value(x_val, y_val, z_val)
+                            strangeness_density.interpolate_value(
+                                x_val, y_val, z_val
+                            )
                             * milne_conversion
                         )
 
@@ -711,9 +722,7 @@ class EventCharacteristics:
         file_header = "# smeared density from SPARKX in Milne coordinates\n# "
         if IC_info is not None:
             file_header += IC_info
-        file_header += (
-            "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
-        )
+        file_header += "\n# grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max\n# "
         file_header += "%d %d %d %g %g %g %g %g %g\n" % (
             Nx,
             Ny,
@@ -744,7 +753,9 @@ class EventCharacteristics:
                             x_val, y_val, z_val
                         )
                         value_strangeness_density = (
-                            strangeness_density.interpolate_value(x_val, y_val, z_val)
+                            strangeness_density.interpolate_value(
+                                x_val, y_val, z_val
+                            )
                         )
 
                         if value_energy_density is None:

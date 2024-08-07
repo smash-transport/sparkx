@@ -418,9 +418,9 @@ class MultiParticlePtCorrelations:
             numerator_denominator_array = np.array(
                 [self.N_events[:, order], self.D_events[:, order]]
             ).T
-            mean_pt_correlations_store[order] = self._compute_mean_pt_correlations(
-                numerator_denominator_array
-            )
+            mean_pt_correlations_store[
+                order
+            ] = self._compute_mean_pt_correlations(numerator_denominator_array)
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
@@ -434,7 +434,10 @@ class MultiParticlePtCorrelations:
         self.mean_pt_correlation = mean_pt_correlations_store
         if compute_error:
             self.mean_pt_correlation_error = mean_pt_correlations_error_store
-            return (mean_pt_correlations_store, mean_pt_correlations_error_store)
+            return (
+                mean_pt_correlations_store,
+                mean_pt_correlations_error_store,
+            )
         else:
             return mean_pt_correlations_store
 
@@ -639,16 +642,23 @@ class MultiParticlePtCorrelations:
             # combine the numerator and denominator for each order in data
             # always alternate the columns of the numerator and denominator
             combined_data = np.empty(
-                (dataN.shape[0], dataN.shape[1] + dataD.shape[1]), dtype=dataN.dtype
+                (dataN.shape[0], dataN.shape[1] + dataD.shape[1]),
+                dtype=dataN.dtype,
             )
             combined_data[:, 0::2] = dataN
             combined_data[:, 1::2] = dataD
-            kappa_store[order] = self._compute_mean_pt_cumulants(combined_data, order)
+            kappa_store[order] = self._compute_mean_pt_cumulants(
+                combined_data, order
+            )
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                kappa_store_error[order] = jackknife.compute_jackknife_estimates(
-                    combined_data, function=self._compute_mean_pt_cumulants, k=order
+                kappa_store_error[
+                    order
+                ] = jackknife.compute_jackknife_estimates(
+                    combined_data,
+                    function=self._compute_mean_pt_cumulants,
+                    k=order,
                 )
 
         self.kappa = kappa_store

@@ -40,7 +40,8 @@ def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
         raise TypeError("Input value must be a tuple of length two")
 
     elif any(
-        val is not None and not isinstance(val, (int, float)) for val in value_tuple
+        val is not None and not isinstance(val, (int, float))
+        for val in value_tuple
     ):
         raise ValueError("Non-numeric value found in given tuple")
 
@@ -152,7 +153,9 @@ def particle_species(particle_list, pdg_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(pdg_list, (str, int, list, np.integer, np.ndarray, tuple, float)):
+    if not isinstance(
+        pdg_list, (str, int, list, np.integer, np.ndarray, tuple, float)
+    ):
         raise TypeError(
             "Input value for pgd codes has not one of the "
             + "following types: str, int, float, np.integer, list "
@@ -218,7 +221,9 @@ def remove_particle_species(particle_list, pdg_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)):
+    if not isinstance(
+        pdg_list, (str, int, float, list, np.integer, np.ndarray, tuple)
+    ):
         raise TypeError(
             "Input value for pgd codes has not one of the "
             + "following types: str, int, float, np.integer, list "
@@ -350,7 +355,9 @@ def lower_event_energy_cut(particle_list, minimum_event_energy):
     updated_particle_list = []
     for event_particles in particle_list:
         total_energy = sum(
-            particle.E for particle in event_particles if not np.isnan(particle.E)
+            particle.E
+            for particle in event_particles
+            if not np.isnan(particle.E)
         )
         if total_energy >= minimum_event_energy:
             updated_particle_list.append(event_particles)
@@ -504,7 +511,10 @@ def pT_cut(particle_list, cut_value_tuple):
         particle_list_tmp = [
             elem
             for elem in particle_list[i]
-            if (lim_min <= elem.pT_abs() <= lim_max and not np.isnan(elem.pT_abs()))
+            if (
+                lim_min <= elem.pT_abs() <= lim_max
+                and not np.isnan(elem.pT_abs())
+            )
         ]
         updated_particle_list.append(particle_list_tmp)
 
@@ -632,7 +642,8 @@ def rapidity_cut(particle_list, cut_value):
                 elem
                 for elem in particle_list[i]
                 if (
-                    -limit <= elem.rapidity() <= limit and not np.isnan(elem.rapidity())
+                    -limit <= elem.rapidity() <= limit
+                    and not np.isnan(elem.rapidity())
                 )
             ]
             updated_particle_list.append(particle_list_tmp)

@@ -185,8 +185,12 @@ class JetAnalysis:
         if len(jet_eta_range) != 2:
             raise ValueError("jet_eta_range must contain exactly two values.")
 
-        lower_cut = float("-inf") if jet_eta_range[0] is None else jet_eta_range[0]
-        upper_cut = float("inf") if jet_eta_range[1] is None else jet_eta_range[1]
+        lower_cut = (
+            float("-inf") if jet_eta_range[0] is None else jet_eta_range[0]
+        )
+        upper_cut = (
+            float("inf") if jet_eta_range[1] is None else jet_eta_range[1]
+        )
         if lower_cut < upper_cut:
             self.jet_eta_range_ = (lower_cut, upper_cut)
         else:
@@ -238,7 +242,9 @@ class JetAnalysis:
         ]
         return event_list_PseudoJets
 
-    def fill_associated_particles(self, jet, event, status_selection, only_charged):
+    def fill_associated_particles(
+        self, jet, event, status_selection, only_charged
+    ):
         """
         Select particles in the jet cone.
 
@@ -270,7 +276,9 @@ class JetAnalysis:
             ):
                 continue
 
-            fastjet_particle = fj.PseudoJet(hadron.px, hadron.py, hadron.pz, hadron.E)
+            fastjet_particle = fj.PseudoJet(
+                hadron.px, hadron.py, hadron.pz, hadron.E
+            )
             delta_eta = fastjet_particle.eta() - jet.eta()
             delta_phi = fastjet_particle.delta_phi_to(jet)
             delta_r = np.sqrt(delta_eta**2.0 + delta_phi**2.0)
@@ -443,7 +451,9 @@ class JetAnalysis:
                 jet_algorithm == fj.ee_genkt_algorithm
                 or jet_algorithm == fj.genkt_algorithm
             ):
-                jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_, -1.0)
+                jet_definition = fj.JetDefinition(
+                    jet_algorithm, self.jet_R_, -1.0
+                )
             else:
                 jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_)
             jet_selector = fj.SelectorEtaRange(
@@ -458,7 +468,9 @@ class JetAnalysis:
 
             # perform the jet finding algorithm
             cluster = fj.ClusterSequence(event_PseudoJets, jet_definition)
-            jets = fj.sorted_by_pt(cluster.inclusive_jets(self.jet_pt_range_[0]))
+            jets = fj.sorted_by_pt(
+                cluster.inclusive_jets(self.jet_pt_range_[0])
+            )
             jets = jet_selector(jets)
 
             # get the associated particles in the jet cone

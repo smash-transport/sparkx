@@ -221,7 +221,9 @@ def test_initialize_from_array_valid_formats():
     assert p1.charge == 1
 
     format2 = "Oscar2013"
-    array2 = np.array([0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1])
+    array2 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1]
+    )
 
     p2 = Particle(input_format=format2, particle_array=array2)
     assert p2.t == 0.0
@@ -379,8 +381,12 @@ def test_initialize_from_array_Jetscape_invalid_pdg_warning():
 
 
 def test_initialize_from_array_invalid_format():
-    with pytest.raises(ValueError, match=r"Unsupported input format 'InvalidFormat'"):
-        Particle(input_format="InvalidFormat", particle_array=np.array([1, 2, 3]))
+    with pytest.raises(
+        ValueError, match=r"Unsupported input format 'InvalidFormat'"
+    ):
+        Particle(
+            input_format="InvalidFormat", particle_array=np.array([1, 2, 3])
+        )
 
 
 def test_initialize_from_array_corrupted_data():
@@ -392,9 +398,13 @@ def test_initialize_from_array_corrupted_data():
 
 def test_initialize_from_array_warning_invalid_pdg():
     format1 = "Oscar2013"
-    array1 = np.array([0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 99999999, 100, 1])
+    array1 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 99999999, 100, 1]
+    )
 
-    with pytest.warns(UserWarning, match=r"The PDG code 99999999 is not valid."):
+    with pytest.warns(
+        UserWarning, match=r"The PDG code 99999999 is not valid."
+    ):
         p1 = Particle(input_format=format1, particle_array=array1)
 
     assert p1.pdg_valid is False

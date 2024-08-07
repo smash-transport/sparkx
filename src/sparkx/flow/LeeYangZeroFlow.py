@@ -95,7 +95,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         if not isinstance(n, int):
             raise TypeError("n has to be int")
         elif n <= 0:
-            raise ValueError("n-th harmonic with value n<=0 can not be computed")
+            raise ValueError(
+                "n-th harmonic with value n<=0 can not be computed"
+            )
         else:
             self.n_ = n
 
@@ -156,7 +158,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         g_theta = 1.0 + 0.0j
         for j in range(len(weight_j)):
-            g_theta *= 1.0 + 1.0j * r * weight_j[j] * np.cos(n * (phi_j[j] - theta))
+            g_theta *= 1.0 + 1.0j * r * weight_j[j] * np.cos(
+                n * (phi_j[j] - theta)
+            )
         return g_theta
 
     def __Q_x(self, n, weight_j, phi_j):
@@ -288,7 +292,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         float
             The computed relative flow fluctuation based on Eq. (8) in Ref. [3].
         """
-        return (1.0 / (2.0 * NEvents * self.j01_**2.0 * self.J1rootJ0_**2.0)) * (
+        return (
+            1.0 / (2.0 * NEvents * self.j01_**2.0 * self.J1rootJ0_**2.0)
+        ) * (
             np.exp(self.j01_**2.0 / (2.0 * chi * chi))
             + np.exp(-self.j01_**2.0 / (2.0 * chi**2.0)) * (-0.2375362)
         )
@@ -337,7 +343,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         AvgQy = 0.0
         AvgQxSqPQySq = 0.0
 
-        G = np.zeros((len(self.theta_space_), len(self.r_space_)), dtype=np.complex_)
+        G = np.zeros(
+            (len(self.theta_space_), len(self.r_space_)), dtype=np.complex_
+        )
         self.__sample_random_reaction_planes(len(particle_data))
 
         for event in range(number_events):
@@ -423,7 +431,11 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         else:
             # factor 1/2 because the statistical error on Vninf is a factor 2
             # smaller
-            return [vn_inf, 0.5 * np.sqrt(vn_inf * relative_Vn_fluctuation), chi_value]
+            return [
+                vn_inf,
+                0.5 * np.sqrt(vn_inf * relative_Vn_fluctuation),
+                chi_value,
+            ]
 
     def __compute_reference_differential_flow(self, particle_data):
         """
@@ -484,9 +496,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         float
             The calculated differential flow uncertainty.
         """
-        err_sq = (1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)) * (
+        err_sq = (
+            1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)
+        ) * (
             np.exp(self.j01_**2.0 / (2.0 * self.chi_**2.0))
-            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0)) * (-0.2375362)
+            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0))
+            * (-0.2375362)
         )
         return np.sqrt(err_sq)
 
@@ -535,7 +550,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
                 sum_j = 0.0
                 for p in range(event_multiplicity):
-                    numerator = np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
+                    numerator = np.cos(
+                        self.n_ * (phi_j[p] - self.theta_space_[theta])
+                    )
                     denominator = 1.0 + 1.0j * self.r0theta_[theta] * weight_j[
                         p
                     ] * np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
@@ -570,7 +587,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         else:
             return [vn_differential, vn_differential_uncertainty]
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of, poi_pdg=None):
+    def differential_flow(
+        self, particle_data, bins, flow_as_function_of, poi_pdg=None
+    ):
         """
         Compute the differential flow.
 

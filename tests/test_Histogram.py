@@ -66,14 +66,18 @@ def test_add_value_single_number():
     # Test adding a single number to the histogram
     hist = Histogram((0, 10, 10))
     hist.add_value(4.5)
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+    )
 
 
 def test_add_value_list():
     # Test adding a list of numbers to the histogram
     hist = Histogram((0, 10, 10))
     hist.add_value([1, 3, 5, 7, 9])
-    assert np.allclose(hist.histogram(), np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+    )
 
 
 def test_add_value_single_number_to_existing_histogram():
@@ -81,7 +85,9 @@ def test_add_value_single_number_to_existing_histogram():
     hist = Histogram((0, 10, 10))
     hist.add_value(4.5)
     hist.add_value(5.5)
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 1, 1, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 1, 1, 0, 0, 0, 0])
+    )
 
 
 def test_add_value_single_number_to_multiple_histograms():
@@ -92,7 +98,9 @@ def test_add_value_single_number_to_multiple_histograms():
     hist.add_value(5.5)
     assert np.allclose(
         hist.histogram(),
-        np.array([[0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]]),
+        np.array(
+            [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]]
+        ),
     )
 
 
@@ -131,7 +139,9 @@ def test_add_bin():
     assert np.allclose(
         hist.bin_edges_, np.array([0, 1, 2, 3, 4, 5, 5.5, 6, 7, 8, 9, 10])
     )
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    )
 
 
 def test_add_bin_index_out_of_range():
@@ -153,7 +163,9 @@ def test_add_bin_to_existing_histogram():
     hist = Histogram((0, 10, 10))
     hist.add_value(4.5)
     hist.add_bin(6, 5.5)
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0])
+    )
 
 
 def test_add_bin_to_multiple_histograms():
@@ -168,7 +180,10 @@ def test_add_bin_to_multiple_histograms():
     assert np.allclose(
         hist.histogram(),
         np.array(
-            [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+            [
+                [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+            ]
         ),
     )
 
@@ -176,7 +191,9 @@ def test_add_bin_to_multiple_histograms():
 def test_add_value_with_weight():
     hist = Histogram((0, 10, 10))
     hist.add_value(4.5, weight=0.5)
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0])
+    )
 
 
 def test_add_value_with_weight_NaN():
@@ -194,7 +211,9 @@ def test_add_value_with_two_weights():
 def test_add_value_list_weigths():
     hist = Histogram((0, 10, 10))
     hist.add_value([4.5, 5.5], weight=[0.5, 0.5])
-    assert np.allclose(hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0])
+    )
 
 
 def test_add_value_list_weigths_error_length():
@@ -288,7 +307,8 @@ def test_average():
     counts_summed = [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0]
     hist.average()
     assert np.allclose(
-        hist.histogram(), np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0])
+        hist.histogram(),
+        np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0]),
     )
     # Test if the error is the standard error
     assert np.allclose(
@@ -308,7 +328,8 @@ def test_average_weighted():
     counts_summed = [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0]
     hist.average_weighted([0.3, 0.7])
     assert np.allclose(
-        hist.histogram(), np.array([0, 0.3, 0.3, 0.3, 0.3, 0.7, 0.3, 0.3, 0.3, 0.7])
+        hist.histogram(),
+        np.array([0, 0.3, 0.3, 0.3, 0.3, 0.7, 0.3, 0.3, 0.3, 0.7]),
     )
     # Test if the error is the standard error
     assert np.allclose(
@@ -481,7 +502,8 @@ def test_average_weighted():
     weights = np.array([0.5, 0.5])
     hist.average_weighted(weights)
     assert np.allclose(
-        hist.histogram(), np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0])
+        hist.histogram(),
+        np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0]),
     )
 
 
@@ -490,7 +512,9 @@ def test_scale_histogram_single_factor():
     hist = Histogram((0, 10, 10))
     hist.add_value([1, 3, 5, 7, 9])
     hist.scale_histogram(2)
-    assert np.allclose(hist.histogram(), np.array([0, 2, 0, 2, 0, 2, 0, 2, 0, 2]))
+    assert np.allclose(
+        hist.histogram(), np.array([0, 2, 0, 2, 0, 2, 0, 2, 0, 2])
+    )
 
 
 def test_scale_histogram_multiple_factors():
@@ -505,5 +529,7 @@ def test_scale_histogram_multiple_factors():
     hist.scale_histogram([2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
     assert np.allclose(
         hist.histogram(),
-        np.array([[0, 1, 0, 1, 0, 1, 0, 1, 0, 1], [0, 0, 2, 0, 2, 0, 2, 0, 2, 2]]),
+        np.array(
+            [[0, 1, 0, 1, 0, 1, 0, 1, 0, 1], [0, 0, 2, 0, 2, 0, 2, 0, 2, 2]]
+        ),
     )

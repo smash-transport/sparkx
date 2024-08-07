@@ -369,7 +369,8 @@ class Particle:
             if len(particle_array) == len(attribute_mapping[input_format]) or (
                 input_format in ["Oscar2013Extended", "Oscar2013Extended_IC"]
                 and len(particle_array) <= len(attribute_mapping[input_format])
-                and len(particle_array) >= len(attribute_mapping[input_format]) - 2
+                and len(particle_array)
+                >= len(attribute_mapping[input_format]) - 2
             ):
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array) <= (index[1]):

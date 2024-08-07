@@ -107,7 +107,9 @@ class GenerateFlow:
                     "where N is an integer."
                 )
             vn_dictionary.update(
-                (k, v) for k, v in enumerate(vn, start=2) if v is not None and v != 0.0
+                (k, v)
+                for k, v in enumerate(vn, start=2)
+                if v is not None and v != 0.0
             )
             kwargs = dict(dtype=float, count=len(vn_dictionary))
             self.n_ = np.fromiter(vn_dictionary.keys(), **kwargs)
@@ -250,7 +252,8 @@ class GenerateFlow:
             None
         """
         p_abs = [
-            self.__thermal_distribution(temperature, mass) for _ in range(multiplicity)
+            self.__thermal_distribution(temperature, mass)
+            for _ in range(multiplicity)
         ]
 
         # compute the directions
@@ -525,7 +528,9 @@ class GenerateFlow:
         status = 27
 
         with open(output_path, "w") as output:
-            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+            output.write(
+                "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
+            )
 
             for event in range(number_events):
                 self.__sample_angles(multiplicity)
@@ -560,7 +565,12 @@ class GenerateFlow:
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
     def generate_dummy_JETSCAPE_file_realistic_pt_shape(
-        self, output_path, number_events, multiplicity, seed, random_reaction_plane=True
+        self,
+        output_path,
+        number_events,
+        multiplicity,
+        seed,
+        random_reaction_plane=True,
     ):
         """
         Generate a dummy JETSCAPE file with particles having flow with a more
@@ -605,7 +615,9 @@ class GenerateFlow:
         status = 27
 
         with open(output_path, "w") as output:
-            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+            output.write(
+                "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
+            )
 
             for event in range(number_events):
                 if random_reaction_plane:
@@ -709,7 +721,9 @@ class GenerateFlow:
         status = 27
 
         with open(output_path, "w") as output:
-            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+            output.write(
+                "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
+            )
 
             for event in range(number_events):
                 self.__sample_angles(multiplicity)
@@ -812,7 +826,9 @@ class GenerateFlow:
         status = 27
 
         with open(output_path, "w") as output:
-            output.write("#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n")
+            output.write(
+                "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
+            )
 
             for event in range(number_events):
                 if random_reaction_plane:
@@ -854,7 +870,9 @@ class GenerateFlow:
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
-    def generate_dummy_OSCAR_file(self, output_path, number_events, multiplicity, seed):
+    def generate_dummy_OSCAR_file(
+        self, output_path, number_events, multiplicity, seed
+    ):
         """
         Generate a dummy OSCAR2013 file with random particle momenta
         resulting in the same flow for all transverse momenta.
@@ -900,7 +918,9 @@ class GenerateFlow:
             output.write(
                 "#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n"
             )
-            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write(
+                "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n"
+            )
             output.write("# SMASH-2.2\n")
 
             for event in range(number_events):
@@ -942,7 +962,12 @@ class GenerateFlow:
                 )
 
     def generate_dummy_OSCAR_file_realistic_pt_shape(
-        self, output_path, number_events, multiplicity, seed, random_reaction_plane=True
+        self,
+        output_path,
+        number_events,
+        multiplicity,
+        seed,
+        random_reaction_plane=True,
     ):
         """
         Generate a dummy OSCAR2013 file with particles having flow with a more
@@ -989,7 +1014,9 @@ class GenerateFlow:
             output.write(
                 "#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n"
             )
-            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write(
+                "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n"
+            )
             output.write("# SMASH-2.2\n")
 
             for event in range(number_events):
@@ -1102,7 +1129,9 @@ class GenerateFlow:
             output.write(
                 "#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n"
             )
-            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write(
+                "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n"
+            )
             output.write("# SMASH-2.2\n")
 
             for event in range(number_events):
@@ -1214,7 +1243,9 @@ class GenerateFlow:
             output.write(
                 "#!OSCAR2013 particle_lists t x y z mass p0 px py pz pdg ID charge\n"
             )
-            output.write("# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n")
+            output.write(
+                "# Units: fm fm fm fm GeV GeV GeV GeV GeV none none e\n"
+            )
             output.write("# SMASH-2.2\n")
 
             for event in range(number_events):

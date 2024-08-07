@@ -98,7 +98,9 @@ def test_get_index_outside_range_raises_error(sample_lattice):
 
 def test_get_index_nearest_neighbor_within_range(sample_lattice):
     values = np.linspace(0, 1, 10)
-    assert sample_lattice._Lattice3D__get_index_nearest_neighbor(0.3, values) == 3
+    assert (
+        sample_lattice._Lattice3D__get_index_nearest_neighbor(0.3, values) == 3
+    )
 
 
 def test_get_index_nearest_neighbor_at_lower_bound(sample_lattice):
@@ -135,7 +137,9 @@ def test_get_indices_outside_range_raises_error(sample_lattice):
 
 
 def test_get_indices_nearest_neighbor_within_range(sample_lattice):
-    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(0.3, 0.4, 0.499) == (
+    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(
+        0.3, 0.4, 0.499
+    ) == (
         3,
         4,
         4,
@@ -143,14 +147,24 @@ def test_get_indices_nearest_neighbor_within_range(sample_lattice):
 
 
 def test_get_indices_nearest_neighbor_at_lower_bounds(sample_lattice):
-    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(0, 0, 0) == (0, 0, 0)
+    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(0, 0, 0) == (
+        0,
+        0,
+        0,
+    )
 
 
 def test_get_indices_nearest_neighbor_at_upper_bounds(sample_lattice):
-    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(1, 1, 1) == (9, 9, 9)
+    assert sample_lattice._Lattice3D__get_indices_nearest_neighbor(1, 1, 1) == (
+        9,
+        9,
+        9,
+    )
 
 
-def test_get_indices_nearest_neighbor_outside_range_raises_error(sample_lattice):
+def test_get_indices_nearest_neighbor_outside_range_raises_error(
+    sample_lattice,
+):
     with pytest.raises(ValueError):
         sample_lattice._Lattice3D__get_indices_nearest_neighbor(2, 2, 2)
 
@@ -391,7 +405,9 @@ def test_interpolate_to_lattice_to_new_extent(sample_lattice):
             for k in range(20):
                 if i <= 10 or j <= 10 or k <= 10:
                     continue
-                posx, posy, posz = lattice.get_coordinates(i - 10, j - 10, k - 10)
+                posx, posy, posz = lattice.get_coordinates(
+                    i - 10, j - 10, k - 10
+                )
                 assert np.isclose(
                     new_lattice.get_value_by_index(i, j, k),
                     lattice.interpolate_value(posx, posy, posz),
@@ -465,7 +481,9 @@ def test_add_same_spaced_grid(sample_lattice):
     sample_lattice.add_same_spaced_grid(big_lattice, 0, 0, 0)
     assert sample_lattice.grid_[1, 2, 3] == 20
 
-    sample_lattice.add_same_spaced_grid(sample_lattice, 0.1111, 0.11111, 0.11111)
+    sample_lattice.add_same_spaced_grid(
+        sample_lattice, 0.1111, 0.11111, 0.11111
+    )
     assert sample_lattice.grid_[1, 2, 3] == 20
     assert sample_lattice.grid_[2, 3, 4] == 20
 
@@ -518,7 +536,9 @@ def particle_list_center():
     return particle_list
 
 
-def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_center):
+def test_add_particle_data(
+    sample_lattice, particle_list_strange, particle_list_center
+):
     with pytest.raises(ValueError):
         sample_lattice.add_particle_data(
             particle_list_center,
@@ -646,7 +666,9 @@ def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_
             for k in range(10):
                 integral += sample_lattice.get_value_by_index(i, j, k)
     gamma = np.sqrt(
-        1 + particle_list_center[0].p_abs() ** 2 / particle_list_center[0].mass ** 2
+        1
+        + particle_list_center[0].p_abs() ** 2
+        / particle_list_center[0].mass ** 2
     )
     deltas1 = 0.11111**2 + 0.11111**2 + 0.22222**2
     deltas2 = 0.22222**2 + 0.33333**2 + 0.22222**2
@@ -656,9 +678,9 @@ def test_add_particle_data(sample_lattice, particle_list_strange, particle_list_
     deltap2 = (-0.22222 - 0.33333 + 2.0 * 0.22222) / (
         gamma * particle_list_center[0].mass
     )
-    ratio = np.exp(-0.5 * (deltas1**2 + deltap1**2) * (1 / 1e-1) ** 2) / np.exp(
-        -0.5 * (deltas2**2 + deltap2**2) * (1 / 1e-1) ** 2
-    )
+    ratio = np.exp(
+        -0.5 * (deltas1**2 + deltap1**2) * (1 / 1e-1) ** 2
+    ) / np.exp(-0.5 * (deltas2**2 + deltap2**2) * (1 / 1e-1) ** 2)
     assert np.isclose(
         sample_lattice.get_value_nearest_neighbor(0.444, 0.444, 0.333)
         / sample_lattice.get_value_nearest_neighbor(0.333, 0.222, 0.777),

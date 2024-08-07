@@ -25,10 +25,12 @@ def test_convert_str_to_number():
     )
 
     str_scientific_float_upper = "63E7"
-    assert isinstance(hf.convert_str_to_number(str_scientific_float_upper), float)
-    assert hf.convert_str_to_number(str_scientific_float_upper) == pytest.approx(
-        63e7, abs=hf.small_value
+    assert isinstance(
+        hf.convert_str_to_number(str_scientific_float_upper), float
     )
+    assert hf.convert_str_to_number(
+        str_scientific_float_upper
+    ) == pytest.approx(63e7, abs=hf.small_value)
 
     str_int = "42"
     assert isinstance(hf.convert_str_to_number(str_int), int)

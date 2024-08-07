@@ -70,7 +70,9 @@ class CentralityClasses:
         centrality_bins: Union[List[float], np.ndarray],
     ) -> None:
         if not isinstance(events_multiplicity, (list, np.ndarray)):
-            raise TypeError("'events_multiplicity' is not list or numpy.ndarray")
+            raise TypeError(
+                "'events_multiplicity' is not list or numpy.ndarray"
+            )
         if not isinstance(centrality_bins, (list, np.ndarray)):
             raise TypeError("'centrality_bins' is not list or numpy.ndarray")
 
@@ -79,7 +81,9 @@ class CentralityClasses:
             centrality_bins[i] <= centrality_bins[i + 1]
             for i in range(len(centrality_bins) - 1)
         ):
-            warnings.warn("'centrality_bins' is not sorted. Sorting automatically.")
+            warnings.warn(
+                "'centrality_bins' is not sorted. Sorting automatically."
+            )
             centrality_bins.sort()
 
         # Check for uniqueness of values
@@ -154,7 +158,9 @@ class CentralityClasses:
         # distribute the numbers evenly
         for i, multiplicity in enumerate(self.events_multiplicity_):
             if multiplicity < 0:
-                raise ValueError("Multiplicity in 'events_multiplicity' is negative")
+                raise ValueError(
+                    "Multiplicity in 'events_multiplicity' is negative"
+                )
             if i % 4 == 0:
                 event_sample_A.append(multiplicity)
             elif i % 4 == 1:
@@ -171,7 +177,9 @@ class CentralityClasses:
 
         MinRecord = int(number_events / 4 * self.centrality_bins_[0] / 100.0)
         for i in range(1, len(self.centrality_bins_)):
-            MaxRecord = int(number_events / 4 * self.centrality_bins_[i] / 100.0)
+            MaxRecord = int(
+                number_events / 4 * self.centrality_bins_[i] / 100.0
+            )
 
             AvgA = np.mean(event_sample_A[MinRecord:MaxRecord])
             AvgB = np.mean(event_sample_B[MinRecord:MaxRecord])

@@ -38,7 +38,8 @@ def convert_str_to_number(item):
 # numerical types.
 def convert_nested_list_to_numerical(nested_list):
     return [
-        [convert_str_to_number(item) for item in sublist] for sublist in nested_list
+        [convert_str_to_number(item) for item in sublist]
+        for sublist in nested_list
     ]
 
 
@@ -52,7 +53,9 @@ def compare_nested_lists(list1, list2, tol=small_value):
         if len(sublist1) != len(sublist2):
             return False
         for item1, item2 in zip(sublist1, sublist2):
-            if isinstance(item1, (int, float)) and isinstance(item2, (int, float)):
+            if isinstance(item1, (int, float)) and isinstance(
+                item2, (int, float)
+            ):
                 if item1 != pytest.approx(item2, abs=tol):
                     return False
             else:

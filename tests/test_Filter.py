@@ -33,7 +33,9 @@ def particle_list_charged_uncharged():
     return [particle_list]
 
 
-def test_charged_particles(particle_nan_quantities, particle_list_charged_uncharged):
+def test_charged_particles(
+    particle_nan_quantities, particle_list_charged_uncharged
+):
     return_list = charged_particles(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -41,7 +43,9 @@ def test_charged_particles(particle_nan_quantities, particle_list_charged_unchar
     assert len(return_list[0]) == 5
 
 
-def test_uncharged_particles(particle_nan_quantities, particle_list_charged_uncharged):
+def test_uncharged_particles(
+    particle_nan_quantities, particle_list_charged_uncharged
+):
     return_list = uncharged_particles(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -81,7 +85,9 @@ def test_particle_species_filter(particle_list_strange):
     return_list = particle_species(copy.deepcopy(particle_list_strange), 321.0)
     assert len(return_list[0]) == 5
 
-    return_list = particle_species(copy.deepcopy(particle_list_strange), [211, 321])
+    return_list = particle_species(
+        copy.deepcopy(particle_list_strange), [211, 321]
+    )
     assert len(return_list[0]) == 10
 
     return_list = particle_species(
@@ -89,7 +95,9 @@ def test_particle_species_filter(particle_list_strange):
     )
     assert len(return_list[0]) == 10
 
-    return_list = particle_species(copy.deepcopy(particle_list_strange), (211, 321))
+    return_list = particle_species(
+        copy.deepcopy(particle_list_strange), (211, 321)
+    )
     assert len(return_list[0]) == 10
 
     with pytest.raises(ValueError):
@@ -100,13 +108,19 @@ def test_particle_species_filter(particle_list_strange):
 
 
 def test_remove_particle_species_filter(particle_list_strange):
-    return_list = remove_particle_species(copy.deepcopy(particle_list_strange), "321")
+    return_list = remove_particle_species(
+        copy.deepcopy(particle_list_strange), "321"
+    )
     assert len(return_list[0]) == 5
 
-    return_list = remove_particle_species(copy.deepcopy(particle_list_strange), 321)
+    return_list = remove_particle_species(
+        copy.deepcopy(particle_list_strange), 321
+    )
     assert len(return_list[0]) == 5
 
-    return_list = remove_particle_species(copy.deepcopy(particle_list_strange), 321.0)
+    return_list = remove_particle_species(
+        copy.deepcopy(particle_list_strange), 321.0
+    )
     assert len(return_list[0]) == 5
 
     return_list = remove_particle_species(
@@ -128,7 +142,9 @@ def test_remove_particle_species_filter(particle_list_strange):
         return_list = remove_particle_species(particle_list_strange, np.nan)
 
     with pytest.raises(ValueError):
-        return_list = remove_particle_species(particle_list_strange, [np.nan, 211])
+        return_list = remove_particle_species(
+            particle_list_strange, [np.nan, 211]
+        )
 
 
 @pytest.fixture
@@ -174,7 +190,9 @@ def particle_list_energies():
     return final_list
 
 
-def test_lower_event_energy_cut(particle_nan_quantities, particle_list_energies):
+def test_lower_event_energy_cut(
+    particle_nan_quantities, particle_list_energies
+):
     return_list = lower_event_energy_cut(particle_nan_quantities, 1.0)
     assert len(return_list[0]) == 0
 
@@ -271,16 +289,22 @@ def test_spacetime_cut(particle_list_positions):
     ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+                result = spacetime_cut(
+                    particle_list_positions, dim, cut_value_tuple
+                )
                 assert result == expected_result
 
         elif expected_error:
             with pytest.raises(expected_error):
-                result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+                result = spacetime_cut(
+                    particle_list_positions, dim, cut_value_tuple
+                )
 
         else:
             # Apply the spacetime cut
-            result = spacetime_cut(particle_list_positions, dim, cut_value_tuple)
+            result = spacetime_cut(
+                particle_list_positions, dim, cut_value_tuple
+            )
             # Assert the result matches the expected outcome
             assert result == expected_result
 
@@ -300,7 +324,12 @@ def test_pT_cut(particle_list_pt):
     test_cases = [
         # Test cases for valid input
         ((0.5, 1.5), None, None, [[particle_list_pt[0][1]]]),
-        ((2.5, None), None, None, [[particle_list_pt[0][3], particle_list_pt[0][4]]]),
+        (
+            (2.5, None),
+            None,
+            None,
+            [[particle_list_pt[0][3], particle_list_pt[0][4]]],
+        ),
         (
             (None, 3.5),
             None,
@@ -318,7 +347,12 @@ def test_pT_cut(particle_list_pt):
         ((None, None), None, ValueError, None),
         ((-1, 3), None, ValueError, None),
         (("a", 3), None, ValueError, None),
-        ((3, 2), UserWarning, None, [[particle_list_pt[0][2], particle_list_pt[0][3]]]),
+        (
+            (3, 2),
+            UserWarning,
+            None,
+            [[particle_list_pt[0][2], particle_list_pt[0][3]]],
+        ),
         ((None, None, None), None, TypeError, None),
     ]
 
@@ -366,7 +400,12 @@ def test_mT_cut(particle_list_mT):
     test_cases = [
         # Test cases for valid input
         ((2.5, 3.5), None, None, [[particle_list_mT[0][0]]]),
-        ((5.5, None), None, None, [[particle_list_mT[0][3], particle_list_mT[0][4]]]),
+        (
+            (5.5, None),
+            None,
+            None,
+            [[particle_list_mT[0][3], particle_list_mT[0][4]]],
+        ),
         (
             (None, 6.5),
             None,
@@ -438,7 +477,12 @@ def test_rapidity_cut(particle_list_rapidity):
         ((1.0, 0.5), UserWarning, None, None),
     ]
 
-    for cut_value, expected_warning, expected_error, expected_result in test_cases:
+    for (
+        cut_value,
+        expected_warning,
+        expected_error,
+        expected_result,
+    ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
                 result = rapidity_cut(particle_list_rapidity, cut_value)
@@ -474,13 +518,22 @@ def test_pseudorapidity_cut(particle_list_pseudorapidity):
         ((1.0, 0.5), UserWarning, None, None),
     ]
 
-    for cut_value, expected_warning, expected_error, expected_result in test_cases:
+    for (
+        cut_value,
+        expected_warning,
+        expected_error,
+        expected_result,
+    ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = pseudorapidity_cut(particle_list_pseudorapidity, cut_value)
+                result = pseudorapidity_cut(
+                    particle_list_pseudorapidity, cut_value
+                )
         elif expected_error:
             with pytest.raises(expected_error):
-                result = pseudorapidity_cut(particle_list_pseudorapidity, cut_value)
+                result = pseudorapidity_cut(
+                    particle_list_pseudorapidity, cut_value
+                )
         else:
             result = pseudorapidity_cut(particle_list_pseudorapidity, cut_value)
             assert result == expected_result
@@ -509,7 +562,12 @@ def test_rapidity_cut(particle_list_spacetime_rapidity):
         ((1.0, 0.5), UserWarning, None, None),
     ]
 
-    for cut_value, expected_warning, expected_error, expected_result in test_cases:
+    for (
+        cut_value,
+        expected_warning,
+        expected_error,
+        expected_result,
+    ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
                 result = spacetime_rapidity_cut(
@@ -521,7 +579,9 @@ def test_rapidity_cut(particle_list_spacetime_rapidity):
                     particle_list_spacetime_rapidity, cut_value
                 )
         else:
-            result = spacetime_rapidity_cut(particle_list_spacetime_rapidity, cut_value)
+            result = spacetime_rapidity_cut(
+                particle_list_spacetime_rapidity, cut_value
+            )
             assert result == expected_result
 
 

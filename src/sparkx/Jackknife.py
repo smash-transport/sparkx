@@ -140,7 +140,11 @@ class Jackknife:
         return data
 
     def _apply_function_to_reduced_data(
-        self, reduced_data: np.ndarray, function: Callable[..., Any], *args, **kwargs
+        self,
+        reduced_data: np.ndarray,
+        function: Callable[..., Any],
+        *args,
+        **kwargs,
     ) -> Any:
         """
         Apply a function to the reduced data.
@@ -226,7 +230,9 @@ class Jackknife:
             The result of applying _compute_one_jackknife_sample.
         """
         rd.seed(instance.seed + index)
-        return instance._compute_one_jackknife_sample(data, function, *args, **kwargs)
+        return instance._compute_one_jackknife_sample(
+            data, function, *args, **kwargs
+        )
 
     def _init_random_subprocess(self, seed: int) -> None:
         """
@@ -285,7 +291,9 @@ class Jackknife:
             num_cores = os.cpu_count()
 
         with Pool(
-            num_cores, initializer=self._init_random_subprocess, initargs=(self.seed,)
+            num_cores,
+            initializer=self._init_random_subprocess,
+            initargs=(self.seed,),
         ) as pool:
             results = pool.starmap(
                 self._helper_unpack,
@@ -351,7 +359,9 @@ class Jackknife:
             raise TypeError("function must be a callable object.")
 
         # Check if the function returns a single number
-        test_result = function(data[: max(1, len(data) // 100)], *args, **kwargs)
+        test_result = function(
+            data[: max(1, len(data) // 100)], *args, **kwargs
+        )
         if not isinstance(test_result, (int, float)):
             raise TypeError("function must return a single number.")
 
@@ -367,7 +377,9 @@ class Jackknife:
             variance_samples = (jackknife_samples[i] - mean_samples) ** 2.0
 
         if delete_n_points == 1:
-            variance_samples *= (len(jackknife_samples) - 1) / len(jackknife_samples)
+            variance_samples *= (len(jackknife_samples) - 1) / len(
+                jackknife_samples
+            )
         else:
             variance_samples *= (len(data) - delete_n_points) / (
                 delete_n_points * len(jackknife_samples)

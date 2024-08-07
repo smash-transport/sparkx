@@ -177,7 +177,9 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
     assert not np.isnan(cumulants_err).any()
 
 
-def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants(mpc_instance):
+def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants(
+    mpc_instance,
+):
     # the first order must be the same for the correlations and cumulants
 
     particle_list = Oscar(TEST_OSCAR).particle_objects_list()
@@ -214,7 +216,15 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants_physics(
         event_particles = []
         for _ in range(100):  # create 100 particles with the same pt
             p_array = np.array(
-                [0, 2114, 11, 2.01351754, 1.30688601, -0.422958786, -0.512249773]
+                [
+                    0,
+                    2114,
+                    11,
+                    2.01351754,
+                    1.30688601,
+                    -0.422958786,
+                    -0.512249773,
+                ]
             )
             p = Particle(input_format="JETSCAPE", particle_array=p_array)
             event_particles.append(p)

@@ -110,7 +110,9 @@ class PCAFlow(FlowInterface.FlowInterface):
         if not isinstance(n, int):
             raise TypeError("n has to be int")
         elif n <= 0:
-            raise ValueError("n-th harmonic with value n<=0 can not be computed")
+            raise ValueError(
+                "n-th harmonic with value n<=0 can not be computed"
+            )
         else:
             self.n_ = n
 
@@ -159,9 +161,13 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.normalization_ = np.zeros((len(bins) - 1))
         bin_widths = np.diff(bins)
         for bin in range(len(bins) - 1):
-            self.normalization_[bin] = 1.0 / (2.0 * np.pi * bin_widths[bin]) ** 2.0
+            self.normalization_[bin] = (
+                1.0 / (2.0 * np.pi * bin_widths[bin]) ** 2.0
+            )
 
-    def __update_event(self, event_data, bins, flow_as_function_of, event_number):
+    def __update_event(
+        self, event_data, bins, flow_as_function_of, event_number
+    ):
         """
         Update the anisotropic flow calculations based on particle data from
         a single event.
@@ -189,7 +195,9 @@ class PCAFlow(FlowInterface.FlowInterface):
         SigmaQnReSubTot = np.zeros((number_bins, self.number_subcalc_))
         SigmaQnImSubTot = np.zeros((number_bins, self.number_subcalc_))
         VnDelta_event = np.zeros((number_bins, number_bins))
-        SigmaVnDelta_event = np.zeros((number_bins, number_bins, self.number_subcalc_))
+        SigmaVnDelta_event = np.zeros(
+            (number_bins, number_bins, self.number_subcalc_)
+        )
         if event_number == 0:
             self.bin_multiplicity_total_ = np.zeros(number_bins)
             for i in range(self.number_subcalc_):
@@ -197,8 +205,12 @@ class PCAFlow(FlowInterface.FlowInterface):
             self.number_events_subcalc_ = np.zeros(self.number_subcalc_)
             self.QnRe_total_ = np.zeros(number_bins)
             self.QnIm_total_ = np.zeros(number_bins)
-            self.SigmaQnReSub_total_ = np.zeros((number_bins, self.number_subcalc_))
-            self.SigmaQnImSub_total_ = np.zeros((number_bins, self.number_subcalc_))
+            self.SigmaQnReSub_total_ = np.zeros(
+                (number_bins, self.number_subcalc_)
+            )
+            self.SigmaQnImSub_total_ = np.zeros(
+                (number_bins, self.number_subcalc_)
+            )
             self.VnDelta_total_ = np.zeros((number_bins, number_bins))
             self.SigmaVnDelta_total_ = np.zeros(
                 (number_bins, number_bins, self.number_subcalc_)
@@ -236,8 +248,12 @@ class PCAFlow(FlowInterface.FlowInterface):
             QnRe[bin_index] += np.cos(self.n_ * phi)
             QnIm[bin_index] += np.sin(self.n_ * phi)
 
-            SigmaQnReSubTot[bin_index][self.subcalc_counter_] += np.cos(self.n_ * phi)
-            SigmaQnImSubTot[bin_index][self.subcalc_counter_] += np.sin(self.n_ * phi)
+            SigmaQnReSubTot[bin_index][self.subcalc_counter_] += np.cos(
+                self.n_ * phi
+            )
+            SigmaQnImSubTot[bin_index][self.subcalc_counter_] += np.sin(
+                self.n_ * phi
+            )
 
         # compute the covariance matrix
         for a in range(number_bins):
@@ -263,7 +279,9 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         # update the class members
         self.bin_multiplicity_total_ += bin_multiplicity_event
-        self.sigma_multiplicity_total_[self.subcalc_counter_] += bin_multiplicity_event
+        self.sigma_multiplicity_total_[
+            self.subcalc_counter_
+        ] += bin_multiplicity_event
         self.number_events_subcalc_[self.subcalc_counter_] += 1
         self.QnRe_total_ += QnRe
         self.QnIm_total_ += QnIm
@@ -297,20 +315,23 @@ class PCAFlow(FlowInterface.FlowInterface):
                 ) / self.number_events_**2.0
 
                 for sub in range(self.number_subcalc_):
-                    self.SigmaVnDelta_total_[a][b][sub] /= self.number_events_subcalc_[
+                    self.SigmaVnDelta_total_[a][b][
                         sub
-                    ]
+                    ] /= self.number_events_subcalc_[sub]
                     self.SigmaVnDelta_total_[a][b][sub] -= (
                         self.SigmaQnReSub_total_[a][sub]
                         * self.SigmaQnReSub_total_[b][sub]
                         + self.SigmaQnImSub_total_[a][sub]
                         * self.SigmaQnImSub_total_[b][sub]
                     ) / (
-                        self.number_events_subcalc_[sub] ** 2.0 * self.normalization_[a]
+                        self.number_events_subcalc_[sub] ** 2.0
+                        * self.normalization_[a]
                     )
 
         # perform sub calculations for error estimation
-        self.FlowSubCalc_ = np.zeros((self.number_subcalc_, number_bins, self.alpha_))
+        self.FlowSubCalc_ = np.zeros(
+            (self.number_subcalc_, number_bins, self.alpha_)
+        )
         for sub in range(self.number_subcalc_):
             VnDelta_local = np.zeros((number_bins, number_bins))
             for a in range(number_bins):
@@ -391,7 +412,8 @@ class PCAFlow(FlowInterface.FlowInterface):
             for bin in range(number_bins):
                 for alpha in range(self.alpha_):
                     self.FlowUncertainty_[bin][alpha] += (
-                        self.FlowSubCalc_[sub][bin][alpha] - self.Flow_[bin][alpha]
+                        self.FlowSubCalc_[sub][bin][alpha]
+                        - self.Flow_[bin][alpha]
                     ) ** 2.0 / (self.number_subcalc_ - 1)
 
         # take the sqrt to obtain the standard deviation
@@ -438,7 +460,9 @@ class PCAFlow(FlowInterface.FlowInterface):
         for sub in range(self.number_subcalc_):
             for a in range(number_bins):
                 for b in range(number_bins):
-                    r_sub[a][b][sub] = self.SigmaVnDelta_total_[a][b][sub] / np.sqrt(
+                    r_sub[a][b][sub] = self.SigmaVnDelta_total_[a][b][
+                        sub
+                    ] / np.sqrt(
                         self.SigmaVnDelta_total_[a][a][sub]
                         * self.SigmaVnDelta_total_[b][b][sub]
                     )
@@ -500,7 +524,9 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.number_events_ = len(particle_data)
 
         for event in range(self.number_events_):
-            self.__update_event(particle_data[event], bins, flow_as_function_of, event)
+            self.__update_event(
+                particle_data[event], bins, flow_as_function_of, event
+            )
 
         self.__compute_flow_PCA(bins)
         self.__compute_uncertainty(bins)

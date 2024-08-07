@@ -65,7 +65,9 @@ def test_EventCharacteristics_initialization(
 
     eve_char = EventCharacteristics(test_Lattice3D_instance)
     assert eve_char.has_lattice_
-    assert np.array_equal(eve_char.event_data_.grid_, test_Lattice3D_instance.grid_)
+    assert np.array_equal(
+        eve_char.event_data_.grid_, test_Lattice3D_instance.grid_
+    )
 
 
 @pytest.fixture

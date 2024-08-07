@@ -85,7 +85,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         if not isinstance(n, int):
             raise TypeError("n has to be int")
         elif n <= 0:
-            raise ValueError("n-th harmonic with value n<=0 can not be computed")
+            raise ValueError(
+                "n-th harmonic with value n<=0 can not be computed"
+            )
         else:
             self.n_ = n
 
@@ -172,7 +174,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         return self.__differential_flow_calculation(particles_bin)
 
     def __differential_flow_calculation(self, binned_particle_data):
-        flow_differential = [0.0 + 0.0j for i in range(len(binned_particle_data))]
+        flow_differential = [
+            0.0 + 0.0j for i in range(len(binned_particle_data))
+        ]
         for bin in range(len(binned_particle_data)):
             number_particles = 0.0
             flow_event_average = 0.0 + 0.0j
@@ -181,7 +185,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                 for particle in range(len(binned_particle_data[bin][event])):
                     weight = (
                         1.0
-                        if np.isnan(binned_particle_data[bin][event][particle].weight)
+                        if np.isnan(
+                            binned_particle_data[bin][event][particle].weight
+                        )
                         else binned_particle_data[bin][event][particle].weight
                     )
                     pt = binned_particle_data[bin][event][particle].pT_abs()
