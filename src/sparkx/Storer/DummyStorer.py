@@ -1,6 +1,6 @@
 #===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -12,11 +12,11 @@ import numpy as np
 from sparkx.Loader.DummyLoader import DummyLoader
 from sparkx.Storer.BaseStorer import BaseStorer
 
-class Dummy(BaseStorer):
+class DummyStorer(BaseStorer):
     """
     Defines a Dummy object.
 
-    This is a wrapper for a list of Particle objects. It's methodsallow to 
+    This is a wrapper for a list of Particle objects. It's methods allow to 
     directly act on all contained events as applying acceptance filters
     (e.g. un/charged particles, spectators/participants) to keep/remove particles
     by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
@@ -24,8 +24,6 @@ class Dummy(BaseStorer):
 
     1) nested list containing all quantities
     2) list containing Particle objects from the Particle class
-
-    or it may be printed to a file complying with the input format.
 
     .. note::
         If filters are applied, be aware that not all cuts commute.
@@ -79,8 +77,6 @@ class Dummy(BaseStorer):
 
     Methods
     -------
-    spacetime_cut:
-        Apply spacetime cut to all particles
     particle_status:
         Keep only particles with a given status flag
     print_particle_lists_to_file:
@@ -88,18 +84,88 @@ class Dummy(BaseStorer):
 
     Examples
     --------
+    Create a Dummy object and access particle data as a nested list
 
-    TBD
-    
+    >>> from sparkx.Particle import Particle
+    >>> particle1 = Particle()
+    >>> particle1.t = 1.0
+    >>> ...
+    >>> particle2 = Particle()
+    >>> particle2.t = 1.0
+    >>> ...
+    >>> particles = [particle1, particle2]
+    >>> dummy = DummyStorer(particles)
+    >>> nested_list = dummy.particle_list()
+    >>> print(nested_list)
+    [[[1.0,...],[1.0,...]]]
+
     """
+    
     def __init__(self, particle_object_list, **kwargs):
+        """
+        Initializes a new instance of the DummyStorer class.
+
+        This method initializes a new instance of the DummyStorer class with the specified list of particle objects and optional arguments. It calls the superclass's constructor with the particle_object_list and kwargs parameters and then deletes the loader_ attribute.
+
+        Parameters
+        ----------
+        particle_object_list : list of Particle objects
+            The list of particle objects to store.
+        kwargs : dict
+            A dictionary of optional arguments.
+
+        Raises
+        ------
+        None
+
+        Returns
+        -------
+        None
+        """
         super().__init__(particle_object_list,**kwargs)  
         del self.loader_
 
     def create_loader(self, particle_object_list):
+        """
+        Creates a new DummyLoader object.
+
+        This method creates a new DummyLoader object with the specified list of particle objects and assigns it to the loader_ attribute.
+
+        Parameters
+        ----------
+        particle_object_list : list of Particle objects
+            The list of particle objects to load.
+
+        Raises
+        ------
+        None
+
+        Returns
+        -------
+        None
+        """
         self.loader_= DummyLoader(particle_object_list)
 
     def __particle_as_list(self, particle):
+        """
+        Converts a Particle object into a list.
+
+        This method takes a Particle object and converts it into a list of its attributes. The attributes are added to the list in the following order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll, form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll, pdg_mother1, pdg_mother2, baryon_number, strangeness, weight, status.
+
+        Parameters
+        ----------
+        particle : Particle
+            The Particle object to convert into a list.
+
+        Raises
+        ------
+        None
+
+        Returns
+        -------
+        particle_list : list
+            A list of the attributes of the Particle object.
+        """
         particle_list = []
         particle_list.append(float(particle.t))
         particle_list.append(float(particle.x))
@@ -164,33 +230,6 @@ class Dummy(BaseStorer):
                 particle_array.append(event)
 
         return particle_array
+
+
     
-    #TODO: get num_events, num_output_per_event from LOADER
-
-    def spacetime_cut(self, dim, cut_value_tuple):
-        """
-        Apply spacetime cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
-        be removed.
-
-        Parameters
-        ----------
-        dim : string
-            String naming the dimension on which to apply the cut.
-            Options: 't','x','y','z'
-        cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the coordinate space
-            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
-            is not required, set it to :code:`None`, i.e.
-            :code:`(None, cut_max)` or :code:`(cut_min, None)`.
-
-        Returns
-        -------
-        self : Oscar object
-            Containing only particles complying with the spacetime cut for all events
-        """
-
-        self.particle_list_ = spacetime_cut(self.particle_list_, dim, cut_value_tuple)
-        self.__update_num_output_per_event_after_filter()
-
-        return self

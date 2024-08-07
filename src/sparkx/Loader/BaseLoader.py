@@ -10,18 +10,64 @@
 from abc import ABC, abstractmethod
 
 class BaseLoader(ABC):
-    
+    """
+    Abstract base class for all loader classes.
+
+    This class provides a common interface for all loader classes. Loader classes are responsible for loading data from a file.
+
+    ...
+
+    Attributes
+    ----------
+    None
+
+    Methods
+    -------
+    __init__(self, path):
+        Abstract constructor method that must be implemented by any concrete (i.e., non-abstract) subclass.
+
+    load(self, **kwargs):
+        Abstract method intended to be used to load data from the file specified in the constructor.
+
+    _check_that_tuple_contains_integers_only(self, events_tuple):
+        Checks if all elements inside the event tuple are integers.
+
+    _skip_lines(self, fname):
+        Skips the initial header and comment lines in a file.
+    """
+
     @abstractmethod
     def __init__(self, path):
+        """
+        Abstract constructor method.
+
+        Parameters
+        ----------
+        path : str
+            The path to the file to be loaded.
+
+        Raises
+        ------
+        NotImplementedError
+            If this method is not overridden in a concrete subclass.
+        """
         pass
 
     @abstractmethod
     def load(self, **kwargs):
+        """
+        Abstract method for loading data.
+
+        Raises
+        ------
+        NotImplementedError
+            If this method is not overridden in a concrete subclass.
+        """
         raise NotImplementedError("load method is not implemented")
     
     def _check_that_tuple_contains_integers_only(self, events_tuple):
         """
-        Check if all elements inside the event tuple are integers.
+        Checks if all elements inside the event tuple are integers.
 
         Parameters
         ----------
@@ -38,6 +84,8 @@ class BaseLoader(ABC):
         
     def _skip_lines(self, fname):
         """
+        Skips the initial header and comment lines in a file.
+
         Once a file is opened with :code:`open()`, this method skips the
         initial header and comment lines such that the first line called with
         :code:`fname.readline()` is the first particle in the first event.
@@ -47,7 +95,6 @@ class BaseLoader(ABC):
         fname : variable name
             Name of the variable for the file opened with the :code:`open()`
             command.
-
         """
         num_skip = self._get_num_skip_lines()
         for i in range(0, num_skip):

@@ -66,6 +66,8 @@ class BaseStorer(ABC):
         Apply spatial rapidity (space-time rapidity) cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
+     spacetime_cut:
+        Apply spacetime cut to all particles
     """
     def __init__(self, path, **kwargs):
         """
@@ -438,6 +440,33 @@ class BaseStorer(ABC):
         """
     
         self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
+        self.__update_num_output_per_event_after_filter()
+
+        return self
+    
+    def spacetime_cut(self, dim, cut_value_tuple):
+        """
+        Apply spacetime cut to all events by passing an acceptance range by
+        ::code`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        dim : string
+            String naming the dimension on which to apply the cut.
+            Options: 't','x','y','z'
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the coordinate space
+            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
+            is not required, set it to :code:`None`, i.e.
+            :code:`(None, cut_max)` or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing only particles complying with the spacetime cut for all events
+        """
+        self.particle_list_ = spacetime_cut(self.particle_list_, dim, cut_value_tuple)
         self.__update_num_output_per_event_after_filter()
 
         return self
