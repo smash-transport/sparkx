@@ -397,40 +397,23 @@ def particle_list_mT():
 
 
 def test_mT_cut(particle_list_mT):
+    # fmt: off
     test_cases = [
         # Test cases for valid input
         ((2.5, 3.5), None, None, [[particle_list_mT[0][0]]]),
-        (
-            (5.5, None),
-            None,
-            None,
-            [[particle_list_mT[0][3], particle_list_mT[0][4]]],
-        ),
-        (
-            (None, 6.5),
-            None,
-            None,
-            [
-                [
-                    particle_list_mT[0][0],
-                    particle_list_mT[0][1],
-                    particle_list_mT[0][2],
-                    particle_list_mT[0][3],
-                ]
-            ],
-        ),
+        ((5.5, None), None, None, [[particle_list_mT[0][3], particle_list_mT[0][4]]]),
+        ((None, 6.5), None, None, [[particle_list_mT[0][0],
+                                    particle_list_mT[0][1],
+                                    particle_list_mT[0][2],
+                                    particle_list_mT[0][3]]]),
         # Test cases for error conditions
         ((None, None), None, ValueError, None),
         ((-1, 6), None, ValueError, None),
         (("a", 5), None, ValueError, None),
-        (
-            (5.7, 3.3),
-            UserWarning,
-            None,
-            [[particle_list_mT[0][1], particle_list_mT[0][2]]],
-        ),
+        ((5.7, 3.3), UserWarning, None, [[particle_list_mT[0][1], particle_list_mT[0][2]]],),
         ((None, None, None), None, TypeError, None),
     ]
+    # fmt: on
 
     for (
         cut_value_tuple,
@@ -485,10 +468,14 @@ def test_rapidity_cut(particle_list_rapidity):
     ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = rapidity_cut(particle_list_rapidity, cut_value)
+                result = rapidity_cut(
+                    particle_list_momentum_rapidity, cut_value
+                )
         elif expected_error:
             with pytest.raises(expected_error):
-                result = rapidity_cut(particle_list_rapidity, cut_value)
+                result = rapidity_cut(
+                    particle_list_momentum_rapidity, cut_value
+                )
         else:
             result = rapidity_cut(particle_list_rapidity, cut_value)
             assert result == expected_result

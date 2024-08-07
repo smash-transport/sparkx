@@ -12,7 +12,6 @@ import numpy as np
 
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
-
     """
     This class implements a reaction plane flow analysis algorithm.
 

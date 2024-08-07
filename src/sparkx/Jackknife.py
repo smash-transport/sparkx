@@ -93,6 +93,7 @@ class Jackknife:
     def __init__(
         self, delete_fraction: float, number_samples: int, seed: int = 42
     ) -> None:
+
         if not isinstance(delete_fraction, float):
             raise TypeError("delete_fraction must be a float.")
         if not isinstance(number_samples, int):

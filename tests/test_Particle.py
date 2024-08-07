@@ -240,32 +240,12 @@ def test_initialize_from_array_valid_formats():
     assert p2.charge == 1
 
     format3 = "Oscar2013Extended"
+    # fmt: off
     array3 = np.array(
-        [
-            0.0,
-            1.0,
-            2.0,
-            3.0,
-            0.138,
-            4.0,
-            5.0,
-            6.0,
-            7.0,
-            211,
-            100,
-            1,
-            0,
-            0.1,
-            0.3,
-            101,
-            2,
-            2.5,
-            321,
-            2212,
-            1,
-            -1,
-        ]
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1, 0, 0.1,
+            0.3, 101, 2, 2.5, 321, 2212, 1, -1]
     )
+    # fmt: on
 
     p3 = Particle(input_format=format3, particle_array=array3)
     assert p3.t == 0.0
@@ -319,31 +299,12 @@ def test_initialize_from_array_valid_formats():
     assert p4.strangeness == -1
 
     format5 = "Oscar2013Extended_Photons"
+    # fmt: off
     array5 = np.array(
-        [
-            0.0,
-            1.0,
-            2.0,
-            3.0,
-            0.138,
-            4.0,
-            5.0,
-            6.0,
-            7.0,
-            211,
-            100,
-            1,
-            0,
-            0.1,
-            0.3,
-            101,
-            2,
-            2.5,
-            321,
-            2212,
-            0.75,
-        ]
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1, 0, 0.1,
+            0.3, 101, 2, 2.5, 321, 2212, 0.75]
     )
+    # fmt: on
     p5 = Particle(input_format=format5, particle_array=array5)
     assert p5.t == 0.0
     assert p5.x == 1.0

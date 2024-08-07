@@ -539,6 +539,7 @@ def particle_list_center():
 def test_add_particle_data(
     sample_lattice, particle_list_strange, particle_list_center
 ):
+
     with pytest.raises(ValueError):
         sample_lattice.add_particle_data(
             particle_list_center,

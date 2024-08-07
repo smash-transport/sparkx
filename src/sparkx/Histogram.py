@@ -856,9 +856,11 @@ class Histogram:
 
             for idx in range(self.number_of_histograms_):
                 header = [
-                    hist_labels[0][col]
-                    if len(hist_labels) == 1
-                    else hist_labels[idx][col]
+                    (
+                        hist_labels[0][col]
+                        if len(hist_labels) == 1
+                        else hist_labels[idx][col]
+                    )
                     for col in columns
                 ]
                 writer.writerow(header)

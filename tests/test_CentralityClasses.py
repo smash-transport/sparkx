@@ -54,19 +54,9 @@ def test_init_with_invalid_input():
             events_multiplicity=multiplicities,
             centrality_bins=[0, 10, 20, 30, 40, 40, 50, 60, 70, 80, 90, 100],
         )
-        assert a.centrality_bins_ == [
-            0,
-            10,
-            20,
-            30,
-            40,
-            50,
-            60,
-            70,
-            80,
-            90,
-            100,
-        ]
+        # fmt: off
+        assert a.centrality_bins_ == [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        # fmt: on
 
 
 def test_create_centrality_classes(centrality_obj):

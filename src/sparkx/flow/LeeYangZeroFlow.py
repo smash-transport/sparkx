@@ -496,12 +496,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         float
             The calculated differential flow uncertainty.
         """
-        err_sq = (
-            1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)
-        ) * (
+        err_sq = (1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)) * (
             np.exp(self.j01_**2.0 / (2.0 * self.chi_**2.0))
-            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0))
-            * (-0.2375362)
+            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0)) * (-0.2375362)
         )
         return np.sqrt(err_sq)
 
