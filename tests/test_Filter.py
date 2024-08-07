@@ -282,7 +282,7 @@ def particle_list_pt():
     return [particle_list]
 
 
-def test_pt_cut(particle_list_pt):
+def test_pT_cut(particle_list_pt):
     test_cases = [
         # Test cases for valid input
         ((0.5, 1.5), None, None, [[particle_list_pt[0][1]]]),
@@ -301,16 +301,16 @@ def test_pt_cut(particle_list_pt):
     for cut_value_tuple, expected_warning, expected_error, expected_result in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = pt_cut(particle_list_pt, cut_value_tuple)
+                result = pT_cut(particle_list_pt, cut_value_tuple)
                 assert result == expected_result
 
         elif expected_error:
             with pytest.raises(expected_error):
-                result = pt_cut(particle_list_pt, cut_value_tuple)
+                result = pT_cut(particle_list_pt, cut_value_tuple)
 
         else:
-            # Apply the pt_cut
-            result = pt_cut(particle_list_pt, cut_value_tuple)
+            # Apply the pT_cut
+            result = pT_cut(particle_list_pt, cut_value_tuple)
             # Assert the result matches the expected outcome
             assert result == expected_result
 

@@ -405,7 +405,7 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     return updated_particle_list
 
 
-def pt_cut(particle_list, cut_value_tuple):
+def pT_cut(particle_list, cut_value_tuple):
     """
     Apply p_t cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
