@@ -20,34 +20,24 @@ from sparkx.Particle import Particle
 @pytest.fixture
 def output_path():
     # Assuming your test file is in the same directory as test_files/
-    return os.path.join(
-        os.path.dirname(__file__),
-        'test_files',
-        'test_output.dat')
+    return os.path.join(os.path.dirname(__file__), "test_files", "test_output.dat")
 
 
 @pytest.fixture
 def jetscape_file_path():
     # Assuming your test file is in the same directory as test_files/
-    return os.path.join(
-        os.path.dirname(__file__),
-        'test_files',
-        'test_jetscape.dat')
+    return os.path.join(os.path.dirname(__file__), "test_files", "test_jetscape.dat")
 
 
 @pytest.fixture
 def jetscape_file_path_partons():
     # Assuming your test file is in the same directory as test_files/
     return os.path.join(
-        os.path.dirname(__file__),
-        'test_files',
-        'test_jetscape_partons.dat')
+        os.path.dirname(__file__), "test_files", "test_jetscape_partons.dat"
+    )
 
 
-def create_temporary_jetscape_file(
-        path,
-        num_events,
-        output_per_event_list=None):
+def create_temporary_jetscape_file(path, num_events, output_per_event_list=None):
     """
     This function creates a sample Jetscape file "jetscape_test.dat" in the
     temporary directory, containing data for the specified number of events.
@@ -66,7 +56,8 @@ def create_temporary_jetscape_file(
             raise TypeError("output_per_event_list must be a list")
         if len(output_per_event_list) != num_events:
             raise ValueError(
-                "output_per_event_list must have the same length as num_events")
+                "output_per_event_list must have the same length as num_events"
+            )
 
     # Define the header content
     header = "#	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz\n"
@@ -88,11 +79,13 @@ def create_temporary_jetscape_file(
             else:
                 num_outputs = output_per_event_list[event_number]
 
-            event_info = f"#	Event	{event_number+1}	weight	1	EPangle	0	N_hadrons	{num_outputs}\n"
+            event_info = (
+                f"#	Event	{event_number+1}	weight	1	EPangle	0	N_hadrons	{num_outputs}\n"
+            )
             f.write(event_info)
 
             # Write particle data line with white space separation
-            particle_line = ' '.join(map(str, data)) + '\n'
+            particle_line = " ".join(map(str, data)) + "\n"
 
             # Write particle data lines
             for _ in range(num_outputs):
@@ -146,30 +139,30 @@ def test_loading_defined_events_and_checking_event_length(tmp_path):
     num_events = 8
     num_output_per_event = [3, 1, 8, 4, 7, 11, 17, 2]
 
-    tmp_jetscape_file = create_temporary_jetscape_file(tmp_path, num_events,
-                                                       num_output_per_event)
+    tmp_jetscape_file = create_temporary_jetscape_file(
+        tmp_path, num_events, num_output_per_event
+    )
 
     # Single events
     for event in range(num_events):
         jetscape = Jetscape(tmp_jetscape_file, events=event)
         assert jetscape.num_events() == 1
-        assert len(jetscape.particle_objects_list()[
-                   0]) == num_output_per_event[event]
-        del (jetscape)
+        assert len(jetscape.particle_objects_list()[0]) == num_output_per_event[event]
+        del jetscape
 
     # Multiple events
     for event_start in range(num_events):
         for event_end in range(event_start, num_events):
-            jetscape = Jetscape(
-                tmp_jetscape_file, events=(
-                    event_start, event_end))
+            jetscape = Jetscape(tmp_jetscape_file, events=(event_start, event_end))
 
             assert jetscape.num_events() == event_end - event_start + 1
 
             for event in range(event_end - event_start + 1):
-                assert len(jetscape.particle_objects_list()[event]) == \
-                    num_output_per_event[event + event_start]
-            del (jetscape)
+                assert (
+                    len(jetscape.particle_objects_list()[event])
+                    == num_output_per_event[event + event_start]
+                )
+            del jetscape
 
 
 def test_num_output_per_event(jetscape_file_path):
@@ -190,8 +183,8 @@ def test_num_events(tmp_path, jetscape_file_path):
         tmp_jetscape_file = create_temporary_jetscape_file(tmp_path, events)
         jetscape = Jetscape(tmp_jetscape_file)
         assert jetscape.num_events() == events
-        del (jetscape)
-        del (tmp_jetscape_file)
+        del jetscape
+        del tmp_jetscape_file
 
 
 def test_set_num_events(tmp_path):
@@ -202,32 +195,31 @@ def test_set_num_events(tmp_path):
         tmp_jetscape_file = create_temporary_jetscape_file(tmp_path, events)
         jetscape = Jetscape(tmp_jetscape_file)
         assert jetscape.num_events() == events
-        del (jetscape)
-        del (tmp_jetscape_file)
+        del jetscape
+        del tmp_jetscape_file
 
 
 def test_particle_list(jetscape_file_path):
-    dummy_particle_list = [[0, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [1, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [2, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [3, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [4, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [5, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [6, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [7, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [8, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                           [9, 111, 27, 0.138, 0.0, 0.0, 0.0]]
+    dummy_particle_list = [
+        [0, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [1, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [2, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [3, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [4, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [5, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [6, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [7, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [8, 111, 27, 0.138, 0.0, 0.0, 0.0],
+        [9, 111, 27, 0.138, 0.0, 0.0, 0.0],
+    ]
 
-    dummy_particle_list_nested = [[[0, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                                   [1, 111, 27, 0.138, 0.0, 0.0, 0.0]],
-                                  [[2, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                                   [3, 111, 27, 0.138, 0.0, 0.0, 0.0]],
-                                  [[4, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                                   [5, 111, 27, 0.138, 0.0, 0.0, 0.0]],
-                                  [[6, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                                   [7, 111, 27, 0.138, 0.0, 0.0, 0.0]],
-                                  [[8, 111, 27, 0.138, 0.0, 0.0, 0.0],
-                                   [9, 111, 27, 0.138, 0.0, 0.0, 0.0]]]
+    dummy_particle_list_nested = [
+        [[0, 111, 27, 0.138, 0.0, 0.0, 0.0], [1, 111, 27, 0.138, 0.0, 0.0, 0.0]],
+        [[2, 111, 27, 0.138, 0.0, 0.0, 0.0], [3, 111, 27, 0.138, 0.0, 0.0, 0.0]],
+        [[4, 111, 27, 0.138, 0.0, 0.0, 0.0], [5, 111, 27, 0.138, 0.0, 0.0, 0.0]],
+        [[6, 111, 27, 0.138, 0.0, 0.0, 0.0], [7, 111, 27, 0.138, 0.0, 0.0, 0.0]],
+        [[8, 111, 27, 0.138, 0.0, 0.0, 0.0], [9, 111, 27, 0.138, 0.0, 0.0, 0.0]],
+    ]
 
     particle_objects = []
     for particle_data in dummy_particle_list:
@@ -240,10 +232,10 @@ def test_particle_list(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path)
     jetscape.particle_list_ = particle_objects
     jetscape.num_events_ = 5
-    jetscape.num_output_per_event_ = np.array(
-        [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]])
+    jetscape.num_output_per_event_ = np.array([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]])
 
-    assert (jetscape.particle_list() == dummy_particle_list_nested)
+    assert jetscape.particle_list() == dummy_particle_list_nested
+
 
 # In the next tests we test a subset of filters only, as the filters are tested
 # separately and completely. This test is therefore seen as an integration
@@ -279,16 +271,17 @@ def test_filter_strangeness_in_Jetscape(tmp_path, particle_list_strange):
     jetscape.particle_list_ = particle_list_strange
     jetscape.strange_particles()
 
-    assert np.array_equal(jetscape.num_output_per_event(),
-                          np.array([[1, 5], [2, 7]]))
+    assert np.array_equal(jetscape.num_output_per_event(), np.array([[1, 5], [2, 7]]))
 
 
 def test_filter_status_in_Jetscape(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path).particle_status(1)
 
     assert jetscape.num_events() == 5
-    assert (jetscape.num_output_per_event() == np.array(
-        [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]])).all()
+    assert (
+        jetscape.num_output_per_event()
+        == np.array([[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]])
+    ).all()
 
 
 def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
@@ -299,8 +292,8 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
     pi0_y0 = (0, 111, 27, 0.138, 0.0, 0.0, 0.0)
     pi0_y1 = (1, 111, 27, 0.138, 0.0, 0.0, 0.10510)
 
-    data_pi0_y0 = ' '.join(map(str, pi0_y0)) + '\n'
-    data_pi0_y1 = ' '.join(map(str, pi0_y1)) + '\n'
+    data_pi0_y0 = " ".join(map(str, pi0_y0)) + "\n"
+    data_pi0_y1 = " ".join(map(str, pi0_y1)) + "\n"
 
     # Create a particle list to be loaded into the Jetscape object
     jetscape_file = str(tmp_path / "jetscape_test.dat")
@@ -327,23 +320,24 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
         print(f.read())
 
     # Test filtering for the mid-rapidity particles
-    jetscape = Jetscape(jetscape_file, filters={'rapidity_cut': 0.5})
+    jetscape = Jetscape(jetscape_file, filters={"rapidity_cut": 0.5})
 
     print(jetscape.num_output_per_event_)
     print(len(jetscape.particle_list()[0]), len(jetscape.particle_list()[1]))
     assert jetscape.num_events() == 2
-    assert np.array_equal(jetscape.num_output_per_event(),
-                          np.array([[1, 6], [2, 10]]))
+    assert np.array_equal(jetscape.num_output_per_event(), np.array([[1, 6], [2, 10]]))
 
 
 def test_filter_status_in_Jetscape_constructor(jetscape_file_path):
     # Perform status filtering such that everything should be filtered out with
     # the given jetscape events in the file.
-    jetscape1 = Jetscape(jetscape_file_path, filters={'particle_status': 1})
+    jetscape1 = Jetscape(jetscape_file_path, filters={"particle_status": 1})
 
     assert jetscape1.num_events() == 5
-    assert np.array_equal(jetscape1.num_output_per_event(), np.array(
-        [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]))
+    assert np.array_equal(
+        jetscape1.num_output_per_event(),
+        np.array([[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]),
+    )
 
 
 @pytest.fixture
@@ -378,10 +372,8 @@ def test_filter_charge_in_Jetscape(tmp_path, particle_list_charge):
     jetscape1.charged_particles()
     jetscape2.uncharged_particles()
 
-    assert np.array_equal(jetscape1.num_output_per_event(),
-                          np.array([[1, 5], [2, 15]]))
-    assert np.array_equal(jetscape2.num_output_per_event(),
-                          np.array([[1, 3], [2, 7]]))
+    assert np.array_equal(jetscape1.num_output_per_event(), np.array([[1, 5], [2, 15]]))
+    assert np.array_equal(jetscape2.num_output_per_event(), np.array([[1, 3], [2, 7]]))
 
 
 @pytest.fixture
@@ -416,10 +408,8 @@ def test_filter_pdg_in_Jetscape(tmp_path, particle_list_pdg):
     jetscape1.particle_species([211, 221])
     jetscape2.remove_particle_species(22)
 
-    assert np.array_equal(jetscape1.num_output_per_event(),
-                          np.array([[1, 5], [2, 15]]))
-    assert np.array_equal(jetscape2.num_output_per_event(),
-                          np.array([[1, 5], [2, 15]]))
+    assert np.array_equal(jetscape1.num_output_per_event(), np.array([[1, 5], [2, 15]]))
+    assert np.array_equal(jetscape2.num_output_per_event(), np.array([[1, 5], [2, 15]]))
 
 
 def test_Jetscape_print(jetscape_file_path, output_path):
@@ -441,8 +431,8 @@ def test_Jetscape_charge_filter_one_event(jetscape_file_path):
 
 
 def test_Jetscape_read_parton_file(jetscape_file_path_partons):
-    jetscape = Jetscape(jetscape_file_path_partons, particletype='parton')
-    assert jetscape.particle_type_ == 'parton'
+    jetscape = Jetscape(jetscape_file_path_partons, particletype="parton")
+    assert jetscape.particle_type_ == "parton"
     assert jetscape.num_events() == 5
 
     charged_quarks = jetscape.charged_particles().particle_objects_list()
@@ -451,7 +441,7 @@ def test_Jetscape_read_parton_file(jetscape_file_path_partons):
 
     # Test construction with wrong particletype
     with pytest.raises(ValueError):
-        Jetscape(jetscape_file_path_partons, particletype='wrong')
+        Jetscape(jetscape_file_path_partons, particletype="wrong")
 
     # Test construction with wrong particletype (not string)
     with pytest.raises(TypeError):

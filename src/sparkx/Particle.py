@@ -218,14 +218,16 @@ class Particle:
     The functions `is_strange()` and `is_heavy_flavor()` should not be used in this
     case.
     """
-    __slots__ = ['data_']
+
+    __slots__ = ["data_"]
 
     def __init__(self, input_format=None, particle_array=None):
         self.data_ = np.array(25 * [np.nan], dtype=float)
         self.pdg_valid = False
 
         if ((input_format is not None) and (particle_array is None)) or (
-                (input_format is None) and (particle_array is not None)):
+            (input_format is None) and (particle_array is not None)
+        ):
             raise ValueError("'input_format' or 'particle_array' not given")
 
         if (input_format is not None) and (particle_array is not None):
@@ -363,16 +365,12 @@ class Particle:
                 "pz_": [8, 6],
             },
         }
-        if (input_format in attribute_mapping):
-            if (
-                len(particle_array) == len(
-                    attribute_mapping[input_format]) or (
-                    input_format in [
-                        "Oscar2013Extended",
-                        "Oscar2013Extended_IC"] and len(particle_array) <= len(
-                    attribute_mapping[input_format]) and len(particle_array) >= len(
-                        attribute_mapping[input_format]) -
-                    2)):
+        if input_format in attribute_mapping:
+            if len(particle_array) == len(attribute_mapping[input_format]) or (
+                input_format in ["Oscar2013Extended", "Oscar2013Extended_IC"]
+                and len(particle_array) <= len(attribute_mapping[input_format])
+                and len(particle_array) >= len(attribute_mapping[input_format]) - 2
+            ):
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array) <= (index[1]):
                         continue
@@ -392,9 +390,19 @@ class Particle:
                         "form_time_",
                         "xsecfac_",
                         "t_last_coll_",
-                            "weight_"]:
+                        "weight_",
+                    ]:
                         self.data_[index[0]] = float(particle_array[index[1]])
-                    elif attribute in ["pdg_", "ID_", "ncoll_", "proc_id_origin_", "proc_type_origin_", "pdg_mother1_", "pdg_mother2_", "status_"]:
+                    elif attribute in [
+                        "pdg_",
+                        "ID_",
+                        "ncoll_",
+                        "proc_id_origin_",
+                        "proc_type_origin_",
+                        "pdg_mother1_",
+                        "pdg_mother2_",
+                        "status_",
+                    ]:
                         self.data_[index[0]] = int(particle_array[index[1]])
                     else:
                         self.data_[index[0]] = int(particle_array[index[1]])
@@ -408,19 +416,28 @@ class Particle:
                     self.mass = self.mass_from_energy_momentum()
                     self.charge = self.charge_from_pdg()
                     if self.pdg_valid == False and np.isnan(self.charge):
-                        warnings.warn('The PDG code ' + str(int(self.pdg)) + \
-                                      ' is not known by PDGID, charge could not be computed. Consider setting it by hand.')
+                        warnings.warn(
+                            "The PDG code "
+                            + str(int(self.pdg))
+                            + " is not known by PDGID, charge could not be computed. Consider setting it by hand."
+                        )
             else:
-                raise ValueError("The input file is corrupted! " +
-                                 "A line with wrong number of columns " +
-                                 str(len(particle_array)) +
-                                 " was found.")
+                raise ValueError(
+                    "The input file is corrupted! "
+                    + "A line with wrong number of columns "
+                    + str(len(particle_array))
+                    + " was found."
+                )
         else:
             raise ValueError(f"Unsupported input format '{input_format}'")
 
-        if (not self.pdg_valid):
-            warnings.warn('The PDG code ' + str(int(self.pdg)) + ' is not valid. ' +
-                          'All properties extracted from the PDG are set to default values.')
+        if not self.pdg_valid:
+            warnings.warn(
+                "The PDG code "
+                + str(int(self.pdg))
+                + " is not valid. "
+                + "All properties extracted from the PDG are set to default values."
+            )
 
     @property
     def t(self):
@@ -556,7 +573,7 @@ class Particle:
         -------
         pdg : int
         """
-        if (np.isnan(self.data_[9])):
+        if np.isnan(self.data_[9]):
             return np.nan
         return int(self.data_[9])
 
@@ -565,11 +582,13 @@ class Particle:
         self.data_[9] = value
         self.pdg_valid = PDGID(self.pdg).is_valid
 
-        if (not self.pdg_valid):
-            warnings.warn('The PDG code ' +
-                          str(int(self.pdg)) +
-                          ' is not valid. ' +
-                          'All properties extracted from the PDG are set to nan.')
+        if not self.pdg_valid:
+            warnings.warn(
+                "The PDG code "
+                + str(int(self.pdg))
+                + " is not valid. "
+                + "All properties extracted from the PDG are set to nan."
+            )
 
     @property
     def ID(self):
@@ -581,7 +600,7 @@ class Particle:
         -------
         ID : int
         """
-        if (np.isnan(self.data_[11])):
+        if np.isnan(self.data_[11]):
             return np.nan
         return int(self.data_[11])
 
@@ -597,7 +616,7 @@ class Particle:
         -------
         charge : int
         """
-        if (np.isnan(self.data_[12])):
+        if np.isnan(self.data_[12]):
             return np.nan
         return int(self.data_[12])
 
@@ -617,7 +636,7 @@ class Particle:
         -------
         ncoll : int
         """
-        if (np.isnan(self.data_[13])):
+        if np.isnan(self.data_[13]):
             return np.nan
         return int(self.data_[13])
 
@@ -661,7 +680,7 @@ class Particle:
         -------
         proc_id_origin : int
         """
-        if (np.isnan(self.data_[16])):
+        if np.isnan(self.data_[16]):
             return np.nan
         return int(self.data_[16])
 
@@ -677,7 +696,7 @@ class Particle:
         -------
         proc_type_origin : int
         """
-        if (np.isnan(self.data_[17])):
+        if np.isnan(self.data_[17]):
             return np.nan
         return int(self.data_[17])
 
@@ -707,7 +726,7 @@ class Particle:
         -------
         pdg_mother1 : int
         """
-        if (np.isnan(self.data_[19])):
+        if np.isnan(self.data_[19]):
             return np.nan
         return int(self.data_[19])
 
@@ -723,7 +742,7 @@ class Particle:
         -------
         pdg_mother2 : int
         """
-        if (np.isnan(self.data_[20])):
+        if np.isnan(self.data_[20]):
             return np.nan
         return int(self.data_[20])
 
@@ -741,7 +760,7 @@ class Particle:
         -------
         status : int
         """
-        if (np.isnan(self.data_[21])):
+        if np.isnan(self.data_[21]):
             return np.nan
         return int(self.data_[21])
 
@@ -816,20 +835,26 @@ class Particle:
         All particle quantities are then printed in the next line separated by
         a comma.
         """
+
         def int_isnan(value):
             if np.isnan(value):
                 return np.nan
             else:
                 return int(value)
-        print('t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
+
+        print(
+            "t,x,y,z,mass,E,px,py,pz,pdg,ID,charge,ncoll,form_time,xsecfac,\
               proc_id_origin,proc_type_origin,t_last_coll,pdg_mother1,\
-              pdg_mother2,status,baryon_number,strangeness,weight')
-        print(f'{self.t},{self.x},{self.y},{self.z},{self.mass},{self.E},\
+              pdg_mother2,status,baryon_number,strangeness,weight"
+        )
+        print(
+            f"{self.t},{self.x},{self.y},{self.z},{self.mass},{self.E},\
               {self.px},{self.py},{self.pz},{int_isnan(self.pdg)},{int_isnan(self.ID)},\
               {int_isnan(self.charge)},{int_isnan(self.ncoll)},{self.form_time},{self.xsecfac},\
               {int_isnan(self.proc_id_origin)},{int_isnan(self.proc_type_origin)}\
               ,{self.t_last_coll},{int_isnan(self.pdg_mother1)},{int_isnan(self.pdg_mother2)},\
-              {int_isnan(self.status)},{int_isnan(self.baryon_number)},{int_isnan(self.strangeness)},{self.weight}')
+              {int_isnan(self.status)},{int_isnan(self.baryon_number)},{int_isnan(self.strangeness)},{self.weight}"
+        )
 
     def angular_momentum(self):
         """
@@ -846,8 +871,14 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if np.isnan(self.x) or np.isnan(self.y) or np.isnan(self.z)\
-                or np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
+        if (
+            np.isnan(self.x)
+            or np.isnan(self.y)
+            or np.isnan(self.z)
+            or np.isnan(self.px)
+            or np.isnan(self.py)
+            or np.isnan(self.pz)
+        ):
             return np.nan
         else:
             r = [self.x, self.y, self.z]
@@ -875,7 +906,7 @@ class Particle:
                 # Adding a small positive value
                 denominator = (self.E - self.pz) + 1e-10
             else:
-                denominator = (self.E - self.pz)
+                denominator = self.E - self.pz
 
             return 0.5 * np.log((self.E + self.pz) / denominator)
 
@@ -896,7 +927,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            return np.sqrt(self.px**2. + self.py**2. + self.pz**2.)
+            return np.sqrt(self.px**2.0 + self.py**2.0 + self.pz**2.0)
 
     def pT_abs(self):
         """
@@ -915,7 +946,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
-            return np.sqrt(self.px**2. + self.py**2.)
+            return np.sqrt(self.px**2.0 + self.py**2.0)
 
     def phi(self):
         """
@@ -935,7 +966,7 @@ class Particle:
             return np.nan
         else:
             if (np.abs(self.px) < 1e-6) and (np.abs(self.py) < 1e-6):
-                return 0.
+                return 0.0
             else:
                 return math.atan2(self.py, self.px)
 
@@ -957,7 +988,7 @@ class Particle:
             return np.nan
         else:
             if self.p_abs() == 0.0:
-                return 0.
+                return 0.0
             else:
                 return np.arccos(self.pz / self.p_abs())
 
@@ -979,10 +1010,11 @@ class Particle:
             return np.nan
         else:
             if abs(self.p_abs() - self.pz) < 1e-10:
-                denominator = (self.p_abs() - self.pz) + \
-                    1e-10  # Adding a small positive value
+                denominator = (
+                    self.p_abs() - self.pz
+                ) + 1e-10  # Adding a small positive value
             else:
-                denominator = (self.p_abs() - self.pz)
+                denominator = self.p_abs() - self.pz
 
             return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
 
@@ -1026,7 +1058,7 @@ class Particle:
             return np.nan
         else:
             if self.t > np.abs(self.z):
-                return np.sqrt(self.t**2. - self.z**2.)
+                return np.sqrt(self.t**2.0 - self.z**2.0)
             else:
                 raise ValueError("|z| < t not fulfilled")
 
@@ -1046,21 +1078,24 @@ class Particle:
         If one of the needed particle quantities is not given, then `np.nan`
         is returned.
         """
-        if np.isnan(
-            self.E) or np.isnan(
-            self.px) or np.isnan(
-            self.py) or np.isnan(
-                self.pz):
+        if (
+            np.isnan(self.E)
+            or np.isnan(self.px)
+            or np.isnan(self.py)
+            or np.isnan(self.pz)
+        ):
             return np.nan
         # photons and gluons are massless
         elif self.pdg == 22 or self.pdg == 21:
             return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
-                return np.sqrt(self.E**2. - self.p_abs()**2.)
+                return np.sqrt(self.E**2.0 - self.p_abs() ** 2.0)
             else:
-                warnings.warn('|E| >= |p| not fulfilled or not within numerical precision! '
-                              'The mass is set to nan.')
+                warnings.warn(
+                    "|E| >= |p| not fulfilled or not within numerical precision! "
+                    "The mass is set to nan."
+                )
                 return np.nan
 
     def charge_from_pdg(self):
@@ -1099,10 +1134,12 @@ class Particle:
         if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         elif abs(self.E) >= abs(self.pz):
-            return np.sqrt(self.E**2. - self.pz**2.)
+            return np.sqrt(self.E**2.0 - self.pz**2.0)
         else:
-            warnings.warn('|E| >= |pz| not fulfilled or not within numerical precision! '
-                          'The transverse mass is set to nan.')
+            warnings.warn(
+                "|E| >= |pz| not fulfilled or not within numerical precision! "
+                "The transverse mass is set to nan."
+            )
             return np.nan
 
     def is_meson(self):
@@ -1188,8 +1225,11 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        if PDGID(self.pdg).has_charm or PDGID(self.pdg).has_bottom\
-                or PDGID(self.pdg).has_top:
+        if (
+            PDGID(self.pdg).has_charm
+            or PDGID(self.pdg).has_bottom
+            or PDGID(self.pdg).has_top
+        ):
             return True
         else:
             return False

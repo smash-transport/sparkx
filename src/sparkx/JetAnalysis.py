@@ -146,11 +146,8 @@ class JetAnalysis:
         self.jet_data_ = None
 
     def __initialize_and_check_parameters(
-            self,
-            hadron_data,
-            jet_R,
-            jet_eta_range,
-            jet_pt_range):
+        self, hadron_data, jet_R, jet_eta_range, jet_pt_range
+    ):
         """
         Initialize and check the parameters for jet analysis.
 
@@ -175,45 +172,51 @@ class JetAnalysis:
         self.hadron_data_ = hadron_data
 
         # check jet radius
-        if jet_R <= 0.:
+        if jet_R <= 0.0:
             raise ValueError("jet_R must be larger than 0")
         self.jet_R_ = jet_R
 
         # check jet eta range
         if not isinstance(jet_eta_range, tuple):
-            raise TypeError("jet_eta_range is not a tuple. " +
-                            "It must contain either values or None.")
+            raise TypeError(
+                "jet_eta_range is not a tuple. "
+                + "It must contain either values or None."
+            )
         if len(jet_eta_range) != 2:
             raise ValueError("jet_eta_range must contain exactly two values.")
 
-        lower_cut = float(
-            '-inf') if jet_eta_range[0] is None else jet_eta_range[0]
-        upper_cut = float(
-            'inf') if jet_eta_range[1] is None else jet_eta_range[1]
+        lower_cut = float("-inf") if jet_eta_range[0] is None else jet_eta_range[0]
+        upper_cut = float("inf") if jet_eta_range[1] is None else jet_eta_range[1]
         if lower_cut < upper_cut:
             self.jet_eta_range_ = (lower_cut, upper_cut)
         else:
             self.jet_eta_range_ = (upper_cut, lower_cut)
-            warnings.warn("The lower jet eta cut value is larger than the " +
-                          "upper one. They are interchanged automatically.")
+            warnings.warn(
+                "The lower jet eta cut value is larger than the "
+                + "upper one. They are interchanged automatically."
+            )
 
         # check the jet pt range
         if not isinstance(jet_pt_range, tuple):
-            raise TypeError("jet_pt_range is not a tuple. " +
-                            "It must contain either values or None.")
+            raise TypeError(
+                "jet_pt_range is not a tuple. "
+                + "It must contain either values or None."
+            )
         if len(jet_pt_range) != 2:
             raise ValueError("jet_pt_range must contain exactly two values.")
         if any(pt is not None and pt < 0 for pt in jet_pt_range):
             raise ValueError("All values in jet_pt_range must be non-negative.")
 
-        lower_cut = 0. if jet_pt_range[0] is None else jet_pt_range[0]
-        upper_cut = float('inf') if jet_pt_range[1] is None else jet_pt_range[1]
+        lower_cut = 0.0 if jet_pt_range[0] is None else jet_pt_range[0]
+        upper_cut = float("inf") if jet_pt_range[1] is None else jet_pt_range[1]
         if lower_cut < upper_cut:
             self.jet_pt_range_ = (lower_cut, upper_cut)
         else:
             self.jet_pt_range_ = (upper_cut, lower_cut)
-            warnings.warn("The lower jet pt cut value is larger than the " +
-                          "upper one. They are interchanged automatically.")
+            warnings.warn(
+                "The lower jet pt cut value is larger than the "
+                + "upper one. They are interchanged automatically."
+            )
 
     def create_fastjet_PseudoJets(self, event_hadrons):
         """
@@ -235,12 +238,7 @@ class JetAnalysis:
         ]
         return event_list_PseudoJets
 
-    def fill_associated_particles(
-            self,
-            jet,
-            event,
-            status_selection,
-            only_charged):
+    def fill_associated_particles(self, jet, event, status_selection, only_charged):
         """
         Select particles in the jet cone.
 
@@ -265,16 +263,17 @@ class JetAnalysis:
         for hadron in self.hadron_data_[event]:
             if np.isnan(hadron.status):
                 raise ValueError("Hadron status not set")
-            if (status_selection == 'negative' and hadron.status >= 0) or \
-                (status_selection == 'positive' and hadron.status < 0) or \
-                    (only_charged and hadron.charge == 0):
+            if (
+                (status_selection == "negative" and hadron.status >= 0)
+                or (status_selection == "positive" and hadron.status < 0)
+                or (only_charged and hadron.charge == 0)
+            ):
                 continue
 
-            fastjet_particle = fj.PseudoJet(hadron.px, hadron.py,
-                                            hadron.pz, hadron.E)
+            fastjet_particle = fj.PseudoJet(hadron.px, hadron.py, hadron.pz, hadron.E)
             delta_eta = fastjet_particle.eta() - jet.eta()
             delta_phi = fastjet_particle.delta_phi_to(jet)
-            delta_r = np.sqrt(delta_eta**2. + delta_phi**2.)
+            delta_r = np.sqrt(delta_eta**2.0 + delta_phi**2.0)
 
             if delta_r < self.jet_R_:
                 associated_hadrons.append(hadron)
@@ -318,8 +317,9 @@ class JetAnalysis:
         jet.reset(jet_px, jet_py, jet_pz, jet_E)
         return jet
 
-    def write_jet_output(self, output_filename, jet, associated_hadrons, event,
-                         new_file=False):
+    def write_jet_output(
+        self, output_filename, jet, associated_hadrons, event, new_file=False
+    ):
         """
         Write the jet and associated hadron information to a CSV file.
 
@@ -348,35 +348,54 @@ class JetAnalysis:
         output_list = []
 
         if jet.perp() < self.jet_pt_range_[1]:
-            output_list = [[0, jet.perp(), jet.eta(), jet.phi(), jet_status,
-                            jet_pid, jet.e(), event]]
+            output_list = [
+                [
+                    0,
+                    jet.perp(),
+                    jet.eta(),
+                    jet.phi(),
+                    jet_status,
+                    jet_pid,
+                    jet.e(),
+                    event,
+                ]
+            ]
 
             # associated hadrons
             for i, associated in enumerate(associated_hadrons, start=1):
-                pseudo_jet = fj.PseudoJet(associated.px, associated.py,
-                                          associated.pz, associated.E)
-                output = [i, pseudo_jet.perp(), pseudo_jet.eta(),
-                          pseudo_jet.phi(), associated.status,
-                          associated.pdg, associated.E, event]
+                pseudo_jet = fj.PseudoJet(
+                    associated.px, associated.py, associated.pz, associated.E
+                )
+                output = [
+                    i,
+                    pseudo_jet.perp(),
+                    pseudo_jet.eta(),
+                    pseudo_jet.phi(),
+                    associated.status,
+                    associated.pdg,
+                    associated.E,
+                    event,
+                ]
                 output_list.append(output)
 
-        mode = 'a' if not new_file else 'w'
+        mode = "a" if not new_file else "w"
 
-        with open(output_filename, mode, newline='') as f:
+        with open(output_filename, mode, newline="") as f:
             writer = csv.writer(f)
             writer.writerows(output_list)
 
         return False
 
     def perform_jet_finding(
-            self,
-            hadron_data,
-            jet_R,
-            jet_eta_range,
-            jet_pt_range,
-            output_filename,
-            assoc_only_charged=True,
-            jet_algorithm=fj.antikt_algorithm):
+        self,
+        hadron_data,
+        jet_R,
+        jet_eta_range,
+        jet_pt_range,
+        output_filename,
+        assoc_only_charged=True,
+        jet_algorithm=fj.antikt_algorithm,
+    ):
         """
         Perform the jet analysis for multiple events. The function generates a
         file containing the jets consisting of a leading particle and associated
@@ -415,17 +434,21 @@ class JetAnalysis:
 
         """
         self.__initialize_and_check_parameters(
-            hadron_data, jet_R, jet_eta_range, jet_pt_range)
+            hadron_data, jet_R, jet_eta_range, jet_pt_range
+        )
         for event, hadron_data_event in enumerate(self.hadron_data_):
             new_file = False
             event_PseudoJets = self.create_fastjet_PseudoJets(hadron_data_event)
-            if jet_algorithm == fj.ee_genkt_algorithm or jet_algorithm == fj.genkt_algorithm:
-                jet_definition = fj.JetDefinition(
-                    jet_algorithm, self.jet_R_, -1.0)
+            if (
+                jet_algorithm == fj.ee_genkt_algorithm
+                or jet_algorithm == fj.genkt_algorithm
+            ):
+                jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_, -1.0)
             else:
                 jet_definition = fj.JetDefinition(jet_algorithm, self.jet_R_)
             jet_selector = fj.SelectorEtaRange(
-                self.jet_eta_range_[0], self.jet_eta_range_[1])
+                self.jet_eta_range_[0], self.jet_eta_range_[1]
+            )
 
             if event == 0:
                 print("jet definition is:", jet_definition)
@@ -435,21 +458,27 @@ class JetAnalysis:
 
             # perform the jet finding algorithm
             cluster = fj.ClusterSequence(event_PseudoJets, jet_definition)
-            jets = fj.sorted_by_pt(
-                cluster.inclusive_jets(
-                    self.jet_pt_range_[0]))
+            jets = fj.sorted_by_pt(cluster.inclusive_jets(self.jet_pt_range_[0]))
             jets = jet_selector(jets)
 
             # get the associated particles in the jet cone
             for jet in jets:
                 holes_in_jet = self.fill_associated_particles(
-                    jet, event, status_selection='negative', only_charged=assoc_only_charged)
+                    jet,
+                    event,
+                    status_selection="negative",
+                    only_charged=assoc_only_charged,
+                )
                 associated_particles = self.fill_associated_particles(
-                    jet, event, status_selection='positive', only_charged=assoc_only_charged)
+                    jet,
+                    event,
+                    status_selection="positive",
+                    only_charged=assoc_only_charged,
+                )
                 jet = self.jet_hole_subtraction(jet, holes_in_jet)
-                new_file = self.write_jet_output(output_filename, jet,
-                                                 associated_particles,
-                                                 event, new_file)
+                new_file = self.write_jet_output(
+                    output_filename, jet, associated_particles, event, new_file
+                )
 
     def read_jet_data(self, input_filename):
         """
@@ -463,16 +492,25 @@ class JetAnalysis:
         """
         jet_data = []
         current_jet = []
-        with open(input_filename, 'r', newline='') as f:
+        with open(input_filename, "r", newline="") as f:
             reader = csv.reader(f)
             for row in reader:
                 jet_index = int(row[0])
                 if jet_index == 0 and current_jet:
                     jet_data.append(current_jet)
                     current_jet = []
-                current_jet.append([int(row[0]), float(row[1]), float(row[2]),
-                                    float(row[3]), int(row[4]), int(row[5]),
-                                    float(row[6]), int(row[7])])
+                current_jet.append(
+                    [
+                        int(row[0]),
+                        float(row[1]),
+                        float(row[2]),
+                        float(row[3]),
+                        int(row[4]),
+                        int(row[5]),
+                        float(row[6]),
+                        int(row[7]),
+                    ]
+                )
             if current_jet:
                 jet_data.append(current_jet)
         self.jet_data_ = jet_data

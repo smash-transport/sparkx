@@ -21,21 +21,26 @@ small_value = 1e-9
 
 # Helper functions
 
+
 # Converts a string to a float or an integer, if applicable.
 # Otherwise, returns the original item.
 def convert_str_to_number(item):
     try:
-        if '.' in item or 'e' in item or 'E' in item:
+        if "." in item or "e" in item or "E" in item:
             return float(item)
         else:
             return int(item)
     except ValueError:
         raise ValueError(f"{item} cannot be converted to a numerical type.")
 
+
 # Converts all string elements in a nested list to their respective
 # numerical types.
 def convert_nested_list_to_numerical(nested_list):
-    return [[convert_str_to_number(item) for item in sublist] for sublist in nested_list]
+    return [
+        [convert_str_to_number(item) for item in sublist] for sublist in nested_list
+    ]
+
 
 # Compares two nested lists element-wise, with a tolerance for
 # floating-point comparisons assuming the lists contain numerical values.

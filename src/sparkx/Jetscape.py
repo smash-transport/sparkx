@@ -191,49 +191,62 @@ class Jetscape:
     """
 
     def __init__(self, JETSCAPE_FILE, **kwargs):
-        if '.dat' not in JETSCAPE_FILE:
-            raise FileNotFoundError('File not found or does not end with .dat')
+        if ".dat" not in JETSCAPE_FILE:
+            raise FileNotFoundError("File not found or does not end with .dat")
 
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.num_output_per_event_ = None
         self.num_events_ = None
         self.particle_list_ = None
-        self.particle_type_ = 'hadron'
+        self.particle_type_ = "hadron"
         self.optional_arguments_ = kwargs
 
         for keys in self.optional_arguments_.keys():
-            if keys not in ['events', 'filters', 'particletype']:
-                raise ValueError('Unknown keyword argument used in constructor')
+            if keys not in ["events", "filters", "particletype"]:
+                raise ValueError("Unknown keyword argument used in constructor")
 
-        if 'events' in self.optional_arguments_.keys() and isinstance(
-                self.optional_arguments_['events'], tuple):
+        if "events" in self.optional_arguments_.keys() and isinstance(
+            self.optional_arguments_["events"], tuple
+        ):
             self.__check_that_tuple_contains_integers_only(
-                self.optional_arguments_['events'])
-            if self.optional_arguments_[
-                    'events'][0] > self.optional_arguments_['events'][1]:
+                self.optional_arguments_["events"]
+            )
+            if (
+                self.optional_arguments_["events"][0]
+                > self.optional_arguments_["events"][1]
+            ):
                 raise ValueError(
-                    'First value of event number tuple must be smaller than second value')
-            elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
-                raise ValueError('Event numbers must be positive')
-        elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
-            if self.optional_arguments_['events'] < 0:
-                raise ValueError('Event number must be positive')
+                    "First value of event number tuple must be smaller than second value"
+                )
+            elif (
+                self.optional_arguments_["events"][0] < 0
+                or self.optional_arguments_["events"][1] < 0
+            ):
+                raise ValueError("Event numbers must be positive")
+        elif "events" in self.optional_arguments_.keys() and isinstance(
+            self.optional_arguments_["events"], int
+        ):
+            if self.optional_arguments_["events"] < 0:
+                raise ValueError("Event number must be positive")
 
-        if 'particletype' in self.optional_arguments_.keys() and isinstance(
-                self.optional_arguments_['particletype'], str):
-            if (self.optional_arguments_['particletype'] == 'hadron') or (
-                    self.optional_arguments_['particletype'] == 'parton'):
-                self.particle_type_ = self.optional_arguments_['particletype']
+        if "particletype" in self.optional_arguments_.keys() and isinstance(
+            self.optional_arguments_["particletype"], str
+        ):
+            if (self.optional_arguments_["particletype"] == "hadron") or (
+                self.optional_arguments_["particletype"] == "parton"
+            ):
+                self.particle_type_ = self.optional_arguments_["particletype"]
             else:
-                raise ValueError(
-                    "'particletype' has to be 'hadron' or 'parton'")
-        elif 'particletype' in self.optional_arguments_.keys() and not isinstance(self.optional_arguments_['particletype'], str):
+                raise ValueError("'particletype' has to be 'hadron' or 'parton'")
+        elif "particletype" in self.optional_arguments_.keys() and not isinstance(
+            self.optional_arguments_["particletype"], str
+        ):
             raise TypeError("'particletype' is not given as a string value")
 
-        if self.particle_type_ == 'hadron':
-            self.particle_type_defining_string_ = 'N_hadrons'
+        if self.particle_type_ == "hadron":
+            self.particle_type_defining_string_ = "N_hadrons"
         else:
-            self.particle_type_defining_string_ = 'N_partons'
+            self.particle_type_defining_string_ = "N_partons"
 
         self.set_num_output_per_event()
         self.set_particle_list(kwargs)
@@ -254,8 +267,7 @@ class Jetscape:
             If one or more elements inside the event tuple are not integers.
         """
         if not all(isinstance(event, int) for event in events_tuple):
-            raise TypeError(
-                "All elements inside the event tuple must be integers.")
+            raise TypeError("All elements inside the event tuple must be integers.")
 
     def __get_num_skip_lines(self):
         """
@@ -268,18 +280,21 @@ class Jetscape:
             Number of initial lines before data.
 
         """
-        if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
+        if (
+            not self.optional_arguments_
+            or "events" not in self.optional_arguments_.keys()
+        ):
             skip_lines = 1
-        elif isinstance(self.optional_arguments_['events'], int):
-            if self.optional_arguments_['events'] == 0:
+        elif isinstance(self.optional_arguments_["events"], int):
+            if self.optional_arguments_["events"] == 0:
                 skip_lines = 1
             else:
                 cumulate_lines = 0
-                for i in range(0, self.optional_arguments_['events']):
+                for i in range(0, self.optional_arguments_["events"]):
                     cumulate_lines += self.num_output_per_event_[i, 1] + 1
                 skip_lines = 1 + cumulate_lines
-        elif isinstance(self.optional_arguments_['events'], tuple):
-            line_start = self.optional_arguments_['events'][0]
+        elif isinstance(self.optional_arguments_["events"], tuple):
+            line_start = self.optional_arguments_["events"][0]
             if line_start == 0:
                 skip_lines = 1
             else:
@@ -288,8 +303,10 @@ class Jetscape:
                     cumulate_lines += self.num_output_per_event_[i, 1] + 1
                 skip_lines = 1 + cumulate_lines
         else:
-            raise TypeError('Value given as flag "events" is not of type ' +
-                            'int or a tuple of two int values')
+            raise TypeError(
+                'Value given as flag "events" is not of type '
+                + "int or a tuple of two int values"
+            )
 
         return skip_lines
 
@@ -311,24 +328,26 @@ class Jetscape:
             fname.readline()
 
     def __get_num_read_lines(self):
-        if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
+        if (
+            not self.optional_arguments_
+            or "events" not in self.optional_arguments_.keys()
+        ):
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
             cumulated_lines += int(len(self.num_output_per_event_))
 
-        elif isinstance(self.optional_arguments_['events'], int):
-            read_event = self.optional_arguments_['events']
+        elif isinstance(self.optional_arguments_["events"], int):
+            read_event = self.optional_arguments_["events"]
             cumulated_lines = int(self.num_output_per_event_[read_event, 1] + 1)
 
-        elif isinstance(self.optional_arguments_['events'], tuple):
+        elif isinstance(self.optional_arguments_["events"], tuple):
             cumulated_lines = 0
-            event_start = self.optional_arguments_['events'][0]
-            event_end = self.optional_arguments_['events'][1]
+            event_start = self.optional_arguments_["events"][0]
+            event_end = self.optional_arguments_["events"][1]
             for i in range(event_start, event_end + 1):
                 cumulated_lines += int(self.num_output_per_event_[i, 1] + 1)
         else:
-            raise TypeError(
-                'Value given as flag events is not of type int or a tuple')
+            raise TypeError("Value given as flag events is not of type int or a tuple")
 
         # +1 for the end line in Jetscape format
         return cumulated_lines + 1
@@ -347,50 +366,49 @@ class Jetscape:
 
     def __update_num_output_per_event_after_filter(self):
         for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1] = len(
-                self.particle_list_[event])
+            self.num_output_per_event_[event][1] = len(self.particle_list_[event])
 
     def __apply_kwargs_filters(self, event, filters_dict):
         if not isinstance(filters_dict, dict) or len(filters_dict.keys()) == 0:
             return event
         for i in filters_dict.keys():
-            if i == 'charged_particles':
-                if filters_dict['charged_particles']:
+            if i == "charged_particles":
+                if filters_dict["charged_particles"]:
                     event = charged_particles(event)
-            elif i == 'uncharged_particles':
-                if filters_dict['uncharged_particles']:
+            elif i == "uncharged_particles":
+                if filters_dict["uncharged_particles"]:
                     event = uncharged_particles(event)
-            elif i == 'strange_particles':
-                if filters_dict['strange_particles']:
+            elif i == "strange_particles":
+                if filters_dict["strange_particles"]:
                     event = strange_particles(event)
-            elif i == 'particle_species':
-                event = particle_species(
-                    event, filters_dict['particle_species'])
-            elif i == 'remove_particle_species':
+            elif i == "particle_species":
+                event = particle_species(event, filters_dict["particle_species"])
+            elif i == "remove_particle_species":
                 event = remove_particle_species(
-                    event, filters_dict['remove_particle_species'])
-            elif i == 'lower_event_energy_cut':
+                    event, filters_dict["remove_particle_species"]
+                )
+            elif i == "lower_event_energy_cut":
                 event = lower_event_energy_cut(
-                    event, filters_dict['lower_event_energy_cut'])
-            elif i == 'pT_cut':
-                event = pT_cut(event, filters_dict['pT_cut'])
-            elif i == 'mT_cut':
-                event = mT_cut(event, filters_dict['mT_cut'])
-            elif i == 'rapidity_cut':
-                event = rapidity_cut(event, filters_dict['rapidity_cut'])
-            elif i == 'pseudorapidity_cut':
-                event = pseudorapidity_cut(
-                    event, filters_dict['pseudorapidity_cut'])
-            elif i == 'spacetime_rapidity_cut':
+                    event, filters_dict["lower_event_energy_cut"]
+                )
+            elif i == "pT_cut":
+                event = pT_cut(event, filters_dict["pT_cut"])
+            elif i == "mT_cut":
+                event = mT_cut(event, filters_dict["mT_cut"])
+            elif i == "rapidity_cut":
+                event = rapidity_cut(event, filters_dict["rapidity_cut"])
+            elif i == "pseudorapidity_cut":
+                event = pseudorapidity_cut(event, filters_dict["pseudorapidity_cut"])
+            elif i == "spacetime_rapidity_cut":
                 event = spacetime_rapidity_cut(
-                    event, filters_dict['spacetime_rapidity_cut'])
-            elif i == 'multiplicity_cut':
-                event = multiplicity_cut(
-                    event, filters_dict['multiplicity_cut'])
-            elif i == 'particle_status':
-                event = particle_status(event, filters_dict['particle_status'])
+                    event, filters_dict["spacetime_rapidity_cut"]
+                )
+            elif i == "multiplicity_cut":
+                event = multiplicity_cut(event, filters_dict["multiplicity_cut"])
+            elif i == "particle_status":
+                event = particle_status(event, filters_dict["particle_status"])
             else:
-                raise ValueError('The cut is unknown!')
+                raise ValueError("The cut is unknown!")
 
         return event
 
@@ -400,84 +418,88 @@ class Jetscape:
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
-        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
+        with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             self.__skip_lines(jetscape_file)
 
             for i in range(0, num_read_lines):
                 line = jetscape_file.readline()
                 if not line:
-                    raise IndexError('Index out of range of JETSCAPE file')
-                elif '#' in line and 'sigmaGen' in line:
-                    if 'filters' in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters(
-                            [data], kwargs['filters'])[0]
+                    raise IndexError("Index out of range of JETSCAPE file")
+                elif "#" in line and "sigmaGen" in line:
+                    if "filters" in self.optional_arguments_.keys():
+                        data = self.__apply_kwargs_filters([data], kwargs["filters"])[0]
                         self.num_output_per_event_[len(particle_list)] = (
-                            len(particle_list) + 1, len(data))
+                            len(particle_list) + 1,
+                            len(data),
+                        )
                     particle_list.append(data)
-                elif i == 0 and '#' not in line and 'weight' not in line:
+                elif i == 0 and "#" not in line and "weight" not in line:
                     raise ValueError(
-                        'First line of the event is not a comment ' +
-                        'line or does not contain "weight"')
-                elif 'Event' in line and 'weight' in line:
-                    line = line.replace('\n', '').replace('\t', ' ').split(' ')
+                        "First line of the event is not a comment "
+                        + 'line or does not contain "weight"'
+                    )
+                elif "Event" in line and "weight" in line:
+                    line = line.replace("\n", "").replace("\t", " ").split(" ")
                     first_event_header = 1
-                    if 'events' in self.optional_arguments_.keys():
-                        if isinstance(kwargs['events'], int):
-                            first_event_header += int(kwargs['events'])
+                    if "events" in self.optional_arguments_.keys():
+                        if isinstance(kwargs["events"], int):
+                            first_event_header += int(kwargs["events"])
                         else:
-                            first_event_header += int(kwargs['events'][0])
+                            first_event_header += int(kwargs["events"][0])
                     if int(line[2]) == first_event_header:
                         continue
                     else:
-                        if 'filters' in self.optional_arguments_.keys():
+                        if "filters" in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters(
-                                [data], kwargs['filters'])[0]
+                                [data], kwargs["filters"]
+                            )[0]
                             self.num_output_per_event_[len(particle_list)] = (
-                                len(particle_list) + 1, len(data))
+                                len(particle_list) + 1,
+                                len(data),
+                            )
                         particle_list.append(data)
                         data = []
                 else:
-                    line = line.replace('\n', '').replace('\t', ' ').split(' ')
+                    line = line.replace("\n", "").replace("\t", " ").split(" ")
                     particle = Particle("JETSCAPE", line)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
-        if not kwargs or 'events' not in self.optional_arguments_.keys():
+        if not kwargs or "events" not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
                 raise IndexError(
-                    'Number of events in Jetscape file does not match the ' +
-                    'number of events specified by the comments in the ' +
-                    'Jetscape file!')
-        elif isinstance(kwargs['events'], int):
-            update = self.num_output_per_event_[kwargs['events']]
+                    "Number of events in Jetscape file does not match the "
+                    + "number of events specified by the comments in the "
+                    + "Jetscape file!"
+                )
+        elif isinstance(kwargs["events"], int):
+            update = self.num_output_per_event_[kwargs["events"]]
             self.num_output_per_event_ = [update]
             self.num_events_ = int(1)
-        elif isinstance(kwargs['events'], tuple):
-            event_start = kwargs['events'][0]
-            event_end = kwargs['events'][1]
-            update = self.num_output_per_event_[event_start: event_end + 1]
+        elif isinstance(kwargs["events"], tuple):
+            event_start = kwargs["events"][0]
+            event_end = kwargs["events"][1]
+            update = self.num_output_per_event_[event_start : event_end + 1]
             self.num_output_per_event_ = update
             self.num_events_ = int(event_end - event_start + 1)
 
-        if not kwargs or 'events' not in self.optional_arguments_.keys():
+        if not kwargs or "events" not in self.optional_arguments_.keys():
             self.particle_list_ = particle_list
-        elif isinstance(kwargs['events'], int):
+        elif isinstance(kwargs["events"], int):
             self.particle_list_ = particle_list
         else:
             self.particle_list_ = particle_list
 
     def set_num_output_per_event(self):
-        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
+        with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             event_output = []
 
             while True:
                 line = jetscape_file.readline()
                 if not line:
                     break
-                elif '#' in line and self.particle_type_defining_string_ in line:
-                    line_str = line.replace(
-                        '\n', '').replace(
-                        '\t', ' ').split(' ')
+                elif "#" in line and self.particle_type_defining_string_ in line:
+                    line_str = line.replace("\n", "").replace("\t", " ").split(" ")
                     event = line_str[2]
                     num_output = line_str[8]
                     event_output.append([event, num_output])
@@ -657,8 +679,7 @@ class Jetscape:
             Containing all but the specified particle species in every event
 
         """
-        self.particle_list_ = remove_particle_species(
-            self.particle_list_, pdg_list)
+        self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -711,7 +732,8 @@ class Jetscape:
             If the minimum_event_energy parameter is less than or equal to 0.
         """
         self.particle_list_ = lower_event_energy_cut(
-            self.particle_list_, minimum_event_energy)
+            self.particle_list_, minimum_event_energy
+        )
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -839,8 +861,7 @@ class Jetscape:
         self : Jetscape object
             Containing only events with a multiplicity >= min_multiplicity
         """
-        self.particle_list_ = multiplicity_cut(
-            self.particle_list_, min_multiplicity)
+        self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
         self.__update_num_output_per_event_after_filter()
 
         return self
@@ -859,9 +880,9 @@ class Jetscape:
         str
             The last line of the file, stripped of leading and trailing whitespace.
         """
-        with open(file_path, 'rb') as file:
+        with open(file_path, "rb") as file:
             file.seek(-2, 2)
-            while file.read(1) != b'\n':
+            while file.read(1) != b"\n":
                 file.seek(-2, 1)
             last_line = file.readline().decode().strip()
             return last_line
@@ -901,7 +922,7 @@ class Jetscape:
             Path to the output file like :code:`[output_directory]/particle_lists.dat`
 
         """
-        with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
+        with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             header_file = jetscape_file.readline()
 
         # Open the output file with buffered writing
@@ -909,7 +930,7 @@ class Jetscape:
             header_file_written = False
             data_to_write = []
 
-            if (self.num_events_ > 1):
+            if self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
@@ -921,12 +942,14 @@ class Jetscape:
                         data_to_write.append(header_file)
 
                     # Header for each event
-                    header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n'
+                    header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
                     data_to_write.append(header)
 
                     # Convert particle data to formatted strings
                     particle_lines = [
-                        f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+                        f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n"
+                        for row in particle_output
+                    ]
 
                     # Append particle data to the list
                     data_to_write.extend(particle_lines)
@@ -940,12 +963,14 @@ class Jetscape:
                     data_to_write.append(header_file)
 
                 # Header for each event
-                header = f'#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n'
+                header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
                 data_to_write.append(header)
 
                 # Convert particle data to formatted strings
                 particle_lines = [
-                    f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n" for row in particle_output]
+                    f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n"
+                    for row in particle_output
+                ]
 
                 # Append particle data to the list
                 data_to_write.extend(particle_lines)
@@ -954,5 +979,5 @@ class Jetscape:
             f_out.writelines(data_to_write)
 
             # Write the last line
-            last_line = self.__get_last_line(self.PATH_JETSCAPE_) + '\n'
+            last_line = self.__get_last_line(self.PATH_JETSCAPE_) + "\n"
             f_out.write(last_line)

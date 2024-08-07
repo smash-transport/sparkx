@@ -18,55 +18,39 @@ def centrality_obj():
     bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     numbers_sequence = range(1, 101)
     multiplicities = [num for num in numbers_sequence for _ in range(100)]
-    return CentralityClasses(events_multiplicity=multiplicities,
-                             centrality_bins=bins)
+    return CentralityClasses(events_multiplicity=multiplicities, centrality_bins=bins)
 
 
 def test_init_with_invalid_input():
     with pytest.raises(TypeError):
-        CentralityClasses(
-            events_multiplicity=10, centrality_bins=[
-                0, 25, 50, 75, 100])
+        CentralityClasses(events_multiplicity=10, centrality_bins=[0, 25, 50, 75, 100])
     with pytest.raises(TypeError):
         CentralityClasses(
-            events_multiplicity=[
-                0,
-                10,
-                20,
-                30,
-                40,
-                50,
-                60,
-                70,
-                80,
-                90,
-                100],
-            centrality_bins=0)
+            events_multiplicity=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            centrality_bins=0,
+        )
 
     numbers_sequence = range(1, 101)
     multiplicities = [num for num in numbers_sequence for _ in range(100)]
     with pytest.raises(ValueError):
-        CentralityClasses(events_multiplicity=multiplicities, centrality_bins=[
-                          0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110])
+        CentralityClasses(
+            events_multiplicity=multiplicities,
+            centrality_bins=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110],
+        )
     with pytest.raises(ValueError):
-        CentralityClasses(events_multiplicity=multiplicities,
-                          centrality_bins=[-10,
-                                           0,
-                                           10,
-                                           20,
-                                           30,
-                                           40,
-                                           50,
-                                           60,
-                                           70,
-                                           80,
-                                           90,
-                                           100])
-    with pytest.warns(UserWarning, match=r"'centrality_bins' contains duplicate values. They are removed automatically."):
-        a = CentralityClasses(events_multiplicity=multiplicities, centrality_bins=[
-                              0, 10, 20, 30, 40, 40, 50, 60, 70, 80, 90, 100])
-        assert a.centrality_bins_ == [
-            0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        CentralityClasses(
+            events_multiplicity=multiplicities,
+            centrality_bins=[-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        )
+    with pytest.warns(
+        UserWarning,
+        match=r"'centrality_bins' contains duplicate values. They are removed automatically.",
+    ):
+        a = CentralityClasses(
+            events_multiplicity=multiplicities,
+            centrality_bins=[0, 10, 20, 30, 40, 40, 50, 60, 70, 80, 90, 100],
+        )
+        assert a.centrality_bins_ == [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 
 def test_create_centrality_classes(centrality_obj):
@@ -105,7 +89,7 @@ def test_output_centrality_classes(centrality_obj, tmp_path):
     assert os.path.isfile(output_file)
 
     # Check content of the output file
-    with open(output_file, 'r') as f:
+    with open(output_file, "r") as f:
         lines = f.readlines()
         assert lines[0].startswith("# CentralityMin CentralityMax")
         assert len(lines) == 10
@@ -114,13 +98,13 @@ def test_output_centrality_classes(centrality_obj, tmp_path):
 def test_create_centrality_classes_error():
     with pytest.raises(ValueError):
         CentralityClasses(
-            events_multiplicity=[
-                1, 2, 3], centrality_bins=[
-                0, 25, 50, 75, 100])
+            events_multiplicity=[1, 2, 3], centrality_bins=[0, 25, 50, 75, 100]
+        )
 
     with pytest.raises(ValueError):
-        CentralityClasses(events_multiplicity=[
-                          10, 15, -20, 25], centrality_bins=[0, 25, 50, 75, 100])
+        CentralityClasses(
+            events_multiplicity=[10, 15, -20, 25], centrality_bins=[0, 25, 50, 75, 100]
+        )
 
 
 def test_output_centrality_classes_with_invalid_fname(centrality_obj):

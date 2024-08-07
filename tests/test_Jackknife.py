@@ -67,8 +67,7 @@ def test_Jackknife_random_deletion():
     # Test for 2D data
     data_2d = generate_2d_data(100)
     reduced_data_2d = jackknife._randomly_delete_data(data_2d)
-    assert reduced_data_2d.shape[0] == int(
-        data_2d.shape[0] * (1 - delete_fraction))
+    assert reduced_data_2d.shape[0] == int(data_2d.shape[0] * (1 - delete_fraction))
     assert reduced_data_2d.shape[1] == data_2d.shape[1]
 
 
@@ -112,10 +111,12 @@ def test_Jackknife_compute_jackknife_estimates():
     std_jackknife = jackknife.compute_jackknife_estimates(data)
     assert np.isclose(std_jackknife, std_err_mean_data, atol=0.01)
 
-    std_var_jackknife = jackknife.compute_jackknife_estimates(
-        data, function=np.std)
-    assert np.isclose(std_var_jackknife, np.std(
-        data, ddof=1) / np.sqrt(2 * (len(data) - 1)), atol=0.01)
+    std_var_jackknife = jackknife.compute_jackknife_estimates(data, function=np.std)
+    assert np.isclose(
+        std_var_jackknife,
+        np.std(data, ddof=1) / np.sqrt(2 * (len(data) - 1)),
+        atol=0.01,
+    )
 
     # Test for TypeError on invalid function output (function returns list
     # instead of float or int)
@@ -159,8 +160,7 @@ def test_Jacknife_2d_array_input():
 
     jackknife = Jackknife(delete_fraction, number_samples, seed)
 
-    std = jackknife.compute_jackknife_estimates(
-        data, function=custom_mean_function)
+    std = jackknife.compute_jackknife_estimates(data, function=custom_mean_function)
     assert isinstance(std, float)
 
 
@@ -177,7 +177,8 @@ def test_jackknife_with_additional_argument():
     jackknife = Jackknife(delete_fraction, number_samples, seed)
     weight = 2.0
     jackknife_std_err = jackknife.compute_jackknife_estimates(
-        data, function=weighted_mean, weight=weight)
+        data, function=weighted_mean, weight=weight
+    )
 
     # this is just testing that the propagation of parameters for the function
     # works
