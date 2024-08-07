@@ -266,6 +266,24 @@ class Jetscape(BaseStorer):
         self.__update_num_output_per_event_after_filter()
 
         return self
+    
+    def spacetime_cut(self, dim, cut_value_tuple):
+        """
+        Raises an error because spacetime cuts are not possible for Jetscape events.
+
+        Parameters
+        ----------
+        dim : str
+            The dimension to apply the cut.
+        cut_value_tuple : tuple
+            The values to apply the cut.
+
+        Raises
+        ------
+        NotImplementedError
+            Always, because spacetime cuts are not possible for Jetscape events.
+        """
+        raise NotImplementedError("Spacetime cuts are not possible for Jetscape events.")
 
     def print_particle_lists_to_file(self, output_file):
         """

@@ -89,9 +89,7 @@ class Oscar(BaseStorer):
     Methods
     -------
     oscar_format:
-        Get Oscar format of the input file
-    spacetime_cut:
-        Apply spacetime cut to all particles
+        Get Oscar format of the input files
     print_particle_lists_to_file:
         Print current particle data to file with same format
 
@@ -276,36 +274,6 @@ class Oscar(BaseStorer):
 
         """
         return self.oscar_format_
-
-    def spacetime_cut(self, dim, cut_value_tuple):
-        """
-        Apply spacetime cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
-        be removed.
-
-        Parameters
-        ----------
-        dim : string
-            String naming the dimension on which to apply the cut.
-            Options: 't','x','y','z'
-        cut_value_tuple : tuple
-            Tuple with the upper and lower limits of the coordinate space
-            acceptance range :code:`(cut_min, cut_max)`. If one of the limits
-            is not required, set it to :code:`None`, i.e.
-            :code:`(None, cut_max)` or :code:`(cut_min, None)`.
-
-        Returns
-        -------
-        self : Oscar object
-            Containing only particles complying with the spacetime cut for all events
-        """
-
-        self.particle_list_ = spacetime_cut(
-            self.particle_list_, dim, cut_value_tuple
-        )
-        self.__update_num_output_per_event_after_filter()
-
-        return self
 
     def print_particle_lists_to_file(self, output_file):
         """

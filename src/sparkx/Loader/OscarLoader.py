@@ -12,21 +12,67 @@ from sparkx.Filter import *
 import os
 
 class OscarLoader(BaseLoader):
-        
+    """
+    OscarLoader is a class for loading and processing OSCAR format data files.
+
+    This class extends the BaseLoader and provides functionality to load, filter, and process data from files in the OSCAR format. It supports different versions of the OSCAR format and allows for event-based data loading with optional filtering.
+
+    Attributes
+    ----------
+    PATH_OSCAR_ : str
+        The path to the OSCAR data file.
+    oscar_format_ : str
+        The format of the OSCAR data file.
+    optional_arguments_ : dict
+        A dictionary of optional arguments passed to the load method.
+    event_end_lines_ : list
+        A list to store the end lines of events in the OSCAR data file.
+    num_events_ : int
+        The number of events in the OSCAR data file.
+    num_output_per_event_ : numpy.ndarray
+        An array containing the number of particles per event in the OSCAR data file.
+
+    Methods
+    -------
+    __init__(OSCAR_FILE)
+        Initializes the OscarLoader with the provided OSCAR file path.
+    load(**kwargs)
+        Loads the OSCAR data with optional event ranges and filters.
+    _get_num_skip_lines()
+        Calculates the number of initial lines to skip in the OSCAR file.
+    set_num_events()
+        Sets the number of events in the OSCAR data file.
+    set_oscar_format()
+        Determines and sets the format of the OSCAR data file.
+    oscar_format()
+        Returns the OSCAR format of the data file.
+    event_end_lines()
+        Returns the event end lines in the OSCAR data file.
+    __get_num_read_lines()
+        Calculates the number of lines to read based on the specified events.
+    __apply_kwargs_filters(event, filters_dict)
+        Applies filters to the event data based on the provided filter dictionary.
+    set_particle_list(kwargs)
+        Sets the list of particles from the OSCAR data file.
+    set_num_output_per_event_and_event_footers()
+        Determines the number of output lines per event and the event footers in the OSCAR data file.
+    """    
     def __init__(self, OSCAR_FILE):
         
         """
+        Constructor for the OscarLoader class.
+
+        This method initializes an instance of the OscarLoader class. It checks if the provided file is in the OSCAR format (i.e., it has the '.oscar' extension). If not, it raises a FileNotFoundError.
+
         Parameters
         ----------
-        OSCAR_FILE : TYPE
-            DESCRIPTION.
-        **kwargs : TYPE
-            DESCRIPTION.
+        OSCAR_FILE : str
+            The path to the OSCAR data file.
 
         Raises
         ------
-        TypeError
-            DESCRIPTION.
+        FileNotFoundError
+            If the input file does not have the '.oscar' extension.
 
         Returns
         -------
@@ -41,6 +87,31 @@ class OscarLoader(BaseLoader):
         self.oscar_format_ = None
 
     def load(self, **kwargs):
+        """
+        Loads the OSCAR data from the specified file.
+
+        This method accepts optional arguments that specify which events to load and any filters to apply. The 'events' argument can be either a tuple specifying a range of events or an integer specifying a single event. If the 'events' argument is provided and is not a tuple or an integer, or if any of the event numbers are negative, a ValueError is raised.
+
+        Parameters
+        ----------
+        **kwargs : dict, optional
+            A dictionary of optional arguments. The following keys are recognized:
+            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
+            - 'filters': A list of filters to apply to the data.
+
+        Raises
+        ------
+        ValueError
+            If an unrecognized keyword argument is used in the constructor, or if the 'events' argument is not a tuple or an integer, or if any of the event numbers are negative.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the following elements:
+            - A list of particles loaded from the OSCAR data.
+            - The number of events in the OSCAR data.
+            - The number of particles in each event in the OSCAR data.
+        """
         self.optional_arguments_ = kwargs
         self.event_end_lines_ = []
 
@@ -100,8 +171,24 @@ class OscarLoader(BaseLoader):
         return skip_lines
     
     def set_num_events(self):
-        # Read the file in binary mode to search for last line. In this way one
-        # does not need to loop through the whole file
+        """
+        Sets the number of events in the OSCAR data file.
+
+        This method reads the file in binary mode to search for the last line. This approach avoids the need to loop through the entire file, which can be time-consuming for large files. It then checks if the last line starts with a '#' and contains the word 'event'. If it does, it sets the number of events to the integer value in the third position of the last line. If the last line does not meet these conditions, it raises a TypeError.
+
+        Parameters
+        ----------
+        None
+
+        Raises
+        ------
+        TypeError
+            If the last line of the file does not start with a '#' and contain the word 'event'.
+
+        Returns
+        -------
+        None
+        """
         with open(self.PATH_OSCAR_, "rb") as file:
             file.seek(-2, os.SEEK_END)
             while file.read(1) != b'\n':
@@ -115,6 +202,24 @@ class OscarLoader(BaseLoader):
                             'or corrupted.')
 
     def set_oscar_format(self):
+        """
+        Sets the number of events in the OSCAR data file.
+
+        This method reads the file in binary mode to search for the last line. This approach avoids the need to loop through the entire file, which can be time-consuming for large files. It then checks if the last line starts with a '#' and contains the word 'event'. If it does, it sets the number of events to the integer value in the third position of the last line. If the last line does not meet these conditions, it raises a TypeError.
+
+        Parameters
+        ----------
+        None
+
+        Raises
+        ------
+        TypeError
+            If the last line of the file does not start with a '#' and contain the word 'event'.
+
+        Returns
+        -------
+        None
+        """
         with open(self.PATH_OSCAR_, 'r') as file:
             first_line = file.readline()
             first_line = first_line.replace('\n', '').split(' ')
@@ -138,6 +243,25 @@ class OscarLoader(BaseLoader):
         return self.event_end_lines_
 
     def __get_num_read_lines(self):
+        """
+        Calculates the number of lines to read from the OSCAR data file.
+
+        This method determines the number of lines to read based on the 'events' key in the optional arguments. If 'events' is not specified, it sums the number of output lines for all events. If 'events' is an integer, it gets the number of output lines for the specified event. If 'events' is a tuple, it sums the number of output lines for the range of events specified. If 'events' is not an integer or a tuple, it raises a TypeError.
+
+        Parameters
+        ----------
+        None
+
+        Raises
+        ------
+        TypeError
+            If the value given as flag events is not of type int or a tuple.
+
+        Returns
+        -------
+        cumulated_lines : int
+            The total number of lines to read from the OSCAR data file.
+        """
         if not self.optional_arguments_ or 'events' not in self.optional_arguments_.keys():
             cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
             # add number of comments
@@ -159,6 +283,28 @@ class OscarLoader(BaseLoader):
         return cumulated_lines
 
     def __apply_kwargs_filters(self, event, filters_dict):
+        """
+        Applies the specified filters to the given event.
+
+        This method applies a series of filters to the event data based on the keys in the filters_dict dictionary. The filters include: 'charged_particles', 'uncharged_particles', 'strange_particles', 'particle_species', 'remove_particle_species', 'participants', 'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pt_cut', 'rapidity_cut', 'pseudorapidity_cut', 'spatial_rapidity_cut', and 'multiplicity_cut'. If a key in the filters_dict dictionary does not match any of these filters, a ValueError is raised.
+
+        Parameters
+        ----------
+        event : list
+            The event data to be filtered.
+        filters_dict : dict
+            A dictionary of filters to apply to the event data. The keys of the dictionary specify the filters to apply, and the values specify the parameters for the filters.
+
+        Raises
+        ------
+        ValueError
+            If a key in the filters_dict dictionary does not match any of the supported filters.
+
+        Returns
+        -------
+        event : list
+            The filtered event data.
+        """
         if not isinstance(filters_dict, dict) or len(filters_dict.keys()) == 0:
             return event
         for i in filters_dict.keys():
@@ -203,6 +349,30 @@ class OscarLoader(BaseLoader):
     # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs):
+        """
+        Sets the list of particles from the OSCAR data file.
+
+        This method reads the OSCAR data file line by line and creates a list of Particle objects. It also applies any filters specified in the 'filters' key of the kwargs dictionary. If the 'events' key is specified in the kwargs dictionary, it adjusts the number of events and the number of output lines per event accordingly.
+
+        Parameters
+        ----------
+        kwargs : dict
+            A dictionary of optional arguments. The following keys are recognized:
+            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
+            - 'filters': A list of filters to apply to the data.
+
+        Raises
+        ------
+        IndexError
+            If the number of events in the OSCAR file does not match the number of events specified by the comments in the OSCAR file, or if the index is out of range of the OSCAR file.
+        ValueError
+            If the first line of the event is not a comment line or does not contain "out", or if a comment line is unexpectedly found.
+
+        Returns
+        -------
+        particle_list : list
+            A list of Particle objects loaded from the OSCAR data file.
+        """
         particle_list = []
         data = []
         num_read_lines = self.__get_num_read_lines()
@@ -253,6 +423,30 @@ class OscarLoader(BaseLoader):
             
 
     def set_oscar_format(self):
+        """
+        Sets the list of particles from the OSCAR data file.
+
+        This method reads the OSCAR data file line by line and creates a list of Particle objects. It also applies any filters specified in the 'filters' key of the kwargs dictionary. If the 'events' key is specified in the kwargs dictionary, it adjusts the number of events and the number of output lines per event accordingly.
+
+        Parameters
+        ----------
+        kwargs : dict
+            A dictionary of optional arguments. The following keys are recognized:
+            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
+            - 'filters': A list of filters to apply to the data.
+
+        Raises
+        ------
+        IndexError
+            If the number of events in the OSCAR file does not match the number of events specified by the comments in the OSCAR file, or if the index is out of range of the OSCAR file.
+        ValueError
+            If the first line of the event is not a comment line or does not contain "out", or if a comment line is unexpectedly found.
+
+        Returns
+        -------
+        particle_list : list
+            A list of Particle objects loaded from the OSCAR data file.
+        """
         with open(self.PATH_OSCAR_, 'r') as file:
             first_line = file.readline()
             first_line = first_line.replace('\n', '').split(' ')
@@ -271,6 +465,23 @@ class OscarLoader(BaseLoader):
 
 
     def set_num_output_per_event_and_event_footers(self):
+        """
+        Sets the number of output lines per event and the event footers in the OSCAR data file.
+
+        This method reads the OSCAR data file line by line and determines the number of output lines for each event and the event footers. The method behaves differently depending on the OSCAR format of the data file. If the format is 'Oscar2013Extended_IC' or 'Oscar2013Extended_Photons', it counts the number of lines between 'in' and 'end' lines. Otherwise, it counts the number of lines between 'out' and 'end' lines.
+
+        Parameters
+        ----------
+        None
+
+        Raises
+        ------
+        None
+
+        Returns
+        -------
+        None
+        """
         with open(self.PATH_OSCAR_, 'r') as oscar_file:
             event_output = []
             if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
