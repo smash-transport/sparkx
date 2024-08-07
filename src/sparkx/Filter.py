@@ -143,15 +143,8 @@ def particle_species(particle_list, pdg_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(
-        pdg_list,
-        (str,
-         int,
-         list,
-         np.integer,
-         np.ndarray,
-         tuple,
-         float)):
+    if not isinstance(pdg_list,
+                      (str, int, list, np.integer, np.ndarray, tuple, float)):
         raise TypeError('Input value for pgd codes has not one of the ' +
                         'following types: str, int, float, np.integer, list ' +
                         'of str, list of int, list of int np.ndarray, tuple')
