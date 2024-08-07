@@ -575,7 +575,7 @@ class EventCharacteristics:
             raise TypeError(
                 "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
         if (IC_info is not None) and not isinstance(IC_info, str):
-            warnings.warn("The given IC_info is not a string")
+            raise TypeError("The given IC_info is not a string")
         if not isinstance(output_filename, str):
             raise TypeError("output_filename must be a string")
         if self.has_lattice_:
