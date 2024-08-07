@@ -13,9 +13,9 @@ import pytest
 import os
 import csv
 
-TEST_FILES_DIR = os.path.join(os.path.dirname(__file__), 'test_files')
-TEST_JETSCAPE_DAT = os.path.join(TEST_FILES_DIR, 'test_jetscape.dat')
-TEST_JET_FINDING = os.path.join(TEST_FILES_DIR, 'test_jet_finding.csv')
+TEST_FILES_DIR = os.path.join(os.path.dirname(__file__), "test_files")
+TEST_JETSCAPE_DAT = os.path.join(TEST_FILES_DIR, "test_jetscape.dat")
+TEST_JET_FINDING = os.path.join(TEST_FILES_DIR, "test_jet_finding.csv")
 
 
 @pytest.fixture
@@ -29,19 +29,24 @@ def test_data():
 
 
 def test_jet_analysis(jet_analysis_instance, test_data, tmp_path):
-    jet_analysis_instance.perform_jet_finding(test_data, jet_R=0.4, jet_eta_range=(
-        -2., 2.), jet_pt_range=(10., None), output_filename=tmp_path / "test_jet.csv")
+    jet_analysis_instance.perform_jet_finding(
+        test_data,
+        jet_R=0.4,
+        jet_eta_range=(-2.0, 2.0),
+        jet_pt_range=(10.0, None),
+        output_filename=tmp_path / "test_jet.csv",
+    )
 
     # Read the content of the test jet finding file
     test_jet_finding_content = []
-    with open(TEST_JET_FINDING, 'r', newline='') as f:
+    with open(TEST_JET_FINDING, "r", newline="") as f:
         reader = csv.reader(f)
         for row in reader:
             test_jet_finding_content.append(row)
 
     # Read the content of the generated file in tmp_path
     generated_jet_finding_content = []
-    with open(tmp_path / "test_jet.csv", 'r', newline='') as f:
+    with open(tmp_path / "test_jet.csv", "r", newline="") as f:
         reader = csv.reader(f)
         for row in reader:
             generated_jet_finding_content.append(row)
@@ -56,12 +61,12 @@ def test_read_jet_data(jet_analysis_instance, tmp_path):
         [0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1],
         [1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1],
         [0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2],
-        [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2]
+        [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2],
     ]
 
     # Write test data to a CSV file
     test_file_path = tmp_path / "test_jet_data.csv"
-    with open(test_file_path, 'w', newline='') as f:
+    with open(test_file_path, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerows(test_jet_data)
 
@@ -79,8 +84,14 @@ def test_read_jet_data(jet_analysis_instance, tmp_path):
 def test_get_jets(jet_analysis_instance):
     # Define some sample jet data
     sample_jet_data = [
-        [[0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1], [1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1]],
-        [[0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2], [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2]]
+        [
+            [0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1],
+            [1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1],
+        ],
+        [
+            [0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2],
+            [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2],
+        ],
     ]
 
     # Set the jet_data_ attribute of the JetAnalysis instance
@@ -90,16 +101,24 @@ def test_get_jets(jet_analysis_instance):
     jets = jet_analysis_instance.get_jets()
 
     # Check if the extracted jets match the expected jets
-    expected_jets = [[0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1],
-                     [0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2]]
+    expected_jets = [
+        [0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1],
+        [0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2],
+    ]
     assert jets == expected_jets
 
 
 def test_get_associated_particles(jet_analysis_instance):
     # Define some sample jet data
     sample_jet_data = [
-        [[0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1], [1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1]],
-        [[0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2], [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2]]
+        [
+            [0, 10.0, 1.2, 3.4, 10, 10, 100.0, 1],
+            [1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1],
+        ],
+        [
+            [0, 15.0, 1.5, 3.7, 9, 9, 150.0, 2],
+            [1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2],
+        ],
     ]
 
     # Set the jet_data_ attribute of the JetAnalysis instance
@@ -112,6 +131,6 @@ def test_get_associated_particles(jet_analysis_instance):
     # associated particles for each jet
     expected_associated_particles = [
         [[1, 20.0, 2.3, 4.5, 11, 11, 200.0, 1]],
-        [[1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2]]
+        [[1, 25.0, 2.7, 4.9, 12, 12, 250.0, 2]],
     ]
     assert associated_particles == expected_associated_particles

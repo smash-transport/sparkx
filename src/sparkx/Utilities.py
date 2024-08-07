@@ -52,7 +52,7 @@ def pdg_to_latex(pdg_id):
     latex_names = [0] * len(pdg_id)
 
     with open(path) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file, delimiter=",")
         counter_row = 0
 
         for row in csv_reader:
@@ -65,6 +65,6 @@ def pdg_to_latex(pdg_id):
             counter_row += 1
 
     if 0 in latex_names:
-        raise ValueError('pdg_id contains invalid PDG ID')
+        raise ValueError("pdg_id contains invalid PDG ID")
 
     return latex_names

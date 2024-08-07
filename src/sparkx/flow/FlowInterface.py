@@ -21,10 +21,6 @@ class FlowInterface(ABC):
 
     @abstractmethod
     def differential_flow(
-            self,
-            particle_data,
-            bins,
-            flow_as_function_of,
-            *args,
-            **kwargs):
+        self, particle_data, bins, flow_as_function_of, *args, **kwargs
+    ):
         pass
