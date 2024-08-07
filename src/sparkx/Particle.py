@@ -1052,6 +1052,9 @@ class Particle:
             self.py) or np.isnan(
                 self.pz):
             return np.nan
+        # photons and gluons are massless
+        elif self.pdg == 22 or self.pdg == 21:
+            return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
                 return np.sqrt(self.E**2. - self.p_abs()**2.)

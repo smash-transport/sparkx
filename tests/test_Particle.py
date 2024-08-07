@@ -720,7 +720,7 @@ def test_compute_mass_from_energy_momentum_invalid_values():
     p.pz = 5.0
 
     with pytest.warns(UserWarning, match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan."):
-        assert np.isnan(p.compute_mass_from_energy_momentum())
+        assert np.isnan(p.mass_from_energy_momentum())
 
 
 def test_mass_from_energy_momentum_missing_values():
