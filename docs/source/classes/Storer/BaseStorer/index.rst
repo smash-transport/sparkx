@@ -9,6 +9,7 @@ BaseStorer
 .. automethod:: BaseStorer.num_output_per_event
 .. automethod:: BaseStorer.num_events
 .. automethod:: BaseStorer.particle_list
+.. automethod:: BaseStorer.particle_as_list
 .. automethod:: BaseStorer.particle_objects_list
 .. automethod:: BaseStorer.charged_particles
 .. automethod:: BaseStorer.uncharged_particles
