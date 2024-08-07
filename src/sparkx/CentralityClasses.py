@@ -64,19 +64,26 @@ class CentralityClasses:
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
 
-    def __init__(self, events_multiplicity: Union[List[float], np.ndarray],
-                 centrality_bins: Union[List[float], np.ndarray]) -> None:
+    def __init__(
+        self,
+        events_multiplicity: Union[List[float], np.ndarray],
+        centrality_bins: Union[List[float], np.ndarray],
+    ) -> None:
         if not isinstance(events_multiplicity, (list, np.ndarray)):
             raise TypeError(
-                "'events_multiplicity' is not list or numpy.ndarray")
+                "'events_multiplicity' is not list or numpy.ndarray"
+            )
         if not isinstance(centrality_bins, (list, np.ndarray)):
             raise TypeError("'centrality_bins' is not list or numpy.ndarray")
 
         # Check if centrality_bins is sorted
-        if not all(centrality_bins[i] <= centrality_bins[i + 1]
-                   for i in range(len(centrality_bins) - 1)):
+        if not all(
+            centrality_bins[i] <= centrality_bins[i + 1]
+            for i in range(len(centrality_bins) - 1)
+        ):
             warnings.warn(
-                "'centrality_bins' is not sorted. Sorting automatically.")
+                "'centrality_bins' is not sorted. Sorting automatically."
+            )
             centrality_bins.sort()
 
         # Check for uniqueness of values
@@ -93,12 +100,14 @@ class CentralityClasses:
 
         if multiple_same_entries:
             warnings.warn(
-                "'centrality_bins' contains duplicate values. They are removed automatically.")
+                "'centrality_bins' contains duplicate values. They are removed automatically."
+            )
 
         # Check for negative values and values greater than 100
         if any(value < 0.0 or value > 100.0 for value in centrality_bins):
             raise ValueError(
-                "'centrality_bins' contains values less than 0 or greater than 100.")
+                "'centrality_bins' contains values less than 0 or greater than 100."
+            )
 
         self.events_multiplicity_ = events_multiplicity
         self.centrality_bins_ = unique_bins
@@ -148,9 +157,10 @@ class CentralityClasses:
 
         # distribute the numbers evenly
         for i, multiplicity in enumerate(self.events_multiplicity_):
-            if (multiplicity < 0):
+            if multiplicity < 0:
                 raise ValueError(
-                    "Multiplicity in 'events_multiplicity' is negative")
+                    "Multiplicity in 'events_multiplicity' is negative"
+                )
             if i % 4 == 0:
                 event_sample_A.append(multiplicity)
             elif i % 4 == 1:
@@ -169,10 +179,8 @@ class CentralityClasses:
         for i in range(1, len(self.centrality_bins_)):
 
             MaxRecord = int(
-                number_events /
-                4 *
-                self.centrality_bins_[i] /
-                100.0)
+                number_events / 4 * self.centrality_bins_[i] / 100.0
+            )
 
             AvgA = np.mean(event_sample_A[MinRecord:MaxRecord])
             AvgB = np.mean(event_sample_B[MinRecord:MaxRecord])
@@ -180,8 +188,15 @@ class CentralityClasses:
             AvgD = np.mean(event_sample_D[MinRecord:MaxRecord])
 
             Avg = (AvgA + AvgB + AvgC + AvgD) / 4.0
-            Err = np.sqrt(((AvgA - Avg)**2 + (AvgB - Avg)**2 +
-                          (AvgC - Avg)**2 + (AvgD - Avg)**2) / 3.0)
+            Err = np.sqrt(
+                (
+                    (AvgA - Avg) ** 2
+                    + (AvgB - Avg) ** 2
+                    + (AvgC - Avg) ** 2
+                    + (AvgD - Avg) ** 2
+                )
+                / 3.0
+            )
 
             self.dNchdetaAvg_.append(Avg)
             self.dNchdetaAvgErr_.append(Err)
@@ -237,7 +252,8 @@ class CentralityClasses:
         else:
             for i in range(1, len(self.dNchdetaMin_) - 1):
                 if (dNchdEta >= self.dNchdetaMin_[i]) and (
-                        dNchdEta < self.dNchdetaMin_[i - 1]):
+                    dNchdEta < self.dNchdetaMin_[i - 1]
+                ):
                     return i
         # default case to satisfy mypy's requirement for a return statement
         return -1
@@ -276,12 +292,14 @@ class CentralityClasses:
             raise TypeError("'fname' should be a string.")
 
         # Write the information to the file
-        with open(fname, 'w') as out_stream:
+        with open(fname, "w") as out_stream:
             out_stream.write(
-                "# CentralityMin CentralityMax dNchdEtaMin dNchdEtaMax dNchdEtaAvg dNchdEtaAvgErr\n")
+                "# CentralityMin CentralityMax dNchdEtaMin dNchdEtaMax dNchdEtaAvg dNchdEtaAvgErr\n"
+            )
 
             for i in range(1, len(self.dNchdetaMin_)):
                 out_stream.write(
                     f"{self.centrality_bins_[i - 1]} - {self.centrality_bins_[i]} "
                     f"{self.dNchdetaMin_[i - 1]} {self.dNchdetaMax_[i - 1]} "
-                    f"{self.dNchdetaAvg_[i - 1]} {self.dNchdetaAvgErr_[i - 1]}\n")
+                    f"{self.dNchdetaAvg_[i - 1]} {self.dNchdetaAvgErr_[i - 1]}\n"
+                )

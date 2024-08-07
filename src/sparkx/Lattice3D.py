@@ -145,19 +145,20 @@ class Lattice3D:
     """
 
     def __init__(
-            self,
-            x_min,
-            x_max,
-            y_min,
-            y_max,
-            z_min,
-            z_max,
-            num_points_x,
-            num_points_y,
-            num_points_z,
-            n_sigma_x=None,
-            n_sigma_y=None,
-            n_sigma_z=None):
+        self,
+        x_min,
+        x_max,
+        y_min,
+        y_max,
+        z_min,
+        z_max,
+        num_points_x,
+        num_points_y,
+        num_points_z,
+        n_sigma_x=None,
+        n_sigma_y=None,
+        n_sigma_z=None,
+    ):
         self.x_min_ = x_min
         self.x_max_ = x_max
         self.y_min_ = y_min
@@ -167,8 +168,12 @@ class Lattice3D:
         self.num_points_x_ = num_points_x
         self.num_points_y_ = num_points_y
         self.num_points_z_ = num_points_z
-        self.cell_volume_ = abs((x_max - x_min) * (y_max - y_min) * \
-                                (z_max - z_min) / (num_points_x * num_points_y * num_points_z))
+        self.cell_volume_ = abs(
+            (x_max - x_min)
+            * (y_max - y_min)
+            * (z_max - z_min)
+            / (num_points_x * num_points_y * num_points_z)
+        )
 
         self.x_values_ = np.linspace(x_min, x_max, num_points_x)
         self.y_values_ = np.linspace(y_min, y_max, num_points_y)
@@ -180,12 +185,15 @@ class Lattice3D:
         self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else 3
         self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else 3
 
-        self.spacing_x_ = self.x_values_[
-            1] - self.x_values_[0] if num_points_x > 1 else None
-        self.spacing_y_ = self.y_values_[
-            1] - self.y_values_[0] if num_points_y > 1 else None
-        self.spacing_z_ = self.z_values_[
-            1] - self.z_values_[0] if num_points_z > 1 else None
+        self.spacing_x_ = (
+            self.x_values_[1] - self.x_values_[0] if num_points_x > 1 else None
+        )
+        self.spacing_y_ = (
+            self.y_values_[1] - self.y_values_[0] if num_points_y > 1 else None
+        )
+        self.spacing_z_ = (
+            self.z_values_[1] - self.z_values_[0] if num_points_z > 1 else None
+        )
         self.density_x_ = (self.x_max_ - self.x_min_) / self.num_points_x_
         self.density_y_ = (self.y_max_ - self.y_min_) / self.num_points_y_
         self.density_z_ = (self.z_max_ - self.z_min_) / self.num_points_z_
@@ -208,9 +216,11 @@ class Lattice3D:
         bool
             True if the indices are valid, False otherwise.
         """
-        return (0 <= i < self.num_points_x_) and \
-               (0 <= j < self.num_points_y_) and \
-               (0 <= k < self.num_points_z_)
+        return (
+            (0 <= i < self.num_points_x_)
+            and (0 <= j < self.num_points_y_)
+            and (0 <= k < self.num_points_z_)
+        )
 
     def set_value_by_index(self, i, j, k, value):
         """
@@ -286,7 +296,7 @@ class Lattice3D:
         if value < values[0] or value > values[-1]:
             raise ValueError("Value is outside the specified range.")
 
-        index = np.searchsorted(values, value, side='right')
+        index = np.searchsorted(values, value, side="right")
         if index == 0:
             index += 1
 
@@ -578,9 +588,11 @@ class Lattice3D:
             True if the coordinates are within the defined range, False otherwise.
 
         """
-        return (self.x_min_ <= x <= self.x_max_) and \
-               (self.y_min_ <= y <= self.y_max_) and \
-               (self.z_min_ <= z <= self.z_max_)
+        return (
+            (self.x_min_ <= x <= self.x_max_)
+            and (self.y_min_ <= y <= self.y_max_)
+            and (self.z_min_ <= z <= self.z_max_)
+        )
 
     def find_closest_indices(self, x, y, z):
         """
@@ -610,7 +622,7 @@ class Lattice3D:
         k = self.__find_closest_index(z, self.z_values_)
         return i, j, k
 
-    def interpolate_value(self, x, y, z, method='nearest'):
+    def interpolate_value(self, x, y, z, method="nearest"):
         """
         Interpolate the value at the specified position using (up to) trilinear
         interpolation.
@@ -640,12 +652,11 @@ class Lattice3D:
         # Perform interpolation
         xi = [x, y, z]
         return interpn(
-            (self.x_values_,
-             self.y_values_,
-             self.z_values_),
+            (self.x_values_, self.y_values_, self.z_values_),
             self.grid_,
             xi,
-            method=method)[0]
+            method=method,
+        )[0]
 
     def __operate_on_lattice(self, other, operation):
         """
@@ -674,7 +685,8 @@ class Lattice3D:
         """
         if not isinstance(other, Lattice3D):
             raise TypeError(
-                "Unsupported operand type. The operand must be of type 'Lattice3D'.")
+                "Unsupported operand type. The operand must be of type 'Lattice3D'."
+            )
 
         if self.grid_.shape != other.grid_.shape:
             raise ValueError("The lattices must have the same shape.")
@@ -688,7 +700,8 @@ class Lattice3D:
             self.z_max_,
             self.num_points_x_,
             self.num_points_y_,
-            self.num_points_z_)
+            self.num_points_z_,
+        )
 
         result.grid_ = operation(self.grid_, other.grid_)
 
@@ -814,7 +827,8 @@ class Lattice3D:
         for lattice in all_lattices:
             if not isinstance(lattice, Lattice3D):
                 raise TypeError(
-                    "Unsupported operand type. All operands must be of type 'Lattice3D'.")
+                    "Unsupported operand type. All operands must be of type 'Lattice3D'."
+                )
 
             if self.grid_.shape != lattice.grid_.shape:
                 raise ValueError("The lattices must have the same shape.")
@@ -828,10 +842,12 @@ class Lattice3D:
             self.z_max_,
             self.num_points_x_,
             self.num_points_y_,
-            self.num_points_z_)
+            self.num_points_z_,
+        )
 
         result.grid_ = np.mean(
-            [lattice.grid_ for lattice in all_lattices], axis=0)
+            [lattice.grid_ for lattice in all_lattices], axis=0
+        )
 
         return result
 
@@ -865,15 +881,19 @@ class Lattice3D:
         None
 
         """
-        metadata = np.array([self.x_min_,
-                             self.x_max_,
-                             self.y_min_,
-                             self.y_max_,
-                             self.z_min_,
-                             self.z_max_,
-                             self.num_points_x_,
-                             self.num_points_y_,
-                             self.num_points_z_])
+        metadata = np.array(
+            [
+                self.x_min_,
+                self.x_max_,
+                self.y_min_,
+                self.y_max_,
+                self.z_min_,
+                self.z_max_,
+                self.num_points_x_,
+                self.num_points_y_,
+                self.num_points_z_,
+            ]
+        )
 
         # Reshape metadata to have 1 row and as many columns as necessary
         metadata = metadata.reshape(1, -1)
@@ -883,7 +903,7 @@ class Lattice3D:
         grid_flattened = self.grid_.flatten().reshape(1, -1)
 
         data = np.hstack((metadata, grid_flattened))
-        np.savetxt(filename, data, delimiter=',')
+        np.savetxt(filename, data, delimiter=",")
 
     @classmethod
     def load_from_csv(cls, filename):
@@ -901,9 +921,19 @@ class Lattice3D:
             The loaded Lattice3D object containing the data and metadata.
 
         """
-        data = np.loadtxt(filename, delimiter=',')
+        data = np.loadtxt(filename, delimiter=",")
         metadata = data[0:9]
-        x_min, x_max, y_min, y_max, z_min, z_max, num_points_x, num_points_y, num_points_z = metadata
+        (
+            x_min,
+            x_max,
+            y_min,
+            y_max,
+            z_min,
+            z_max,
+            num_points_x,
+            num_points_y,
+            num_points_z,
+        ) = metadata
 
         lattice = Lattice3D(
             x_min,
@@ -914,7 +944,8 @@ class Lattice3D:
             z_max,
             int(num_points_x),
             int(num_points_y),
-            int(num_points_z))
+            int(num_points_z),
+        )
 
         grid_data = data[9:]
         lattice.grid_ = grid_data.reshape(lattice.grid_.shape)
@@ -939,24 +970,24 @@ class Lattice3D:
 
         # Create a custom colormap where 0 values are white
         cmap = cm.get_cmap("PiYG").copy()
-        cmap.set_bad(color='white')
+        cmap.set_bad(color="white")
 
         # Create a 3D plot
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
 
         # Scatter plot the lattice points
         scatter = ax.scatter(X_flat, Y_flat, Z_flat, c=values_flat, cmap=cmap)
 
         # Set plot labels
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        ax.set_title('Lattice Data Visualization')
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
+        ax.set_zlabel("Z")
+        ax.set_title("Lattice Data Visualization")
 
         # Create a color bar
         cbar = fig.colorbar(scatter)
-        cbar.set_label('Values')
+        cbar.set_label("Values")
 
         # Show the plot
         plt.show()
@@ -989,27 +1020,27 @@ class Lattice3D:
             If the `axis` parameter is invalid or the `index` is out of range.
 
         """
-        if axis == 'x':
+        if axis == "x":
             if index < 0 or index >= self.num_points_x_:
                 raise ValueError("Invalid index for the X-axis.")
 
             slice_data = self.grid_[index, :, :]
             slice_values = (self.y_values_, self.z_values_)
-            slice_label = 'Y-Z Plane at X = {}'.format(self.x_values_[index])
-        elif axis == 'y':
+            slice_label = "Y-Z Plane at X = {}".format(self.x_values_[index])
+        elif axis == "y":
             if index < 0 or index >= self.num_points_y_:
                 raise ValueError("Invalid index for the Y-axis.")
 
             slice_data = self.grid_[:, index, :]
             slice_values = (self.x_values_, self.z_values_)
-            slice_label = 'X-Z Plane at Y = {}'.format(self.y_values_[index])
-        elif axis == 'z':
+            slice_label = "X-Z Plane at Y = {}".format(self.y_values_[index])
+        elif axis == "z":
             if index < 0 or index >= self.num_points_z_:
                 raise ValueError("Invalid index for the Z-axis.")
 
             slice_data = self.grid_[:, :, index]
             slice_values = (self.x_values_, self.y_values_)
-            slice_label = 'X-Y Plane at Z = {}'.format(self.z_values_[index])
+            slice_label = "X-Y Plane at Z = {}".format(self.z_values_[index])
         else:
             raise ValueError("Invalid axis. Must be 'x', 'y', or 'z'.")
 
@@ -1035,55 +1066,43 @@ class Lattice3D:
             If the `axis` parameter is invalid or the `index` is out of range.
 
         """
-        if axis == 'x':
+        if axis == "x":
             if index < 0 or index >= self.num_points_x_:
                 raise ValueError("Invalid index for the X-axis.")
 
             slice_data = self.grid_[index, :, :]
             header = "#Slice in Y-Z Plane at X = {}. Ymin: {} Ymax: {} ".format(
-                self.x_values_[index],
-                self.y_min_,
-                self.y_max_) + "ny: {} Zmin: {} Zmax: {} nz:{} ".format(
-                self.num_points_y_,
-                self.z_min_,
-                self.z_max_,
-                self.num_points_z_)
+                self.x_values_[index], self.y_min_, self.y_max_
+            ) + "ny: {} Zmin: {} Zmax: {} nz:{} ".format(
+                self.num_points_y_, self.z_min_, self.z_max_, self.num_points_z_
+            )
 
-        elif axis == 'y':
+        elif axis == "y":
             if index < 0 or index >= self.num_points_y_:
                 raise ValueError("Invalid index for the Y-axis.")
 
             slice_data = self.grid_[:, index, :]
             header = "#Slice in X-Z Plane at Y = {}. Xmin: {} Xmax: {} ".format(
-                self.y_values_[index],
-                self.x_min_,
-                self.x_max_) + "nx: {} Zmin: {} Zmax: {} nz: {} ".format(
-                self.num_points_x_,
-                self.z_min_,
-                self.z_max_,
-                self.num_points_z_)
-        elif axis == 'z':
+                self.y_values_[index], self.x_min_, self.x_max_
+            ) + "nx: {} Zmin: {} Zmax: {} nz: {} ".format(
+                self.num_points_x_, self.z_min_, self.z_max_, self.num_points_z_
+            )
+        elif axis == "z":
             if index < 0 or index >= self.num_points_z_:
                 raise ValueError("Invalid index for the Z-axis.")
 
             slice_data = self.grid_[:, :, index]
             header = "#Slice in X-Y Plane at Z = {}. Xmin: {} Xmax: {} ".format(
-                self.z_values_[index],
-                self.x_min_,
-                self.x_max_) + "nx: {} Ymin: {} Ymax: {} ny: {} ".format(
-                self.num_points_x_,
-                self.y_min_,
-                self.y_max_,
-                self.num_points_y_)
+                self.z_values_[index], self.x_min_, self.x_max_
+            ) + "nx: {} Ymin: {} Ymax: {} ny: {} ".format(
+                self.num_points_x_, self.y_min_, self.y_max_, self.num_points_y_
+            )
         else:
             raise ValueError("Invalid axis. Must be 'x', 'y', or 'z'.")
 
         np.savetxt(
-            filename,
-            slice_data,
-            delimiter=',',
-            header=header,
-            comments='')
+            filename, slice_data, delimiter=",", header=header, comments=""
+        )
 
     def interpolate_to_lattice(self, num_points_x, num_points_y, num_points_z):
         """
@@ -1122,7 +1141,8 @@ class Lattice3D:
             self.z_max_,
             num_points_x,
             num_points_y,
-            num_points_z)
+            num_points_z,
+        )
 
         # Generate the new grid coordinates
         x_new = np.linspace(self.x_min_, self.x_max_, num_points_x)
@@ -1139,16 +1159,17 @@ class Lattice3D:
         return new_lattice
 
     def interpolate_to_lattice_new_extent(
-            self,
-            num_points_x,
-            num_points_y,
-            num_points_z,
-            x_min,
-            x_max,
-            y_min,
-            y_max,
-            z_min,
-            z_max):
+        self,
+        num_points_x,
+        num_points_y,
+        num_points_z,
+        x_min,
+        x_max,
+        y_min,
+        y_max,
+        z_min,
+        z_max,
+    ):
         """
         Interpolate the current lattice data to a new lattice with the specified
         number of points and extent.
@@ -1189,8 +1210,17 @@ class Lattice3D:
         """
         # Create a new Lattice3D object with the desired number of points and
         # extent
-        new_lattice = Lattice3D(x_min, x_max, y_min, y_max, z_min, z_max,
-                                num_points_x, num_points_y, num_points_z)
+        new_lattice = Lattice3D(
+            x_min,
+            x_max,
+            y_min,
+            y_max,
+            z_min,
+            z_max,
+            num_points_x,
+            num_points_y,
+            num_points_z,
+        )
 
         # Generate the new grid coordinates
         x_new = np.linspace(x_min, x_max, num_points_x)
@@ -1243,45 +1273,54 @@ class Lattice3D:
         """
         if not isinstance(other, Lattice3D):
             raise TypeError(
-                "Unsupported operand type. The operand must be of type 'Lattice3D'.")
+                "Unsupported operand type. The operand must be of type 'Lattice3D'."
+            )
         # Check if both lattices have the same spacing
-        if ((other.spacing_x_ is None or abs(self.spacing_x_ -
-                                             other.spacing_x_) < 1e-3) and (other.spacing_y_ is None or abs(self.spacing_y_ -
-                                                                                                            other.spacing_y_) < 1e-3) and (other.spacing_z_ is None or abs(self.spacing_z_ -
-                                                                                                                                                                           other.spacing_z_) < 1e-3)):
+        if (
+            (
+                other.spacing_x_ is None
+                or abs(self.spacing_x_ - other.spacing_x_) < 1e-3
+            )
+            and (
+                other.spacing_y_ is None
+                or abs(self.spacing_y_ - other.spacing_y_) < 1e-3
+            )
+            and (
+                other.spacing_z_ is None
+                or abs(self.spacing_z_ - other.spacing_z_) < 1e-3
+            )
+        ):
             for i, j, k in np.ndindex(other.grid_.shape):
                 posx, posy, posz = other.get_coordinates(i, j, k)
                 posx = posx + center_x
                 posy = posy + center_y
                 posz = posz + center_z
-                if (posx < self.x_min_ or posx > self.x_max_ or posy < self.y_min_ or posy >
-                        self.y_max_ or posz < self.z_min_ or posz > self.z_max_):
+                if (
+                    posx < self.x_min_
+                    or posx > self.x_max_
+                    or posy < self.y_min_
+                    or posy > self.y_max_
+                    or posz < self.z_min_
+                    or posz > self.z_max_
+                ):
                     continue
                 else:
                     self.set_value_nearest_neighbor(
                         posx,
                         posy,
                         posz,
-                        self.get_value_nearest_neighbor(
-                            posx,
-                            posy,
-                            posz) +
-                        other.grid_[
-                            i,
-                            j,
-                            k])
+                        self.get_value_nearest_neighbor(posx, posy, posz)
+                        + other.grid_[i, j, k],
+                    )
 
         else:
             raise ValueError(
-                "The provided lattices do not have identical spacing.")
+                "The provided lattices do not have identical spacing."
+            )
 
     def add_particle_data(
-            self,
-            particle_data,
-            sigma,
-            quantity,
-            kernel="covariant",
-            add=False):
+        self, particle_data, sigma, quantity, kernel="covariant", add=False
+    ):
         """
         Add particle data to the lattice.
 
@@ -1354,18 +1393,21 @@ class Lattice3D:
             if np.isnan(value):
                 raise ValueError("Particle data contains NaN values.")
 
-            if (kernel == "gaussian"):
+            if kernel == "gaussian":
                 # Calculate the Gaussian kernel centered at (x, y, z)
                 kernel_value = multivariate_normal(
-                    mean=[x, y, z], cov=sigma**2 * np.eye(3))
-            elif (kernel == "covariant"):
-                if np.isnan(
-                        particle.px) or np.isnan(
-                        particle.py) or np.isnan(
-                        particle.py):
+                    mean=[x, y, z], cov=sigma**2 * np.eye(3)
+                )
+            elif kernel == "covariant":
+                if (
+                    np.isnan(particle.px)
+                    or np.isnan(particle.py)
+                    or np.isnan(particle.py)
+                ):
                     raise ValueError("Particle data contains NaN values.")
                 kernel_value = multivariate_normal(
-                    mean=[0, 0], cov=sigma**2 * np.eye(2))
+                    mean=[0, 0], cov=sigma**2 * np.eye(2)
+                )
             else:
                 raise ValueError("Unknown kernel type for lattice.")
 
@@ -1385,8 +1427,17 @@ class Lattice3D:
             norm = 0
             # we have now the right spacing, but the lattice points do not
             # coincide
-            temp_lattice = Lattice3D(-range_x, range_x, -range_y, range_y, -
-                                     range_z, range_z, 2 * num_x + 1, 2 * num_y + 1, 2 * num_z + 1)
+            temp_lattice = Lattice3D(
+                -range_x,
+                range_x,
+                -range_y,
+                range_y,
+                -range_z,
+                range_z,
+                2 * num_x + 1,
+                2 * num_y + 1,
+                2 * num_z + 1,
+            )
 
             for i in range(temp_lattice.num_points_x_):
                 for j in range(temp_lattice.num_points_y_):
@@ -1395,22 +1446,30 @@ class Lattice3D:
                         xi, yj, zk = temp_lattice.get_coordinates(i, j, k)
 
                         # Calculate the value to add to the grid at (i, j, k)
-                        if (kernel == "gaussian"):
+                        if kernel == "gaussian":
                             smearing_factor = kernel_value.pdf(
-                                [xi + x, yj + y, zk + z])
+                                [xi + x, yj + y, zk + z]
+                            )
                         else:
-                            diff_space = (xi)**2 + (yj)**2 + (zk)**2
+                            diff_space = (xi) ** 2 + (yj) ** 2 + (zk) ** 2
                             gamma = np.sqrt(
-                                1 + particle.p_abs()**2 / particle.mass**2)
+                                1 + particle.p_abs() ** 2 / particle.mass**2
+                            )
                             diff_velocity = (
-                                particle.px * (xi) + particle.py * (yj) + particle.pz * (zk)) / (gamma * particle.mass)
+                                particle.px * (xi)
+                                + particle.py * (yj)
+                                + particle.pz * (zk)
+                            ) / (gamma * particle.mass)
                             smearing_factor = kernel_value.pdf(
-                                [diff_space, diff_velocity])
+                                [diff_space, diff_velocity]
+                            )
                         norm += smearing_factor
-                        value_to_add = value * smearing_factor / self.cell_volume_
+                        value_to_add = (
+                            value * smearing_factor / self.cell_volume_
+                        )
 
                         if np.isnan(value_to_add):
-                            value_to_add = 0.
+                            value_to_add = 0.0
                         # Add the value to the grid
                         temp_lattice.grid_[i, j, k] += value_to_add
 

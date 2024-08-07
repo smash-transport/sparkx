@@ -99,7 +99,10 @@ def test_pdg():
         assert q.pdg_valid is False
 
     # Check if a warning is issued
-    with pytest.warns(UserWarning, match=r'The PDG code 99999999 is not valid. All properties extracted from the PDG are set to nan.'):
+    with pytest.warns(
+        UserWarning,
+        match=r"The PDG code 99999999 is not valid. All properties extracted from the PDG are set to nan.",
+    ):
         q.pdg = 99999999
 
 
@@ -218,8 +221,9 @@ def test_initialize_from_array_valid_formats():
     assert p1.charge == 1
 
     format2 = "Oscar2013"
-    array2 = np.array([0.0, 1.0, 2.0, 3.0, 0.138, 4.0,
-                      5.0, 6.0, 7.0, 211, 100, 1])
+    array2 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1]
+    )
 
     p2 = Particle(input_format=format2, particle_array=array2)
     assert p2.t == 0.0
@@ -236,8 +240,12 @@ def test_initialize_from_array_valid_formats():
     assert p2.charge == 1
 
     format3 = "Oscar2013Extended"
-    array3 = np.array([0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0,
-                      7.0, 211, 100, 1, 0, 0.1, 0.3, 101, 2, 2.5, 321, 2212, 1, -1])
+    # fmt: off
+    array3 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1, 0, 0.1,
+            0.3, 101, 2, 2.5, 321, 2212, 1, -1]
+    )
+    # fmt: on
 
     p3 = Particle(input_format=format3, particle_array=array3)
     assert p3.t == 0.0
@@ -291,27 +299,12 @@ def test_initialize_from_array_valid_formats():
     assert p4.strangeness == -1
 
     format5 = "Oscar2013Extended_Photons"
-    array5 = np.array([0.0,
-                       1.0,
-                       2.0,
-                       3.0,
-                       0.138,
-                       4.0,
-                       5.0,
-                       6.0,
-                       7.0,
-                       211,
-                       100,
-                       1,
-                       0,
-                       0.1,
-                       0.3,
-                       101,
-                       2,
-                       2.5,
-                       321,
-                       2212,
-                       0.75])
+    # fmt: off
+    array5 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 211, 100, 1, 0, 0.1,
+            0.3, 101, 2, 2.5, 321, 2212, 0.75]
+    )
+    # fmt: on
     p5 = Particle(input_format=format5, particle_array=array5)
     assert p5.t == 0.0
     assert p5.x == 1.0
@@ -341,14 +334,20 @@ def test_initialize_from_array_Jetscape_invalid_pdg_warning():
     array1 = np.array([1, 99999999, 27, 4.36557, 3.56147, 0.562961, 2.45727])
 
     # check that a warning is issued
-    with pytest.warns(UserWarning, match=r"The PDG code 99999999 is not known by PDGID, charge could not be computed. Consider setting it by hand."):
+    with pytest.warns(
+        UserWarning,
+        match=r"The PDG code 99999999 is not known by PDGID, charge could not be computed. Consider setting it by hand.",
+    ):
         Particle(input_format=format1, particle_array=array1)
 
 
 def test_initialize_from_array_invalid_format():
-    with pytest.raises(ValueError, match=r"Unsupported input format 'InvalidFormat'"):
-        Particle(input_format="InvalidFormat",
-                 particle_array=np.array([1, 2, 3]))
+    with pytest.raises(
+        ValueError, match=r"Unsupported input format 'InvalidFormat'"
+    ):
+        Particle(
+            input_format="InvalidFormat", particle_array=np.array([1, 2, 3])
+        )
 
 
 def test_initialize_from_array_corrupted_data():
@@ -360,10 +359,13 @@ def test_initialize_from_array_corrupted_data():
 
 def test_initialize_from_array_warning_invalid_pdg():
     format1 = "Oscar2013"
-    array1 = np.array([0.0, 1.0, 2.0, 3.0, 0.138, 4.0,
-                      5.0, 6.0, 7.0, 99999999, 100, 1])
+    array1 = np.array(
+        [0.0, 1.0, 2.0, 3.0, 0.138, 4.0, 5.0, 6.0, 7.0, 99999999, 100, 1]
+    )
 
-    with pytest.warns(UserWarning, match=r"The PDG code 99999999 is not valid."):
+    with pytest.warns(
+        UserWarning, match=r"The PDG code 99999999 is not valid."
+    ):
         p1 = Particle(input_format=format1, particle_array=array1)
 
     assert p1.pdg_valid is False
@@ -612,8 +614,10 @@ def test_pseudorapidity_valid_values():
 
     result = p.pseudorapidity()
 
-    expected_result = 0.5 * \
-        np.log((np.sqrt(1.0**2 + 2.0**2 + 3.0**2) + 3.0) / (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) - 3.0))
+    expected_result = 0.5 * np.log(
+        (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) + 3.0)
+        / (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) - 3.0)
+    )
 
     assert np.isclose(result, expected_result)
 
@@ -634,7 +638,7 @@ def test_pseudorapidity_zero_momentum():
     p.pz = 1.0
 
     result = p.pseudorapidity()
-    expected_result = 0.5 * np.log(2. / 1e-10)
+    expected_result = 0.5 * np.log(2.0 / 1e-10)
 
     assert np.isclose(result, expected_result)
 
@@ -712,6 +716,7 @@ def test_compute_mass_from_energy_momentum_valid_values():
 
     assert np.isclose(result, expected_result)
 
+
 def test_compute_mass_from_energy_momentum_invalid_values():
     p = Particle()
     p.E = 3.0
@@ -719,7 +724,10 @@ def test_compute_mass_from_energy_momentum_invalid_values():
     p.py = 2.0
     p.pz = 5.0
 
-    with pytest.warns(UserWarning, match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan."):
+    with pytest.warns(
+        UserWarning,
+        match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan.",
+    ):
         assert np.isnan(p.compute_mass_from_energy_momentum())
 
 
@@ -743,6 +751,7 @@ def test_compute_mass_from_energy_momentum_zero_energy():
 
     assert np.isclose(result, 0.0)
 
+
 def test_mT_missing_values():
     p = Particle()
     # Leave some values as np.nan
@@ -751,12 +760,16 @@ def test_mT_missing_values():
 
     assert np.isnan(result)
 
+
 def test_mT_invalid_values():
     p = Particle()
     p.E = 11.2
     p.pz = 11.3
 
-    with pytest.warns(UserWarning, match=r"|E| >= |pz| not fulfilled or not within numerical precision! The transverse mass is set to nan."):
+    with pytest.warns(
+        UserWarning,
+        match=r"|E| >= |pz| not fulfilled or not within numerical precision! The transverse mass is set to nan.",
+    ):
         assert np.isnan(p.mT())
 
 
@@ -780,6 +793,7 @@ def test_mT_valid_values():
         expected_result = np.sqrt(energy**2 - p_z**2)
 
         assert np.isclose(result, expected_result)
+
 
 def test_compute_charge_from_pdg_valid_values():
     p = Particle()
@@ -892,8 +906,9 @@ def test_is_heavy_flavor_from_pdg_valid_values():
 
     result = p.is_heavy_flavor()
 
-    expected_result = PDGID(211).has_charm or PDGID(211).has_bottom\
-        or PDGID(211).has_top
+    expected_result = (
+        PDGID(211).has_charm or PDGID(211).has_bottom or PDGID(211).has_top
+    )
 
     assert result == expected_result
 
@@ -952,9 +967,11 @@ def test_spin_degeneracy_from_pdg_invalid_values():
 
 def test_create_quark_from_pdg_valid_values():
     particle_quantity_JETSCAPE = np.array(
-        [0, 1, 11, 2.01351754, 1.30688601, -0.422958786, -0.512249773])
-    particle = Particle(input_format="JETSCAPE",
-                        particle_array=particle_quantity_JETSCAPE)
+        [0, 1, 11, 2.01351754, 1.30688601, -0.422958786, -0.512249773]
+    )
+    particle = Particle(
+        input_format="JETSCAPE", particle_array=particle_quantity_JETSCAPE
+    )
 
     assert particle.charge == -1
     assert math.isclose(particle.mass, 1.38, rel_tol=1e-3)
@@ -962,8 +979,10 @@ def test_create_quark_from_pdg_valid_values():
 
 def test_create_gluon_from_pdg_valid_values():
     particle_quantity_JETSCAPE = np.array(
-        [0, 21, 11, 2.01351754, 1.30688601, -0.422958786, -0.512249773])
-    particle = Particle(input_format="JETSCAPE",
-                        particle_array=particle_quantity_JETSCAPE)
+        [0, 21, 11, 2.01351754, 1.30688601, -0.422958786, -0.512249773]
+    )
+    particle = Particle(
+        input_format="JETSCAPE", particle_array=particle_quantity_JETSCAPE
+    )
 
     assert particle.charge == 0

@@ -12,7 +12,6 @@ import numpy as np
 
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
-
     """
     This class implements a reaction plane flow analysis algorithm.
 
@@ -83,10 +82,11 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             The value of the harmonic. Default is 2.
         """
         if not isinstance(n, int):
-            raise TypeError('n has to be int')
+            raise TypeError("n has to be int")
         elif n <= 0:
             raise ValueError(
-                'n-th harmonic with value n<=0 can not be computed')
+                "n-th harmonic with value n<=0 can not be computed"
+            )
         else:
             self.n_ = n
 
@@ -104,21 +104,24 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         complex
             The integrated flow value, represented as a complex number.
         """
-        flow_event_average = 0. + 0.j
-        number_particles = 0.
+        flow_event_average = 0.0 + 0.0j
+        number_particles = 0.0
         for event in range(len(particle_data)):
-            flow_event = 0. + 0.j
+            flow_event = 0.0 + 0.0j
             for particle in range(len(particle_data[event])):
-                weight = 1. if np.isnan(
-                    particle_data[event][particle].weight) else particle_data[event][particle].weight
+                weight = (
+                    1.0
+                    if np.isnan(particle_data[event][particle].weight)
+                    else particle_data[event][particle].weight
+                )
                 pt = particle_data[event][particle].pt_abs()
                 phi = particle_data[event][particle].phi()
                 flow_event += weight * np.exp(1j * self.n_ * phi)
                 number_particles += weight
-            if number_particles != 0.:
+            if number_particles != 0.0:
                 flow_event_average += flow_event
             else:
-                flow_event_average = 0. + 0.j
+                flow_event_average = 0.0 + 0.0j
         flow_event_average /= number_particles
         return flow_event_average
 
@@ -141,12 +144,13 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             A list of complex numbers representing the flow values for each bin.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError('bins has to be list or np.ndarray')
+            raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
-            raise TypeError('flow_as_function_of is not a string')
+            raise TypeError("flow_as_function_of is not a string")
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
+                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'"
+            )
 
         particles_bin = []
         for bin in range(len(bins) - 1):
@@ -154,7 +158,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             for event in range(len(particle_data)):
                 particles_event = []
                 for particle in particle_data[event]:
-                    val = 0.
+                    val = 0.0
                     if flow_as_function_of == "pt":
                         val = particle.pt_abs()
                     elif flow_as_function_of == "rapidity":
@@ -169,23 +173,30 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         return self.__differential_flow_calculation(particles_bin)
 
     def __differential_flow_calculation(self, binned_particle_data):
-        flow_differential = [0. + 0.j for i in range(len(binned_particle_data))]
+        flow_differential = [
+            0.0 + 0.0j for i in range(len(binned_particle_data))
+        ]
         for bin in range(len(binned_particle_data)):
-            number_particles = 0.
-            flow_event_average = 0. + 0.j
+            number_particles = 0.0
+            flow_event_average = 0.0 + 0.0j
             for event in range(len(binned_particle_data[bin])):
-                flow_event = 0. + 0.j
+                flow_event = 0.0 + 0.0j
                 for particle in range(len(binned_particle_data[bin][event])):
-                    weight = 1. if np.isnan(
-                        binned_particle_data[bin][event][particle].weight) else binned_particle_data[bin][event][particle].weight
+                    weight = (
+                        1.0
+                        if np.isnan(
+                            binned_particle_data[bin][event][particle].weight
+                        )
+                        else binned_particle_data[bin][event][particle].weight
+                    )
                     pt = binned_particle_data[bin][event][particle].pt_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
                     flow_event += weight * np.exp(1j * self.n_ * phi)
                     number_particles += weight
                 flow_event_average += flow_event
-            if number_particles != 0.:
+            if number_particles != 0.0:
                 flow_event_average /= number_particles
             else:
-                flow_event_average = 0. + 0.j
+                flow_event_average = 0.0 + 0.0j
             flow_differential[bin] = flow_event_average
         return flow_differential
