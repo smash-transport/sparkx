@@ -173,7 +173,7 @@ class Jetscape(BaseStorer):
         self.loader_= JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def __particle_as_list(self, particle):
+    def _particle_as_list(self, particle):
         particle_list = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)
@@ -184,43 +184,6 @@ class Jetscape(BaseStorer):
         particle_list[6] = float(particle.pz)
 
         return particle_list
-    
-    def particle_list(self):
-        """
-        Returns a nested python list containing all quantities from the
-        current Jetscape data as numerical values with the following shape:
-
-            | Single Event:    [event][output_line][particle_quantity]
-            | Multiple Events: [event][output_line][particle_quantity]
-
-        Returns
-        -------
-        list
-            Nested list containing the current Jetscape data
-
-        """
-        num_events = self.num_events_
-        
-        if num_events == 1:
-            num_particles = self.num_output_per_event_[0][1]
-        else:
-            num_particles = self.num_output_per_event_[:,1]
-
-        particle_array = []
-
-        if num_events == 1:
-            for i_part in range(0, num_particles):
-                particle = self.particle_list_[0][i_part]
-                particle_array.append(self.__particle_as_list(particle))
-        else:
-            for i_ev in range(0, num_events):
-                event = []
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                particle_array.append(event)
-
-        return particle_array
 
     def particle_objects_list(self):
         """

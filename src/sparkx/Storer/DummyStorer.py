@@ -146,7 +146,7 @@ class DummyStorer(BaseStorer):
         """
         self.loader_= DummyLoader(particle_object_list)
 
-    def __particle_as_list(self, particle):
+    def _particle_as_list(self, particle):
         """
         Converts a Particle object into a list.
 
@@ -194,42 +194,35 @@ class DummyStorer(BaseStorer):
 
         return particle_list
 
-    def particle_list(self):
-        """
-        Returns a nested python list containing all quantities from the
-        current data as numerical values with the following shape:
 
-            | Single Event:    [[output_line][particle_quantity]]
-            | Multiple Events: [event][output_line][particle_quantity]
+
+
+    def print_particle_lists_to_file(self, filename):
+        """
+        Prints the current particle data to a file.
+
+        Parameters
+        ----------
+        filename : str
+            The name of the file to write to.
+
+        Raises
+        ------
+        None
 
         Returns
         -------
-        list
-            Nested list containing the current data
-
+        None
         """
-        num_events = self.num_events_
-        
-        if num_events == 1:
-            num_particles = self.num_output_per_event_[0][1]
-        else:
-            num_particles = self.num_output_per_event_[:,1]
-
-        particle_array = []
-
-        if num_events == 1:
-            for i_part in range(0, num_particles):
-                particle = self.particle_list_[0][i_part]
-                particle_array.append(self.__particle_as_list(particle))
-        else:
-            for i_ev in range(0, num_events):
-                event = []
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                particle_array.append(event)
-
-        return particle_array
-
-
-    
+        with open(filename, 'w') as f:
+            for event in self.particle_list_:
+                for particle in event:
+                    # Extract the attributes from the particle object
+                    particle_data = [
+                        particle.t, particle.x, particle.y, particle.z, particle.mass, particle.E, 
+                        particle.px, particle.py, particle.pz, particle.pdg, particle.ID, particle.charge, 
+                        particle.ncoll, particle.form_time, particle.xsecfac, particle.proc_id_origin, 
+                        particle.proc_type_origin, particle.t_last_coll, particle.pdg_mother1, 
+                        particle.pdg_mother2, particle.status, particle.baryon_number
+                    ]
+                    f.write(','.join(map(str, particle_data)) + '\n')

@@ -160,13 +160,24 @@ class DummyLoader(BaseLoader):
         Parameters
         ----------
         kwargs : dict
-            Dictionary containing the filters to be applied.
+            Dictionary containing the filters to be applied. The following keys are recognized:
+            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
+            - 'filters': A list of filters to apply to the data.
 
         Returns
         -------
         list
             List of particle objects.
         """
+        if 'events' in kwargs.keys():
+            if isinstance(kwargs['events'], int):
+                self.particle_list_ = [self.particle_list_[kwargs['events']]]
+            elif isinstance(kwargs['events'], tuple):
+                event_start = kwargs['events'][0]
+                event_end = kwargs['events'][1]
+                self.particle_list_ = self.particle_list_[event_start : event_end + 1]
+
         if 'filters' in kwargs.keys():
-            self.particle_list_ = [self.__apply_kwargs_filters(event, kwargs['filters']) for event in self.particle_list_]
+            self.particle_list_ = [self.__apply_kwargs_filters([event], kwargs['filters'])[0] for event in self.particle_list_]
+
         return self.particle_list_

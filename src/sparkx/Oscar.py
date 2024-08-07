@@ -176,7 +176,7 @@ class Oscar(BaseStorer):
     def create_loader(self, OSCAR_FILE):
         self.loader_= OscarLoader(OSCAR_FILE)
     
-    def __particle_as_list(self, particle):
+    def _particle_as_list(self, particle):
         particle_list = []
         particle_list.append(float(particle.t))
         particle_list.append(float(particle.x))
@@ -224,43 +224,6 @@ class Oscar(BaseStorer):
             )
 
         return particle_list
-
-    def particle_list(self):
-        """
-        Returns a nested python list containing all quantities from the
-        current data as numerical values with the following shape:
-
-            | Single Event:    [[output_line][particle_quantity]]
-            | Multiple Events: [event][output_line][particle_quantity]
-
-        Returns
-        -------
-        list
-            Nested list containing the current data
-
-        """
-        num_events = self.num_events_
-
-        if num_events == 1:
-            num_particles = self.num_output_per_event_[0][1]
-        else:
-            num_particles = self.num_output_per_event_[:, 1]
-
-        particle_array = []
-
-        if num_events == 1:
-            for i_part in range(0, num_particles):
-                particle = self.particle_list_[0][i_part]
-                particle_array.append(self.__particle_as_list(particle))
-        else:
-            for i_ev in range(0, num_events):
-                event = []
-                for i_part in range(0, num_particles[i_ev]):
-                    particle = self.particle_list_[i_ev][i_part]
-                    event.append(self.__particle_as_list(particle))
-                particle_array.append(event)
-
-        return particle_array
     
     def oscar_format(self):
         """
