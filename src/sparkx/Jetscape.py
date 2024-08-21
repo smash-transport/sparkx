@@ -10,7 +10,7 @@
 from sparkx.Filter import *
 import numpy as np
 from sparkx.Loader.JetscapeLoader import JetscapeLoader
-from sparkx.Storer.BaseStorer import BaseStorer
+from sparkx.BaseStorer import BaseStorer
 
 class Jetscape(BaseStorer):
     """

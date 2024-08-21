@@ -10,13 +10,13 @@
 from sparkx.Loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
 
-class DummyLoader(BaseLoader):
+class ParticelObjectLoader(BaseLoader):
     def __init__(self, particle_list):
 
         """
-        Initializes a new instance of the DummyLoader class.
+        Initializes a new instance of the ParticelObjectLoader class.
 
-        This method initializes a new instance of the DummyLoader class with the specified list of particles. It calls the superclass's constructor with the particle_list parameter and then sets the particle_list_ attribute to the particle_list parameter.
+        This method initializes a new instance of the ParticelObjectLoader class with the specified list of particles. It calls the superclass's constructor with the particle_list parameter and then sets the particle_list_ attribute to the particle_list parameter.
 
         Parameters
         ----------
@@ -63,17 +63,17 @@ class DummyLoader(BaseLoader):
 
         for keys in self.optional_arguments_.keys():
             if keys not in ['events', 'filters']:
-                raise ValueError('Unknown keyword argument used in constructor')
+                raise ValueError('Unknown keyword argument used in constructor')Dummy
 
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
             self._check_that_tuple_contains_integers_only(self.optional_arguments_['events'])
             if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
                 raise ValueError('First value of event number tuple must be smaller than second value')
             elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
-                raise ValueError('Event numbers must be positive')
+                raise ValueError('Event numbers must be non-negative')
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
-                raise ValueError('Event number must be positive')
+                raise ValueError('Event number must be non-negative')
 
         self.set_num_output_per_event()
         return (self.set_particle_list(kwargs),  self.num_events_,self.num_output_per_event_)

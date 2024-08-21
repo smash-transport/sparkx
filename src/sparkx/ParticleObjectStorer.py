@@ -9,12 +9,12 @@
     
 from sparkx.Filter import *
 import numpy as np
-from sparkx.Loader.DummyLoader import DummyLoader
-from sparkx.Storer.BaseStorer import BaseStorer
+from sparkx.Loader.ParticleObjectLoader import DummyLoader
+from sparkx.BaseStorer import BaseStorer
 
-class DummyStorer(BaseStorer):
+class ParticleObjectStorer(BaseStorer):
     """
-    Defines a Dummy object.
+    Defines a ParticleObjectStorer object, which saves particle object lists.
 
     This is a wrapper for a list of Particle objects. It's methods allow to 
     directly act on all contained events as applying acceptance filters

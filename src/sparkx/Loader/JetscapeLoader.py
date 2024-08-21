@@ -103,10 +103,10 @@ class JetscapeLoader(BaseLoader):
             if self.optional_arguments_['events'][0] > self.optional_arguments_['events'][1]:
                 raise ValueError('First value of event number tuple must be smaller than second value')
             elif self.optional_arguments_['events'][0] < 0 or self.optional_arguments_['events'][1] < 0:
-                raise ValueError('Event numbers must be positive')
+                raise ValueError('Event numbers must be non-negative')
         elif 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], int):
             if self.optional_arguments_['events'] < 0:
-                raise ValueError('Event number must be positive')
+                raise ValueError('Event number must be non-negative')
         
         if 'particletype' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['particletype'], str):
             if (self.optional_arguments_['particletype'] == 'hadron') or (self.optional_arguments_['particletype'] == 'parton'):
