@@ -55,13 +55,13 @@ class BulkObservables:
         # Wrapping in ReadOnlyList prevents particles from being modified
         self.particle_objects = ReadOnlyList(particle_objects_list)  
         self.observables_list = args
-        
-    # PUBLIC CLASS METHODS
+
+    # PRIVATE CLASS METHODS
     """
     This is the base method for all differential yields. It is called by all 
     corresponding methods for each specific differential yield
     """
-    def differential_yield(self, quantity, bins=(-4, 4, 21)):
+    def _differential_yield(self, quantity, bins=(-4, 4, 21)):
         hist = Histogram(bins)
         num_events = len(self.particle_objects)
         inverse_bin_width = 1/hist.bin_width()
@@ -84,7 +84,8 @@ class BulkObservables:
         hist.average()
         hist.scale_histogram(inverse_bin_width)
         return hist
-    
+
+    # PUBLIC CLASS METHODS
     def dNdy(self, bins=None):
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dy}`
@@ -98,9 +99,9 @@ class BulkObservables:
           rapidity bin.
         """
         if bins is None:
-            return self.differential_yield("momentum_rapidity_Y")
+            return self._differential_yield("rapidity")
         else:
-            return self.differential_yield("momentum_rapidity_Y", bins)
+            return self._differential_yield("rapidity", bins)
 
     def dNdpT(self, bins=None):
         """
@@ -115,9 +116,9 @@ class BulkObservables:
           transverse momentum bin.
         """
         if bins is None:
-            return self.differential_yield("pt_abs")
+            return self._differential_yield("pT_abs")
         else:
-            return self.differential_yield("pt_abs", bins)
+            return self._differential_yield("pT_abs", bins)
         
     def dNdEta(self, bins=None):
         """
@@ -132,9 +133,9 @@ class BulkObservables:
           pseudo-rapidity bin.
         """
         if bins is None:
-            return self.differential_yield("pseudorapidity")
+            return self._differential_yield("pseudorapidity")
         else:
-            return self.differential_yield("pseudorapidity", bins)
+            return self._differential_yield("pseudorapidity", bins)
 
     def dNdmT(self, bins=None):
         """
@@ -149,6 +150,6 @@ class BulkObservables:
           transverse mass bin.
         """
         if bins is None:
-            return self.differential_yield("mT")
+            return self._differential_yield("mT")
         else:
-            return self.differential_yield("mT", bins)
+            return self._differential_yield("mT", bins)
