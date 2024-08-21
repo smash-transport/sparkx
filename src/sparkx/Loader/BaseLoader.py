@@ -8,6 +8,7 @@
 #===================================================
 
 from abc import ABC, abstractmethod
+from typing import Dict, Tuple, Any, TextIO
 
 class BaseLoader(ABC):
     """
@@ -37,7 +38,7 @@ class BaseLoader(ABC):
     """
 
     @abstractmethod
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """
         Abstract constructor method.
 
@@ -50,7 +51,7 @@ class BaseLoader(ABC):
         pass 
 
     @abstractmethod
-    def load(self, **kwargs):
+    def load(self, **kwargs: Dict[str, Any]) -> Any:
         """
         Abstract method for loading data.
 
@@ -61,7 +62,7 @@ class BaseLoader(ABC):
         """
         raise NotImplementedError("load method is not implemented")
     
-    def _check_that_tuple_contains_integers_only(self, events_tuple):
+    def _check_that_tuple_contains_integers_only(self, events_tuple: Tuple[int, ...]) -> None:
         """
         Checks if all elements inside the event tuple are integers.
 
@@ -78,7 +79,18 @@ class BaseLoader(ABC):
         if not all(isinstance(event, int) for event in events_tuple):
             raise TypeError("All elements inside the event tuple must be integers.")
         
-    def _skip_lines(self, fname):
+    def _get_num_skip_lines(self) -> int:
+        """
+        Returns the number of lines to skip in the file.
+
+        Returns
+        -------
+        int
+            The number of lines to skip in the file.
+        """
+        raise NotImplementedError("Method is not implemented")
+        
+    def _skip_lines(self, fname: TextIO) -> None:
         """
         Skips the initial header and comment lines in a file.
 

@@ -9,9 +9,10 @@
 
 from sparkx.Loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
+from typing import List, Tuple, Dict, Union, Any
 
-class ParticelObjectLoader(BaseLoader):
-    def __init__(self, particle_list):
+class ParticleObjectLoader(BaseLoader):
+    def __init__(self, particle_list:  Union[str, List[List['Particle']]]) -> None:
 
         """
         Initializes a new instance of the ParticelObjectLoader class.
@@ -32,10 +33,11 @@ class ParticelObjectLoader(BaseLoader):
         -------
         None
         """
-        super().__init__(particle_list)
-        self.particle_list_ = particle_list
+        if not isinstance(particle_list, list):
+            raise TypeError('The particle_list parameter must be a list of lists of Particle objects')
+        self.particle_list_: List[List['Particle']] = particle_list
 
-    def load(self, **kwargs):
+    def load(self, **kwargs: Any) -> Tuple[List[List['Particle']], int, List[int]]:
         """
         Loads the data from the dummy input based on the specified optional arguments.
 
@@ -58,12 +60,12 @@ class ParticelObjectLoader(BaseLoader):
         tuple
             A tuple containing the list of Particle objects loaded from the dummy input, the number of events, and the number of output lines per event.
         """
-        self.optional_arguments_ = kwargs
-        self.num_events_ = len(self.particle_list_)
+        self.optional_arguments_: Dict[str, Any] = kwargs
+        self.num_events_: int = len(self.particle_list_)
 
         for keys in self.optional_arguments_.keys():
             if keys not in ['events', 'filters']:
-                raise ValueError('Unknown keyword argument used in constructor')Dummy
+                raise ValueError('Unknown keyword argument used in constructor')
 
         if 'events' in self.optional_arguments_.keys() and isinstance(self.optional_arguments_['events'], tuple):
             self._check_that_tuple_contains_integers_only(self.optional_arguments_['events'])
@@ -78,16 +80,16 @@ class ParticelObjectLoader(BaseLoader):
         self.set_num_output_per_event()
         return (self.set_particle_list(kwargs),  self.num_events_,self.num_output_per_event_)
     
-    def set_num_output_per_event(self):
+    def set_num_output_per_event(self) -> List[int]:
         """
         Set the number of output particles per event based on the filters applied.
         """
-        self.num_output_per_event_ = []
+        self.num_output_per_event_: List[int] = []
         for i in range(0, self.num_events_):
             self.num_output_per_event_.append(len(self.particle_list_[i]))
         return self.num_output_per_event_
     
-    def __apply_kwargs_filters(self, event, filters_dict):
+    def __apply_kwargs_filters(self, event: List[List['Particle']], filters_dict: Dict[str, Any]) -> List[List['Particle']]:
         """
         Applies the specified filters to the event.
 
@@ -153,7 +155,7 @@ class ParticelObjectLoader(BaseLoader):
     
     # PUBLIC CLASS METHODS
 
-    def set_particle_list(self, kwargs):
+    def set_particle_list(self, kwargs: Dict[str, Any]) ->  List[List['Particle']]:
         """
         Set the particle list based on the filters applied.
 

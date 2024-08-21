@@ -5,6 +5,8 @@ Jetscape
 
 .. currentmodule:: Jetscape
 .. autoclass:: Jetscape
+    :members:
+    :inherited-members:
 
 .. automethod:: Jetscape.create_loader
 .. automethod:: Jetscape.particle_objects_list

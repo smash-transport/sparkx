@@ -17,3 +17,6 @@ Classes
    MultiParticlePtCorrelations/index
    Oscar/index
    Particle/index
+   BaseStorer/index
+   ParticleObjectStorer/index
+   Loader/index

@@ -7,7 +7,7 @@ Loader
    :maxdepth: 2
 
    BaseLoader/index
-   DummyLoader/index
+   ParticleObjectLoader/index
    JetscapeLoader/index
    OscarLoader/index
 

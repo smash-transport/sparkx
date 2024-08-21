@@ -536,8 +536,7 @@ def particle_list_spacetime_rapidity():
         particle_list.append(p)
     return [particle_list]
 
-
-def test_rapidity_cut(particle_list_spacetime_rapidity):
+def test_spacetime_rapidity_cut(particle_list_spacetime_rapidity):
     test_cases = [
         # Test cases for valid input
         (0.5, None, None, [[particle_list_spacetime_rapidity[0][0]]]),

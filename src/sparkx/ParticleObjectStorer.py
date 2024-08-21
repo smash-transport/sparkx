@@ -9,8 +9,9 @@
     
 from sparkx.Filter import *
 import numpy as np
-from sparkx.Loader.ParticleObjectLoader import DummyLoader
+from sparkx.Loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.BaseStorer import BaseStorer
+from typing import List, Dict, Tuple, Optional, Union
 
 class ParticleObjectStorer(BaseStorer):
     """
@@ -100,8 +101,11 @@ class ParticleObjectStorer(BaseStorer):
     [[[1.0,...],[1.0,...]]]
 
     """
+
+    num_output_per_event_: np.ndarray
+    num_events_: int
     
-    def __init__(self, particle_object_list, **kwargs):
+    def __init__(self, particle_object_list: List[List['Particle']], **kwargs: Dict[str, Optional[Tuple[int, int]]]) -> None:
         """
         Initializes a new instance of the DummyStorer class.
 
@@ -122,14 +126,14 @@ class ParticleObjectStorer(BaseStorer):
         -------
         None
         """
-        super().__init__(particle_object_list,**kwargs)  
+        super().__init__(particle_object_list, **kwargs)
         del self.loader_
 
-    def create_loader(self, particle_object_list):
+    def create_loader(self, particle_object_list: Union[str, List[List['Particle']]]) -> None:
         """
-        Creates a new DummyLoader object.
+        Creates a new ParticleObjectLoader object.
 
-        This method creates a new DummyLoader object with the specified list of particle objects and assigns it to the loader_ attribute.
+        This method creates a new ParticleObjectLoader object with the specified list of particle objects and assigns it to the loader_ attribute.
 
         Parameters
         ----------
@@ -144,9 +148,9 @@ class ParticleObjectStorer(BaseStorer):
         -------
         None
         """
-        self.loader_= DummyLoader(particle_object_list)
+        self.loader_= ParticleObjectLoader(particle_object_list)
 
-    def _particle_as_list(self, particle):
+    def _particle_as_list(self, particle: 'Particle') -> List[float]:
         """
         Converts a Particle object into a list.
 
@@ -166,38 +170,18 @@ class ParticleObjectStorer(BaseStorer):
         particle_list : list
             A list of the attributes of the Particle object.
         """
-        particle_list = []
-        particle_list.append(float(particle.t))
-        particle_list.append(float(particle.x))
-        particle_list.append(float(particle.y))
-        particle_list.append(float(particle.z))
-        particle_list.append(float(particle.mass))
-        particle_list.append(float(particle.E))
-        particle_list.append(float(particle.px))
-        particle_list.append(float(particle.py))
-        particle_list.append(float(particle.pz))
-        particle_list.append(int(particle.pdg))
-        particle_list.append(int(particle.ID))
-        particle_list.append(int(particle.charge))
-        particle_list.append(int(particle.ncoll))
-        particle_list.append(float(particle.form_time))
-        particle_list.append(float(particle.xsecfac))
-        particle_list.append(int(particle.proc_id_origin))
-        particle_list.append(int(particle.proc_type_origin))
-        particle_list.append(float(particle.t_last_coll))
-        particle_list.append(int(particle.pdg_mother1))
-        particle_list.append(int(particle.pdg_mother2))
-        particle_list.append(int(particle.baryon_number))
-        particle_list.append(int(particle.strangeness))
-        particle_list.append(int(particle.weight))
-        particle_list.append(int(particle.status))
-
+        particle_list: List[float] = [
+            particle.t, particle.x, particle.y, particle.z, particle.mass,
+            particle.E, particle.px, particle.py, particle.pz, particle.pdg,
+            particle.ID, particle.charge, particle.ncoll, particle.form_time,
+            particle.xsecfac, particle.proc_id_origin, particle.proc_type_origin,
+            particle.t_last_coll, particle.pdg_mother1, particle.pdg_mother2,
+            particle.baryon_number, particle.strangeness, particle.weight, particle.status
+        ]
         return particle_list
 
 
-
-
-    def print_particle_lists_to_file(self, filename):
+    def print_particle_lists_to_file(self, filename: str) -> None:
         """
         Prints the current particle data to a file.
 
@@ -218,11 +202,12 @@ class ParticleObjectStorer(BaseStorer):
             for event in self.particle_list_:
                 for particle in event:
                     # Extract the attributes from the particle object
-                    particle_data = [
-                        particle.t, particle.x, particle.y, particle.z, particle.mass, particle.E, 
-                        particle.px, particle.py, particle.pz, particle.pdg, particle.ID, particle.charge, 
-                        particle.ncoll, particle.form_time, particle.xsecfac, particle.proc_id_origin, 
-                        particle.proc_type_origin, particle.t_last_coll, particle.pdg_mother1, 
-                        particle.pdg_mother2, particle.status, particle.baryon_number
+                    particle_data: List[float] = [
+                        particle.t, particle.x, particle.y, particle.z, particle.mass,
+                        particle.E, particle.px, particle.py, particle.pz, particle.pdg,
+                        particle.ID, particle.charge, particle.ncoll, particle.form_time,
+                        particle.xsecfac, particle.proc_id_origin, particle.proc_type_origin,
+                        particle.t_last_coll, particle.pdg_mother1, particle.pdg_mother2,
+                        particle.status, particle.baryon_number
                     ]
                     f.write(','.join(map(str, particle_data)) + '\n')

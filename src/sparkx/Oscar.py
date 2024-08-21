@@ -11,6 +11,7 @@ from sparkx.Filter import *
 import numpy as np
 from sparkx.Loader.OscarLoader import OscarLoader
 from sparkx.BaseStorer import BaseStorer
+from typing import Any, List, Optional, Union
 
 class Oscar(BaseStorer):
     """
@@ -165,19 +166,18 @@ class Oscar(BaseStorer):
     All filter functions without arguments need a :code:`True` in the dictionary.
 
     """
-
-    def __init__(self, OSCAR_FILE, **kwargs):
+    def __init__(self, OSCAR_FILE: str, **kwargs: Any) -> None:
         super().__init__(OSCAR_FILE,**kwargs)
-        self.PATH_OSCAR_ = OSCAR_FILE
-        self.oscar_format_=self.loader_.oscar_format()
-        self.event_end_lines_ = self.loader_.event_end_lines()  
+        self.PATH_OSCAR_: str = OSCAR_FILE
+        self.oscar_format_: Union[str|None] = self.loader_.oscar_format()
+        self.event_end_lines_: List[str] = self.loader_.event_end_lines()
         del self.loader_
 
-    def create_loader(self, OSCAR_FILE):
+    def create_loader(self, OSCAR_FILE: str) -> None: # type: ignore[override]
         self.loader_= OscarLoader(OSCAR_FILE)
     
-    def _particle_as_list(self, particle):
-        particle_list = []
+    def _particle_as_list(self, particle: Any) -> List[Union[float, int]]:
+        particle_list: List[Union[float, int]] = []
         particle_list.append(float(particle.t))
         particle_list.append(float(particle.x))
         particle_list.append(float(particle.y))
@@ -225,7 +225,7 @@ class Oscar(BaseStorer):
 
         return particle_list
     
-    def oscar_format(self):
+    def oscar_format(self) -> Union[str,None]:
         """
         Get the Oscar format of the input file.
 
@@ -238,7 +238,7 @@ class Oscar(BaseStorer):
         """
         return self.oscar_format_
 
-    def print_particle_lists_to_file(self, output_file):
+    def print_particle_lists_to_file(self, output_file: str) -> None:
         """
         Prints the current Oscar data to an output file specified by
         :code:`output_file` with the same format as the input file.
@@ -250,10 +250,9 @@ class Oscar(BaseStorer):
             Path to the output file like :code:`[output_directory]/particle_lists.oscar`
 
         """
-        header = []
-        event_footer = ""
-        format_oscar2013 = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d"
-        format_oscar2013_extended = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
+        header: List[str] = []
+        format_oscar2013: str = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
+        format_oscar2013_extended: str = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d'
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             counter_line = 0

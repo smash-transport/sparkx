@@ -5,6 +5,8 @@ JetscapeLoader
 
 .. currentmodule:: sparkx.Loader.JetscapeLoader
 .. autoclass:: JetscapeLoader
+    :members:
+    :inherited-members:
 
 .. automethod:: JetscapeLoader.load
 .. automethod:: JetscapeLoader._get_num_skip_lines

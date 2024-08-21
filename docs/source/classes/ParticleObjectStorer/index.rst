@@ -5,6 +5,8 @@ ParticleObjectStorer
 
 .. currentmodule:: ParticleObjectStorer
 .. autoclass:: ParticleObjectStorer
+    :members:
+    :inherited-members:
 
 .. automethod:: ParticleObjectStorer.create_loader
 .. automethod:: ParticleObjectStorer.particle_list

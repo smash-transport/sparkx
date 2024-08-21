@@ -5,6 +5,8 @@ Oscar
 
 .. currentmodule:: Oscar
 .. autoclass:: Oscar
+    :members:
+    :inherited-members:
 
 
 .. automethod:: Oscar.create_loader

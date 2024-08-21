@@ -11,7 +11,7 @@ from sparkx.Filter import *
 import numpy as np
 from sparkx.Loader.JetscapeLoader import JetscapeLoader
 from sparkx.BaseStorer import BaseStorer
-
+from typing import List, Tuple, Union, Dict
 class Jetscape(BaseStorer):
     """
     Defines a Jetscape object.
@@ -159,22 +159,21 @@ class Jetscape(BaseStorer):
     parameters for the filter functions in the dictionary.
     All filter functions without arguments need a :code:`True` in the dictionary.
     """
-
-    def __init__(self, JETSCAPE_FILE, **kwargs):
-        super().__init__(JETSCAPE_FILE,**kwargs)
-        self.sigmaGen_ = self.loader_.get_sigmaGen()
-        self.particle_type_=self.loader_.get_particle_type()
-        self.JETSCAPE_FILE = JETSCAPE_FILE
-        self.particle_type_defining_string_ = self.loader_.get_particle_type_defining_string()
-        self.last_line_=self.loader_.get_last_line(JETSCAPE_FILE)
+    def __init__(self, JETSCAPE_FILE: str, **kwargs: Dict[str, Union[int, Tuple[int, int], Dict[str, Union[int, Tuple[int, int]]]]]):
+        super().__init__(JETSCAPE_FILE, **kwargs)
+        self.sigmaGen_: Tuple[float,float] = self.loader_.get_sigmaGen()
+        self.particle_type_: str = self.loader_.get_particle_type()
+        self.JETSCAPE_FILE: str = JETSCAPE_FILE
+        self.particle_type_defining_string_: str = self.loader_.get_particle_type_defining_string()
+        self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
 
-    def create_loader(self, JETSCAPE_FILE):
-        self.loader_= JetscapeLoader(JETSCAPE_FILE)
+    def create_loader(self, JETSCAPE_FILE: str) -> None:
+        self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def _particle_as_list(self, particle):
-        particle_list = [0.0] * 7
+    def _particle_as_list(self, particle: 'Particle') -> List[Union[int, float]]:
+        particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)
         particle_list[2] = int(particle.status)
@@ -185,7 +184,7 @@ class Jetscape(BaseStorer):
 
         return particle_list
 
-    def particle_objects_list(self):
+    def particle_objects_list(self) -> List[List[List[Union[int, float]]]]:
         """
         Returns a nested python list containing all quantities from the
         current Jetscape data as numerical values with the following shape:
@@ -200,12 +199,12 @@ class Jetscape(BaseStorer):
         """
         return self.particle_list_
 
-    def __update_num_output_per_event_after_filter(self):
+    def __update_num_output_per_event_after_filter(self) -> None:
         for event in range(0, len(self.particle_list_)):
             self.num_output_per_event_[event][1]=len(self.particle_list_[event])
 
     # PUBLIC CLASS METHODS
-    def particle_status(self, status_list):
+    def particle_status(self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> 'Jetscape':
         """
         Keep only particles with a given particle status
 
@@ -230,7 +229,7 @@ class Jetscape(BaseStorer):
 
         return self
     
-    def spacetime_cut(self, dim, cut_value_tuple):
+    def spacetime_cut(self, dim: str, cut_value_tuple: Tuple[float, float]) -> None:
         """
         Raises an error because spacetime cuts are not possible for Jetscape events.
 
@@ -248,7 +247,7 @@ class Jetscape(BaseStorer):
         """
         raise NotImplementedError("Spacetime cuts are not possible for Jetscape events.")
     
-    def get_sigmaGen(self):
+    def get_sigmaGen(self) -> Tuple[float,float]:
         """
         Returns the value of sigmaGen.
 
@@ -259,7 +258,7 @@ class Jetscape(BaseStorer):
         """
         return self.sigmaGen_
 
-    def print_particle_lists_to_file(self, output_file):
+    def print_particle_lists_to_file(self, output_file: str) -> None:
         """
         Prints the current Jetscape data to an output file specified by
         :code:`output_file` with the same format as the input file.

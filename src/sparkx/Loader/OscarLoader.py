@@ -10,6 +10,7 @@
 from sparkx.Loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
 import os
+from typing import Dict, List, Tuple, Optional, Union, Any
 
 class OscarLoader(BaseLoader):
     """
@@ -57,7 +58,15 @@ class OscarLoader(BaseLoader):
     set_num_output_per_event_and_event_footers()
         Determines the number of output lines per event and the event footers in the OSCAR data file.
     """    
-    def __init__(self, OSCAR_FILE):
+
+    PATH_OSCAR_: str
+    oscar_format_: Optional[str]
+    optional_arguments_:  Dict[str, Any]
+    event_end_lines_: List[str]
+    num_events_: int
+    num_output_per_event_: np.ndarray
+
+    def __init__(self, OSCAR_FILE: str):
         
         """
         Constructor for the OscarLoader class.
@@ -78,7 +87,6 @@ class OscarLoader(BaseLoader):
         -------
         None
         """
-        super().__init__(OSCAR_FILE)
         if not '.oscar' in OSCAR_FILE:
             raise FileNotFoundError('Input file is not in the OSCAR format. Input '
                                     'file must have the ending .oscar')
@@ -86,7 +94,7 @@ class OscarLoader(BaseLoader):
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
 
-    def load(self, **kwargs):
+    def load(self, **kwargs: Dict[str, Any]) -> Tuple[List[List['Particle']], int, np.ndarray]:
         """
         Loads the OSCAR data from the specified file.
 
@@ -134,7 +142,7 @@ class OscarLoader(BaseLoader):
         self.set_num_output_per_event_and_event_footers()
         return (self.set_particle_list(kwargs),  self.num_events_, self.num_output_per_event_)
     
-    def _get_num_skip_lines(self):
+    def _get_num_skip_lines(self) -> int:
         """
         Get number of initial lines in Oscar file that are header or comment
         lines and need to be skipped in order to read the particle output.
@@ -170,7 +178,7 @@ class OscarLoader(BaseLoader):
 
         return skip_lines
     
-    def set_num_events(self):
+    def set_num_events(self) -> None:
         """
         Sets the number of events in the OSCAR data file.
 
@@ -201,7 +209,7 @@ class OscarLoader(BaseLoader):
                             'including the events. File might be incomplete '+
                             'or corrupted.')
 
-    def set_oscar_format(self):
+    def set_oscar_format(self) -> None:
         """
         Sets the number of events in the OSCAR data file.
 
@@ -222,27 +230,27 @@ class OscarLoader(BaseLoader):
         """
         with open(self.PATH_OSCAR_, 'r') as file:
             first_line = file.readline()
-            first_line = first_line.replace('\n', '').split(' ')
+            first_line_list = first_line.replace('\n', '').split(' ')
 
-        if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
+        if len(first_line_list) == 15 or first_line[0] == '#!OSCAR2013':
             self.oscar_format_ = 'Oscar2013'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='SMASH_IC':
+        elif first_line_list[0] == '#!OSCAR2013Extended' and first_line_list[1]=='SMASH_IC':
             self.oscar_format_ = 'Oscar2013Extended_IC'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='Photons':
+        elif first_line_list[0] == '#!OSCAR2013Extended' and first_line_list[1]=='Photons':
             self.oscar_format_ = 'Oscar2013Extended_Photons'
-        elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
+        elif len(first_line_list) == 23 or first_line_list[0] == '#!OSCAR2013Extended':
             self.oscar_format_ = 'Oscar2013Extended'
         else:
             raise TypeError('Input file must follow the Oscar2013, '+\
                             'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
         
-    def oscar_format(self):
+    def oscar_format(self) -> Optional[str]:
         return self.oscar_format_
 
-    def event_end_lines(self):
+    def event_end_lines(self) -> List[str]:
         return self.event_end_lines_
 
-    def __get_num_read_lines(self):
+    def __get_num_read_lines(self) -> int:
         """
         Calculates the number of lines to read from the OSCAR data file.
 
@@ -282,7 +290,7 @@ class OscarLoader(BaseLoader):
 
         return cumulated_lines
 
-    def __apply_kwargs_filters(self, event, filters_dict):
+    def __apply_kwargs_filters(self, event: List[List['Particle']], filters_dict: Dict[str, Any]) -> List[List['Particle']]:
         """
         Applies the specified filters to the given event.
 
@@ -330,6 +338,8 @@ class OscarLoader(BaseLoader):
             elif i == 'lower_event_energy_cut':
                 event = lower_event_energy_cut(event, filters_dict['lower_event_energy_cut'])
             elif i == 'spacetime_cut':
+                if not isinstance(filters_dict['spacetime_cut'], list):
+                    raise ValueError('The spacetime cut filter requires a list of two values.')
                 event = spacetime_cut(event, filters_dict['spacetime_cut'][0],filters_dict['spacetime_cut'][1])
             elif i == 'pt_cut':
                 event = pt_cut(event, filters_dict['pt_cut'])
@@ -348,7 +358,7 @@ class OscarLoader(BaseLoader):
 
     # PUBLIC CLASS METHODS
 
-    def set_particle_list(self, kwargs):
+    def set_particle_list(self, kwargs:  Dict[str, Any]) -> List[List[Particle]]:
         """
         Sets the list of particles from the OSCAR data file.
 
@@ -373,8 +383,8 @@ class OscarLoader(BaseLoader):
         particle_list : list
             A list of Particle objects loaded from the OSCAR data file.
         """
-        particle_list = []
-        data = []
+        particle_list: List[List[Particle]] = [[]]
+        data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
         with open(self.PATH_OSCAR_, 'r') as oscar_file:
             self._skip_lines(oscar_file)
@@ -398,8 +408,8 @@ class OscarLoader(BaseLoader):
                 elif '#' in line:
                     raise ValueError('Comment line unexpectedly found: '+line)
                 else:
-                    line = line.replace('\n','').split(' ')
-                    particle = Particle(self.oscar_format_, line)
+                    line_list = line.replace('\n','').split(' ')
+                    particle = Particle(self.oscar_format_, line_list)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
@@ -410,7 +420,7 @@ class OscarLoader(BaseLoader):
                                     'OSCAR file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
-            self.num_output_per_event_ = [update]
+            self.num_output_per_event_ = np.array([update])
             self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
@@ -421,50 +431,7 @@ class OscarLoader(BaseLoader):
 
         return particle_list
             
-
-    def set_oscar_format(self):
-        """
-        Sets the list of particles from the OSCAR data file.
-
-        This method reads the OSCAR data file line by line and creates a list of Particle objects. It also applies any filters specified in the 'filters' key of the kwargs dictionary. If the 'events' key is specified in the kwargs dictionary, it adjusts the number of events and the number of output lines per event accordingly.
-
-        Parameters
-        ----------
-        kwargs : dict
-            A dictionary of optional arguments. The following keys are recognized:
-            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
-            - 'filters': A list of filters to apply to the data.
-
-        Raises
-        ------
-        IndexError
-            If the number of events in the OSCAR file does not match the number of events specified by the comments in the OSCAR file, or if the index is out of range of the OSCAR file.
-        ValueError
-            If the first line of the event is not a comment line or does not contain "out", or if a comment line is unexpectedly found.
-
-        Returns
-        -------
-        particle_list : list
-            A list of Particle objects loaded from the OSCAR data file.
-        """
-        with open(self.PATH_OSCAR_, 'r') as file:
-            first_line = file.readline()
-            first_line = first_line.replace('\n', '').split(' ')
-
-        if len(first_line) == 15 or first_line[0] == '#!OSCAR2013':
-            self.oscar_format_ = 'Oscar2013'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='SMASH_IC':
-            self.oscar_format_ = 'Oscar2013Extended_IC'
-        elif first_line[0] == '#!OSCAR2013Extended' and first_line[1]=='Photons':
-            self.oscar_format_ = 'Oscar2013Extended_Photons'
-        elif len(first_line) == 23 or first_line[0] == '#!OSCAR2013Extended':
-            self.oscar_format_ = 'Oscar2013Extended'
-        else:
-            raise TypeError('Input file must follow the Oscar2013, '+
-                            'Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. ')
-
-
-    def set_num_output_per_event_and_event_footers(self):
+    def set_num_output_per_event_and_event_footers(self) -> None:
         """
         Sets the number of output lines per event and the event footers in the OSCAR data file.
 
@@ -482,9 +449,13 @@ class OscarLoader(BaseLoader):
         -------
         None
         """
+        event_output: List[List[Union[str, int]]] = []
+
         with open(self.PATH_OSCAR_, 'r') as oscar_file:
-            event_output = []
-            if(self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons'):
+            line_counter: int 
+            event: int|str 
+            line_str: List[str]
+            if self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
                 while True:
                     line = oscar_file.readline()
                     if not line:
@@ -492,49 +463,50 @@ class OscarLoader(BaseLoader):
                     elif '#' in line and 'end ' in line:
                         self.event_end_lines_.append(line)
                     elif '#' in line and 'out' in line:
-                        line_str = line.replace('\n','').split(' ')
+                        line_str = line.replace('\n', '').split(' ')
                         event = line_str[2]
-                        num_output = line_str[4]
+                        num_output: int = int(line_str[4])
                         event_output.append([event, num_output])
                     else:
                         continue
-            elif (self.oscar_format_ == 'Oscar2013Extended_IC'):
-                line_counter=0
-                event=0
+            elif self.oscar_format_ == 'Oscar2013Extended_IC':
+                line_counter = 0
+                event = 0
                 while True:
-                    line_counter+=1
+                    line_counter += 1
                     line = oscar_file.readline()
                     if not line:
                         break
                     elif '#' in line and 'end' in line:
                         self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter-2])
+                        event_output.append([event, line_counter - 2])
                     elif '#' in line and 'in' in line:
-                        line_str = line.replace('\n','').split(' ')
-                        event = line_str[2]
-                        line_counter=0
+                        line_str = line.replace('\n', '').split(' ')
+                        event = int(line_str[2])
+                        line_counter = 0
                     else:
                         continue
-    
-            elif (self.oscar_format_ == 'Oscar2013Extended_Photons'):
-                line_counter=0
-                event=0
-                line_memory=0
+
+            elif self.oscar_format_ == 'Oscar2013Extended_Photons':
+                line_counter = 0
+                event = 0
+                line_memory: int = 0
                 while True:
-                    line_counter+=1
-                    line_memory+=1
+                    line_counter += 1
+                    line_memory += 1
                     line = oscar_file.readline()
                     if not line:
                         break
                     elif '#' in line and 'end' in line:
-                        if(line_memory==1):
+                        if line_memory == 1:
                             continue
                         self.event_end_lines_.append(line)
-                        line_str = line.replace('\n','').split(' ')
-                        event = line_str[2]
-                        event_output.append([event, line_counter-1])
+                        line_str = line.replace('\n', '').split(' ')
+                        event = int(line_str[2])
+                        event_output.append([event, line_counter - 1])
                     elif '#' in line and 'out' in line:
-                        line_counter=0
+                        line_counter = 0
                     else:
                         continue
+
         self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
