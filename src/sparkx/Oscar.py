@@ -1161,12 +1161,14 @@ class Oscar:
             for i in range(3):
                 f_out.write(header[i])
 
-        with open(output_file, "a") as f_out:
+        # Open the output file with buffered writing (25 MB)
+        with open(output_file, "a", buffering=25 * 1024 * 1024) as f_out:
+            list_of_particles = self.particle_list()
             if self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
-                    particle_output = np.asarray(self.particle_list()[i])
+                    particle_output = np.asarray(list_of_particles[i])
                     f_out.write(
                         "# event " + str(event) + " out " + str(num_out) + "\n"
                     )
@@ -1206,7 +1208,7 @@ class Oscar:
             else:
                 event = 0
                 num_out = self.num_output_per_event_[0][1]
-                particle_output = np.asarray(self.particle_list())
+                particle_output = np.asarray(list_of_particles)
                 f_out.write(
                     "# event " + str(event) + " out " + str(num_out) + "\n"
                 )
