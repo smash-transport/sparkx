@@ -966,7 +966,9 @@ class Jetscape:
                     f_out.write(header)
 
                     # Write the particle data to the file
-                    np.savetxt(f_out, particle_output, fmt="%d %d %d %g %g %g %g")
+                    np.savetxt(
+                        f_out, particle_output, fmt="%d %d %d %g %g %g %g"
+                    )
             else:
                 event = 0
                 num_out = self.num_output_per_event_[0][1]
