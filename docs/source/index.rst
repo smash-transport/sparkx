@@ -26,6 +26,7 @@ It contains multiple classes to read in the simulation outputs in OSCAR2013/OSCA
    :maxdepth: 2
 
    install
+   quickstart
    classes/index
    utilities/index
    license
