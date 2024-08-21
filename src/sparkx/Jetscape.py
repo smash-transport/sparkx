@@ -951,57 +951,33 @@ class Jetscape:
             header_file = jetscape_file.readline()
 
         # Open the output file with buffered writing
-        with open(output_file, "w") as f_out:
-            header_file_written = False
-            data_to_write = []
+        with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
+            f_out.write(header_file)
 
+            list_of_particles = self.particle_list()
             if self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
-                    particle_output = np.asarray(self.particle_list()[i])
-
-                    # Write the header if not already written
-                    if not header_file_written:
-                        header_file_written = True
-                        data_to_write.append(header_file)
+                    particle_output = np.asarray(list_of_particles[i])
 
                     # Header for each event
                     header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
-                    data_to_write.append(header)
+                    f_out.write(header)
 
-                    # Convert particle data to formatted strings
-                    particle_lines = [
-                        f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n"
-                        for row in particle_output
-                    ]
-
-                    # Append particle data to the list
-                    data_to_write.extend(particle_lines)
+                    # Write the particle data to the file
+                    np.savetxt(f_out, particle_output, fmt="%d %d %d %g %g %g %g")
             else:
                 event = 0
                 num_out = self.num_output_per_event_[0][1]
-                particle_output = np.asarray(self.particle_list())
-                # Write the header if not already written
-                if not header_file_written:
-                    header_file_written = True
-                    data_to_write.append(header_file)
+                particle_output = np.asarray(list_of_particles)
 
                 # Header for each event
                 header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
-                data_to_write.append(header)
+                f_out.write(header)
 
-                # Convert particle data to formatted strings
-                particle_lines = [
-                    f"{int(row[0])} {int(row[1])} {int(row[2])} {row[3]:g} {row[4]:g} {row[5]:g} {row[6]:g}\n"
-                    for row in particle_output
-                ]
-
-                # Append particle data to the list
-                data_to_write.extend(particle_lines)
-
-            # Write all accumulated data to the file
-            f_out.writelines(data_to_write)
+                # Write the particle data to the file
+                np.savetxt(f_out, particle_output, fmt="%d %d %d %g %g %g %g")
 
             # Write the last line
             last_line = self.__get_last_line(self.PATH_JETSCAPE_) + "\n"

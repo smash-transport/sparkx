@@ -39,6 +39,9 @@ Date:
 | compute_mass_from_energy_momentum() | mass_from_energy_momentum() |
 | compute_charge_from_pdg()           | charge_from_pdg()           |
 
+### Fixed
+* Jetscape: Improve writing speed for large file outputs in writer function 
+
 ### Added
 * Tests: Add HelperFunctions.py that contains free utility functions used in the tests and add corresponding tests.
 
