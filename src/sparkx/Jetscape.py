@@ -247,6 +247,17 @@ class Jetscape(BaseStorer):
             Always, because spacetime cuts are not possible for Jetscape events.
         """
         raise NotImplementedError("Spacetime cuts are not possible for Jetscape events.")
+    
+    def get_sigmaGen(self):
+        """
+        Returns the value of sigmaGen.
+
+        Returns
+        -------
+        float
+            The value of sigmaGen.
+        """
+        return self.sigmaGen_
 
     def print_particle_lists_to_file(self, output_file):
         """

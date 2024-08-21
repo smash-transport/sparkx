@@ -431,7 +431,7 @@ class JetscapeLoader(BaseLoader):
     
     def get_particle_type_defining_string(self):
         """
-        Returns the string which definies the particle type in the Jetscape file.
+        Returns the string which defines the particle type in the Jetscape file.
 
         Returns
         -------

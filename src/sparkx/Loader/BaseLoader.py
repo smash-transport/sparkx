@@ -46,12 +46,8 @@ class BaseLoader(ABC):
         path : str
             The path to the file to be loaded.
 
-        Raises
-        ------
-        NotImplementedError
-            If this method is not overridden in a concrete subclass.
         """
-        pass
+        pass 
 
     @abstractmethod
     def load(self, **kwargs):
