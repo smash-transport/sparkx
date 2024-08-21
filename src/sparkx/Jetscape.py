@@ -950,7 +950,7 @@ class Jetscape:
         with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             header_file = jetscape_file.readline()
 
-        # Open the output file with buffered writing
+        # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
 

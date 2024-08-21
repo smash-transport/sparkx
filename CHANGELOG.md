@@ -40,7 +40,7 @@ Date:
 | compute_charge_from_pdg()           | charge_from_pdg()           |
 
 ### Fixed
-* Jetscape: Improve writing speed for large file outputs in writer function 
+* Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
 
 ### Added
 * Tests: Add HelperFunctions.py that contains free utility functions used in the tests and add corresponding tests.
