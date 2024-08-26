@@ -11,7 +11,7 @@ import numpy as np
 from sparkx.Particle import Particle
 from sparkx.Lattice3D import Lattice3D
 import warnings
-from typing import Union, List, Optional, Any
+from typing import Union, Optional, Any, List, Tuple
 
 
 class EventCharacteristics:
@@ -80,10 +80,8 @@ class EventCharacteristics:
                                          Lattice3D]) -> None:
         self.set_event_data(event_data)
 
-    def set_event_data(self,
-                       event_data: Union[List[Particle],
-                                         np.ndarray[Any,
-                                                    np.dtype[np.object_]],
+    def set_event_data(self,event_data: Union[List[Particle],
+                                         np.ndarray[Any,np.dtype[np.object_]],
                                          Lattice3D]) -> None:
         """
         Overwrites the event data.
@@ -156,8 +154,6 @@ class EventCharacteristics:
             raise ValueError("harmonic_m must be positive")
         if not isinstance(self.event_data_, (list, np.ndarray)):
             raise TypeError('The input is not a list nor a numpy.ndarray.')
-        if harmonic_m is None and harmonic_n is None:
-            raise ValueError("harmonic_m or harmonic_n must be provided")
         for particle in self.event_data_:
             if weight_quantity == "energy":
                 weight = particle.E
@@ -222,9 +218,7 @@ class EventCharacteristics:
         if harmonic_m is not None and harmonic_m < 1:
             raise ValueError("harmonic_m must be positive")
         if isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError('The input is not a grid.')
-        if harmonic_m is None and harmonic_n is None:
-            raise ValueError("harmonic_m or harmonic_n must be provided")
+            raise TypeError('The input is not a list nor a numpy.ndarray.')
         for i, j, k in np.ndindex(self.event_data_.grid_.shape):
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             # Exception for dipole asymmetry
@@ -289,21 +283,21 @@ class EventCharacteristics:
                 weight_quantity=weight_quantity)
 
     def generate_eBQS_densities_Milne_from_OSCAR_IC(self,
-                                                    x_min: float,
-                                                    x_max: float,
-                                                    y_min: float,
-                                                    y_max: float,
-                                                    z_min: float,
-                                                    z_max: float,
+                                                    x_min: Union[float, int],
+                                                    x_max: Union[float, int],
+                                                    y_min: Union[float, int],
+                                                    y_max: Union[float, int],
+                                                    z_min: Union[float, int],
+                                                    z_max: Union[float, int],
                                                     Nx: int,
                                                     Ny: int,
                                                     Nz: int,
-                                                    n_sigma_x: float,
-                                                    n_sigma_y: float,
-                                                    n_sigma_z: float,
-                                                    sigma_smear: float,
-                                                    eta_range: Union[list,
-                                                                     tuple],
+                                                    n_sigma_x: Union[float, int],
+                                                    n_sigma_y: Union[float, int],
+                                                    n_sigma_z: Union[float, int],
+                                                    sigma_smear: Union[float, int],
+                                                    eta_range: Union[List[Union[int, float]],
+                                                                     Tuple[Union[float, int]]],
                                                     output_filename: str,
                                                     IC_info: Optional[str] = None) -> None:
         """
@@ -349,41 +343,19 @@ class EventCharacteristics:
         -------
         None
         """
-        if not all(
-            isinstance(
-                val,
-                (float,
-                 int)) for val in [
-                x_min,
-                x_max,
-                y_min,
-                y_max,
-                z_min,
-                z_max,
-                sigma_smear]):
-            raise TypeError("Coordinates and sigma_smear must be float or int")
-        if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
-            raise TypeError("Nx, Ny, Nz must be positive integers")
-        if not all((isinstance(val, (float, int)) and val > 0)
-                   for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+        if not all(val > 0 for val in [Nx, Ny, Nz]):
+            raise TypeError("Nx, Ny, Nz must be positive")
+        if not all(val > 0 for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
             raise TypeError(
-                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
-        if not isinstance(eta_range, (list, tuple)):
-            raise TypeError("eta_range must be a list or tuple")
+                "n_sigma_x, n_sigma_y, n_sigma_z must be positive")
         if len(eta_range) != 3:
             raise ValueError(
                 "eta_range must contain min, max, and number of grid points")
-        if not all(isinstance(val, (float, int)) for val in eta_range):
-            raise TypeError("Values in eta_range must be float or int")
-        if not isinstance(output_filename, str):
-            raise TypeError("output_filename must be a string")
-        if (IC_info is not None) and not isinstance(IC_info, str):
-            raise TypeError("The given IC_info is not a string")
         if self.has_lattice_:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles.")
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if not isinstance(self.event_data_, (list)):
+            raise TypeError("The input is not a list, which is necessary in 'add_particle_data'.")
 
         energy_density = Lattice3D(
             x_min,
@@ -437,7 +409,7 @@ class EventCharacteristics:
             n_sigma_x,
             n_sigma_y,
             n_sigma_z)
-
+        
         # smear the particles on the 3D lattice
         energy_density.add_particle_data(
             self.event_data_, sigma_smear, "energy_density")
@@ -456,7 +428,7 @@ class EventCharacteristics:
         # range
         x = energy_density.x_values_
         y = energy_density.y_values_
-        eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
+        eta = np.linspace(eta_range[0], eta_range[1], int(eta_range[2]))
         if (1.05 * tau * (np.sinh(eta[int(eta_range[2] / 2.)]) - np.sinh(
                 eta[int(eta_range[2] / 2. - 1)])) < (z_max - z_min) / Nz):
             warnings.warn(
@@ -501,19 +473,19 @@ class EventCharacteristics:
 
     def generate_eBQS_densities_Minkowski_from_OSCAR_IC(
             self,
-            x_min: float,
-            x_max: float,
-            y_min: float,
-            y_max: float,
-            z_min: float,
-            z_max: float,
+            x_min: Union[float, int],
+            x_max: Union[float, int],
+            y_min: Union[float, int],
+            y_max: Union[float, int],
+            z_min: Union[float, int],
+            z_max: Union[float, int],
             Nx: int,
             Ny: int,
             Nz: int,
-            n_sigma_x: float,
-            n_sigma_y: float,
-            n_sigma_z: float,
-            sigma_smear: float,
+            n_sigma_x: Union[float, int],
+            n_sigma_y: Union[float, int],
+            n_sigma_z: Union[float, int],
+            sigma_smear: Union[float, int],
             output_filename: str,
             IC_info: Optional[str] = None) -> None:
         """
@@ -555,34 +527,16 @@ class EventCharacteristics:
         -------
         None
         """
-        if not all(
-            isinstance(
-                val,
-                (float,
-                 int)) for val in [
-                x_min,
-                x_max,
-                y_min,
-                y_max,
-                z_min,
-                z_max,
-                sigma_smear]):
-            raise TypeError("Coordinates and sigma_smear must be float or int")
-        if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
-            raise TypeError("Nx, Ny, Nz must be positive integers")
-        if not all((isinstance(val, (float, int)) and val > 0)
-                   for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+        if not all(val > 0 for val in [Nx, Ny, Nz]):
+            raise TypeError("Nx, Ny, Nz must be positive")
+        if not all(val > 0 for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
             raise TypeError(
-                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
-        if (IC_info is not None) and not isinstance(IC_info, str):
-            warnings.warn("The given IC_info is not a string")
-        if not isinstance(output_filename, str):
-            raise TypeError("output_filename must be a string")
+                "n_sigma_x, n_sigma_y, n_sigma_z must be positive")
         if self.has_lattice_:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles.")
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if not isinstance(self.event_data_, (list)):
+            raise TypeError("The input is not a list, which is necessary for 'add_particle_data'.")
 
         energy_density = Lattice3D(
             x_min,

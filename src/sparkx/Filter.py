@@ -10,9 +10,13 @@
 import numpy as np
 from sparkx.Particle import Particle
 import warnings
+from typing import Tuple, List, Union, Optional
 
 
-def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
+def __ensure_tuple_is_valid_else_raise_error(
+    value_tuple: Tuple[Optional[Union[int, float]], 
+                       Optional[Union[float, int]]], 
+    allow_none: bool =False) -> None:
     """
     Validates a tuple for specific conditions.
 
@@ -36,13 +40,7 @@ def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
         If non-numeric value is found in the tuple, or if None values are not
         allowed and found, or if both elements are None when allow_none is True.
     """
-    if not isinstance(value_tuple, tuple) or len(value_tuple) != 2:
-        raise TypeError('Input value must be a tuple of length two')
-
-    elif any(val is not None and not isinstance(val, (int, float)) for val in value_tuple):
-        raise ValueError('Non-numeric value found in given tuple')
-
-    elif (value_tuple[0] is not None and value_tuple[1] is not None) and \
+    if (value_tuple[0] is not None and value_tuple[1] is not None) and \
          (value_tuple[0] >= value_tuple[1]):
         warn_msg = (
             'Lower limit {} is greater than upper limit {}. '
@@ -59,7 +57,7 @@ def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
             raise ValueError('At least one cut limit must be set to a number')
 
 
-def charged_particles(particle_list):
+def charged_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only charged particles in particle_list.
 
@@ -80,7 +78,7 @@ def charged_particles(particle_list):
     return particle_list
 
 
-def uncharged_particles(particle_list):
+def uncharged_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only uncharged particles in particle_list.
 
@@ -101,7 +99,7 @@ def uncharged_particles(particle_list):
     return particle_list
 
 
-def strange_particles(particle_list):
+def strange_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only strange particles in particle_list.
 
@@ -122,7 +120,8 @@ def strange_particles(particle_list):
     return particle_list
 
 
-def particle_species(particle_list, pdg_list):
+def particle_species(particle_list: List[List[Particle]],
+                     pdg_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> List[List[Particle]]:
     """
     Keep only particle species given by their PDG ID in every event.
 
@@ -143,30 +142,11 @@ def particle_species(particle_list, pdg_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(
-        pdg_list,
-        (str,
-         int,
-         list,
-         np.integer,
-         np.ndarray,
-         tuple,
-         float)):
-        raise TypeError('Input value for pgd codes has not one of the ' +
-                        'following types: str, int, float, np.integer, list ' +
-                        'of str, list of int, list of int np.ndarray, tuple')
-
-    if isinstance(pdg_list, float):
-        if np.isnan(pdg_list):
-            raise ValueError('Input value for PDG code is NaN')
-
-    elif isinstance(pdg_list, (list, np.ndarray, tuple)):
+    if isinstance(pdg_list, (list, np.ndarray, tuple)):
         if np.isnan(pdg_list).any():
             raise ValueError('Input value for PDG codes contains NaN values')
 
-    if isinstance(pdg_list, (int, float, str, np.integer)):
-        pdg_list = int(pdg_list)
-
+    if isinstance(pdg_list, (int)):
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
                                 if (int(elem.pdg) == pdg_list
@@ -180,14 +160,11 @@ def particle_species(particle_list, pdg_list):
                                 if (int(elem.pdg) in pdg_list
                                     and not np.isnan(elem.pdg))]
 
-    else:
-        raise TypeError('Input value for pgd codes has not one of the ' +
-                        'following types: str, int, float, np.integer, list ' +
-                        'of str, list of int, list of float, np.ndarray, tuple')
     return particle_list
 
 
-def remove_particle_species(particle_list, pdg_list):
+def remove_particle_species(particle_list: List[List[Particle]],
+                            pdg_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> List[List[Particle]]:
     """
     Remove particle species from particle_list by their PDG ID in every
     event.
@@ -209,30 +186,11 @@ def remove_particle_species(particle_list, pdg_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(
-        pdg_list,
-        (str,
-         int,
-         float,
-         list,
-         np.integer,
-         np.ndarray,
-         tuple)):
-        raise TypeError('Input value for pgd codes has not one of the ' +
-                        'following types: str, int, float, np.integer, list ' +
-                        'of str, list of int, list of float, np.ndarray, tuple')
-
-    if isinstance(pdg_list, float):
-        if np.isnan(pdg_list):
-            raise ValueError('Input value for PDG code is NaN')
-
-    elif isinstance(pdg_list, (list, np.ndarray, tuple)):
+    if isinstance(pdg_list, (list, np.ndarray, tuple)):
         if np.isnan(pdg_list).any():
             raise ValueError('Input value for PDG codes contains NaN values')
 
-    if isinstance(pdg_list, (int, float, str, np.integer)):
-        pdg_list = int(pdg_list)
-
+    if isinstance(pdg_list, (int)):
         for i in range(0, len(particle_list)):
             particle_list[i] = [elem for elem in particle_list[i]
                                 if (int(elem.pdg) != pdg_list
@@ -246,14 +204,10 @@ def remove_particle_species(particle_list, pdg_list):
                                 if (int(elem.pdg) not in pdg_list
                                     and not np.isnan(elem.pdg))]
 
-    else:
-        raise TypeError('Input value for pgd codes has not one of the ' +
-                        'following types: str, int, float, np.integer, list ' +
-                        'of str, list of int, list of float, np.ndarray, tuple')
     return particle_list
 
 
-def participants(particle_list):
+def participants(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only participants in particle_list.
 
@@ -274,7 +228,7 @@ def participants(particle_list):
     return particle_list
 
 
-def spectators(particle_list):
+def spectators(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only spectators in particle_list.
 
@@ -295,7 +249,8 @@ def spectators(particle_list):
     return particle_list
 
 
-def lower_event_energy_cut(particle_list, minimum_event_energy):
+def lower_event_energy_cut(particle_list: List[List[Particle]],
+                           minimum_event_energy: Union[int, float]) -> List[List[Particle]]:
     """
     Filters out events with total energy lower than a threshold.
     Events with smaller energies are removed and not kept as empty events.
@@ -322,9 +277,6 @@ def lower_event_energy_cut(particle_list, minimum_event_energy):
     ValueError
         If the minimum_event_energy parameter is NaN.
     """
-    if not isinstance(minimum_event_energy, (int, float)):
-        raise TypeError('Input value for lower event energy cut has not ' +
-                        'one of the following types: int, float')
     if np.isnan(minimum_event_energy):
         raise ValueError('Input value should not be NaN')
     if minimum_event_energy <= 0.:
@@ -344,7 +296,8 @@ def lower_event_energy_cut(particle_list, minimum_event_energy):
     return particle_list
 
 
-def spacetime_cut(particle_list, dim, cut_value_tuple):
+def spacetime_cut(particle_list: List[List[Particle]], dim: str,
+                  cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
     Apply spacetime cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -370,10 +323,6 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(cut_value_tuple, tuple):
-        raise TypeError('Input value must be a tuple containing either ' +
-                        'positive numbers or None of length two')
-
     __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     if dim not in ("x", "y", "z", "t"):
@@ -412,7 +361,8 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     return updated_particle_list
 
 
-def pt_cut(particle_list, cut_value_tuple):
+def pt_cut(particle_list: List[List[Particle]],
+           cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
     Apply p_t cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -434,10 +384,6 @@ def pt_cut(particle_list, cut_value_tuple):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(cut_value_tuple, tuple):
-        raise TypeError('Input value must be a tuple containing either ' +
-                        'positive numbers or None of length two')
-
     __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     # Check if the cut limits are positive if they are not None
@@ -474,7 +420,8 @@ def pt_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
-def mT_cut(particle_list, cut_value_tuple):
+def mT_cut(particle_list: List[List[Particle]],
+           cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
     Apply transverse mass cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -496,10 +443,6 @@ def mT_cut(particle_list, cut_value_tuple):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(cut_value_tuple, tuple):
-        raise TypeError('Input value must be a tuple containing either ' +
-                        'positive numbers or None of length two')
-
     __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
 
     # Check if the cut limits are positive if they are not None
@@ -536,7 +479,8 @@ def mT_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
-def rapidity_cut(particle_list, cut_value):
+def rapidity_cut(particle_list: List[List[Particle]], 
+                 cut_value: Union[int, float, Tuple[float, float]]) -> List[List[Particle]]:
     """
     Apply rapidity cut to all events and remove all particles with rapidity
     not complying with cut_value.
@@ -587,14 +531,11 @@ def rapidity_cut(particle_list, cut_value):
                                   and not np.isnan(elem.momentum_rapidity_Y()))]
             updated_particle_list.append(particle_list_tmp)
 
-    else:
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
     return updated_particle_list
 
 
-def pseudorapidity_cut(particle_list, cut_value):
+def pseudorapidity_cut(particle_list: List[List[Particle]], 
+                       cut_value: Union[int, float, Tuple[float, float]]) -> List[List[Particle]]:
     """
     Apply pseudo-rapidity cut to all events and remove all particles with
     pseudo-rapidity not complying with cut_value.
@@ -644,14 +585,11 @@ def pseudorapidity_cut(particle_list, cut_value):
                                   and not np.isnan(elem.pseudorapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
-    else:
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
     return updated_particle_list
 
 
-def spatial_rapidity_cut(particle_list, cut_value):
+def spatial_rapidity_cut(particle_list: List[List[Particle]], 
+                         cut_value: Union[int, float, Tuple[float, float]]) -> List[List[Particle]]:
     """
     Apply spatial rapidity (space-time rapidity) cut to all events and
     remove all particles with spatial rapidity not complying with cut_value.
@@ -701,14 +639,11 @@ def spatial_rapidity_cut(particle_list, cut_value):
                                   and not np.isnan(elem.spatial_rapidity()))]
             updated_particle_list.append(particle_list_tmp)
 
-    else:
-        raise TypeError('Input value must be a number or a tuple ' +
-                        'with the cut limits (cut_min, cut_max)')
-
     return updated_particle_list
 
 
-def multiplicity_cut(particle_list, min_multiplicity):
+def multiplicity_cut(particle_list: List[List[Particle]], 
+                     min_multiplicity: int) -> List[List[Particle]]:
     """
     Apply multiplicity cut. Remove all events with a multiplicity lower
     than min_multiplicity.
@@ -727,8 +662,6 @@ def multiplicity_cut(particle_list, min_multiplicity):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(min_multiplicity, int):
-        raise TypeError('Input value for multiplicity cut must be an int')
     if min_multiplicity < 0:
         raise ValueError('Minimum multiplicity must >= 0')
 
@@ -743,7 +676,8 @@ def multiplicity_cut(particle_list, min_multiplicity):
     return particle_list
 
 
-def particle_status(particle_list, status_list):
+def particle_status(particle_list: List[List[Particle]], 
+                    status_list: Union[int, np.ndarray, List[int], Tuple[int, ...]]) -> List[List[Particle]]:
     """
     Keep only particles with a given particle status.
 
@@ -764,9 +698,6 @@ def particle_status(particle_list, status_list):
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(status_list, (int, list, tuple, np.ndarray)):
-        raise TypeError('Input for status codes must be int, or  ' +
-                        'list/tuple/array of int values')
     if isinstance(status_list, (list, tuple, np.ndarray)):
         if any(not isinstance(val, int) for val in status_list):
             raise TypeError('status_list contains non int value')

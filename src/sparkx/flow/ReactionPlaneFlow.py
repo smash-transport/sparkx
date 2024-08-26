@@ -8,8 +8,9 @@
 # ===================================================
 
 from sparkx.flow import FlowInterface
+from sparkx.Particle import Particle
 import numpy as np
-
+from typing import List, Union
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
@@ -73,7 +74,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, n=2):
+    def __init__(self, n: int=2) -> None:
         """
         Initialize the ReactionPlaneFlow object.
 
@@ -82,15 +83,13 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         n : int, optional
             The value of the harmonic. Default is 2.
         """
-        if not isinstance(n, int):
-            raise TypeError('n has to be int')
-        elif n <= 0:
+        if n <= 0:
             raise ValueError(
                 'n-th harmonic with value n<=0 can not be computed')
         else:
             self.n_ = n
 
-    def integrated_flow(self, particle_data):
+    def integrated_flow(self, particle_data: List[List[Particle]]) -> complex:
         """
         Compute the integrated flow.
 
@@ -122,7 +121,8 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         flow_event_average /= number_particles
         return flow_event_average
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of):
+    def differential_flow(self, particle_data: List[List[Particle]], bins: Union[np.ndarray, List[float]], 
+                          flow_as_function_of: str) -> List[complex]:
         """
         Compute the differential flow.
 
@@ -140,10 +140,6 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         list
             A list of complex numbers representing the flow values for each bin.
         """
-        if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError('bins has to be list or np.ndarray')
-        if not isinstance(flow_as_function_of, str):
-            raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
@@ -168,7 +164,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
         return self.__differential_flow_calculation(particles_bin)
 
-    def __differential_flow_calculation(self, binned_particle_data):
+    def __differential_flow_calculation(self, binned_particle_data: List[List[List[Particle]]]) -> List[complex]:
         flow_differential = [0. + 0.j for i in range(len(binned_particle_data))]
         for bin in range(len(binned_particle_data)):
             number_particles = 0.

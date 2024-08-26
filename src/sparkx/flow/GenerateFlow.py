@@ -9,7 +9,7 @@
 
 import numpy as np
 import random as rd
-
+from typing import Dict, List
 
 class GenerateFlow:
     """
@@ -93,13 +93,16 @@ class GenerateFlow:
     `event generator <https://www.physik.uni-bielefeld.de/~borghini/Software/flow_analysis_codes/generator.cc>`__.
     """
 
-    def __init__(self, *vn, **vn_kwargs):
+    def __init__(self, *vn: float, **vn_kwargs: float) -> None:
+        self.n_: np.ndarray = np.array([])
+        self.vn_: np.ndarray = np.array([])
+        
         if not vn and not vn_kwargs:
-            self.n_ = self.vn_ = None
+            self.n_ = self.vn_ = np.array([])
         else:
             try:
-                vn_dictionary = {int(kw.lstrip('v'))
-                                     : val for kw, val in vn_kwargs.items()}
+                vn_dictionary: Dict[int, float] = {
+                    int(kw.lstrip('v')): val for kw, val in vn_kwargs.items()}
             except ValueError:
                 raise TypeError(
                     "Input must have the form of a dictionary with 'vN' "
@@ -107,16 +110,16 @@ class GenerateFlow:
             vn_dictionary.update(
                 (k, v) for k, v in enumerate(
                     vn, start=2) if v is not None and v != 0.)
-            kwargs = dict(dtype=float, count=len(vn_dictionary))
-            self.n_ = np.fromiter(vn_dictionary.keys(), **kwargs)
-            self.vn_ = np.fromiter(vn_dictionary.values(), **kwargs)
+            
+            self.n_ = np.fromiter(vn_dictionary.keys(), dtype=int, count=len(vn_dictionary))
+            self.vn_ = np.fromiter(vn_dictionary.values(), dtype=float, count=len(vn_dictionary))
 
-        self.phi_ = []
-        self.px_ = []
-        self.py_ = []
-        self.pz_ = []
+        self.phi_: List[float] = []
+        self.px_: List[float] = []
+        self.py_: List[float] = []
+        self.pz_: List[float] = []
 
-    def __distribution_function(self, phi):
+    def __distribution_function(self, phi: float) -> float:
         """
         Calculate the distribution function value for a given angle.
 
@@ -136,14 +139,13 @@ class GenerateFlow:
             based on the harmonic components (vn) and angles (phi).
         """
         f = 1. / (2. * np.pi)
-        f_harmonic = 1.0
-
+        f_harmonic = 1.0 
         for term in range(len(self.n_)):
             f_harmonic += 2. * self.vn_[term] * np.cos(self.n_[term] * phi)
 
         return f * f_harmonic
 
-    def __sample_angles(self, multiplicity):
+    def __sample_angles(self, multiplicity: int) -> None:
         """
         Sample angles for a given multiplicity according to a given distribution.
 
@@ -157,7 +159,7 @@ class GenerateFlow:
             None
         """
         f_max = (1. + 2. * self.vn_.sum()) / (2. * np.pi)
-        phi = []
+        phi: List[float] = []
 
         while len(phi) < multiplicity:
             random_phi = rd.uniform(0., 2. * np.pi)
@@ -168,7 +170,7 @@ class GenerateFlow:
 
         self.phi_ = phi
 
-    def __thermal_distribution(self, temperature, mass):
+    def __thermal_distribution(self, temperature: float, mass: float) -> float:
         """
         Calculate the momentum magnitude from a thermal distribution.
 
@@ -184,7 +186,7 @@ class GenerateFlow:
             momentum_radial: float
                 The magnitude of the momentum.
         """
-        momentum_radial = 0
+        momentum_radial = 0.
         energy = 0.
         if temperature > 0.6 * mass:
             while True:
@@ -228,7 +230,7 @@ class GenerateFlow:
 
         return momentum_radial
 
-    def __sample_momenta_thermal(self, multiplicity, temperature, mass):
+    def __sample_momenta_thermal(self, multiplicity: int, temperature: float, mass: float) -> None:
         """
         Sample momenta for a given multiplicity, temperature, and mass from
         a thermal distribution function.
@@ -277,7 +279,7 @@ class GenerateFlow:
         self.py_ = py
         self.pz_ = pz
 
-    def __artificial_pT_distribution(self, pT, pTmin, pT0, pT1, T0):
+    def __artificial_pT_distribution(self, pT: float, pTmin: float, pT0: float, pT1: float, T0: float) -> float:
         """
         Calculate the artificial pT distribution.
 
@@ -320,7 +322,7 @@ class GenerateFlow:
             value = np.exp(-(pT1 - pT0) / T0) * (pT1 / pT)**7
         return value
 
-    def __artificial_flow_pT_shape(self, pT, pT0_bis, pT_sat, vn_sat):
+    def __artificial_flow_pT_shape(self, pT: float, pT0_bis: float, pT_sat: float, vn_sat:float) -> float:
         """
         Calculate the artificial flow pT shape.
 
@@ -364,7 +366,7 @@ class GenerateFlow:
 
         return value
 
-    def __distribution_function_pT_differential(self, phi, vn_pt_list):
+    def __distribution_function_pT_differential(self, phi: float, vn_pt_list: List[float]) -> float:
         """
         Calculates the pT-differential distribution function for a given
         azimuthal angle.
@@ -391,9 +393,9 @@ class GenerateFlow:
 
     def __create_k_particle_correlations(
             self,
-            multiplicity,
-            k_particle_correlation,
-            correlation_fraction):
+            multiplicity: int,
+            k_particle_correlation: int,
+            correlation_fraction: float) -> None:
         """
         Generate momentum components with k-particle correlations.
 
@@ -412,9 +414,9 @@ class GenerateFlow:
             Updates the internal arrays (px_, py_, pz_) with the
             generated correlated momenta.
         """
-        px = []
-        py = []
-        pz = []
+        px: List[float] = []
+        py: List[float] = []
+        pz: List[float] = []
         idx = 0
         while len(px) <= multiplicity:
             if rd.random() <= correlation_fraction:
@@ -434,7 +436,7 @@ class GenerateFlow:
         self.pz_ = pz
 
     def __generate_flow_realistic_pt_distribution(
-            self, multiplicity, reaction_plane_angle):
+            self, multiplicity: int, reaction_plane_angle: float) -> None:
         pTmax = 4.5
         pTmin = 0.1
         pT0 = 0.5
@@ -479,10 +481,10 @@ class GenerateFlow:
 
     def generate_dummy_JETSCAPE_file(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int) -> None:
         """
         Generate a dummy JETSCAPE file with random particle momenta resulting in
         the same flow for all transverse momenta.
@@ -506,14 +508,6 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
@@ -558,11 +552,11 @@ class GenerateFlow:
 
     def generate_dummy_JETSCAPE_file_realistic_pt_shape(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            random_reaction_plane=True):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            random_reaction_plane: bool=True) -> None:
         """
         Generate a dummy JETSCAPE file with particles having flow with a more
         realistic transverse momentum distribution.
@@ -587,14 +581,6 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
@@ -642,12 +628,12 @@ class GenerateFlow:
 
     def generate_dummy_JETSCAPE_file_multi_particle_correlations(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            k_particle_correlation,
-            correlation_fraction):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            k_particle_correlation: int,
+            correlation_fraction: float) -> None:
         """
         Generate a dummy JETSCAPE file with random particle momenta resulting in
         the same flow for all transverse momenta. A fraction of k-particle
@@ -676,21 +662,9 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
-        if not isinstance(k_particle_correlation, int):
-            raise TypeError("'k_particle_correlation' is not int")
-        if not isinstance(correlation_fraction, float):
-            raise TypeError("'correlation_fraction' is not float")
         if k_particle_correlation < 2:
             raise ValueError("'k_particle_correlation' must be at least 2")
         if correlation_fraction < 0. or correlation_fraction > 1.:
@@ -738,13 +712,13 @@ class GenerateFlow:
 
     def generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            k_particle_correlation,
-            correlation_fraction,
-            random_reaction_plane=True):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            k_particle_correlation: int,
+            correlation_fraction: float,
+            random_reaction_plane: bool=True) -> None:
         """
         Generate a dummy JETSCAPE file with particles having flow with a more
         realistic transverse momentum distribution. A fraction of k-particle
@@ -774,21 +748,9 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
-        if not isinstance(k_particle_correlation, int):
-            raise TypeError("'k_particle_correlation' is not int")
-        if not isinstance(correlation_fraction, float):
-            raise TypeError("'correlation_fraction' is not float")
         if k_particle_correlation < 2:
             raise ValueError("'k_particle_correlation' must be at least 2")
         if correlation_fraction < 0. or correlation_fraction > 1.:
@@ -839,10 +801,10 @@ class GenerateFlow:
 
     def generate_dummy_OSCAR_file(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int) -> None:
         """
         Generate a dummy OSCAR2013 file with random particle momenta
         resulting in the same flow for all transverse momenta.
@@ -866,14 +828,6 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
@@ -926,11 +880,11 @@ class GenerateFlow:
 
     def generate_dummy_OSCAR_file_realistic_pt_shape(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            random_reaction_plane=True):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            random_reaction_plane: bool=True) -> None:
         """
         Generate a dummy OSCAR2013 file with particles having flow with a more
         realistic transverse momentum distribution.
@@ -955,14 +909,6 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
@@ -1018,12 +964,12 @@ class GenerateFlow:
 
     def generate_dummy_OSCAR_file_multi_particle_correlations(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            k_particle_correlation,
-            correlation_fraction):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            k_particle_correlation: int,
+            correlation_fraction: float) -> None:
         """
         Generate a dummy OSCAR2013 file with random particle momenta
         resulting in the same flow for all transverse momenta. A fraction of
@@ -1052,21 +998,9 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
-        if not isinstance(k_particle_correlation, int):
-            raise TypeError("'k_particle_correlation' is not int")
-        if not isinstance(correlation_fraction, float):
-            raise TypeError("'correlation_fraction' is not float")
         if k_particle_correlation < 2:
             raise ValueError("'k_particle_correlation' must be at least 2")
         if correlation_fraction < 0. or correlation_fraction > 1.:
@@ -1122,13 +1056,13 @@ class GenerateFlow:
 
     def generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations(
             self,
-            output_path,
-            number_events,
-            multiplicity,
-            seed,
-            k_particle_correlation,
-            correlation_fraction,
-            random_reaction_plane=True):
+            output_path: str,
+            number_events: int,
+            multiplicity: int,
+            seed: int,
+            k_particle_correlation: int,
+            correlation_fraction: float,
+            random_reaction_plane: bool=True) -> None:
         """
         Generate a dummy OSCAR2013 file with particles having flow with a more
         realistic transverse momentum distribution. A fraction of k-particle
@@ -1158,21 +1092,9 @@ class GenerateFlow:
         -------
             None
         """
-        if not isinstance(output_path, str):
-            raise TypeError("'output_path' is not a str")
-        if not isinstance(number_events, int):
-            raise TypeError("'number_events' is not int")
-        if not isinstance(multiplicity, int):
-            raise TypeError("'multiplicity' is not int")
-        if not isinstance(seed, int):
-            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0")
-        if not isinstance(k_particle_correlation, int):
-            raise TypeError("'k_particle_correlation' is not int")
-        if not isinstance(correlation_fraction, float):
-            raise TypeError("'correlation_fraction' is not float")
         if k_particle_correlation < 2:
             raise ValueError("'k_particle_correlation' must be at least 2")
         if correlation_fraction < 0. or correlation_fraction > 1.:

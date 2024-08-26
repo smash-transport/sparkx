@@ -8,7 +8,9 @@
 # ===================================================
 
 from sparkx.flow import FlowInterface
+from sparkx.Particle import Particle
 import numpy as np
+from typing import List, Tuple, Union
 
 
 class ScalarProductFlow(FlowInterface.FlowInterface):
@@ -85,7 +87,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, n=2, weight="pt2", pseudorapidity_gap=0.):
+    def __init__(self, n: int=2, weight: str="pt2", pseudorapidity_gap: float=0.) -> None:
         """
         Initialize the ScalarProductFlow object.
 
@@ -99,32 +101,25 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             The pseudorapidity gap used for dividing the particles into sub-events.
             Default is 0.0.
         """
-
-        if not isinstance(n, int):
-            raise TypeError('n has to be int')
-        elif n <= 0:
+        if n <= 0:
             raise ValueError(
                 'n-th harmonic with value n<=0 can not be computed')
         else:
             self.n_ = n
 
-        if not isinstance(weight, str):
-            raise TypeError('weight has to be a string')
-        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
+        if weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "Invalid weight given, choose one of the following: 'pt', 'pt2', 'ptn', 'rapidity', 'pseudorapidity'")
         else:
             self.weight_ = weight
 
-        if not isinstance(pseudorapidity_gap, (int, float)):
-            raise TypeError('n has to be int')
-        elif pseudorapidity_gap < 0:
+        if pseudorapidity_gap < 0:
             raise ValueError(
                 'pseudorapidity value with gap < 0 can not be computed')
         else:
             self.pseudorapidity_gap_ = pseudorapidity_gap
 
-    def __compute_particle_weights(self, particle_data):
+    def __compute_particle_weights(self, particle_data: List[List[Particle]]) -> List[List[float]]:
         event_weights = []
         for event in range(len(particle_data)):
             particle_weights = []
@@ -144,7 +139,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             event_weights.append(particle_weights)
         return event_weights
 
-    def __compute_flow_vectors(self, particle_data, weights):
+    def __compute_flow_vectors(self, particle_data: List[List[Particle]], weights: List[List[float]]) -> List[complex]:
         # Q vector whole event
         Q_vector = []
         for event in range(len(particle_data)):
@@ -156,7 +151,8 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return Q_vector
 
-    def __compute_event_angles_sub_events(self, particle_data, weights):
+    def __compute_event_angles_sub_events(self, particle_data: List[List[Particle]], 
+                                          weights: List[List[float]]) -> Tuple[List[complex], List[complex]]:
         # Q vector sub-event A
         Q_vector_A = []
         relevant_weights_A = []
@@ -192,7 +188,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return Q_vector_A, Q_vector_B
 
-    def __compute_u_vectors(self, particle_data):
+    def __compute_u_vectors(self, particle_data: List[List[Particle]]) -> List[List[complex]]:
         u_vectors = []  # [event][particle]
         for event in particle_data:
             u_vector_event = []
@@ -207,7 +203,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return u_vectors
 
-    def __compute_event_plane_resolution(self, Q_vector_A, Q_vector_B):
+    def __compute_event_plane_resolution(self, Q_vector_A: List[complex], Q_vector_B: List[complex]) -> float:
         # implements Eq.15 from arXiv:0809.2949
         QnSquared = np.asarray([(np.conjugate(Q_vector_A[event]) *
                                  Q_vector_B[event]).real for event in range(len(Q_vector_A))])
@@ -216,12 +212,12 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     def __compute_flow_particles(
             self,
-            particle_data,
-            weights,
-            Q_vector,
-            u_vectors,
-            resolution,
-            self_corr):
+            particle_data: List[List[Particle]],
+            weights: List[List[float]],
+            Q_vector: List[complex],
+            u_vectors: List[List[complex]],
+            resolution: float,
+            self_corr: bool) -> List[List[float]]:
         flow_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
@@ -239,7 +235,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             flow_values.extend([flow_values_event])
         return flow_values
 
-    def __calculate_reference(self, particle_data_event_plane):
+    def __calculate_reference(self, particle_data_event_plane: List[List[Particle]]) -> Tuple[float, List[complex]]:
         event_weights_event_plane = self.__compute_particle_weights(
             particle_data_event_plane)
         Q_vector_A, Q_vector_B = self.__compute_event_angles_sub_events(
@@ -253,10 +249,10 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     def __calculate_particle_flow(
             self,
-            particle_data,
-            resolution,
-            Q_vector,
-            self_corr):
+            particle_data: List[List[Particle]],
+            resolution: float,
+            Q_vector: List[complex],
+            self_corr: bool) -> List[List[float]]:
         event_weights = self.__compute_particle_weights(particle_data)
         u_vectors = self.__compute_u_vectors(particle_data)
 
@@ -268,9 +264,10 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             resolution,
             self_corr)
 
-    def __calculate_flow_event_average(self, particle_data, flow_particle_list):
+    def __calculate_flow_event_average(self, particle_data: List[List[Particle]], 
+                                       flow_particle_list: List[List[float]]) -> Tuple[float, float]:
         # compute the integrated flow
-        number_of_particles = 0
+        number_of_particles = 0.0
         flowvalue = 0.0
         flowvalue_squared = 0.0
         for event in range(len(flow_particle_list)):
@@ -296,9 +293,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     def integrated_flow(
             self,
-            particle_data,
-            particle_data_event_plane,
-            self_corr=True):
+            particle_data: List[List[Particle]],
+            particle_data_event_plane: List[List[Particle]],
+            self_corr: bool =True) -> Tuple[float, float]:
         """
         Compute the integrated flow.
 
@@ -318,8 +315,6 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             A tuple containing the integrated flow value and the corresponding
             uncertainty.
         """
-        if not isinstance(self_corr, bool):
-            raise TypeError('self_corr has to be bool')
         resolution, Q_vector = self.__calculate_reference(
             particle_data_event_plane)
         return self.__calculate_flow_event_average(
@@ -328,11 +323,11 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     def differential_flow(
             self,
-            particle_data,
-            bins,
-            flow_as_function_of,
-            particle_data_event_plane,
-            self_corr=True):
+            particle_data: List[List[Particle]],
+            bins: Union[np.ndarray, List[float]],
+            flow_as_function_of: str,
+            particle_data_event_plane: List[List[Particle]],
+            self_corr: bool =True) -> List[Tuple[float, float]]:
         """
         Compute the differential flow.
 
@@ -357,12 +352,6 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             A list of tuples containing the flow values and uncertainties for
             each bin.
         """
-        if not isinstance(self_corr, bool):
-            raise TypeError('self_corr has to be bool')
-        if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError('bins has to be list or np.ndarray')
-        if not isinstance(flow_as_function_of, str):
-            raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")
