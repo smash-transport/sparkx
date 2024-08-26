@@ -9,7 +9,7 @@
 
 import numpy as np
 from sparkx.Jackknife import Jackknife
-from typing import List, Tuple, Union, Any
+from typing import Union, Optional, Any, List, Tuple
 from sparkx.Particle import Particle
 
 
@@ -84,23 +84,18 @@ class MultiParticlePtCorrelations:
 
     def __init__(self, max_order: int) -> None:
         self.max_order = max_order
-        # Check if max_order is an integer
-        if not isinstance(self.max_order, int):
-            raise TypeError("max_order must be an integer")
         # Check that max_order is greater than 0 and less than 9
         if self.max_order < 1 or self.max_order > 8:
             raise ValueError("max_order must be greater than 0 and less than 9")
 
-        self.mean_pT_correlation: Union[np.ndarray, None] = None
-        self.mean_pT_correlation_error: Union[np.ndarray, None] = None
-        self.kappa: Union[np.ndarray, None] = None
-        self.kappa_error: Union[np.ndarray, None] = None
+        self.mean_pt_correlation: Optional[np.ndarray] = None
+        self.mean_pt_correlation_error: Optional[np.ndarray] = None
+        self.kappa: Optional[np.ndarray] = None
+        self.kappa_error: Optional[np.ndarray] = None
         self.N_events: Any = None
         self.D_events: Any = None
 
-    def _P_W_k(
-        self, particle_list_event: List[Particle]
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    def _P_W_k(self, particle_list_event: List[Particle]) -> tuple[np.ndarray, np.ndarray]:
         """
         This implements Eq. 7 in [1].
 
@@ -348,14 +343,13 @@ class MultiParticlePtCorrelations:
 
         return sum_numerator / sum_denominator
 
-    def mean_pT_correlations(
-        self,
-        particle_list_all_events: List[List[Particle]],
-        compute_error: bool = True,
-        delete_fraction: float = 0.4,
-        number_samples: int = 100,
-        seed: int = 42,
-    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+    def mean_pt_correlations(self,
+                             particle_list_all_events: List[List[Particle]],
+                             compute_error: bool = True,
+                             delete_fraction: float = 0.4,
+                             number_samples: int = 100,
+                             seed: int = 42) -> Union[np.ndarray, Tuple[np.ndarray,
+                                                            np.ndarray]]:
         """
         Computes mean transverse momentum correlations for each order up to
         max_order using Eq. [14] in Ref. [1].
@@ -392,18 +386,10 @@ class MultiParticlePtCorrelations:
             If delete_fraction is not between 0 and 1.
             If number_samples is not greater than 0.
         """
-        if not isinstance(delete_fraction, float):
-            raise TypeError("delete_fraction must be a float")
         if not 0.0 < delete_fraction < 1.0:
             raise ValueError("delete_fraction must be between 0 and 1")
-        if not isinstance(number_samples, int):
-            raise TypeError("number_samples must be an integer")
         if not number_samples > 0:
             raise ValueError("number_samples must be greater than 0")
-        if not isinstance(seed, int):
-            raise TypeError("seed must be an integer")
-        if not isinstance(compute_error, bool):
-            raise TypeError("compute_error must be a boolean")
 
         self.N_events = []
         self.D_events = []
@@ -615,18 +601,10 @@ class MultiParticlePtCorrelations:
             If delete_fraction is not between 0 and 1.
             If number_samples is not greater than 0.
         """
-        if not isinstance(delete_fraction, float):
-            raise TypeError("delete_fraction must be a float")
         if not 0.0 < delete_fraction < 1.0:
             raise ValueError("delete_fraction must be between 0 and 1")
-        if not isinstance(number_samples, int):
-            raise TypeError("number_samples must be an integer")
         if not number_samples > 0:
             raise ValueError("number_samples must be greater than 0")
-        if not isinstance(seed, int):
-            raise TypeError("seed must be an integer")
-        if not isinstance(compute_error, bool):
-            raise TypeError("compute_error must be a boolean")
 
         self.N_events = []
         self.D_events = []

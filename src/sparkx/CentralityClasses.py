@@ -9,7 +9,7 @@
 
 import numpy as np
 import warnings
-from typing import List, Union
+from typing import Union, List
 
 
 class CentralityClasses:
@@ -112,10 +112,10 @@ class CentralityClasses:
         self.events_multiplicity_ = events_multiplicity
         self.centrality_bins_ = unique_bins
 
-        self.dNchdetaMin_: list[float] = []
-        self.dNchdetaMax_: list[float] = []
-        self.dNchdetaAvg_: list[float] = []
-        self.dNchdetaAvgErr_: list[float] = []
+        self.dNchdetaMin_: List[float] = []
+        self.dNchdetaMax_: List[float] = []
+        self.dNchdetaAvg_: List[float] = []
+        self.dNchdetaAvgErr_: List[float] = []
 
         self.__create_centrality_classes()
 
@@ -286,10 +286,6 @@ class CentralityClasses:
         This function writes the centrality class information, including minimum,
         maximum, average multiplicities, and average errors, to the specified file.
         """
-        # Check if fname is a string
-        if not isinstance(fname, str):
-            raise TypeError("'fname' should be a string.")
-
         # Write the information to the file
         with open(fname, "w") as out_stream:
             out_stream.write(
