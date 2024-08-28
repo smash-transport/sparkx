@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath('../../src/sparkx/flow'))
 
 project = 'sparkx'
 copyright = '2024, SPARKX Collaboration'
-author = 'Hendrik Roch, Nils Sass, Niklas Götz'
-release = '1.3.0'
+author = 'Niklas Götz, Renata Krupczak, Hendrik Roch, Nils Sass'
+release = '2.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
