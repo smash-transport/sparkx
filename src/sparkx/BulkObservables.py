@@ -8,6 +8,8 @@
 #===================================================
 
 from sparkx.Histogram import Histogram
+from sparkx.Particle import Particle
+from typing import List, Tuple, Union
 
 # This class ensures a list to be read-only
 class ReadOnlyList:
@@ -50,18 +52,21 @@ class ReadOnlyList:
 
 
 class BulkObservables:
-    def __init__(self, particle_objects_list, *args):
+    def __init__(self,
+                 particle_objects_list: List[List[Particle]]):
         
         # Wrapping in ReadOnlyList prevents particles from being modified
         self.particle_objects = ReadOnlyList(particle_objects_list)  
-        self.observables_list = args
 
     # PRIVATE CLASS METHODS
     """
     This is the base method for all differential yields. It is called by all 
     corresponding methods for each specific differential yield
     """
-    def _differential_yield(self, quantity, bin_properties=(-4, 4, 21)):
+    def _differential_yield(self,
+                            quantity: str,
+                            bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = (-4, 4, 21)) -> Histogram:
+
         hist = Histogram(bin_properties)
         num_events = len(self.particle_objects)
         inverse_bin_width = 1/hist.bin_width()
@@ -80,14 +85,15 @@ class BulkObservables:
                     raise AttributeError(f"'{quantity}' is not a callable method of Particle")
             if num_events > 1:
                 hist.add_histogram()
-                
+  
         hist.average()
         hist.scale_histogram(inverse_bin_width)
         return hist
 
 
     # PUBLIC CLASS METHODS
-    def dNdy(self, bin_properties=None):
+    def dNdy(self,
+             bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = None) -> Histogram:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dy}`
 
@@ -105,7 +111,8 @@ class BulkObservables:
             return self._differential_yield("rapidity", bin_properties)
 
 
-    def dNdpT(self, bin_properties=None):
+    def dNdpT(self,
+              bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = None) -> Histogram:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`
 
@@ -123,7 +130,8 @@ class BulkObservables:
             return self._differential_yield("pT_abs", bin_properties)
 
 
-    def dNdEta(self, bin_properties=None):
+    def dNdEta(self,
+               bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = None) -> Histogram:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{d\eta}`
 
@@ -141,7 +149,8 @@ class BulkObservables:
             return self._differential_yield("pseudorapidity", bin_properties)
 
 
-    def dNdmT(self, bin_properties=None):
+    def dNdmT(self,
+              bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = None) -> Histogram:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`
 
@@ -159,7 +168,7 @@ class BulkObservables:
             return self._differential_yield("mT", bin_properties)
 
 
-    def mid_rapidity_yield(self, y_width=1):
+    def mid_rapidity_yield(self, y_width: Union[int, float] = 1.0) -> float:
         """
         Calculate the event-averaged particle yield at mid-rapidity.
 
@@ -190,7 +199,7 @@ class BulkObservables:
         return particle_counter/num_events
 
 
-    def mid_rapidity_mean_pT(self, y_width=1):
+    def mid_rapidity_mean_pT(self, y_width: Union[int, float] = 1.0) -> float:
         """
         Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
 
@@ -225,7 +234,7 @@ class BulkObservables:
         return pT_sum/num_events
 
 
-    def mid_rapidity_mean_mT(self, y_width=1):
+    def mid_rapidity_mean_mT(self, y_width: Union[int, float] = 1.0) -> float:
         """
         Calculate the event-averaged mean transverse mass mT at mid-rapidity.
 
