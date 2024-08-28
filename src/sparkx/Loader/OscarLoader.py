@@ -232,7 +232,7 @@ class OscarLoader(BaseLoader):
             first_line = file.readline()
             first_line_list = first_line.replace('\n', '').split(' ')
 
-        if len(first_line_list) == 15 or first_line[0] == '#!OSCAR2013':
+        if len(first_line_list) == 15 or first_line_list[0] == '#!OSCAR2013':
             self.oscar_format_ = 'Oscar2013'
         elif first_line_list[0] == '#!OSCAR2013Extended' and first_line_list[1]=='SMASH_IC':
             self.oscar_format_ = 'Oscar2013Extended_IC'
@@ -383,7 +383,7 @@ class OscarLoader(BaseLoader):
         particle_list : list
             A list of Particle objects loaded from the OSCAR data file.
         """
-        particle_list: List[List[Particle]] = [[]]
+        particle_list: List[List[Particle]] = []
         data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
         with open(self.PATH_OSCAR_, 'r') as oscar_file:
@@ -509,4 +509,4 @@ class OscarLoader(BaseLoader):
                     else:
                         continue
 
-        self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
+        self.num_output_per_event_ = np.array(event_output, dtype=np.int32, ndmin=2)

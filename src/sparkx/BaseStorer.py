@@ -211,7 +211,7 @@ class BaseStorer(ABC):
 
         self.particle_list_ = charged_particles(self.particle_list_)
         
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
         return self
 
 
@@ -226,7 +226,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = uncharged_particles(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -242,7 +242,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = strange_particles(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -268,7 +268,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = particle_species(self.particle_list_, pdg_list)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
         
         return self
 
@@ -295,7 +295,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
         
         return self
 
@@ -311,7 +311,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = participants(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -327,7 +327,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = spectators(self.particle_list_)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -355,7 +355,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = lower_event_energy_cut(self.particle_list_, minimum_event_energy)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -381,7 +381,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -411,7 +411,7 @@ class BaseStorer(ABC):
         """
     
         self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -441,7 +441,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = pseudorapidity_cut(self.particle_list_, cut_value)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -471,7 +471,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = spatial_rapidity_cut(self.particle_list_, cut_value)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
 
@@ -493,7 +493,7 @@ class BaseStorer(ABC):
         """
     
         self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
     
@@ -520,17 +520,18 @@ class BaseStorer(ABC):
             Containing only particles complying with the spacetime cut for all events
         """
         self.particle_list_ = spacetime_cut(self.particle_list_, dim, cut_value_tuple)
-        self.__update_num_output_per_event_after_filter()
+        self._update_num_output_per_event_after_filter()
 
         return self
     
-    def __update_num_output_per_event_after_filter(self) -> None:
+    def _update_num_output_per_event_after_filter(self) -> None:
         if self.num_output_per_event_ is None:
             raise ValueError("num_output_per_event_ is not set")
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
         for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1]=len(self.particle_list_[event])
+             self.num_output_per_event_[event] [1] = len(
+                self.particle_list_[event])
     
     @abstractmethod
     def print_particle_lists_to_file(self, output_file)-> None:

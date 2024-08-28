@@ -82,7 +82,7 @@ def test_load_with_invalid_events_tuple():
 
 def test_load_with_negative_event_number():
     loader = ParticleObjectLoader(particle_list)
-    with pytest.raises(ValueError, match='Event number must be positive'):
+    with pytest.raises(ValueError, match='Event number must be non-negative'):
         loader.load(events=-1)
 
 def test_apply_kwargs_filters():

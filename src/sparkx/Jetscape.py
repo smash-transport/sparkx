@@ -188,13 +188,13 @@ class Jetscape(BaseStorer):
 
         return particle_list
 
-    def __update_num_output_per_event_after_filter(self) -> None:
-        if self.particle_list_ is None:
-            raise ValueError("The particle list is empty.")
-        if self.num_output_per_event_ is None:
-            raise ValueError("The number of output per event is empty.")
-        for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1]=len(self.particle_list_[event])
+    # /*def __update_num_output_per_event_after_filter(self) -> None:
+    #     if self.particle_list_ is None:
+    #         raise ValueError("The particle list is empty.")
+    #     if self.num_output_per_event_ is None:
+    #         raise ValueError("The number of output per event is empty.")
+    #     for event in range(0, len(self.particle_list_)):
+    #         self.num_output_per_event_[event][1]=len(self.particle_list_[event])*/
 
     # PUBLIC CLASS METHODS
     def particle_status(self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> 'Jetscape':
@@ -218,8 +218,8 @@ class Jetscape(BaseStorer):
 
         """
         self.particle_list_ = particle_status(self.particle_list_, status_list)
-        self.__update_num_output_per_event_after_filter()
-
+        self._update_num_output_per_event_after_filter()
+        
         return self
     
     def spacetime_cut(self, dim: str, cut_value_tuple: Tuple[float, float]) -> None:

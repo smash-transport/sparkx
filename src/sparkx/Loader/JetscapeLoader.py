@@ -318,12 +318,10 @@ class JetscapeLoader(BaseLoader):
                     first_event_header = 1
                     if 'events' in self.optional_arguments_.keys():
                         if isinstance(kwargs['events'], int):
-                            if not isinstance(kwargs['events'], int):
-                                raise TypeError('Value given as flag "events" is not of type int or a tuple')
                             first_event_header += int(kwargs['events'])
                         else:
-                            if not isinstance(kwargs['events'], int):
-                                raise TypeError('Value given as flag "events" is not of type int or a tuple')
+                            if not (isinstance(kwargs['events'], tuple) or  isinstance(kwargs['events'], int) ):
+                                raise ValueError('Events should be an integer or tuple of two integers')
                             first_event_header += int(kwargs['events'][0])
                     if int(line_list[2]) == first_event_header:
                         continue
@@ -390,7 +388,7 @@ class JetscapeLoader(BaseLoader):
                 else:
                     continue
 
-        self.num_output_per_event_ = np.asarray(event_output, dtype=np.int32)
+        self.num_output_per_event_ = np.array(event_output, dtype=np.int32)
         self.num_events_ = len(event_output)
 
     def get_last_line(self, file_path: str) -> str:
