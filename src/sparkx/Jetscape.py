@@ -938,8 +938,9 @@ class Jetscape:
 
     def print_particle_lists_to_file(self, output_file):
         """
-        Prints the current Jetscape data to an output file specified by :code:`output_file`
-        with the same format as the input file
+        Prints the current Jetscape data to an output file specified by
+        :code:`output_file` with the same format as the input file.
+        For empty events, only the event header is printed.
 
         Parameters
         ----------
@@ -966,9 +967,10 @@ class Jetscape:
                     f_out.write(header)
 
                     # Write the particle data to the file
-                    np.savetxt(
-                        f_out, particle_output, fmt="%d %d %d %g %g %g %g"
-                    )
+                    if particle_output.shape[0] != 0:
+                        np.savetxt(
+                            f_out, particle_output, fmt="%d %d %d %g %g %g %g"
+                        )
             else:
                 event = 0
                 num_out = self.num_output_per_event_[0][1]
@@ -979,7 +981,10 @@ class Jetscape:
                 f_out.write(header)
 
                 # Write the particle data to the file
-                np.savetxt(f_out, particle_output, fmt="%d %d %d %g %g %g %g")
+                if particle_output.shape[0] != 0:
+                    np.savetxt(
+                        f_out, particle_output, fmt="%d %d %d %g %g %g %g"
+                    )
 
             # Write the last line
             last_line = self.__get_last_line(self.PATH_JETSCAPE_) + "\n"

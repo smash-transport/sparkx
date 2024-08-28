@@ -41,6 +41,14 @@ def jetscape_file_path_partons():
     )
 
 
+@pytest.fixture
+def jetscape_file_no_hadrons():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(
+        os.path.dirname(__file__), "test_files", "test_jetscape_no_hadrons.dat"
+    )
+
+
 def create_temporary_jetscape_file(
     path, num_events, output_per_event_list=None
 ):
@@ -454,6 +462,19 @@ def test_Jetscape_print(jetscape_file_path, output_path):
     jetscape = Jetscape(jetscape_file_path)
     jetscape.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(jetscape_file_path, output_path)
+    os.remove(output_path)
+
+
+def test_Jetscape_print_with_empty_events(
+    jetscape_file_path, output_path, jetscape_file_no_hadrons
+):
+    jetscape = Jetscape(jetscape_file_path)
+    jetscape.particle_list_ = [[], [], [], [], []]
+    jetscape.num_output_per_event_ = np.array(
+        [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]
+    )
+    jetscape.print_particle_lists_to_file(output_path)
+    assert filecmp.cmp(jetscape_file_no_hadrons, output_path)
     os.remove(output_path)
 
 
