@@ -27,4 +27,4 @@ jobs:
 
     - name: Run mypy
       run: |
-        mypy src/sparkx --ignore-missing-imports
+        mypy src/sparkx --ignore-missing-imports --show-error-codes --disallow-untyped-defs --disallow-untyped-calls
