@@ -67,6 +67,20 @@ class BulkObservables:
                             quantity: str,
                             bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = (-4, 4, 21)) -> Histogram:
 
+        # Check if bin_properties is a tuple
+        if isinstance(bin_properties, tuple):
+            if len(bin_properties) != 3 or not isinstance(bin_properties[0], (int, float)) or not isinstance(bin_properties[1], (int, float)) or not isinstance(bin_properties[2], int):
+                raise ValueError("If bin_properties is a tuple, it must be of the form (int/float, int/float, int).")
+
+        # Check if bin_properties is a list
+        elif isinstance(bin_properties, list):
+            if not all(isinstance(x, (int, float)) for x in bin_properties):
+                raise ValueError("If bin_properties is a list, all elements must be of type int or float")
+
+        # Raise an error if bin_properties is neither a tuple nor a list
+        else:
+            raise TypeError("bin_properties must be either a tuple or a list.")
+
         hist = Histogram(bin_properties)
         num_events = len(self.particle_objects)
         inverse_bin_width = 1/hist.bin_width()
@@ -85,7 +99,7 @@ class BulkObservables:
                     raise AttributeError(f"'{quantity}' is not a callable method of Particle")
             if num_events > 1:
                 hist.add_histogram()
-  
+
         hist.average()
         hist.scale_histogram(inverse_bin_width)
         return hist
@@ -182,6 +196,9 @@ class BulkObservables:
         specified rapidity range.
 
         """
+        if not isinstance(y_width, (int, float)):
+            raise TypeError("y_width must be of type int or float")
+
         if y_width <= 0:
             raise ValueError("y_width must be a positive number.")
 
@@ -213,6 +230,9 @@ class BulkObservables:
         specified rapidity range.
 
         """
+        if not isinstance(y_width, (int, float)):
+            raise TypeError("y_width must be of type int or float")
+
         if y_width <= 0:
             raise ValueError("y_width must be a positive number.")
 
@@ -248,6 +268,9 @@ class BulkObservables:
         specified rapidity range.
 
         """
+        if not isinstance(y_width, (int, float)):
+            raise TypeError("y_width must be of type int or float")
+
         if y_width <= 0:
             raise ValueError("y_width must be a positive number.")
 
