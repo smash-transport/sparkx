@@ -121,18 +121,16 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             )
         else:
             self.n_ = n
-
         if not isinstance(weight, str):
-            raise TypeError("weight has to be a string")
-        elif weight not in ["pT", "pT2", "pTn", "rapidity", "pseudorapidity"]:
+            raise TypeError('weight has to be a string')
+        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "Invalid weight given, choose one of the following: 'pT', 'pT2', 'pTn', 'rapidity', 'pseudorapidity'"
             )
         else:
             self.weight_ = weight
-
         if not isinstance(pseudorapidity_gap, (int, float)):
-            raise TypeError("n has to be int")
+            raise TypeError('n has to be int')
         elif pseudorapidity_gap < 0:
             raise ValueError(
                 "pseudorapidity value with gap < 0 can not be computed"
@@ -492,12 +490,12 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             and the corresponding uncertainty.
         """
         if not isinstance(self_corr, bool):
-            raise TypeError("self_corr has to be bool")
+            raise TypeError('self_corr has to be bool')
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError("bins has to be list or np.ndarray")
+            raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
-            raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
+            raise TypeError('flow_as_function_of is not a string')
+        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )

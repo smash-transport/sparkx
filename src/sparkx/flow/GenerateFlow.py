@@ -512,6 +512,14 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0"
@@ -591,6 +599,14 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0"
@@ -679,10 +695,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
-                "'number_events' and/or 'multiplicity' must be larger than 0"
-            )
+                "'number_events' and/or 'multiplicity' must be larger than 0")
         if not isinstance(k_particle_correlation, int):
             raise TypeError("'k_particle_correlation' is not int")
         if not isinstance(correlation_fraction, float):
@@ -776,10 +799,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
-                "'number_events' and/or 'multiplicity' must be larger than 0"
-            )
+                "'number_events' and/or 'multiplicity' must be larger than 0")
         if not isinstance(k_particle_correlation, int):
             raise TypeError("'k_particle_correlation' is not int")
         if not isinstance(correlation_fraction, float):
@@ -868,6 +898,14 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0"
@@ -955,6 +993,14 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
                 "'number_events' and/or 'multiplicity' must be larger than 0"
@@ -1052,10 +1098,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
-                "'number_events' and/or 'multiplicity' must be larger than 0"
-            )
+                "'number_events' and/or 'multiplicity' must be larger than 0")
         if not isinstance(k_particle_correlation, int):
             raise TypeError("'k_particle_correlation' is not int")
         if not isinstance(correlation_fraction, float):
@@ -1157,10 +1210,17 @@ class GenerateFlow:
         -------
             None
         """
+        if not isinstance(output_path, str):
+            raise TypeError("'output_path' is not a str")
+        if not isinstance(number_events, int):
+            raise TypeError("'number_events' is not int")
+        if not isinstance(multiplicity, int):
+            raise TypeError("'multiplicity' is not int")
+        if not isinstance(seed, int):
+            raise TypeError("'seed' is not int")
         if number_events < 1 or multiplicity < 1:
             raise ValueError(
-                "'number_events' and/or 'multiplicity' must be larger than 0"
-            )
+                "'number_events' and/or 'multiplicity' must be larger than 0")
         if not isinstance(k_particle_correlation, int):
             raise TypeError("'k_particle_correlation' is not int")
         if not isinstance(correlation_fraction, float):

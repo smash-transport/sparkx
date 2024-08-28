@@ -175,7 +175,8 @@ def particle_species(particle_list: List[List[Particle]],
         if np.isnan(pdg_list).any():
             raise ValueError("Input value for PDG codes contains NaN values")
 
-    if isinstance(pdg_list, (int)):
+    if isinstance(pdg_list, (int, float, str, np.integer)):
+        pdg_list = int(pdg_list)
         for i in range(0, len(particle_list)):
             particle_list[i] = [
                 elem
@@ -242,7 +243,8 @@ def remove_particle_species(particle_list: List[List[Particle]],
         if np.isnan(pdg_list).any():
             raise ValueError("Input value for PDG codes contains NaN values")
 
-    if isinstance(pdg_list, (int)):
+    if isinstance(pdg_list, (int, float, str, np.integer)):
+        pdg_list = int(pdg_list)
         for i in range(0, len(particle_list)):
             particle_list[i] = [
                 elem

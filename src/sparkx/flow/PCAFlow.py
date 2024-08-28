@@ -110,7 +110,7 @@ class PCAFlow(FlowInterface.FlowInterface):
     def __init__(self, n: int=2, alpha: int=2, number_subcalc: int=4) -> None:
         # flow harmonic to compute
         if not isinstance(n, int):
-            raise TypeError("n has to be int")
+            raise TypeError('n has to be int')
         elif n <= 0:
             raise ValueError(
                 "n-th harmonic with value n<=0 can not be computed"
@@ -120,17 +120,17 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         # order in sub-leading flow up to which the flow is computed
         if not isinstance(alpha, int):
-            raise TypeError("alpha has to be int")
+            raise TypeError('alpha has to be int')
         elif alpha < 1:
-            raise ValueError("alpha has to be >= 1")
+            raise ValueError('alpha has to be >= 1')
         else:
             self.alpha_ = alpha
 
         # number of sub-calculations to estimate the error of the flow
         if not isinstance(number_subcalc, int):
-            raise TypeError("number_subcalc has to be int")
+            raise TypeError('number_subcalc has to be int')
         elif number_subcalc < 2:
-            raise ValueError("number_subcalc has to be >= 2")
+            raise ValueError('number_subcalc has to be >= 2')
         else:
             self.number_subcalc_ = number_subcalc
 
@@ -569,10 +569,10 @@ class PCAFlow(FlowInterface.FlowInterface):
         - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to `np.nan`.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError("bins has to be list or np.ndarray")
+            raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
-            raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
+            raise TypeError('flow_as_function_of is not a string')
+        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )

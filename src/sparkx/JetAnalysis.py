@@ -176,6 +176,13 @@ class JetAnalysis:
         if jet_R <= 0.0:
             raise ValueError("jet_R must be larger than 0")
         self.jet_R_ = jet_R
+        
+        # check jet eta range
+        if not isinstance(jet_eta_range, tuple):
+            raise TypeError("jet_eta_range is not a tuple. " +
+                            "It must contain either values or None.")
+        if len(jet_eta_range) != 2:
+            raise ValueError("jet_eta_range must contain exactly two values.")
 
         # check jet eta range
         if not isinstance(jet_eta_range, tuple):
@@ -196,24 +203,20 @@ class JetAnalysis:
             self.jet_eta_range_ = (lower_cut, upper_cut)
         else:
             self.jet_eta_range_ = (upper_cut, lower_cut)
-            warnings.warn(
-                "The lower jet eta cut value is larger than the "
-                + "upper one. They are interchanged automatically."
-            )
+            warnings.warn("The lower jet eta cut value is larger than the " +
+                          "upper one. They are interchanged automatically.")
 
-        # check the jet pT range
-        if not isinstance(jet_pT_range, tuple):
-            raise TypeError(
-                "jet_pT_range is not a tuple. "
-                + "It must contain either values or None."
-            )
-        if len(jet_pT_range) != 2:
-            raise ValueError("jet_pT_range must contain exactly two values.")
-        if any(pT is not None and pT < 0 for pT in jet_pT_range):
-            raise ValueError("All values in jet_pT_range must be non-negative.")
+        # check the jet pt range
+        if not isinstance(jet_pt_range, tuple):
+            raise TypeError("jet_pt_range is not a tuple. " +
+                            "It must contain either values or None.")
+        if len(jet_pt_range) != 2:
+            raise ValueError("jet_pt_range must contain exactly two values.")
+        if any(pt is not None and pt < 0 for pt in jet_pt_range):
+            raise ValueError("All values in jet_pt_range must be non-negative.")
 
-        lower_cut = 0.0 if jet_pT_range[0] is None else jet_pT_range[0]
-        upper_cut = float("inf") if jet_pT_range[1] is None else jet_pT_range[1]
+        lower_cut = 0. if jet_pt_range[0] is None else jet_pt_range[0]
+        upper_cut = float('inf') if jet_pt_range[1] is None else jet_pt_range[1]
         if lower_cut < upper_cut:
             self.jet_pT_range_ = (lower_cut, upper_cut)
         else:
@@ -407,7 +410,7 @@ class JetAnalysis:
             jet_eta_range: Tuple[Optional[float], Optional[float]],
             jet_pt_range: Tuple[Optional[float], Optional[float]],
             output_filename: str, assoc_only_charged: bool = True,
-            jet_algorithm: fj.JetAlgorithm = fj.antikt_algorithm) -> None:
+            jet_algorithm: fj = fj.antikt_algorithm) -> None:
         """
         Perform the jet analysis for multiple events. The function generates a
         file containing the jets consisting of a leading particle and associated

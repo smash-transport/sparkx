@@ -386,10 +386,18 @@ class MultiParticlePtCorrelations:
             If delete_fraction is not between 0 and 1.
             If number_samples is not greater than 0.
         """
+        if not isinstance(delete_fraction, float):
+            raise TypeError("delete_fraction must be a float")
         if not 0.0 < delete_fraction < 1.0:
             raise ValueError("delete_fraction must be between 0 and 1")
+        if not isinstance(number_samples, int):
+            raise TypeError("number_samples must be an integer")
         if not number_samples > 0:
             raise ValueError("number_samples must be greater than 0")
+        if not isinstance(seed, int):
+            raise TypeError("seed must be an integer")
+        if not isinstance(compute_error, bool):
+            raise TypeError("compute_error must be a boolean")
 
         self.N_events = []
         self.D_events = []
@@ -601,10 +609,18 @@ class MultiParticlePtCorrelations:
             If delete_fraction is not between 0 and 1.
             If number_samples is not greater than 0.
         """
+        if not isinstance(delete_fraction, float):
+            raise TypeError("delete_fraction must be a float")
         if not 0.0 < delete_fraction < 1.0:
             raise ValueError("delete_fraction must be between 0 and 1")
+        if not isinstance(number_samples, int):
+            raise TypeError("number_samples must be an integer")
         if not number_samples > 0:
             raise ValueError("number_samples must be greater than 0")
+        if not isinstance(seed, int):
+            raise TypeError("seed must be an integer")
+        if not isinstance(compute_error, bool):
+            raise TypeError("compute_error must be a boolean")
 
         self.N_events = []
         self.D_events = []

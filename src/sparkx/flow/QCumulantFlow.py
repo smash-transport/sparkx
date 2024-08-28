@@ -68,9 +68,9 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         >>> result = flow_instance.integrated_flow(particle_data)
     """
 
-    def __init__(self, n=2, k=2, imaginary="zero"):
+    def __init__(self, n: int =2, k: int =2, imaginary: str ='zero'):
         if not isinstance(n, int):
-            raise TypeError("n has to be int")
+            raise TypeError('n has to be int')
         elif n <= 0:
             raise ValueError(
                 "n-th harmonic with value n<=0 can not be computed"
@@ -867,16 +867,16 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             uncertainty.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError("bins has to be list or np.ndarray")
+            raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
-            raise TypeError("flow_as_function_of is not a string")
+            raise TypeError('flow_as_function_of is not a string')
         if poi_pdg is not None:
             if not isinstance(poi_pdg, (list, np.ndarray)):
-                raise TypeError("poi_pdg has to be list or np.ndarray")
+                raise TypeError('poi_pdg has to be list or np.ndarray')
             for pdg in poi_pdg:
                 if not isinstance(pdg, int):
-                    raise TypeError("poi_pdg elements must be integers")
-        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
+                    raise TypeError('poi_pdg elements must be integers')
+        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )

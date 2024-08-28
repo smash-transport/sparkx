@@ -364,25 +364,29 @@ class EventCharacteristics:
         None
         """
         if not all(
-            isinstance(val, (float, int))
-            for val in [x_min, x_max, y_min, y_max, z_min, z_max, sigma_smear]
-        ):
+            isinstance(
+                val,
+                (float,
+                 int)) for val in [
+                x_min,
+                x_max,
+                y_min,
+                y_max,
+                z_min,
+                z_max,
+                sigma_smear]):
             raise TypeError("Coordinates and sigma_smear must be float or int")
         if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
             raise TypeError("Nx, Ny, Nz must be positive integers")
-        if not all(
-            (isinstance(val, (float, int)) and val > 0)
-            for val in [n_sigma_x, n_sigma_y, n_sigma_z]
-        ):
+        if not all((isinstance(val, (float, int)) and val > 0)
+                   for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
             raise TypeError(
-                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int"
-            )
+                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
         if not isinstance(eta_range, (list, tuple)):
             raise TypeError("eta_range must be a list or tuple")
         if len(eta_range) != 3:
             raise ValueError(
-                "eta_range must contain min, max, and number of grid points"
-            )
+                "eta_range must contain min, max, and number of grid points")
         if not all(isinstance(val, (float, int)) for val in eta_range):
             raise TypeError("Values in eta_range must be float or int")
         if not isinstance(output_filename, str):

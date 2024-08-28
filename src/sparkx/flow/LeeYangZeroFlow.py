@@ -92,11 +92,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise ValueError("'vmin' is larger than 'vmax'")
         if (vmax - vmin) < vstep:
             raise ValueError(
-                "'vstep' is larger than the difference between minimum and maximum flow"
-            )
-
+                "'vstep' is larger than the difference between minimum and maximum flow")
         if not isinstance(n, int):
-            raise TypeError("n has to be int")
+            raise TypeError('n has to be int')
         elif n <= 0:
             raise ValueError(
                 "n-th harmonic with value n<=0 can not be computed"
@@ -149,9 +147,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
-            phi_j, (list, np.ndarray)
-        ):
+        if not isinstance(
+                weight_j, (list, np.ndarray)) or not isinstance(
+                phi_j, (list, np.ndarray)):
             raise ValueError("Not the correct input format for g_theta")
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
@@ -188,10 +186,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
-            phi_j, (list, np.ndarray)
-        ):
-            raise ValueError("Not the correct input format for g_theta")
+        if not isinstance(
+                weight_j, (list, np.ndarray)) or not isinstance(
+                phi_j, (list, np.ndarray)):
+            raise ValueError('Not the correct input format for g_theta')
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
         Q_x = 0.0
@@ -224,10 +222,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
-            phi_j, (list, np.ndarray)
-        ):
-            raise ValueError("Not the correct input format for g_theta")
+        if not isinstance(
+                weight_j, (list, np.ndarray)) or not isinstance(
+                phi_j, (list, np.ndarray)):
+            raise ValueError('Not the correct input format for g_theta')
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
         Q_y = 0.0
@@ -630,16 +628,16 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         lead to wrong results.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError("bins has to be list or np.ndarray")
+            raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
-            raise TypeError("flow_as_function_of is not a string")
+            raise TypeError('flow_as_function_of is not a string')
         if poi_pdg is not None:
             if not isinstance(poi_pdg, (list, np.ndarray)):
-                raise TypeError("poi_pdg has to be list or np.ndarray")
+                raise TypeError('poi_pdg has to be list or np.ndarray')
             for pdg in poi_pdg:
                 if not isinstance(pdg, int):
-                    raise TypeError("poi_pdg elements must be integers")
-        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
+                    raise TypeError('poi_pdg elements must be integers')
+        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
