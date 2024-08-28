@@ -4,9 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sparkx"
-version = "1.3.0"
+version = "2.0.0"
 authors = [
     { name="Niklas Götz", email="goetz@itp.uni-frankfurt.de"},
+    { name="Renata Krupczak", email="rkrupczak@physik.uni-bielefeld.de"},
     { name="Hendrik Roch", email="hroch@wayne.edu" },
     { name="Nils Sass", email="nsass@itp.uni-frankfurt.de" }
 ]
