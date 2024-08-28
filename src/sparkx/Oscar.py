@@ -1123,8 +1123,9 @@ class Oscar:
 
     def print_particle_lists_to_file(self, output_file):
         """
-        Prints the current Oscar data to an output file specified by :code:`output_file`
-        with the same format as the input file
+        Prints the current Oscar data to an output file specified by
+        :code:`output_file` with the same format as the input file.
+        For empty events, only the event header and footer are printed.
 
         Parameters
         ----------
