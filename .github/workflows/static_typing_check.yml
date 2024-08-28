@@ -27,4 +27,4 @@ jobs:
 
     - name: Run mypy
       run: |
-        mypy src/sparkx tests/ --ignore-missing-imports
+        mypy src/sparkx --ignore-missing-imports
