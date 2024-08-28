@@ -169,6 +169,8 @@ class Oscar(BaseStorer):
     def __init__(self, OSCAR_FILE: str, **kwargs: Any) -> None:
         super().__init__(OSCAR_FILE,**kwargs)
         self.PATH_OSCAR_: str = OSCAR_FILE
+        if not isinstance(self.loader_, OscarLoader):
+            raise TypeError("The loader must be an instance of OscarLoader.")
         self.oscar_format_: Union[str|None] = self.loader_.oscar_format()
         self.event_end_lines_: List[str] = self.loader_.event_end_lines()
         del self.loader_
@@ -280,8 +282,14 @@ class Oscar(BaseStorer):
 
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "a", buffering=25 * 1024 * 1024) as f_out:
+            if self.particle_list_ is None:
+                raise ValueError("The particle list is empty.")
             list_of_particles = self.particle_list()
-            if self.num_events_ > 1:
+            if self.num_output_per_event_ is None:
+                raise ValueError("The number of output per event is empty.")
+            if self.num_events_ is None:
+                raise ValueError("The number of events is empty.")
+            if(self.num_events_>1):
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]

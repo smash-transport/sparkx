@@ -11,7 +11,7 @@ from sparkx.Filter import *
 import numpy as np
 from sparkx.Loader.JetscapeLoader import JetscapeLoader
 from sparkx.BaseStorer import BaseStorer
-from typing import List, Tuple, Union, Dict
+from typing import List, Tuple, Union, Dict, Optional
 class Jetscape(BaseStorer):
     """
     Defines a Jetscape object.
@@ -161,6 +161,8 @@ class Jetscape(BaseStorer):
     """
     def __init__(self, JETSCAPE_FILE: str, **kwargs: Dict[str, Union[int, Tuple[int, int], Dict[str, Union[int, Tuple[int, int]]]]]):
         super().__init__(JETSCAPE_FILE, **kwargs)
+        if not isinstance(self.loader_, JetscapeLoader):
+            raise TypeError("The loader must be an instance of JetscapeLoader.")
         self.sigmaGen_: Tuple[float,float] = self.loader_.get_sigmaGen()
         self.particle_type_: str = self.loader_.get_particle_type()
         self.JETSCAPE_FILE: str = JETSCAPE_FILE
@@ -168,7 +170,9 @@ class Jetscape(BaseStorer):
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
 
-    def create_loader(self, JETSCAPE_FILE: str) -> None:
+    def create_loader(self, JETSCAPE_FILE: Union[str, List[List['Particle']]]) -> None:
+        if not isinstance(JETSCAPE_FILE, str):
+            raise TypeError("The JETSCAPE_FILE must be a path.")
         self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
@@ -184,7 +188,7 @@ class Jetscape(BaseStorer):
 
         return particle_list
 
-    def particle_objects_list(self) -> List[List[List[Union[int, float]]]]:
+    def particle_objects_list(self) -> Optional[List[List[List[Union[int, float]]]]]:
         """
         Returns a nested python list containing all quantities from the
         current Jetscape data as numerical values with the following shape:
@@ -200,6 +204,10 @@ class Jetscape(BaseStorer):
         return self.particle_list_
 
     def __update_num_output_per_event_after_filter(self) -> None:
+        if self.particle_list_ is None:
+            raise ValueError("The particle list is empty.")
+        if self.num_output_per_event_ is None:
+            raise ValueError("The number of output per event is empty.")
         for event in range(0, len(self.particle_list_)):
             self.num_output_per_event_[event][1]=len(self.particle_list_[event])
 
@@ -272,6 +280,12 @@ class Jetscape(BaseStorer):
         """
         with open(self.JETSCAPE_FILE,'r') as jetscape_file:
             header_file = jetscape_file.readline()
+        if self.particle_list_ is None:
+            raise ValueError("The particle list is empty.")
+        if self.num_output_per_event_ is None:
+            raise ValueError("The number of output per event is empty.")
+        if self.num_events_ is None:
+            raise ValueError("The number of events is empty.")
 
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:

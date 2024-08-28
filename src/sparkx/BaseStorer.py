@@ -10,7 +10,8 @@
 from sparkx.Filter import *
 import numpy as np
 from abc import ABC, abstractmethod
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Optional
+from sparkx.Loader.BaseLoader import BaseLoader
 
 class BaseStorer(ABC):
     """
@@ -86,14 +87,21 @@ class BaseStorer(ABC):
         -------
         None
         """
+        self.loader_: Optional[BaseLoader] = None 
+        self.num_output_per_event_: Optional[np.ndarray] = None
+        self.num_events_: Optional[int] = None
+        self.particle_list_: Optional[List] = None
         self.create_loader(path)
-        (self.particle_list_,self.num_events_,self.num_output_per_event_) = self.loader_.load(**kwargs)
+        if self.loader_ is not None:
+            (self.particle_list_, self.num_events_, self.num_output_per_event_) = self.loader_.load(**kwargs)
+        else:
+            raise ValueError("Loader has not been created properly")
 
     @abstractmethod
-    def create_loader(self,path: Union[str, List[List['Particle']]]) -> None:
+    def create_loader(self,arg: Union[str, List[List['Particle']]]) -> None:
         raise NotImplementedError("This method is not implemented yet")
 
-    def num_output_per_event(self) -> np.ndarray:
+    def num_output_per_event(self) -> Optional[np.ndarray]:
         """
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
@@ -112,7 +120,7 @@ class BaseStorer(ABC):
         return self.num_output_per_event_
 
 
-    def num_events(self) -> int:
+    def num_events(self) -> Optional[int]:
         """
         Returns the number of events in particle_list
 
@@ -126,7 +134,7 @@ class BaseStorer(ABC):
         """
         return self.num_events_
 
-    def particle_objects_list(self) -> List:
+    def particle_objects_list(self) -> Optional[List]:
         """
         Returns a nested python list containing all particles from
         the data as particle objects
@@ -161,6 +169,13 @@ class BaseStorer(ABC):
 
         """
         num_events = self.num_events_
+
+        if self.num_output_per_event_ is None:
+            raise ValueError("num_output_per_event_ is not set")
+        if self.particle_list_ is None:
+            raise ValueError("particle_list_ is not set")
+        if num_events is None:
+            raise ValueError("num_events_ is not set")
         
         if num_events == 1:
             num_particles = self.num_output_per_event_[0][1]
@@ -510,6 +525,10 @@ class BaseStorer(ABC):
         return self
     
     def __update_num_output_per_event_after_filter(self) -> None:
+        if self.num_output_per_event_ is None:
+            raise ValueError("num_output_per_event_ is not set")
+        if self.particle_list_ is None:
+            raise ValueError("particle_list_ is not set")
         for event in range(0, len(self.particle_list_)):
             self.num_output_per_event_[event][1]=len(self.particle_list_[event])
     

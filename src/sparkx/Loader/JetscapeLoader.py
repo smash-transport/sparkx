@@ -9,7 +9,7 @@
 
 from sparkx.Loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Any
 
 class JetscapeLoader(BaseLoader):
     """
@@ -65,12 +65,12 @@ class JetscapeLoader(BaseLoader):
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.particle_type_ = 'hadron'
         self.particle_type_defining_string_ = 'N_hadrons'
-        self.optional_arguments_: Dict[str, Union[int, Tuple[int, int], List[Dict[str, Union[str, float]]]]] = {}
+        self.optional_arguments_: Any = {}
         self.event_end_lines_: List[str] = []
         self.num_output_per_event_: np.ndarray = np.array([])
         self.num_events_: int = 0
 
-    def load(self, **kwargs: Dict[str, Union[int, Tuple[int, int], List[Dict[str, Union[str, float]]]]]) -> Tuple[List[Particle], int, np.ndarray]:
+    def load(self, **kwargs: Any) -> Tuple[List[List[Particle]], int, np.ndarray]:
         """
         Loads the data from the JETSCAPE file based on the specified optional arguments.
 
@@ -210,7 +210,7 @@ class JetscapeLoader(BaseLoader):
         # +1 for the end line in Jetscape format
         return cumulated_lines + 1
 
-    def __apply_kwargs_filters(self, event: List[Particle], filters_dict: Dict[str, Union[bool, float, List[str]]]) -> List[Particle]:
+    def __apply_kwargs_filters(self, event: List[List[Particle]], filters_dict: Any) ->  List[List[Particle]]:
         """
         Applies the specified filters to the event.
 
@@ -270,7 +270,7 @@ class JetscapeLoader(BaseLoader):
 
     # PUBLIC CLASS METHODS
 
-    def set_particle_list(self, kwargs: Dict[str, Union[int, Tuple[int, int], List[Dict[str, Union[str, float]]]]]) -> List[Particle]:
+    def set_particle_list(self, kwargs: Dict[str, Union[int, Tuple[int, int], List[Dict[str, Union[str, float]]]]]) -> List[List[Particle]]:
         """
         Sets the list of particles based on the specified optional arguments.
 
@@ -295,7 +295,7 @@ class JetscapeLoader(BaseLoader):
         particle_list : list
             A list of Particle objects loaded from the JETSCAPE data file.
         """
-        particle_list: List[Particle] = []
+        particle_list: List[List[Particle]] = []
         data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
         with open(self.PATH_JETSCAPE_, 'r') as jetscape_file:
@@ -314,14 +314,18 @@ class JetscapeLoader(BaseLoader):
                     raise ValueError('First line of the event is not a comment ' +
                                      'line or does not contain "weight"')
                 elif 'Event' in line and 'weight' in line:
-                    line = line.replace('\n','').replace('\t',' ').split(' ')
+                    line_list = line.replace('\n','').replace('\t',' ').split(' ')
                     first_event_header = 1
                     if 'events' in self.optional_arguments_.keys():
                         if isinstance(kwargs['events'], int):
+                            if not isinstance(kwargs['events'], int):
+                                raise TypeError('Value given as flag "events" is not of type int or a tuple')
                             first_event_header += int(kwargs['events'])
                         else:
+                            if not isinstance(kwargs['events'], int):
+                                raise TypeError('Value given as flag "events" is not of type int or a tuple')
                             first_event_header += int(kwargs['events'][0])
-                    if int(line[2]) == first_event_header:
+                    if int(line_list[2]) == first_event_header:
                         continue
                     else:
                         if 'filters' in self.optional_arguments_.keys():
@@ -330,8 +334,8 @@ class JetscapeLoader(BaseLoader):
                         particle_list.append(data)
                         data = []
                 else:
-                    line = line.replace('\n','').replace('\t',' ').split(' ')
-                    particle = Particle("JETSCAPE", line)
+                    line_list = line.replace('\n','').replace('\t',' ').split(' ')
+                    particle = Particle("JETSCAPE", line_list)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
@@ -342,7 +346,7 @@ class JetscapeLoader(BaseLoader):
                                  'Jetscape file!')
         elif isinstance(kwargs['events'], int):
             update = self.num_output_per_event_[kwargs['events']]
-            self.num_output_per_event_ = [update]
+            self.num_output_per_event_ = np.array(update)
             self.num_events_ = int(1)
         elif isinstance(kwargs['events'], tuple):
             event_start = kwargs['events'][0]
