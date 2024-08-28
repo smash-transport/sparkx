@@ -101,18 +101,24 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             The pseudorapidity gap used for dividing the particles into sub-events.
             Default is 0.0.
         """
-        if n <= 0:
+        if not isinstance(n, int):
+            raise TypeError('n has to be int')
+        elif n <= 0:
             raise ValueError(
                 'n-th harmonic with value n<=0 can not be computed')
         else:
             self.n_ = n
 
-        if weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
+        if not isinstance(weight, str):
+            raise TypeError('weight has to be a string')
+        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "Invalid weight given, choose one of the following: 'pt', 'pt2', 'ptn', 'rapidity', 'pseudorapidity'")
         else:
             self.weight_ = weight
 
+        if not isinstance(pseudorapidity_gap, (int, float)):
+            raise TypeError('n has to be int')
         if pseudorapidity_gap < 0:
             raise ValueError(
                 'pseudorapidity value with gap < 0 can not be computed')
@@ -315,6 +321,8 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             A tuple containing the integrated flow value and the corresponding
             uncertainty.
         """
+        if not isinstance(self_corr, bool):
+            raise TypeError('self_corr has to be bool')
         resolution, Q_vector = self.__calculate_reference(
             particle_data_event_plane)
         return self.__calculate_flow_event_average(
@@ -352,6 +360,12 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             A list of tuples containing the flow values and uncertainties for
             each bin.
         """
+        if not isinstance(self_corr, bool):
+            raise TypeError('self_corr has to be bool')
+        if not isinstance(bins, (list, np.ndarray)):
+            raise TypeError('bins has to be list or np.ndarray')
+        if not isinstance(flow_as_function_of, str):
+            raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")

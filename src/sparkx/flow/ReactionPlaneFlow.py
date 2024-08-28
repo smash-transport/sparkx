@@ -83,7 +83,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         n : int, optional
             The value of the harmonic. Default is 2.
         """
-        if n <= 0:
+        if not isinstance(n, int):
+            raise TypeError('n has to be int')
+        elif n <= 0:
             raise ValueError(
                 'n-th harmonic with value n<=0 can not be computed')
         else:
@@ -140,6 +142,10 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         list
             A list of complex numbers representing the flow values for each bin.
         """
+        if not isinstance(bins, (list, np.ndarray)):
+            raise TypeError('bins has to be list or np.ndarray')
+        if not isinstance(flow_as_function_of, str):
+            raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")

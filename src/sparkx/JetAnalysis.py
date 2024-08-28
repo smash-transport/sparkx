@@ -176,6 +176,13 @@ class JetAnalysis:
         if jet_R <= 0.:
             raise ValueError("jet_R must be larger than 0")
         self.jet_R_ = jet_R
+        
+        # check jet eta range
+        if not isinstance(jet_eta_range, tuple):
+            raise TypeError("jet_eta_range is not a tuple. " +
+                            "It must contain either values or None.")
+        if len(jet_eta_range) != 2:
+            raise ValueError("jet_eta_range must contain exactly two values.")
 
         lower_cut = float(
             '-inf') if jet_eta_range[0] is None else jet_eta_range[0]
@@ -188,6 +195,12 @@ class JetAnalysis:
             warnings.warn("The lower jet eta cut value is larger than the " +
                           "upper one. They are interchanged automatically.")
 
+        # check the jet pt range
+        if not isinstance(jet_pt_range, tuple):
+            raise TypeError("jet_pt_range is not a tuple. " +
+                            "It must contain either values or None.")
+        if len(jet_pt_range) != 2:
+            raise ValueError("jet_pt_range must contain exactly two values.")
         if any(pt is not None and pt < 0 for pt in jet_pt_range):
             raise ValueError("All values in jet_pt_range must be non-negative.")
 
@@ -363,7 +376,7 @@ class JetAnalysis:
             jet_eta_range: Tuple[Optional[float], Optional[float]],
             jet_pt_range: Tuple[Optional[float], Optional[float]],
             output_filename: str, assoc_only_charged: bool = True,
-            jet_algorithm: fj.JetAlgorithm = fj.antikt_algorithm) -> None:
+            jet_algorithm: fj = fj.antikt_algorithm) -> None:
         """
         Perform the jet analysis for multiple events. The function generates a
         file containing the jets consisting of a leading particle and associated

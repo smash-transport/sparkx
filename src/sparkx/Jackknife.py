@@ -93,6 +93,12 @@ class Jackknife:
     def __init__(self, delete_fraction: float, number_samples: int, 
                  seed: int = 42) -> None:
 
+        if not isinstance(delete_fraction, float):
+            raise TypeError("delete_fraction must be a float.")
+        if not isinstance(number_samples, int):
+            raise TypeError("number_samples must be an integer.")
+        if not isinstance(seed, int):
+            raise TypeError("seed must be an integer.")
         if delete_fraction < 0.0 or delete_fraction >= 1.0:
             raise ValueError("delete_fraction must be between 0 and 1.")
         if number_samples < 1:
@@ -327,7 +333,11 @@ class Jackknife:
         delete_n_points = int(self.delete_fraction * len(data))
         if delete_n_points < 1:
             raise ValueError("The delete_fraction is too small.")
-
+        if not isinstance(data, np.ndarray):
+            raise TypeError("data must be a numpy array.")
+        if not callable(function):
+            raise TypeError("function must be a callable object.")
+        
         # Check if the function returns a single number
         test_result = function(data[:max(1, len(data) // 100)], *args, **kwargs)
         if not isinstance(test_result, (int, float)):

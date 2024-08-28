@@ -154,6 +154,8 @@ class EventCharacteristics:
             raise ValueError("harmonic_m must be positive")
         if not isinstance(self.event_data_, (list, np.ndarray)):
             raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for particle in self.event_data_:
             if weight_quantity == "energy":
                 weight = particle.E
@@ -219,6 +221,8 @@ class EventCharacteristics:
             raise ValueError("harmonic_m must be positive")
         if isinstance(self.event_data_, (list, np.ndarray)):
             raise TypeError('The input is not a list nor a numpy.ndarray.')
+        if harmonic_m is None and harmonic_n is None:
+            raise ValueError("harmonic_m or harmonic_n must be provided")
         for i, j, k in np.ndindex(self.event_data_.grid_.shape):
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             # Exception for dipole asymmetry
@@ -343,14 +347,36 @@ class EventCharacteristics:
         -------
         None
         """
-        if not all(val > 0 for val in [Nx, Ny, Nz]):
-            raise TypeError("Nx, Ny, Nz must be positive")
-        if not all(val > 0 for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+        if not all(
+            isinstance(
+                val,
+                (float,
+                 int)) for val in [
+                x_min,
+                x_max,
+                y_min,
+                y_max,
+                z_min,
+                z_max,
+                sigma_smear]):
+            raise TypeError("Coordinates and sigma_smear must be float or int")
+        if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
+            raise TypeError("Nx, Ny, Nz must be positive integers")
+        if not all((isinstance(val, (float, int)) and val > 0)
+                   for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
             raise TypeError(
-                "n_sigma_x, n_sigma_y, n_sigma_z must be positive")
+                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
+        if not isinstance(eta_range, (list, tuple)):
+            raise TypeError("eta_range must be a list or tuple")
         if len(eta_range) != 3:
             raise ValueError(
                 "eta_range must contain min, max, and number of grid points")
+        if not all(isinstance(val, (float, int)) for val in eta_range):
+            raise TypeError("Values in eta_range must be float or int")
+        if not isinstance(output_filename, str):
+            raise TypeError("output_filename must be a string")
+        if (IC_info is not None) and not isinstance(IC_info, str):
+            raise TypeError("The given IC_info is not a string")
         if self.has_lattice_:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles.")
@@ -527,11 +553,29 @@ class EventCharacteristics:
         -------
         None
         """
-        if not all(val > 0 for val in [Nx, Ny, Nz]):
-            raise TypeError("Nx, Ny, Nz must be positive")
-        if not all(val > 0 for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
+        if not all(
+            isinstance(
+                val,
+                (float,
+                 int)) for val in [
+                x_min,
+                x_max,
+                y_min,
+                y_max,
+                z_min,
+                z_max,
+                sigma_smear]):
+            raise TypeError("Coordinates and sigma_smear must be float or int")
+        if not all((isinstance(val, int) and val > 0) for val in [Nx, Ny, Nz]):
+            raise TypeError("Nx, Ny, Nz must be positive integers")
+        if not all((isinstance(val, (float, int)) and val > 0)
+                   for val in [n_sigma_x, n_sigma_y, n_sigma_z]):
             raise TypeError(
-                "n_sigma_x, n_sigma_y, n_sigma_z must be positive")
+                "n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int")
+        if (IC_info is not None) and not isinstance(IC_info, str):
+            warnings.warn("The given IC_info is not a string")
+        if not isinstance(output_filename, str):
+            raise TypeError("output_filename must be a string")
         if self.has_lattice_:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles.")

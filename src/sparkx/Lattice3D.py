@@ -678,6 +678,10 @@ class Lattice3D:
             If the lattices have different shapes.
 
         """
+        if not isinstance(other, Lattice3D):
+            raise TypeError(
+                "Unsupported operand type. The operand must be of type 'Lattice3D'.")
+            
         if self.grid_.shape != other.grid_.shape:
             raise ValueError("The lattices must have the same shape.")
 
@@ -814,6 +818,10 @@ class Lattice3D:
         all_lattices = [self] + list(lattices)
 
         for lattice in all_lattices:
+            if not isinstance(lattice, Lattice3D):
+                raise TypeError(
+                    "Unsupported operand type. All operands must be of type 'Lattice3D'.")
+        
             if self.grid_.shape != lattice.grid_.shape:
                 raise ValueError("The lattices must have the same shape.")
 
@@ -1234,6 +1242,10 @@ class Lattice3D:
             If `other` is of wrong spacing.
 
         """
+        if not isinstance(other, Lattice3D):
+            raise TypeError(
+                "Unsupported operand type. The operand must be of type 'Lattice3D'.")
+
         # Check if both lattices have the same spacing
         if ((other.spacing_x_ is None or (self.spacing_x_ is not None and abs(self.spacing_x_-other.spacing_x_) < 1e-3))
             and (other.spacing_y_ is None or (self.spacing_y_ is not None and abs(self.spacing_y_-other.spacing_y_) < 1e-3))

@@ -112,19 +112,23 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             The pseudorapidity gap used for dividing the particles into sub-events.
             Default is 0.0.
         """
-        if n <= 0:
+        if not isinstance(n, int):
+            raise TypeError('n has to be int')
+        elif n <= 0:
             raise ValueError(
                 'n-th harmonic with value n<=0 can not be computed')
         else:
             self.n_ = n
-
-        if weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
+        if not isinstance(weight, str):
+            raise TypeError('weight has to be a string')
+        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "Invalid weight given, choose one of the following: 'pt', 'pt2', 'ptn', 'rapidity', 'pseudorapidity'")
         else:
             self.weight_ = weight
-
-        if pseudorapidity_gap < 0:
+        if not isinstance(pseudorapidity_gap, (int, float)):
+            raise TypeError('n has to be int')
+        elif pseudorapidity_gap < 0:
             raise ValueError(
                 'pseudorapidity value with gap < 0 can not be computed')
         else:
@@ -449,6 +453,12 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             each bin. The third and fourth element are the event plane angle
             and the corresponding uncertainty.
         """
+        if not isinstance(self_corr, bool):
+            raise TypeError('self_corr has to be bool')
+        if not isinstance(bins, (list, np.ndarray)):
+            raise TypeError('bins has to be list or np.ndarray')
+        if not isinstance(flow_as_function_of, str):
+            raise TypeError('flow_as_function_of is not a string')
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'")

@@ -176,7 +176,10 @@ class Histogram:
             self.error_ = np.asarray([np.zeros(self.number_of_bins_)])
             self.systematic_error_ = np.asarray(
                 [np.zeros(self.number_of_bins_)])
-
+        else:
+            raise TypeError(
+                'Input must be a tuple (hist_min, hist_max, num_bins) ' +
+                'or a list/numpy.ndarray containing the bin edges!')
     def histogram(self) -> np.ndarray:
         """
         Get the current histogram(s).
@@ -321,6 +324,8 @@ class Histogram:
 
             if (index < 0 or index >= len(self.bin_edges_)):
                 raise ValueError("Bin number in remove_bin is out of range.")
+        else:
+            raise TypeError("Bin number in remove_bin must be an integer.")
         
         self.number_of_bins_ -= 1
         self.bin_edges_ = np.delete(self.bin_edges_, index)
@@ -356,6 +361,10 @@ class Histogram:
         ValueError
             If `index` is out of range or the bin edges are not monotonically increasing.
         """
+        if not isinstance(index, int):
+            raise TypeError("Index in add_bin must be an integer.")
+        if not isinstance(bin_edge, (int, float)):
+            raise TypeError("Bin edge in add_bin must be a float or int.")
         if self.bin_edges_ is None:
             raise TypeError("'bin_edges_' is None. It must be initialized before calling the 'add_bin' function.")
         if self.number_of_bins_ is None:
@@ -429,6 +438,9 @@ class Histogram:
         # Check if weight has the same length as value
         if weight is not None:
             if isinstance(weight, (int, float, np.number)):
+                if not isinstance(value, (int, float, np.number)):
+                    raise ValueError(
+                        "Value must be numeric when weight is scalar.")
                 if np.isnan(weight):
                     raise ValueError("Value cannot be NaN when weight is scalar.")
             elif len(weight) != np.atleast_1d(value).shape[0]:
@@ -476,6 +488,12 @@ class Histogram:
             else:
                 for element in value:
                     self.add_value(element)
+
+        # Case 1.3: value has an invalid input type
+        else:
+            err_msg = 'Invalid input type! Input value must have one of the ' +\
+                      'following types: (int, float, np.number, list, np.ndarray)'
+            raise TypeError(err_msg)
 
     def make_density(self) -> None:
         """
@@ -754,6 +772,11 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the uncertainties of the individual bins.
         """
+        if len(own_error) != self.number_of_bins_ or\
+                not isinstance(own_error, (list, np.ndarray)):
+            error_message = "The input error has a different length than the"\
+                + " number of histogram bins or it is not a list/numpy.ndarray"
+            raise ValueError(error_message)
         if self.error_ is None:
             raise TypeError("'error_' is None. It must be initialized before calling the 'set_error' function.")
         
@@ -770,6 +793,11 @@ class Histogram:
         value: list, numpy.ndarray
             Values for the systematic uncertainties of the individual bins.
         """
+        if len(own_error) != self.number_of_bins_ or\
+                not isinstance(own_error, (list, np.ndarray)):
+            error_message = "The input error has a different length than the"\
+                + " number of histogram bins or it is not a list/numpy.ndarray"
+            raise ValueError(error_message)
         if self.systematic_error_ is None:
             raise TypeError("'systematic_error_' is None. It must be initialized before calling the 'set_systematic_error' function.")
         
@@ -854,6 +882,22 @@ class Histogram:
             is greater than 1 and the number of provided dictionaries is 1.
             Then the same dictionary is used for all histograms.
         """
+        if not isinstance(
+                hist_labels,
+                list) or not all(
+                isinstance(
+                hist_label,
+                dict) for hist_label in hist_labels):
+            raise TypeError("hist_labels must be a list of dictionaries")
+
+        if columns is not None and (
+            not isinstance(
+                columns,
+                list) or not all(
+                isinstance(
+                col,
+                str) for col in columns)):
+            raise TypeError("columns must be a list of strings")
         if self.number_of_bins_ is None:
             raise TypeError("'number_of_bins_' is None. It must be initialized before calling the 'write_to_file' function.")
         if self.histograms_ is None:
