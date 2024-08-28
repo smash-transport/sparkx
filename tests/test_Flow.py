@@ -176,7 +176,6 @@ def test_ReactionPlaneFlow_differential_flow_errors(test_data):
         )
 
 
-
 def test_LeeYangZeroFlow_initialization():
     with pytest.raises(TypeError):
         # Test invalid type for n

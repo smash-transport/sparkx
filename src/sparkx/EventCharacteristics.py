@@ -14,7 +14,6 @@ import warnings
 from typing import Union, List, Optional, Any
 
 
-
 class EventCharacteristics:
     """
     This class computes event-by-event characteristics, e.g., eccentricities
@@ -187,11 +186,11 @@ class EventCharacteristics:
             y = particle.y
             # Exception for dipole asymmetry
             if harmonic_n == 1 and harmonic_m is None:
-                rn = (x**2 + y**2) ** (3 / 2.0)
+                rn = (x ** 2 + y ** 2) ** (3 / 2.0)
             elif harmonic_n != 1 and harmonic_m is None:
-                rn = (x**2 + y**2) ** (harmonic_n / 2.0)
+                rn = (x ** 2 + y ** 2) ** (harmonic_n / 2.0)
             elif harmonic_m is not None:
-                rn = (x**2 + y**2) ** (harmonic_m / 2.0)
+                rn = (x ** 2 + y ** 2) ** (harmonic_m / 2.0)
             else:
                 raise ValueError("harmonic_m or harmonic_n must be provided")
 
@@ -243,11 +242,11 @@ class EventCharacteristics:
             x, y, z = self.event_data_.get_coordinates(i, j, k)
             # Exception for dipole asymmetry
             if harmonic_n == 1 and harmonic_m is None:
-                rn = (x**2 + y**2) ** (3 / 2.0)
+                rn = (x ** 2 + y ** 2) ** (3 / 2.0)
             elif harmonic_n != 1 and harmonic_m is None:
-                rn = (x**2 + y**2) ** (harmonic_n / 2.0)
+                rn = (x ** 2 + y ** 2) ** (harmonic_n / 2.0)
             elif harmonic_m is not None:
-                rn = (x**2 + y**2) ** (harmonic_m / 2.0)
+                rn = (x ** 2 + y ** 2) ** (harmonic_m / 2.0)
             else:
                 raise ValueError("harmonic_m or harmonic_n must be provided")
 

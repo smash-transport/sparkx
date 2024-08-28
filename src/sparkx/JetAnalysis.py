@@ -281,7 +281,7 @@ class JetAnalysis:
             )
             delta_eta = fastjet_particle.eta() - jet.eta()
             delta_phi = fastjet_particle.delta_phi_to(jet)
-            delta_r = np.sqrt(delta_eta**2.0 + delta_phi**2.0)
+            delta_r = np.sqrt(delta_eta ** 2.0 + delta_phi ** 2.0)
 
             if delta_r < self.jet_R_:
                 associated_hadrons.append(hadron)

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from sparkx.Particle import Particle
-from sparkx.Loader.ParticleObjectLoader import ParticleObjectLoader
+from sparkx.loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.ParticleObjectStorer import ParticleObjectStorer
 
 # Utility function to create particles

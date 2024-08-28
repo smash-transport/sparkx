@@ -1,4 +1,4 @@
-from sparkx.Loader.BaseLoader import BaseLoader
+from sparkx.loader.BaseLoader import BaseLoader
 
 import pytest
 from io import StringIO

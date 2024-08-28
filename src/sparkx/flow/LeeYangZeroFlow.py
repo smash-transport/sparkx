@@ -254,7 +254,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             The computed value of sigma based on Eq. (7) in Ref. [3].
         """
         # Eq. 7 in Ref. [3]
-        return np.sqrt(QxSqPQySq - Qx**2.0 - Qy**2.0 - VnInfty**2.0)
+        return np.sqrt(QxSqPQySq - Qx ** 2.0 - Qy ** 2.0 - VnInfty ** 2.0)
 
     def __chi(self, VnInfty, sigma):
         """
@@ -293,10 +293,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             The computed relative flow fluctuation based on Eq. (8) in Ref. [3].
         """
         return (
-            1.0 / (2.0 * NEvents * self.j01_**2.0 * self.J1rootJ0_**2.0)
+            1.0 / (2.0 * NEvents * self.j01_ ** 2.0 * self.J1rootJ0_ ** 2.0)
         ) * (
-            np.exp(self.j01_**2.0 / (2.0 * chi * chi))
-            + np.exp(-self.j01_**2.0 / (2.0 * chi**2.0)) * (-0.2375362)
+            np.exp(self.j01_ ** 2.0 / (2.0 * chi * chi))
+            + np.exp(-self.j01_ ** 2.0 / (2.0 * chi ** 2.0)) * (-0.2375362)
         )
 
     def __sample_random_reaction_planes(self, events):
@@ -379,7 +379,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Qy = self.__Q_y(self.n_, weight_j, phi_j)  # event flow vector
             AvgQx += Qx  # average event flow vector
             AvgQy += Qy  # average event flow vector
-            AvgQxSqPQySq += Qx**2.0 + Qy**2.0
+            AvgQxSqPQySq += Qx ** 2.0 + Qy ** 2.0
 
         mean_multiplicity /= number_events
         AvgQx /= number_events
@@ -496,9 +496,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         float
             The calculated differential flow uncertainty.
         """
-        err_sq = (1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)) * (
-            np.exp(self.j01_**2.0 / (2.0 * self.chi_**2.0))
-            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0)) * (-0.2375362)
+        err_sq = (
+            1.0 / (4.0 * number_particles_tot ** self.J1rootJ0_ ** 2.0)
+        ) * (
+            np.exp(self.j01_ ** 2.0 / (2.0 * self.chi_ ** 2.0))
+            - np.exp(-self.j01_ ** 2.0 / (2.0 * self.chi_ ** 2.0))
+            * (-0.2375362)
         )
         return np.sqrt(err_sq)
 

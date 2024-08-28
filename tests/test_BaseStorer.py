@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-from typing import List, Union
-from sparkx.Loader.BaseLoader import BaseLoader
+from typing import List, Union, Any
+from sparkx.loader.BaseLoader import BaseLoader
 from sparkx.BaseStorer import BaseStorer
 from sparkx.Particle import Particle
 
@@ -33,9 +33,9 @@ class ConcreteStorer(BaseStorer):
         else:
             raise ValueError("Invalid argument type for create_loader")
 
-    def _particle_as_list(self, particle: "Particle") -> List:
+    def _particle_as_list(self, particle: "Particle") -> Any:
         # Example implementation for converting a Particle object to a list
-        return [1, 2, 3]
+        return particle
 
     def print_particle_lists_to_file(self, output_file) -> None:
         # Example implementation for the abstract method

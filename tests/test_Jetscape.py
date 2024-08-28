@@ -93,9 +93,7 @@ def create_temporary_jetscape_file(
             else:
                 num_outputs = output_per_event_list[event_number]
 
-            event_info = (
-                f"#	Event	{event_number+1}	weight	1	EPangle	0	N_hadrons	{num_outputs}\n"
-            )
+            event_info = f"#	Event	{event_number+1}	weight	1	EPangle	0	N_hadrons	{num_outputs}\n"
             f.write(event_info)
 
             # Write particle data line with white space separation

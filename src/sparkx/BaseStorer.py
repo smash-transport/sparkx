@@ -11,7 +11,7 @@ from sparkx.Filter import *
 import numpy as np
 from abc import ABC, abstractmethod
 from typing import List, Union, Tuple, Optional
-from sparkx.Loader.BaseLoader import BaseLoader
+from sparkx.loader.BaseLoader import BaseLoader
 
 
 class BaseStorer(ABC):
@@ -73,7 +73,9 @@ class BaseStorer(ABC):
         Apply spacetime cut to all particles
     """
 
-    def __init__(self, path: Union[str, List[List["Particle"]]], **kwargs) -> None:
+    def __init__(
+        self, path: Union[str, List[List["Particle"]]], **kwargs
+    ) -> None:
         """
         Parameters
         ----------
@@ -298,7 +300,9 @@ class BaseStorer(ABC):
 
         """
 
-        self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
+        self.particle_list_ = remove_particle_species(
+            self.particle_list_, pdg_list
+        )
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -388,7 +392,7 @@ class BaseStorer(ABC):
             cut for all events
         """
 
-        self.particle_list_ = pt_cut(self.particle_list_, cut_value_tuple)
+        self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -481,7 +485,9 @@ class BaseStorer(ABC):
             for all events
         """
 
-        self.particle_list_ = spatial_rapidity_cut(self.particle_list_, cut_value)
+        self.particle_list_ = spacetime_rapidity_cut(
+            self.particle_list_, cut_value
+        )
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -503,7 +509,9 @@ class BaseStorer(ABC):
             Containing only events with a multiplicity >= min_multiplicity
         """
 
-        self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
+        self.particle_list_ = multiplicity_cut(
+            self.particle_list_, min_multiplicity
+        )
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -530,7 +538,9 @@ class BaseStorer(ABC):
         self : BaseStorer object
             Containing only particles complying with the spacetime cut for all events
         """
-        self.particle_list_ = spacetime_cut(self.particle_list_, dim, cut_value_tuple)
+        self.particle_list_ = spacetime_cut(
+            self.particle_list_, dim, cut_value_tuple
+        )
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -541,7 +551,9 @@ class BaseStorer(ABC):
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
         for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1] = len(self.particle_list_[event])
+            self.num_output_per_event_[event][1] = len(
+                self.particle_list_[event]
+            )
 
     @abstractmethod
     def print_particle_lists_to_file(self, output_file) -> None:

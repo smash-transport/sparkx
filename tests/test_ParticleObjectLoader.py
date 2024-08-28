@@ -7,7 +7,7 @@
 #
 # ===================================================
 import pytest
-from sparkx.Loader.ParticleObjectLoader import ParticleObjectLoader
+from sparkx.loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.Filter import *
 
 # Create dummy particles for testing

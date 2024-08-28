@@ -1406,7 +1406,7 @@ class Lattice3D:
             if kernel == "gaussian":
                 # Calculate the Gaussian kernel centered at (x, y, z)
                 kernel_value = multivariate_normal(
-                    mean=[x, y, z], cov=sigma**2 * np.eye(3)
+                    mean=[x, y, z], cov=sigma ** 2 * np.eye(3)
                 )
             elif kernel == "covariant":
                 if (
@@ -1416,7 +1416,7 @@ class Lattice3D:
                 ):
                     raise ValueError("Particle data contains NaN values.")
                 kernel_value = multivariate_normal(
-                    mean=[0, 0], cov=sigma**2 * np.eye(2)
+                    mean=[0, 0], cov=sigma ** 2 * np.eye(2)
                 )
             else:
                 raise ValueError("Unknown kernel type for lattice.")
@@ -1463,7 +1463,7 @@ class Lattice3D:
                         else:
                             diff_space = (xi) ** 2 + (yj) ** 2 + (zk) ** 2
                             gamma = np.sqrt(
-                                1 + particle.p_abs() ** 2 / particle.mass**2
+                                1 + particle.p_abs() ** 2 / particle.mass ** 2
                             )
                             diff_velocity = (
                                 particle.px * (xi)

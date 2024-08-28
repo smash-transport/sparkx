@@ -312,7 +312,7 @@ class PCAFlow(FlowInterface.FlowInterface):
                 self.VnDelta_total_[a][b] -= (
                     self.QnRe_total_[a] * self.QnRe_total_[b]
                     + self.QnIm_total_[a] * self.QnIm_total_[b]
-                ) / self.number_events_**2.0
+                ) / self.number_events_ ** 2.0
 
                 for sub in range(self.number_subcalc_):
                     self.SigmaVnDelta_total_[a][b][

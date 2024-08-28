@@ -103,7 +103,6 @@ def test_get_index_nearest_neighbor_within_range(sample_lattice):
     )
 
 
-
 def test_get_index_nearest_neighbor_at_lower_bound(sample_lattice):
     values = np.linspace(0, 1, 10)
     assert sample_lattice._Lattice3D__get_index_nearest_neighbor(0, values) == 0
@@ -153,7 +152,6 @@ def test_get_indices_nearest_neighbor_at_lower_bounds(sample_lattice):
         0,
         0,
     )
-
 
 
 def test_get_indices_nearest_neighbor_at_upper_bounds(sample_lattice):
@@ -673,8 +671,8 @@ def test_add_particle_data(
         + particle_list_center[0].p_abs() ** 2
         / particle_list_center[0].mass ** 2
     )
-    deltas1 = 0.11111**2 + 0.11111**2 + 0.22222**2
-    deltas2 = 0.22222**2 + 0.33333**2 + 0.22222**2
+    deltas1 = 0.11111 ** 2 + 0.11111 ** 2 + 0.22222 ** 2
+    deltas2 = 0.22222 ** 2 + 0.33333 ** 2 + 0.22222 ** 2
     deltap1 = (-0.11111 - 0.11111 - 2.0 * 0.22222) / (
         gamma * particle_list_center[0].mass
     )
@@ -682,8 +680,8 @@ def test_add_particle_data(
         gamma * particle_list_center[0].mass
     )
     ratio = np.exp(
-        -0.5 * (deltas1**2 + deltap1**2) * (1 / 1e-1) ** 2
-    ) / np.exp(-0.5 * (deltas2**2 + deltap2**2) * (1 / 1e-1) ** 2)
+        -0.5 * (deltas1 ** 2 + deltap1 ** 2) * (1 / 1e-1) ** 2
+    ) / np.exp(-0.5 * (deltas2 ** 2 + deltap2 ** 2) * (1 / 1e-1) ** 2)
     assert np.isclose(
         sample_lattice.get_value_nearest_neighbor(0.444, 0.444, 0.333)
         / sample_lattice.get_value_nearest_neighbor(0.333, 0.222, 0.777),

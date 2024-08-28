@@ -928,7 +928,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            return np.sqrt(self.px**2.0 + self.py**2.0 + self.pz**2.0)
+            return np.sqrt(self.px ** 2.0 + self.py ** 2.0 + self.pz ** 2.0)
 
     def pT_abs(self):
         """
@@ -947,7 +947,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
-            return np.sqrt(self.px**2.0 + self.py**2.0)
+            return np.sqrt(self.px ** 2.0 + self.py ** 2.0)
 
     def phi(self):
         """
@@ -1059,7 +1059,7 @@ class Particle:
             return np.nan
         else:
             if self.t > np.abs(self.z):
-                return np.sqrt(self.t**2.0 - self.z**2.0)
+                return np.sqrt(self.t ** 2.0 - self.z ** 2.0)
             else:
                 raise ValueError("|z| < t not fulfilled")
 
@@ -1091,7 +1091,7 @@ class Particle:
             return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
-                return np.sqrt(self.E**2.0 - self.p_abs() ** 2.0)
+                return np.sqrt(self.E ** 2.0 - self.p_abs() ** 2.0)
             else:
                 warnings.warn(
                     "|E| >= |p| not fulfilled or not within numerical precision! "
@@ -1135,7 +1135,7 @@ class Particle:
         if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         elif abs(self.E) >= abs(self.pz):
-            return np.sqrt(self.E**2.0 - self.pz**2.0)
+            return np.sqrt(self.E ** 2.0 - self.pz ** 2.0)
         else:
             warnings.warn(
                 "|E| >= |pz| not fulfilled or not within numerical precision! "

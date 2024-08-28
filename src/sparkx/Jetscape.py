@@ -6,10 +6,10 @@
 #    GNU General Public License (GPLv3 or later)
 #
 # ===================================================
-    
+
 from sparkx.Filter import *
 import numpy as np
-from sparkx.Loader.JetscapeLoader import JetscapeLoader
+from sparkx.loader.JetscapeLoader import JetscapeLoader
 from sparkx.BaseStorer import BaseStorer
 from typing import List, Tuple, Union, Dict, Optional
 
@@ -166,7 +166,8 @@ class Jetscape(BaseStorer):
         self,
         JETSCAPE_FILE: str,
         **kwargs: Dict[
-            str, Union[int, Tuple[int, int], Dict[str, Union[int, Tuple[int, int]]]]
+            str,
+            Union[int, Tuple[int, int], Dict[str, Union[int, Tuple[int, int]]]],
         ],
     ):
         super().__init__(JETSCAPE_FILE, **kwargs)
@@ -181,13 +182,17 @@ class Jetscape(BaseStorer):
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
 
-    def create_loader(self, JETSCAPE_FILE: Union[str, List[List["Particle"]]]) -> None:
+    def create_loader(
+        self, JETSCAPE_FILE: Union[str, List[List["Particle"]]]
+    ) -> None:
         if not isinstance(JETSCAPE_FILE, str):
             raise TypeError("The JETSCAPE_FILE must be a path.")
         self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def _particle_as_list(self, particle: "Particle") -> List[Union[int, float]]:
+    def _particle_as_list(
+        self, particle: "Particle"
+    ) -> List[Union[int, float]]:
         particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)
@@ -235,7 +240,9 @@ class Jetscape(BaseStorer):
 
         return self
 
-    def spacetime_cut(self, dim: str, cut_value_tuple: Tuple[float, float]) -> None:
+    def spacetime_cut(
+        self, dim: str, cut_value_tuple: Tuple[float, float]
+    ) -> None:
         """
         Raises an error because spacetime cuts are not possible for Jetscape events.
 

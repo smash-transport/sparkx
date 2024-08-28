@@ -468,14 +468,10 @@ def test_rapidity_cut(particle_list_rapidity):
     ) in test_cases:
         if expected_warning:
             with pytest.warns(expected_warning):
-                result = rapidity_cut(
-                    particle_list_momentum_rapidity, cut_value
-                )
+                result = rapidity_cut(particle_list_rapidity, cut_value)
         elif expected_error:
             with pytest.raises(expected_error):
-                result = rapidity_cut(
-                    particle_list_momentum_rapidity, cut_value
-                )
+                result = rapidity_cut(particle_list_rapidity, cut_value)
         else:
             result = rapidity_cut(particle_list_rapidity, cut_value)
             assert result == expected_result
@@ -535,6 +531,7 @@ def particle_list_spacetime_rapidity():
         p.z = i
         particle_list.append(p)
     return [particle_list]
+
 
 def test_spacetime_rapidity_cut(particle_list_spacetime_rapidity):
     test_cases = [

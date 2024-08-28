@@ -9,7 +9,7 @@
 
 from sparkx.Filter import *
 import numpy as np
-from sparkx.Loader.ParticleObjectLoader import ParticleObjectLoader
+from sparkx.loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.BaseStorer import BaseStorer
 from typing import List, Dict, Tuple, Optional, Union
 
@@ -223,6 +223,10 @@ class ParticleObjectStorer(BaseStorer):
         None
         """
         with open(filename, "w") as f:
+            if not isinstance(self.particle_list_, list):
+                raise TypeError(
+                    "The particle_list must be a list of lists of Particle objects"
+                )
             for event in self.particle_list_:
                 for particle in event:
                     # Extract the attributes from the particle object

@@ -63,7 +63,6 @@ def test_jet_analysis(jet_analysis_instance, test_data, tmp_path):
     assert hf.compare_nested_lists(list_from_file, generated_list)
 
 
-
 def test_read_jet_data(jet_analysis_instance, tmp_path):
     # Define test data
     test_jet_data = [

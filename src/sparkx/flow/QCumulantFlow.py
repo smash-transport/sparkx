@@ -161,7 +161,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # weighted variance
             variance = np.sum(W2 * np.square(difference)) / sum_W2
             # unbiased variance^2
-            variance_sq = variance / (1.0 - sum_W2_sq / (sum_W2**2.0))
+            variance_sq = variance / (1.0 - sum_W2_sq / (sum_W2 ** 2.0))
             # error of <<2>>, Eq. (C18) Ref. [1]
             corr_err = np.sqrt(sum_W2_sq * variance_sq) / sum_W2
 
@@ -201,7 +201,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # weighted variance
             variance = np.sum(W4 * np.square(difference)) / sum_W4
             # unbiased variance^2
-            variance_sq = variance / (1.0 - sum_W4_sq / (sum_W4**2.0))
+            variance_sq = variance / (1.0 - sum_W4_sq / (sum_W4 ** 2.0))
             # error of <<4>>, Eq. (C18) Ref. [1]
             corr_err = np.sqrt(sum_W4_sq * variance_sq) / sum_W4
 
@@ -308,7 +308,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # weighted variance
             variance = np.sum(W6 * np.square(difference)) / sum_W6
             # unbiased variance^2
-            variance_sq = variance / (1.0 - sum_W6_sq / (sum_W6**2.0))
+            variance_sq = variance / (1.0 - sum_W6_sq / (sum_W6 ** 2.0))
             # error of <<6>>, Eq. (C18) Ref. [1]
             corr_err = np.sqrt(sum_W6_sq * variance_sq) / sum_W6
 
@@ -591,7 +591,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
             # returns <v_n{2}> and s_{<v_n{2}>}, Eqs. (C22),(C23) Ref. [1]
             avg_vn2 = self.__flow_from_cumulant(n2_corr)
-            avg_vn2_err_sq = (1.0 / (4.0 * n2_corr)) * n2_corr_err**2.0
+            avg_vn2_err_sq = (1.0 / (4.0 * n2_corr)) * n2_corr_err ** 2.0
 
             return avg_vn2, np.sqrt(avg_vn2_err_sq)
 
@@ -599,15 +599,15 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             n2_corr, n2_corr_err, ebe_2p_corr = self.__calculate_corr(phi, k=2)
             n4_corr, n4_corr_err, ebe_4p_corr = self.__calculate_corr(phi, k=4)
 
-            QC4 = n4_corr - 2.0 * n2_corr**2.0
+            QC4 = n4_corr - 2.0 * n2_corr ** 2.0
             avg_vn4 = self.__flow_from_cumulant(QC4)
 
             # compute Eq. (C28) Ref. [1]
             avg_vn4_err_sq = (
-                1.0 / (2.0 * n2_corr**2.0 - n4_corr) ** (3.0 / 2)
+                1.0 / (2.0 * n2_corr ** 2.0 - n4_corr) ** (3.0 / 2)
             ) * (
-                n2_corr**2.0 * n2_corr_err**2.0
-                + (1.0 / 16.0) * n4_corr_err**2.0
+                n2_corr ** 2.0 * n2_corr_err ** 2.0
+                + (1.0 / 16.0) * n4_corr_err ** 2.0
                 - (1.0 / 2.0)
                 * n2_corr
                 * self.__cov_term(2, 4, phi, ebe_2p_corr, ebe_4p_corr)
@@ -621,7 +621,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             n4_corr, n4_corr_err, ebe_4p_corr = self.__calculate_corr(phi, k=4)
             n6_corr, n6_corr_err, ebe_6p_corr = self.__calculate_corr(phi, k=6)
 
-            QC6 = n6_corr - 9.0 * n2_corr * n4_corr + 12.0 * n2_corr**3.0
+            QC6 = n6_corr - 9.0 * n2_corr * n4_corr + 12.0 * n2_corr ** 3.0
             avg_vn6 = self.__flow_from_cumulant(QC6)
 
             # compute Eq. (C32) Ref. [1]
@@ -630,15 +630,15 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                 * (1.0 / (QC6) ** (5.0 / 3.0))
                 * (
                     (9.0 / 2.0)
-                    * (4.0 * n2_corr**2.0 - n4_corr) ** 2.0
-                    * n2_corr_err**2.0
-                    + (9.0 / 2.0) * n2_corr**2.0 * n4_corr_err**2.0
-                    + (1.0 / 18.0) * n6_corr_err**2.0
+                    * (4.0 * n2_corr ** 2.0 - n4_corr) ** 2.0
+                    * n2_corr_err ** 2.0
+                    + (9.0 / 2.0) * n2_corr ** 2.0 * n4_corr_err ** 2.0
+                    + (1.0 / 18.0) * n6_corr_err ** 2.0
                     - 9.0
                     * n2_corr
-                    * (4.0 * n2_corr**2.0 - n4_corr)
+                    * (4.0 * n2_corr ** 2.0 - n4_corr)
                     * self.__cov_term(2, 4, phi, ebe_2p_corr, ebe_4p_corr)
-                    + (4.0 * n2_corr**2.0 - n4_corr)
+                    + (4.0 * n2_corr ** 2.0 - n4_corr)
                     * self.__cov_term(2, 6, phi, ebe_2p_corr, ebe_6p_corr)
                     - n2_corr
                     * self.__cov_term(4, 6, phi, ebe_4p_corr, ebe_6p_corr)
@@ -730,8 +730,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         corr2_err = np.sqrt(np.vdot(w2, w2) * variance_sq) / np.sum(w2)
 
         avg_vn2_err_sq = (1.0 / (4.0 * full_event_quantities[2] ** 3.0)) * (
-            corr2**2.0 * full_event_quantities[3] ** 2.0
-            + 4.0 * full_event_quantities[2] ** 2.0 * corr2_err**2.0
+            corr2 ** 2.0 * full_event_quantities[3] ** 2.0
+            + 4.0 * full_event_quantities[2] ** 2.0 * corr2_err ** 2.0
             - 4.0
             * full_event_quantities[2]
             * corr2
@@ -792,13 +792,13 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             multiplicity_prefac = M * (M - 1) * (M - 2) * (M - 3)
 
             avg_vn4_err_sq = (1.0 / minus_cn4 ** (7.0 / 2.0)) * (
-                term1**2.0 * full_event_quantities[3] ** 2.0
-                + (9.0 / 16.0) * term2**2.0 * full_event_quantities[7] ** 2.0
+                term1 ** 2.0 * full_event_quantities[3] ** 2.0
+                + (9.0 / 16.0) * term2 ** 2.0 * full_event_quantities[7] ** 2.0
                 + 4.0
                 * full_event_quantities[2] ** 2.0
-                * minus_cn4**2.0
-                * corr2_err**2.0
-                + minus_cn4**2.0 * corr4_err**2.0
+                * minus_cn4 ** 2.0
+                * corr2_err ** 2.0
+                + minus_cn4 ** 2.0 * corr4_err ** 2.0
                 - (3.0 / 2.0)
                 * term2
                 * term1
@@ -836,7 +836,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                 )
                 - 4.0
                 * full_event_quantities[2]
-                * minus_cn4**2.0
+                * minus_cn4 ** 2.0
                 * self.__cov_term_differential(w2, w4, corr2_ev, corr4_ev)
             )
 

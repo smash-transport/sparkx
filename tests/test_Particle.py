@@ -350,7 +350,6 @@ def test_initialize_from_array_invalid_format():
         )
 
 
-
 def test_initialize_from_array_corrupted_data():
     format1 = "Oscar2013"
     # Provide an array with incorrect length to trigger ValueError
@@ -616,8 +615,8 @@ def test_pseudorapidity_valid_values():
     result = p.pseudorapidity()
 
     expected_result = 0.5 * np.log(
-        (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) + 3.0)
-        / (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) - 3.0)
+        (np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2) + 3.0)
+        / (np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2) - 3.0)
     )
 
     assert np.isclose(result, expected_result)
@@ -672,7 +671,6 @@ def test_spacetime_rapidity_invalid_values():
 
     with pytest.raises(ValueError, match=r"|z| < t not fulfilled"):
         p.spacetime_rapidity()
-
 
 
 def test_proper_time_valid_values():
@@ -792,7 +790,7 @@ def test_mT_valid_values():
         p.pz = p_z
 
         result = p.mT()
-        expected_result = np.sqrt(energy**2 - p_z**2)
+        expected_result = np.sqrt(energy ** 2 - p_z ** 2)
 
         assert np.isclose(result, expected_result)
 
