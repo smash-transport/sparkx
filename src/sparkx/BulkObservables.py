@@ -61,8 +61,8 @@ class BulkObservables:
     This is the base method for all differential yields. It is called by all 
     corresponding methods for each specific differential yield
     """
-    def _differential_yield(self, quantity, bins=(-4, 4, 21)):
-        hist = Histogram(bins)
+    def _differential_yield(self, quantity, bin_properties=(-4, 4, 21)):
+        hist = Histogram(bin_properties)
         num_events = len(self.particle_objects)
         inverse_bin_width = 1/hist.bin_width()
         
@@ -85,71 +85,176 @@ class BulkObservables:
         hist.scale_histogram(inverse_bin_width)
         return hist
 
+
     # PUBLIC CLASS METHODS
-    def dNdy(self, bins=None):
+    def dNdy(self, bin_properties=None):
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dy}`
 
         Args:
-        - bins: Optional tuple (start, stop, num) for histogram binning. If 
+        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
           not given, the default of differential_yield() will be used
 
         Returns:
         - 1D histogram containing the event averaged particle counts per 
           rapidity bin.
         """
-        if bins is None:
+        if bin_properties is None:
             return self._differential_yield("rapidity")
         else:
-            return self._differential_yield("rapidity", bins)
+            return self._differential_yield("rapidity", bin_properties)
 
-    def dNdpT(self, bins=None):
+
+    def dNdpT(self, bin_properties=None):
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`
 
         Args:
-        - bins: Optional tuple (start, stop, num) for histogram binning. If 
+        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
           not given, the default of differential_yield() will be used
 
         Returns:
         - 1D histogram containing the event averaged particle counts per 
           transverse momentum bin.
         """
-        if bins is None:
+        if bin_properties is None:
             return self._differential_yield("pT_abs")
         else:
-            return self._differential_yield("pT_abs", bins)
-        
-    def dNdEta(self, bins=None):
+            return self._differential_yield("pT_abs", bin_properties)
+
+
+    def dNdEta(self, bin_properties=None):
         """
         Calculate the event averaged yield :math:`\\frac{dN}{d\eta}`
 
         Args:
-        - bins: Optional tuple (start, stop, num) for histogram binning. If 
+        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
           not given, the default of differential_yield() will be used
 
         Returns:
         - 1D histogram containing the event averaged particle counts per 
           pseudo-rapidity bin.
         """
-        if bins is None:
+        if bin_properties is None:
             return self._differential_yield("pseudorapidity")
         else:
-            return self._differential_yield("pseudorapidity", bins)
+            return self._differential_yield("pseudorapidity", bin_properties)
 
-    def dNdmT(self, bins=None):
+
+    def dNdmT(self, bin_properties=None):
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`
 
         Args:
-        - bins: Optional tuple (start, stop, num) for histogram binning. If
+        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
           not given, the default of differential_yield() will be used
 
         Returns:
         - 1D histogram containing the event averaged particle counts per
           transverse mass bin.
         """
-        if bins is None:
+        if bin_properties is None:
             return self._differential_yield("mT")
         else:
-            return self._differential_yield("mT", bins)
+            return self._differential_yield("mT", bin_properties)
+
+
+    def mid_rapidity_yield(self, y_width=1):
+        """
+        Calculate the event-averaged particle yield at mid-rapidity.
+
+        Args:
+        - y_width (float): The rapidity window width, centered at 0, within which
+        particles are counted. The default value is 1, meaning the function
+        will count particles with rapidity between -0.5 and 0.5.
+
+        Returns:
+        - float: The average number of particles per event that fall within the
+        specified rapidity range.
+
+        """
+        if y_width <= 0:
+            raise ValueError("y_width must be a positive number.")
+
+        num_events = len(self.particle_objects)
+        if num_events == 0:
+            return 0
+
+        particle_counter = 0
+        # Fill histograms
+        for event in self.particle_objects:
+            for particle in event:
+                if -y_width/2 <= particle.rapidity() <= y_width/2:
+                    particle_counter += 1
+
+        return particle_counter/num_events
+
+
+    def mid_rapidity_mean_pT(self, y_width=1):
+        """
+        Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
+
+        Args:
+        - y_width (float): The rapidity window width, centered at 0, within which
+        particles are counted. The default value is 1, meaning the function
+        will count particles with rapidity between -0.5 and 0.5.
+
+        Returns:
+        - float: The average pT of particles per event that fall within the
+        specified rapidity range.
+
+        """
+        if y_width <= 0:
+            raise ValueError("y_width must be a positive number.")
+
+        num_events = len(self.particle_objects)
+        if num_events == 0:
+            return 0
+
+        pT_sum = 0
+        particle_counter = 0
+        # Fill histograms
+        for event in self.particle_objects:
+            for particle in event:
+                particle_counter += 1
+                if -y_width/2 <= particle.rapidity() <= y_width/2:
+                    pT_sum += particle.pT()
+            pT_sum /= particle_counter
+            particle_counter = 0
+
+        return pT_sum/num_events
+
+
+    def mid_rapidity_mean_mT(self, y_width=1):
+        """
+        Calculate the event-averaged mean transverse mass mT at mid-rapidity.
+
+        Args:
+        - y_width (float): The rapidity window width, centered at 0, within which
+        particles are counted. The default value is 1, meaning the function
+        will count particles with rapidity between -0.5 and 0.5.
+
+        Returns:
+        - float: The average mT of particles per event that fall within the
+        specified rapidity range.
+
+        """
+        if y_width <= 0:
+            raise ValueError("y_width must be a positive number.")
+
+        num_events = len(self.particle_objects)
+        if num_events == 0:
+            return 0
+
+        pT_sum = 0
+        particle_counter = 0
+        # Fill histograms
+        for event in self.particle_objects:
+            for particle in event:
+                particle_counter += 1
+                if -y_width/2 <= particle.rapidity() <= y_width/2:
+                    pT_sum += particle.mT()
+            pT_sum /= particle_counter
+            particle_counter = 0
+
+        return pT_sum/num_events
