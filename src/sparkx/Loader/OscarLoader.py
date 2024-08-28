@@ -68,7 +68,6 @@ class OscarLoader(BaseLoader):
     num_output_per_event_: np.ndarray
 
     def __init__(self, OSCAR_FILE: str):
-
         """
         Constructor for the OscarLoader class.
 
@@ -274,7 +273,10 @@ class OscarLoader(BaseLoader):
             and first_line_list[1] == "Photons"
         ):
             self.oscar_format_ = "Oscar2013Extended_Photons"
-        elif len(first_line_list) == 23 or first_line_list[0] == "#!OSCAR2013Extended":
+        elif (
+            len(first_line_list) == 23
+            or first_line_list[0] == "#!OSCAR2013Extended"
+        ):
             self.oscar_format_ = "Oscar2013Extended"
         else:
             raise TypeError(
@@ -327,7 +329,9 @@ class OscarLoader(BaseLoader):
             for i in range(event_start, event_end + 1):
                 cumulated_lines += int(self.num_output_per_event_[i, 1] + 2)
         else:
-            raise TypeError("Value given as flag events is not of type int or a tuple")
+            raise TypeError(
+                "Value given as flag events is not of type int or a tuple"
+            )
 
         return cumulated_lines
 
@@ -369,7 +373,9 @@ class OscarLoader(BaseLoader):
                 if filters_dict["strange_particles"]:
                     event = strange_particles(event)
             elif i == "particle_species":
-                event = particle_species(event, filters_dict["particle_species"])
+                event = particle_species(
+                    event, filters_dict["particle_species"]
+                )
             elif i == "remove_particle_species":
                 event = remove_particle_species(
                     event, filters_dict["remove_particle_species"]
@@ -399,13 +405,17 @@ class OscarLoader(BaseLoader):
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
-                event = pseudorapidity_cut(event, filters_dict["pseudorapidity_cut"])
+                event = pseudorapidity_cut(
+                    event, filters_dict["pseudorapidity_cut"]
+                )
             elif i == "spatial_rapidity_cut":
                 event = spatial_rapidity_cut(
                     event, filters_dict["spatial_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
-                event = multiplicity_cut(event, filters_dict["multiplicity_cut"])
+                event = multiplicity_cut(
+                    event, filters_dict["multiplicity_cut"]
+                )
             else:
                 raise ValueError("The cut is unknown!")
 
@@ -460,7 +470,9 @@ class OscarLoader(BaseLoader):
                     continue
                 elif "#" in line and "end" in line:
                     if "filters" in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters([data], kwargs["filters"])[0]
+                        data = self.__apply_kwargs_filters(
+                            [data], kwargs["filters"]
+                        )[0]
                         self.num_output_per_event_[len(particle_list)] = (
                             len(particle_list),
                             len(data),
@@ -576,4 +588,6 @@ class OscarLoader(BaseLoader):
                     else:
                         continue
 
-        self.num_output_per_event_ = np.array(event_output, dtype=np.int32, ndmin=2)
+        self.num_output_per_event_ = np.array(
+            event_output, dtype=np.int32, ndmin=2
+        )

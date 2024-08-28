@@ -476,7 +476,7 @@ def test_p_abs_valid_values():
 
     result = p.p_abs()
 
-    expected_result = np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2)
+    expected_result = np.sqrt(1.0**2 + 2.0**2 + 3.0**2)
 
     assert np.isclose(result, expected_result)
 
@@ -508,7 +508,7 @@ def test_pT_abs_valid_values():
 
     result = p.pT_abs()
 
-    expected_result = np.sqrt(1.0 ** 2 + 2.0 ** 2)
+    expected_result = np.sqrt(1.0**2 + 2.0**2)
 
     assert np.isclose(result, expected_result)
 
@@ -581,7 +581,7 @@ def test_theta_valid_values():
 
     result = p.theta()
 
-    expected_result = np.arccos(3.0 / np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2))
+    expected_result = np.arccos(3.0 / np.sqrt(1.0**2 + 2.0**2 + 3.0**2))
 
     assert np.isclose(result, expected_result)
 
@@ -615,8 +615,8 @@ def test_pseudorapidity_valid_values():
     result = p.pseudorapidity()
 
     expected_result = 0.5 * np.log(
-        (np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2) + 3.0)
-        / (np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2) - 3.0)
+        (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) + 3.0)
+        / (np.sqrt(1.0**2 + 2.0**2 + 3.0**2) - 3.0)
     )
 
     assert np.isclose(result, expected_result)
@@ -680,7 +680,7 @@ def test_proper_time_valid_values():
 
     result = p.proper_time()
 
-    expected_result = np.sqrt(5.0 ** 2 - 3.0 ** 2)
+    expected_result = np.sqrt(5.0**2 - 3.0**2)
 
     assert np.isclose(result, expected_result)
 
@@ -712,7 +712,7 @@ def test_mass_from_energy_momentum_valid_values():
 
     result = p.mass_from_energy_momentum()
 
-    expected_result = np.sqrt(3.0 ** 2 - (1.0 ** 2 + 2.0 ** 2 + 2.0 ** 2))
+    expected_result = np.sqrt(3.0**2 - (1.0**2 + 2.0**2 + 2.0**2))
 
     assert np.isclose(result, expected_result)
 
@@ -790,7 +790,7 @@ def test_mT_valid_values():
         p.pz = p_z
 
         result = p.mT()
-        expected_result = np.sqrt(energy ** 2 - p_z ** 2)
+        expected_result = np.sqrt(energy**2 - p_z**2)
 
         assert np.isclose(result, expected_result)
 

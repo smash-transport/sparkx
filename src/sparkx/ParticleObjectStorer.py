@@ -109,7 +109,7 @@ class ParticleObjectStorer(BaseStorer):
     def __init__(
         self,
         particle_object_list: List[List["Particle"]],
-        **kwargs: Dict[str, Optional[Tuple[int, int]]]
+        **kwargs: Dict[str, Optional[Tuple[int, int]]],
     ) -> None:
         """
         Initializes a new instance of the DummyStorer class.

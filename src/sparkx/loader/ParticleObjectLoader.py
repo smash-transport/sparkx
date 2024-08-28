@@ -16,7 +16,6 @@ class ParticleObjectLoader(BaseLoader):
     def __init__(
         self, particle_list: Union[str, List[List["Particle"]]]
     ) -> None:
-
         """
         Initializes a new instance of the ParticelObjectLoader class.
 

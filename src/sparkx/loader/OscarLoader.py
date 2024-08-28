@@ -68,7 +68,6 @@ class OscarLoader(BaseLoader):
     num_output_per_event_: np.ndarray
 
     def __init__(self, OSCAR_FILE: str):
-
         """
         Constructor for the OscarLoader class.
 

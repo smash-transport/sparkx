@@ -268,7 +268,9 @@ class Oscar(BaseStorer):
         """
         header: List[str] = []
         format_oscar2013: str = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d"
-        format_oscar2013_extended: str = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
+        format_oscar2013_extended: str = (
+            "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
+        )
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             counter_line = 0

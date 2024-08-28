@@ -42,7 +42,6 @@ class JetscapeLoader(BaseLoader):
     """
 
     def __init__(self, JETSCAPE_FILE: str):
-
         """
         Sets the number of output lines per event and the event footers in the OSCAR data file.
 
@@ -71,7 +70,9 @@ class JetscapeLoader(BaseLoader):
         self.num_output_per_event_: np.ndarray = np.array([])
         self.num_events_: int = 0
 
-    def load(self, **kwargs: Any) -> Tuple[List[List[Particle]], int, np.ndarray]:
+    def load(
+        self, **kwargs: Any
+    ) -> Tuple[List[List[Particle]], int, np.ndarray]:
         """
         Loads the data from the JETSCAPE file based on the specified optional arguments.
 
@@ -136,9 +137,12 @@ class JetscapeLoader(BaseLoader):
             ):
                 self.particle_type_ = self.optional_arguments_["particletype"]
             else:
-                raise ValueError("'particletype' has to be 'hadron' or 'parton'")
-        elif "particletype" in self.optional_arguments_.keys() and not isinstance(
-            self.optional_arguments_["particletype"], str
+                raise ValueError(
+                    "'particletype' has to be 'hadron' or 'parton'"
+                )
+        elif (
+            "particletype" in self.optional_arguments_.keys()
+            and not isinstance(self.optional_arguments_["particletype"], str)
         ):
             raise TypeError("'particletype' is not given as a string value")
 
@@ -238,7 +242,9 @@ class JetscapeLoader(BaseLoader):
             for i in range(event_start, event_end + 1):
                 cumulated_lines += int(self.num_output_per_event_[i, 1] + 1)
         else:
-            raise TypeError("Value given as flag events is not of type int or a tuple")
+            raise TypeError(
+                "Value given as flag events is not of type int or a tuple"
+            )
 
         # +1 for the end line in Jetscape format
         return cumulated_lines + 1
@@ -281,7 +287,9 @@ class JetscapeLoader(BaseLoader):
                 if filters_dict["strange_particles"]:
                     event = strange_particles(event)
             elif i == "particle_species":
-                event = particle_species(event, filters_dict["particle_species"])
+                event = particle_species(
+                    event, filters_dict["particle_species"]
+                )
             elif i == "remove_particle_species":
                 event = remove_particle_species(
                     event, filters_dict["remove_particle_species"]
@@ -295,13 +303,17 @@ class JetscapeLoader(BaseLoader):
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
-                event = pseudorapidity_cut(event, filters_dict["pseudorapidity_cut"])
+                event = pseudorapidity_cut(
+                    event, filters_dict["pseudorapidity_cut"]
+                )
             elif i == "spatial_rapidity_cut":
                 event = spatial_rapidity_cut(
                     event, filters_dict["spatial_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
-                event = multiplicity_cut(event, filters_dict["multiplicity_cut"])
+                event = multiplicity_cut(
+                    event, filters_dict["multiplicity_cut"]
+                )
             elif i == "particle_status":
                 event = particle_status(event, filters_dict["particle_status"])
             else:
@@ -353,7 +365,9 @@ class JetscapeLoader(BaseLoader):
                     raise IndexError("Index out of range of JETSCAPE file")
                 elif "#" in line and "sigmaGen" in line:
                     if "filters" in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters([data], kwargs["filters"])[0]
+                        data = self.__apply_kwargs_filters(
+                            [data], kwargs["filters"]
+                        )[0]
                         self.num_output_per_event_[len(particle_list)] = (
                             len(particle_list) + 1,
                             len(data),
@@ -365,7 +379,9 @@ class JetscapeLoader(BaseLoader):
                         + 'line or does not contain "weight"'
                     )
                 elif "Event" in line and "weight" in line:
-                    line_list = line.replace("\n", "").replace("\t", " ").split(" ")
+                    line_list = (
+                        line.replace("\n", "").replace("\t", " ").split(" ")
+                    )
                     first_event_header = 1
                     if "events" in self.optional_arguments_.keys():
                         if isinstance(kwargs["events"], int):
@@ -393,7 +409,9 @@ class JetscapeLoader(BaseLoader):
                         particle_list.append(data)
                         data = []
                 else:
-                    line_list = line.replace("\n", "").replace("\t", " ").split(" ")
+                    line_list = (
+                        line.replace("\n", "").replace("\t", " ").split(" ")
+                    )
                     particle = Particle("JETSCAPE", line_list)
                     data.append(particle)
 
@@ -443,8 +461,12 @@ class JetscapeLoader(BaseLoader):
                 line = jetscape_file.readline()
                 if not line:
                     break
-                elif "#" in line and self.particle_type_defining_string_ in line:
-                    line_str = line.replace("\n", "").replace("\t", " ").split(" ")
+                elif (
+                    "#" in line and self.particle_type_defining_string_ in line
+                ):
+                    line_str = (
+                        line.replace("\n", "").replace("\t", " ").split(" ")
+                    )
                     event = line_str[2]
                     num_output = line_str[8]
                     event_output.append([event, num_output])

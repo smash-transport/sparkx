@@ -80,7 +80,9 @@ class BaseLoader(ABC):
             If one or more elements inside the event tuple are not integers.
         """
         if not all(isinstance(event, int) for event in events_tuple):
-            raise TypeError("All elements inside the event tuple must be integers.")
+            raise TypeError(
+                "All elements inside the event tuple must be integers."
+            )
 
     def _get_num_skip_lines(self) -> int:
         """

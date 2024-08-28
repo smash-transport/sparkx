@@ -196,7 +196,7 @@ class GenerateFlow:
                 if all(rand_values):
                     rand_a, rand_b, rand_c = rand_values
                     momentum_radial = temperature * (rand_a + rand_b + rand_c)
-                    energy = np.sqrt(momentum_radial ** 2.0 + mass ** 2.0)
+                    energy = np.sqrt(momentum_radial**2.0 + mass**2.0)
                     if rd.uniform(0.0, 1.0) < np.exp(
                         (momentum_radial - energy) / temperature
                     ):
@@ -204,9 +204,9 @@ class GenerateFlow:
         else:
             while True:
                 r0 = rd.uniform(0.0, 1.0)
-                I1 = mass ** 2.0
+                I1 = mass**2.0
                 I2 = 2.0 * mass * temperature
-                I3 = 2.0 * temperature ** 2.0
+                I3 = 2.0 * temperature**2.0
                 Itot = I1 + I2 + I3
                 K = 0.0
                 if r0 < I1 / Itot:
@@ -544,7 +544,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%d %d %d %g %g %g %g\n"
@@ -636,7 +636,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%d %d %d %g %g %g %g\n"
@@ -740,7 +740,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%d %d %d %g %g %g %g\n"
@@ -850,7 +850,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%d %d %d %g %g %g %g\n"
@@ -933,7 +933,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%g %g %g %g %g %g %g %g %g %d %d %d\n"
@@ -1034,7 +1034,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%g %g %g %g %g %g %g %g %g %d %d %d\n"
@@ -1147,7 +1147,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%g %g %g %g %g %g %g %g %g %d %d %d\n"
@@ -1266,7 +1266,7 @@ class GenerateFlow:
                         self.px_[particle] ** 2.0
                         + self.py_[particle] ** 2.0
                         + self.pz_[particle] ** 2.0
-                        + mass ** 2.0
+                        + mass**2.0
                     )
                     output.write(
                         "%g %g %g %g %g %g %g %g %g %d %d %d\n"

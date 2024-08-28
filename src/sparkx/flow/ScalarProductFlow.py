@@ -295,7 +295,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
                 number_of_particles += weight
                 flowvalue += flow_particle_list[event][particle] * weight
                 flowvalue_squared += (
-                    flow_particle_list[event][particle] ** 2.0 * weight ** 2.0
+                    flow_particle_list[event][particle] ** 2.0 * weight**2.0
                 )
 
         vn_integrated = 0.0
@@ -305,8 +305,8 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             sigma = 0.0
         else:
             vn_integrated = flowvalue / number_of_particles
-            vn_squared = flowvalue_squared / number_of_particles ** 2.0
-            std_deviation = np.sqrt(vn_integrated ** 2.0 - vn_squared)
+            vn_squared = flowvalue_squared / number_of_particles**2.0
+            std_deviation = np.sqrt(vn_integrated**2.0 - vn_squared)
             sigma = std_deviation / np.sqrt(number_of_particles)
 
         return vn_integrated, sigma

@@ -6,6 +6,7 @@ from typing import Dict, Any
 
 # Assuming BaseLoader is imported from the appropriate module
 
+
 # A concrete subclass for testing purposes
 class ConcreteLoader(BaseLoader):
     def __init__(self, path: str) -> None:

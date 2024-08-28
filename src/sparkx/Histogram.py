@@ -569,7 +569,7 @@ class Histogram:
         self.histograms_ = average
         self.error_ = np.sqrt(variance)
         self.systematic_error_ = np.sqrt(
-            np.average(self.systematic_error_ ** 2.0, axis=0, weights=weights)
+            np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
         self.scaling_ = self.scaling_[0]
@@ -604,7 +604,7 @@ class Histogram:
                 "Error cannot be zero for any entry when averaging by error."
             )
 
-        weights = 1 / self.error_ ** 2
+        weights = 1 / self.error_**2
         average = np.average(self.histograms_, axis=0, weights=weights)
 
         self.histograms_ = average
@@ -612,7 +612,7 @@ class Histogram:
             1.0 / np.sum(1.0 / np.square(self.error_), axis=0)
         )
         self.systematic_error_ = np.sqrt(
-            np.average(self.systematic_error_ ** 2.0, axis=0, weights=weights)
+            np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
         self.scaling_ = self.scaling_[0]

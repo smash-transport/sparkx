@@ -42,7 +42,6 @@ class JetscapeLoader(BaseLoader):
     """
 
     def __init__(self, JETSCAPE_FILE: str):
-
         """
         Sets the number of output lines per event and the event footers in the OSCAR data file.
 

@@ -13,8 +13,9 @@ from typing import List, Tuple, Dict, Union, Any
 
 
 class ParticleObjectLoader(BaseLoader):
-    def __init__(self, particle_list: Union[str, List[List["Particle"]]]) -> None:
-
+    def __init__(
+        self, particle_list: Union[str, List[List["Particle"]]]
+    ) -> None:
         """
         Initializes a new instance of the ParticelObjectLoader class.
 
@@ -40,7 +41,9 @@ class ParticleObjectLoader(BaseLoader):
             )
         self.particle_list_: List[List["Particle"]] = particle_list
 
-    def load(self, **kwargs: Any) -> Tuple[List[List["Particle"]], int, List[int]]:
+    def load(
+        self, **kwargs: Any
+    ) -> Tuple[List[List["Particle"]], int, List[int]]:
         """
         Loads the data from the dummy input based on the specified optional arguments.
 
@@ -148,7 +151,9 @@ class ParticleObjectLoader(BaseLoader):
                 if filters_dict["strange_particles"]:
                     event = strange_particles(event)
             elif i == "particle_species":
-                event = particle_species(event, filters_dict["particle_species"])
+                event = particle_species(
+                    event, filters_dict["particle_species"]
+                )
             elif i == "remove_particle_species":
                 event = remove_particle_species(
                     event, filters_dict["remove_particle_species"]
@@ -174,13 +179,17 @@ class ParticleObjectLoader(BaseLoader):
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
-                event = pseudorapidity_cut(event, filters_dict["pseudorapidity_cut"])
+                event = pseudorapidity_cut(
+                    event, filters_dict["pseudorapidity_cut"]
+                )
             elif i == "spatial_rapidity_cut":
                 event = spatial_rapidity_cut(
                     event, filters_dict["spatial_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
-                event = multiplicity_cut(event, filters_dict["multiplicity_cut"])
+                event = multiplicity_cut(
+                    event, filters_dict["multiplicity_cut"]
+                )
             else:
                 raise ValueError("The cut is unknown!")
 
@@ -188,7 +197,9 @@ class ParticleObjectLoader(BaseLoader):
 
     # PUBLIC CLASS METHODS
 
-    def set_particle_list(self, kwargs: Dict[str, Any]) -> List[List["Particle"]]:
+    def set_particle_list(
+        self, kwargs: Dict[str, Any]
+    ) -> List[List["Particle"]]:
         """
         Set the particle list based on the filters applied.
 
@@ -210,7 +221,9 @@ class ParticleObjectLoader(BaseLoader):
             elif isinstance(kwargs["events"], tuple):
                 event_start = kwargs["events"][0]
                 event_end = kwargs["events"][1]
-                self.particle_list_ = self.particle_list_[event_start : event_end + 1]
+                self.particle_list_ = self.particle_list_[
+                    event_start : event_end + 1
+                ]
 
         if "filters" in kwargs.keys():
             self.particle_list_ = [

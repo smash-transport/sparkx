@@ -4,6 +4,7 @@ from sparkx.Particle import Particle
 from sparkx.loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.ParticleObjectStorer import ParticleObjectStorer
 
+
 # Utility function to create particles
 def create_particle(
     t,
