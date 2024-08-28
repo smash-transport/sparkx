@@ -188,21 +188,6 @@ class Jetscape(BaseStorer):
 
         return particle_list
 
-    def particle_objects_list(self) -> Optional[List[List[List[Union[int, float]]]]]:
-        """
-        Returns a nested python list containing all quantities from the
-        current Jetscape data as numerical values with the following shape:
-
-            | Single Event:    [output_line][particle_quantity]
-            | Multiple Events: [event][output_line][particle_quantity]
-
-        Returns
-        -------
-        list
-            Nested list containing the current Jetscape data
-        """
-        return self.particle_list_
-
     def __update_num_output_per_event_after_filter(self) -> None:
         if self.particle_list_ is None:
             raise ValueError("The particle list is empty.")
