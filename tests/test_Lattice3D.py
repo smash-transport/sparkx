@@ -103,6 +103,7 @@ def test_get_index_nearest_neighbor_within_range(sample_lattice):
     )
 
 
+
 def test_get_index_nearest_neighbor_at_lower_bound(sample_lattice):
     values = np.linspace(0, 1, 10)
     assert sample_lattice._Lattice3D__get_index_nearest_neighbor(0, values) == 0
@@ -152,6 +153,7 @@ def test_get_indices_nearest_neighbor_at_lower_bounds(sample_lattice):
         0,
         0,
     )
+
 
 
 def test_get_indices_nearest_neighbor_at_upper_bounds(sample_lattice):

@@ -70,6 +70,7 @@ def test_EventCharacteristics_initialization(
     )
 
 
+
 @pytest.fixture
 def fake_particle_list_eccentricity():
     particle_list = []

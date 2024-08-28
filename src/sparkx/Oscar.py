@@ -13,6 +13,7 @@ from sparkx.Loader.OscarLoader import OscarLoader
 from sparkx.BaseStorer import BaseStorer
 from typing import Any, List, Optional, Union
 
+
 class Oscar(BaseStorer):
     """
     Defines an Oscar object.
@@ -160,24 +161,37 @@ class Oscar(BaseStorer):
     Notes
     -----
     If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list
+<<<<<<< HEAD
     specifying the dimension to be cut in the first entry and the tuple with the cut
+=======
+    specifying the dimensiAR_FILE, **kwargs):
+        super().__init__(OSCAR_FILE,**kwargs)
+        self.PATH_OSCAR_ = OSCAR_FILE
+        self.oscar_format_=self.loader_.oscar_format()
+        self.event_end_lines_ = self.loader_.event_end_lines()
+        del self.loader_
+
+    def create_loader(self, OSCAR_FILE):
+        self.loader_= OscarLoader(OSCAR_FILE)on to be cut in the first entry and the tuple with the cut
+>>>>>>> 14df26b (Formatting)
     boundaries in the second entry is needed. For all other filters, the dictionary
     only needs the filter name as key and the filter argument as value.
     All filter functions without arguments need a :code:`True` in the dictionary.
 
     """
+
     def __init__(self, OSCAR_FILE: str, **kwargs: Any) -> None:
-        super().__init__(OSCAR_FILE,**kwargs)
+        super().__init__(OSCAR_FILE, **kwargs)
         self.PATH_OSCAR_: str = OSCAR_FILE
         if not isinstance(self.loader_, OscarLoader):
             raise TypeError("The loader must be an instance of OscarLoader.")
-        self.oscar_format_: Union[str|None] = self.loader_.oscar_format()
+        self.oscar_format_: Union[str | None] = self.loader_.oscar_format()
         self.event_end_lines_: List[str] = self.loader_.event_end_lines()
         del self.loader_
 
-    def create_loader(self, OSCAR_FILE: str) -> None: # type: ignore[override]
-        self.loader_= OscarLoader(OSCAR_FILE)
-    
+    def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
+        self.loader_ = OscarLoader(OSCAR_FILE)
+
     def _particle_as_list(self, particle: Any) -> List[Union[float, int]]:
         particle_list: List[Union[float, int]] = []
         particle_list.append(float(particle.t))
@@ -226,8 +240,8 @@ class Oscar(BaseStorer):
             )
 
         return particle_list
-    
-    def oscar_format(self) -> Union[str,None]:
+
+    def oscar_format(self) -> Union[str, None]:
         """
         Get the Oscar format of the input file.
 
@@ -253,8 +267,10 @@ class Oscar(BaseStorer):
 
         """
         header: List[str] = []
-        format_oscar2013: str = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d'
-        format_oscar2013_extended: str = '%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d'
+        format_oscar2013: str = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d"
+        format_oscar2013_extended: str = (
+            "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
+        )
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             counter_line = 0
@@ -289,7 +305,7 @@ class Oscar(BaseStorer):
                 raise ValueError("The number of output per event is empty.")
             if self.num_events_ is None:
                 raise ValueError("The number of events is empty.")
-            if(self.num_events_>1):
+            if self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]

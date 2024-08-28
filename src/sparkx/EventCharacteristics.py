@@ -14,6 +14,7 @@ import warnings
 from typing import Union, List, Optional, Any
 
 
+
 class EventCharacteristics:
     """
     This class computes event-by-event characteristics, e.g., eccentricities

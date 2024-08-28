@@ -19,20 +19,24 @@ class ConcreteLoader(BaseLoader):
         # Dummy implementation for testing
         return 3
 
+
 # Fixtures for creating instances
 @pytest.fixture
 def concrete_loader():
     return ConcreteLoader(path="dummy_path")
+
 
 # Test for the abstract method __init__
 def test_abstract_init():
     with pytest.raises(TypeError):
         BaseLoader("dummy_path")
 
+
 # Test for the abstract method load
 def test_abstract_load():
     loader = ConcreteLoader("dummy_path")
     assert loader.load() == {"data": "dummy data"}
+
 
 # Test for _check_that_tuple_contains_integers_only method
 def test_check_that_tuple_contains_integers_only(concrete_loader):
@@ -41,7 +45,8 @@ def test_check_that_tuple_contains_integers_only(concrete_loader):
 
     # Should raise TypeError
     with pytest.raises(TypeError):
-        concrete_loader._check_that_tuple_contains_integers_only((1, 'a', 3))
+        concrete_loader._check_that_tuple_contains_integers_only((1, "a", 3))
+
 
 # Test for _skip_lines method
 def test_skip_lines(concrete_loader):
@@ -52,6 +57,7 @@ def test_skip_lines(concrete_loader):
     concrete_loader._skip_lines(fname)
     # Check if the correct line is now the first line to be read
     assert fname.readline().strip() == "particle2"
+
 
 # Test for _get_num_skip_lines method
 def test_get_num_skip_lines(concrete_loader):

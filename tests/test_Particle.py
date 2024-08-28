@@ -350,6 +350,7 @@ def test_initialize_from_array_invalid_format():
         )
 
 
+
 def test_initialize_from_array_corrupted_data():
     format1 = "Oscar2013"
     # Provide an array with incorrect length to trigger ValueError
@@ -476,7 +477,7 @@ def test_p_abs_valid_values():
 
     result = p.p_abs()
 
-    expected_result = np.sqrt(1.0**2 + 2.0**2 + 3.0**2)
+    expected_result = np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2)
 
     assert np.isclose(result, expected_result)
 
@@ -508,7 +509,7 @@ def test_pT_abs_valid_values():
 
     result = p.pT_abs()
 
-    expected_result = np.sqrt(1.0**2 + 2.0**2)
+    expected_result = np.sqrt(1.0 ** 2 + 2.0 ** 2)
 
     assert np.isclose(result, expected_result)
 
@@ -581,7 +582,7 @@ def test_theta_valid_values():
 
     result = p.theta()
 
-    expected_result = np.arccos(3.0 / np.sqrt(1.0**2 + 2.0**2 + 3.0**2))
+    expected_result = np.arccos(3.0 / np.sqrt(1.0 ** 2 + 2.0 ** 2 + 3.0 ** 2))
 
     assert np.isclose(result, expected_result)
 
@@ -673,6 +674,7 @@ def test_spacetime_rapidity_invalid_values():
         p.spacetime_rapidity()
 
 
+
 def test_proper_time_valid_values():
     p = Particle()
     p.t = 5.0
@@ -680,7 +682,7 @@ def test_proper_time_valid_values():
 
     result = p.proper_time()
 
-    expected_result = np.sqrt(5.0**2 - 3.0**2)
+    expected_result = np.sqrt(5.0 ** 2 - 3.0 ** 2)
 
     assert np.isclose(result, expected_result)
 
@@ -712,7 +714,7 @@ def test_mass_from_energy_momentum_valid_values():
 
     result = p.mass_from_energy_momentum()
 
-    expected_result = np.sqrt(3.0**2 - (1.0**2 + 2.0**2 + 2.0**2))
+    expected_result = np.sqrt(3.0 ** 2 - (1.0 ** 2 + 2.0 ** 2 + 2.0 ** 2))
 
     assert np.isclose(result, expected_result)
 

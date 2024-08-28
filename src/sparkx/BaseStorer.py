@@ -1,17 +1,18 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
-    
+# ===================================================
+
 from sparkx.Filter import *
 import numpy as np
 from abc import ABC, abstractmethod
 from typing import List, Union, Tuple, Optional
 from sparkx.Loader.BaseLoader import BaseLoader
+
 
 class BaseStorer(ABC):
     """
@@ -71,7 +72,8 @@ class BaseStorer(ABC):
      spacetime_cut:
         Apply spacetime cut to all particles
     """
-    def __init__(self, path: Union[str, List[List['Particle']]], **kwargs) -> None:
+
+    def __init__(self, path: Union[str, List[List["Particle"]]], **kwargs) -> None:
         """
         Parameters
         ----------
@@ -87,18 +89,22 @@ class BaseStorer(ABC):
         -------
         None
         """
-        self.loader_: Optional[BaseLoader] = None 
+        self.loader_: Optional[BaseLoader] = None
         self.num_output_per_event_: Optional[np.ndarray] = None
         self.num_events_: Optional[int] = None
         self.particle_list_: Optional[List] = None
         self.create_loader(path)
         if self.loader_ is not None:
-            (self.particle_list_, self.num_events_, self.num_output_per_event_) = self.loader_.load(**kwargs)
+            (
+                self.particle_list_,
+                self.num_events_,
+                self.num_output_per_event_,
+            ) = self.loader_.load(**kwargs)
         else:
             raise ValueError("Loader has not been created properly")
 
     @abstractmethod
-    def create_loader(self,arg: Union[str, List[List['Particle']]]) -> None:
+    def create_loader(self, arg: Union[str, List[List["Particle"]]]) -> None:
         raise NotImplementedError("This method is not implemented yet")
 
     def num_output_per_event(self) -> Optional[np.ndarray]:
@@ -118,7 +124,6 @@ class BaseStorer(ABC):
             particles
         """
         return self.num_output_per_event_
-
 
     def num_events(self) -> Optional[int]:
         """
@@ -149,11 +154,11 @@ class BaseStorer(ABC):
             List of particle objects from Particle
         """
         return self.particle_list_
-    
+
     @abstractmethod
-    def _particle_as_list(self, particle: 'Particle') -> List:
+    def _particle_as_list(self, particle: "Particle") -> List:
         raise NotImplementedError("This method is not implemented yet")
-    
+
     def particle_list(self) -> List:
         """
         Returns a nested python list containing all quantities from the
@@ -176,11 +181,11 @@ class BaseStorer(ABC):
             raise ValueError("particle_list_ is not set")
         if num_events is None:
             raise ValueError("num_events_ is not set")
-        
+
         if num_events == 1:
             num_particles = self.num_output_per_event_[0][1]
         else:
-            num_particles = self.num_output_per_event_[:,1]
+            num_particles = self.num_output_per_event_[:, 1]
 
         particle_array: List[List] = []
 
@@ -198,8 +203,7 @@ class BaseStorer(ABC):
 
         return particle_array
 
-
-    def charged_particles(self) -> 'BaseStorer':
+    def charged_particles(self) -> "BaseStorer":
         """
         Keep only charged particles in particle_list
 
@@ -210,12 +214,11 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = charged_particles(self.particle_list_)
-        
+
         self._update_num_output_per_event_after_filter()
         return self
 
-
-    def uncharged_particles(self) -> 'BaseStorer':
+    def uncharged_particles(self) -> "BaseStorer":
         """
         Keep only uncharged particles in particle_list
 
@@ -230,8 +233,7 @@ class BaseStorer(ABC):
 
         return self
 
-
-    def strange_particles(self) -> 'BaseStorer':
+    def strange_particles(self) -> "BaseStorer":
         """
         Keep only strange particles in particle_list
 
@@ -246,8 +248,9 @@ class BaseStorer(ABC):
 
         return self
 
-
-    def particle_species(self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]) -> 'BaseStorer':
+    def particle_species(
+        self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
+    ) -> "BaseStorer":
         """
         Keep only particle species given by their PDG ID in every event
 
@@ -269,11 +272,12 @@ class BaseStorer(ABC):
 
         self.particle_list_ = particle_species(self.particle_list_, pdg_list)
         self._update_num_output_per_event_after_filter()
-        
+
         return self
 
-
-    def remove_particle_species(self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]) -> 'BaseStorer':
+    def remove_particle_species(
+        self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
+    ) -> "BaseStorer":
         """
         Remove particle species from particle_list by their PDG ID in every
         event
@@ -296,11 +300,10 @@ class BaseStorer(ABC):
 
         self.particle_list_ = remove_particle_species(self.particle_list_, pdg_list)
         self._update_num_output_per_event_after_filter()
-        
+
         return self
 
-
-    def participants(self) -> 'BaseStorer':
+    def participants(self) -> "BaseStorer":
         """
         Keep only participants in particle_list
 
@@ -315,8 +318,7 @@ class BaseStorer(ABC):
 
         return self
 
-
-    def spectators(self) -> 'BaseStorer':
+    def spectators(self) -> "BaseStorer":
         """
         Keep only spectators in particle_list
 
@@ -331,7 +333,9 @@ class BaseStorer(ABC):
 
         return self
 
-    def lower_event_energy_cut(self, minimum_event_energy: Union[int, float]) -> 'BaseStorer':
+    def lower_event_energy_cut(
+        self, minimum_event_energy: Union[int, float]
+    ) -> "BaseStorer":
         """
         Filters out events with total energy lower than a threshold.
 
@@ -354,14 +358,18 @@ class BaseStorer(ABC):
             If the minimum_event_energy parameter is less than or equal to 0.
         """
 
-        self.particle_list_ = lower_event_energy_cut(self.particle_list_, minimum_event_energy)
+        self.particle_list_ = lower_event_energy_cut(
+            self.particle_list_, minimum_event_energy
+        )
         self._update_num_output_per_event_after_filter()
 
         return self
 
-    def pt_cut(self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]) -> 'BaseStorer':
+    def pt_cut(
+        self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
+    ) -> "BaseStorer":
         """
-        Apply transverse momentum cut to all events by passing an acceptance 
+        Apply transverse momentum cut to all events by passing an acceptance
         range by ::code`cut_value_tuple`. All particles outside this range will
         be removed.
 
@@ -376,7 +384,7 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only particles complying with the transverse momentum 
+            Containing only particles complying with the transverse momentum
             cut for all events
         """
 
@@ -385,8 +393,9 @@ class BaseStorer(ABC):
 
         return self
 
-
-    def rapidity_cut(self, cut_value: Union[float, Tuple[float, float]]) -> 'BaseStorer':
+    def rapidity_cut(
+        self, cut_value: Union[float, Tuple[float, float]]
+    ) -> "BaseStorer":
         """
         Apply rapidity cut to all events and remove all particles with rapidity
         not complying with cut_value
@@ -409,14 +418,15 @@ class BaseStorer(ABC):
             Containing only particles complying with the rapidity cut
             for all events
         """
-    
+
         self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
         self._update_num_output_per_event_after_filter()
 
         return self
 
-
-    def pseudorapidity_cut(self, cut_value: Union[float, Tuple[float, float]]) -> 'BaseStorer':
+    def pseudorapidity_cut(
+        self, cut_value: Union[float, Tuple[float, float]]
+    ) -> "BaseStorer":
         """
         Apply pseudo-rapidity cut to all events and remove all particles with
         pseudo-rapidity not complying with cut_value
@@ -445,8 +455,9 @@ class BaseStorer(ABC):
 
         return self
 
-
-    def spatial_rapidity_cut(self, cut_value: Union[float, Tuple[float, float]]) -> 'BaseStorer':
+    def spatial_rapidity_cut(
+        self, cut_value: Union[float, Tuple[float, float]]
+    ) -> "BaseStorer":
         """
         Apply spatial rapidity (space-time rapidity) cut to all events and
         remove all particles with spatial rapidity not complying with cut_value
@@ -475,7 +486,7 @@ class BaseStorer(ABC):
 
         return self
 
-    def multiplicity_cut(self, min_multiplicity: int) -> 'BaseStorer':
+    def multiplicity_cut(self, min_multiplicity: int) -> "BaseStorer":
         """
         Apply multiplicity cut. Remove all events with a multiplicity lower
         than min_multiplicity
@@ -491,13 +502,13 @@ class BaseStorer(ABC):
         self : BaseStorer object
             Containing only events with a multiplicity >= min_multiplicity
         """
-    
+
         self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
         self._update_num_output_per_event_after_filter()
 
         return self
-    
-    def spacetime_cut(self, dim, cut_value_tuple:  Tuple[float, float]):
+
+    def spacetime_cut(self, dim, cut_value_tuple: Tuple[float, float]):
         """
         Apply spacetime cut to all events by passing an acceptance range by
         ::code`cut_value_tuple`. All particles outside this range will
@@ -510,7 +521,7 @@ class BaseStorer(ABC):
             Options: 't','x','y','z'
         cut_value_tuple : tuple
             Tuple with the upper and lower limits of the coordinate space
-            acceptance range :code:`(cut_min, cut_max)`. If one of the limits 
+            acceptance range :code:`(cut_min, cut_max)`. If one of the limits
             is not required, set it to :code:`None`, i.e.
             :code:`(None, cut_max)` or :code:`(cut_min, None)`.
 
@@ -523,16 +534,15 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def _update_num_output_per_event_after_filter(self) -> None:
         if self.num_output_per_event_ is None:
             raise ValueError("num_output_per_event_ is not set")
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
         for event in range(0, len(self.particle_list_)):
-             self.num_output_per_event_[event] [1] = len(
-                self.particle_list_[event])
-    
+            self.num_output_per_event_[event][1] = len(self.particle_list_[event])
+
     @abstractmethod
-    def print_particle_lists_to_file(self, output_file)-> None:
+    def print_particle_lists_to_file(self, output_file) -> None:
         raise NotImplementedError("This method is not implemented yet")

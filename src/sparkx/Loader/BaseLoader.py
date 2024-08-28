@@ -1,14 +1,15 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
+# ===================================================
 
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple, Any, TextIO
+
 
 class BaseLoader(ABC):
     """
@@ -48,7 +49,7 @@ class BaseLoader(ABC):
             The path to the file to be loaded.
 
         """
-        pass 
+        pass
 
     @abstractmethod
     def load(self, **kwargs: Dict[str, Any]) -> Any:
@@ -61,8 +62,10 @@ class BaseLoader(ABC):
             If this method is not overridden in a concrete subclass.
         """
         raise NotImplementedError("load method is not implemented")
-    
-    def _check_that_tuple_contains_integers_only(self, events_tuple: Tuple[int, ...]) -> None:
+
+    def _check_that_tuple_contains_integers_only(
+        self, events_tuple: Tuple[int, ...]
+    ) -> None:
         """
         Checks if all elements inside the event tuple are integers.
 
@@ -78,7 +81,7 @@ class BaseLoader(ABC):
         """
         if not all(isinstance(event, int) for event in events_tuple):
             raise TypeError("All elements inside the event tuple must be integers.")
-        
+
     def _get_num_skip_lines(self) -> int:
         """
         Returns the number of lines to skip in the file.
@@ -89,7 +92,7 @@ class BaseLoader(ABC):
             The number of lines to skip in the file.
         """
         raise NotImplementedError("Method is not implemented")
-        
+
     def _skip_lines(self, fname: TextIO) -> None:
         """
         Skips the initial header and comment lines in a file.

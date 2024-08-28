@@ -588,6 +588,7 @@ def mT_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
+
 def rapidity_cut(particle_list, cut_value):
     """
     Apply rapidity cut to all events and remove all particles with rapidity
@@ -655,6 +656,7 @@ def rapidity_cut(particle_list, cut_value):
         )
 
     return updated_particle_list
+
 
 
 def pseudorapidity_cut(particle_list, cut_value):
@@ -793,6 +795,7 @@ def spacetime_rapidity_cut(particle_list, cut_value):
         )
 
     return updated_particle_list
+
 
 
 def multiplicity_cut(particle_list, min_multiplicity):
