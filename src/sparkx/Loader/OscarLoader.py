@@ -400,17 +400,17 @@ class OscarLoader(BaseLoader):
                     filters_dict["spacetime_cut"][0],
                     filters_dict["spacetime_cut"][1],
                 )
-            elif i == "pt_cut":
-                event = pt_cut(event, filters_dict["pt_cut"])
+            elif i == "pT_cut":
+                event = pT_cut(event, filters_dict["pT_cut"])
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
                 )
-            elif i == "spatial_rapidity_cut":
-                event = spatial_rapidity_cut(
-                    event, filters_dict["spatial_rapidity_cut"]
+            elif i == "spacetime_rapidity_cut":
+                event = spacetime_rapidity_cut(
+                    event, filters_dict["spacetime_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
                 event = multiplicity_cut(
