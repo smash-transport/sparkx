@@ -19,7 +19,10 @@ class ParticleObjectLoader(BaseLoader):
         """
         Initializes a new instance of the ParticelObjectLoader class.
 
-        This method initializes a new instance of the ParticelObjectLoader class with the specified list of particles. It calls the superclass's constructor with the particle_list parameter and then sets the particle_list_ attribute to the particle_list parameter.
+        This method initializes a new instance of the ParticelObjectLoader class
+        with the specified list of particles. It calls the superclass's
+        constructor with the particle_list parameter and then sets the
+        particle_list_ attribute to the particle_list parameter.
 
         Parameters
         ----------
@@ -47,7 +50,10 @@ class ParticleObjectLoader(BaseLoader):
         """
         Loads the data from the dummy input based on the specified optional arguments.
 
-        This method reads the dummy input and applies any filters specified in the 'filters' key of the kwargs dictionary. It also adjusts the number of events based on the 'events' key in the kwargs dictionary. If any other keys are specified in the kwargs dictionary, it raises a ValueError.
+        This method reads the dummy input and applies any filters specified in
+        the 'filters' key of the kwargs dictionary. It also adjusts the number
+        of events based on the 'events' key in the kwargs dictionary. If any
+        other keys are specified in the kwargs dictionary, it raises a ValueError.
 
         Parameters
         ----------
@@ -59,12 +65,16 @@ class ParticleObjectLoader(BaseLoader):
         Raises
         ------
         ValueError
-            If an unknown keyword argument is used, if the first value of the 'events' tuple is larger than the second value, if an event number is negative.
+            If an unknown keyword argument is used, if the first value of the
+            'events' tuple is larger than the second value, if an event number
+            is negative.
 
         Returns
         -------
         tuple
-            A tuple containing the list of Particle objects loaded from the dummy input, the number of events, and the number of output lines per event.
+            A tuple containing the list of Particle objects loaded from the
+            dummy input, the number of events, and the number of output lines
+            per event.
         """
         self.optional_arguments_: Dict[str, Any] = kwargs
         self.num_events_: int = len(self.particle_list_)
@@ -119,14 +129,23 @@ class ParticleObjectLoader(BaseLoader):
         """
         Applies the specified filters to the event.
 
-        This method applies a series of filters to the event based on the keys in the filters_dict dictionary. The filters include 'charged_particles', 'uncharged_particles', 'strange_particles', 'particle_species', 'remove_particle_species', 'participants', 'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pt_cut', 'rapidity_cut', 'pseudorapidity_cut', 'spatial_rapidity_cut', and 'multiplicity_cut'. If a key is not recognized, it raises a ValueError.
+        This method applies a series of filters to the event based on the keys
+        in the filters_dict dictionary. The filters include
+        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'particle_species', 'remove_particle_species', 'participants',
+        'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
+        'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut',
+        and 'multiplicity_cut'. If a key is not recognized, it raises a
+        ValueError.
 
         Parameters
         ----------
         event : list
             The event to which the filters are applied.
         filters_dict : dict
-            A dictionary of filters to apply to the event. The keys are the names of the filters and the values are the parameters for the filters.
+            A dictionary of filters to apply to the event. The keys are the
+            names of the filters and the values are the parameters for the
+            filters.
 
         Raises
         ------
@@ -174,7 +193,7 @@ class ParticleObjectLoader(BaseLoader):
                     filters_dict["spacetime_cut"][0],
                     filters_dict["spacetime_cut"][1],
                 )
-            elif i == "pt_cut":
+            elif i == "pT_cut":
                 event = pT_cut(event, filters_dict["pT_cut"])
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
@@ -182,7 +201,7 @@ class ParticleObjectLoader(BaseLoader):
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
                 )
-            elif i == "spatial_rapidity_cut":
+            elif i == "spacetime_rapidity_cut":
                 event = spacetime_rapidity_cut(
                     event, filters_dict["spacetime_rapidity_cut"]
                 )

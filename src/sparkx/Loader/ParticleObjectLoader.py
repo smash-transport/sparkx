@@ -119,14 +119,22 @@ class ParticleObjectLoader(BaseLoader):
         """
         Applies the specified filters to the event.
 
-        This method applies a series of filters to the event based on the keys in the filters_dict dictionary. The filters include 'charged_particles', 'uncharged_particles', 'strange_particles', 'particle_species', 'remove_particle_species', 'participants', 'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pt_cut', 'rapidity_cut', 'pseudorapidity_cut', 'spatial_rapidity_cut', and 'multiplicity_cut'. If a key is not recognized, it raises a ValueError.
+        This method applies a series of filters to the event based on the keys
+        in the filters_dict dictionary. The filters include
+        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'particle_species', 'remove_particle_species', 'participants',
+        'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
+        'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
+        'multiplicity_cut'. If a key is not recognized, it raises a ValueError.
 
         Parameters
         ----------
         event : list
             The event to which the filters are applied.
         filters_dict : dict
-            A dictionary of filters to apply to the event. The keys are the names of the filters and the values are the parameters for the filters.
+            A dictionary of filters to apply to the event. The keys are the
+            names of the filters and the values are the parameters for the
+            filters.
 
         Raises
         ------

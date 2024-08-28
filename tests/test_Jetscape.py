@@ -351,15 +351,9 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
             f.write(data_pi0_y1)
         f.write("#	sigmaGen	0.000314633	sigmaErr	6.06164e-07\n")
 
-    # print content of temporary file
-    with open(jetscape_file, "r") as f:
-        print(f.read())
-
     # Test filtering for the mid-rapidity particles
     jetscape = Jetscape(jetscape_file, filters={"rapidity_cut": 0.5})
 
-    print(jetscape.num_output_per_event_)
-    print(len(jetscape.particle_list()[0]), len(jetscape.particle_list()[1]))
     assert jetscape.num_events() == 2
     assert np.array_equal(
         jetscape.num_output_per_event(), np.array([[1, 6], [2, 10]])

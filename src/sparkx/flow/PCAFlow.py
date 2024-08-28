@@ -179,7 +179,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity"
+            Variable on which the flow is calculated ("pT", "rapidity"
             or "pseudorapidity").
         event_number : int
             Index of the current event.
@@ -229,7 +229,7 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         # loop over all event particles and compute the flow vectors in the bins
         for particle in event_data:
-            if flow_as_function_of == "pt":
+            if flow_as_function_of == "pT":
                 val = particle.pT_abs()
             elif flow_as_function_of == "rapidity":
                 val = particle.rapidity()
@@ -494,7 +494,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity"
+            Variable on which the flow is calculated ("pT", "rapidity"
             or "pseudorapidity").
 
         Returns
@@ -515,9 +515,9 @@ class PCAFlow(FlowInterface.FlowInterface):
             raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
             raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'"
+                "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
 
         self.__compute_normalization(bins)

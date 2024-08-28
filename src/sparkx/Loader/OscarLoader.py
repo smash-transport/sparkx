@@ -341,19 +341,29 @@ class OscarLoader(BaseLoader):
         """
         Applies the specified filters to the given event.
 
-        This method applies a series of filters to the event data based on the keys in the filters_dict dictionary. The filters include: 'charged_particles', 'uncharged_particles', 'strange_particles', 'particle_species', 'remove_particle_species', 'participants', 'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pt_cut', 'rapidity_cut', 'pseudorapidity_cut', 'spatial_rapidity_cut', and 'multiplicity_cut'. If a key in the filters_dict dictionary does not match any of these filters, a ValueError is raised.
+        This method applies a series of filters to the event data based on the
+        keys in the filters_dict dictionary. The filters include:
+        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'particle_species', 'remove_particle_species', 'participants',
+        'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
+        'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
+        'multiplicity_cut'. If a key in the filters_dict dictionary does not
+          match any of these filters, a ValueError is raised.
 
         Parameters
         ----------
         event : list
             The event data to be filtered.
         filters_dict : dict
-            A dictionary of filters to apply to the event data. The keys of the dictionary specify the filters to apply, and the values specify the parameters for the filters.
+            A dictionary of filters to apply to the event data. The keys of
+            the dictionary specify the filters to apply, and the values specify
+            the parameters for the filters.
 
         Raises
         ------
         ValueError
-            If a key in the filters_dict dictionary does not match any of the supported filters.
+            If a key in the filters_dict dictionary does not match any of
+            the supported filters.
 
         Returns
         -------
@@ -427,7 +437,11 @@ class OscarLoader(BaseLoader):
         """
         Sets the list of particles from the OSCAR data file.
 
-        This method reads the OSCAR data file line by line and creates a list of Particle objects. It also applies any filters specified in the 'filters' key of the kwargs dictionary. If the 'events' key is specified in the kwargs dictionary, it adjusts the number of events and the number of output lines per event accordingly.
+        This method reads the OSCAR data file line by line and creates a list
+        of Particle objects. It also applies any filters specified in the
+        'filters' key of the kwargs dictionary. If the 'events' key is
+        specified in the kwargs dictionary, it adjusts the number of events
+        and the number of output lines per event accordingly.
 
         Parameters
         ----------
@@ -439,9 +453,12 @@ class OscarLoader(BaseLoader):
         Raises
         ------
         IndexError
-            If the number of events in the OSCAR file does not match the number of events specified by the comments in the OSCAR file, or if the index is out of range of the OSCAR file.
+            If the number of events in the OSCAR file does not match the number
+            of events specified by the comments in the OSCAR file, or if the
+            index is out of range of the OSCAR file.
         ValueError
-            If the first line of the event is not a comment line or does not contain "out", or if a comment line is unexpectedly found.
+            If the first line of the event is not a comment line or does not
+            contain "out", or if a comment line is unexpectedly found.
 
         Returns
         -------
@@ -509,9 +526,15 @@ class OscarLoader(BaseLoader):
 
     def set_num_output_per_event_and_event_footers(self) -> None:
         """
-        Sets the number of output lines per event and the event footers in the OSCAR data file.
+        Sets the number of output lines per event and the event footers in
+        the OSCAR data file.
 
-        This method reads the OSCAR data file line by line and determines the number of output lines for each event and the event footers. The method behaves differently depending on the OSCAR format of the data file. If the format is 'Oscar2013Extended_IC' or 'Oscar2013Extended_Photons', it counts the number of lines between 'in' and 'end' lines. Otherwise, it counts the number of lines between 'out' and 'end' lines.
+        This method reads the OSCAR data file line by line and determines the
+        number of output lines for each event and the event footers. The method
+        behaves differently depending on the OSCAR format of the data file.
+        If the format is 'Oscar2013Extended_IC' or 'Oscar2013Extended_Photons',
+        it counts the number of lines between 'in' and 'end' lines. Otherwise,
+        it counts the number of lines between 'out' and 'end' lines.
 
         Parameters
         ----------

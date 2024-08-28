@@ -255,14 +255,23 @@ class JetscapeLoader(BaseLoader):
         """
         Applies the specified filters to the event.
 
-        This method applies a series of filters to the event based on the keys in the filters_dict dictionary. The filters include 'charged_particles', 'uncharged_particles', 'strange_particles', 'particle_species', 'remove_particle_species', 'lower_event_energy_cut', 'pt_cut', 'rapidity_cut', 'pseudorapidity_cut', 'spatial_rapidity_cut', 'multiplicity_cut', and 'particle_status'. If a key is not recognized, it raises a ValueError.
+        This method applies a series of filters to the event based on the keys
+        in the filters_dict dictionary. The filters include
+        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'particle_species', 'remove_particle_species',
+        'lower_event_energy_cut', 'pT_cut', 'rapidity_cut',
+        'pseudorapidity_cut', 'spacetime_rapidity_cut',
+        'multiplicity_cut', and 'particle_status'.
+        If a key is not recognized, it raises a ValueError.
 
         Parameters
         ----------
         event : list
             The event to which the filters are applied.
         filters_dict : dict
-            A dictionary of filters to apply to the event. The keys are the names of the filters and the values are the parameters for the filters.
+            A dictionary of filters to apply to the event. The keys are the
+            names of the filters and the values are the parameters for the
+            filters.
 
         Raises
         ------
@@ -332,7 +341,12 @@ class JetscapeLoader(BaseLoader):
         """
         Sets the list of particles based on the specified optional arguments.
 
-        This method reads the JETSCAPE data file and creates a list of Particle objects based on the data in the file. It applies any filters specified in the 'filters' key of the kwargs dictionary. It also adjusts the number of events and the number of output lines per event based on the 'events' key in the kwargs dictionary. If any other keys are specified in the kwargs dictionary, it raises a ValueError.
+        This method reads the JETSCAPE data file and creates a list of Particle
+        objects based on the data in the file. It applies any filters specified
+        in the 'filters' key of the kwargs dictionary. It also adjusts the
+        number of events and the number of output lines per event based on the
+        'events' key in the kwargs dictionary. If any other keys are specified
+        in the kwargs dictionary, it raises a ValueError.
 
         Parameters
         ----------
@@ -344,9 +358,13 @@ class JetscapeLoader(BaseLoader):
         Raises
         ------
         IndexError
-            If the end of the JETSCAPE file is reached before the specified number of lines is read, or if the number of events in the JETSCAPE file does not match the number of events specified by the comments in the file.
+            If the end of the JETSCAPE file is reached before the specified
+            number of lines is read, or if the number of events in the JETSCAPE
+            file does not match the number of events specified by the comments
+            in the file.
         ValueError
-            If the first line of the event is not a comment line or does not contain "weight", or if an unknown keyword argument is used.
+            If the first line of the event is not a comment line or does not
+            contain "weight", or if an unknown keyword argument is used.
 
         Returns
         -------
@@ -440,7 +458,14 @@ class JetscapeLoader(BaseLoader):
         """
         Sets the number of output lines per event in the JETSCAPE data file.
 
-        This method reads the JETSCAPE data file line by line and determines the number of output lines for each event. It does this by looking for lines that contain a '#' and the particle_type_defining_string_. For each such line, it extracts the event number and the number of output lines from the line and appends them to a list. After reading the entire file, it converts the list to a numpy array and stores it in the num_output_per_event_ attribute. It also sets the num_events_ attribute to the length of the list.
+        This method reads the JETSCAPE data file line by line and determines
+        the number of output lines for each event. It does this by looking for
+        lines that contain a '#' and the particle_type_defining_string_.
+        For each such line, it extracts the event number and the number of
+        output lines from the line and appends them to a list.
+        After reading the entire file, it converts the list to a numpy array
+        and stores it in the num_output_per_event_ attribute. It also sets
+        the num_events_ attribute to the length of the list.
 
         Parameters
         ----------

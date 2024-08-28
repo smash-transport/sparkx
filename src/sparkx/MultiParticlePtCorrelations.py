@@ -31,9 +31,9 @@ class MultiParticlePtCorrelations:
 
     Attributes
     ----------
-    mean_pt_correlation : np.ndarray, optional
+    mean_pT_correlation : np.ndarray, optional
         Mean transverse momentum correlations for each order up to `max_order`.
-    mean_pt_correlation_error : np.ndarray, optional
+    mean_pT_correlation_error : np.ndarray, optional
         Error estimates (if computed) for mean transverse momentum correlations.
     kappa : np.ndarray, optional
         Mean transverse momentum cumulants for each order up to `max_order`.
@@ -46,11 +46,11 @@ class MultiParticlePtCorrelations:
 
     Methods
     -------
-    mean_pt_correlations:
+    mean_pT_correlations:
         Computes the mean transverse momentum correlations for each order k
         across all events.
 
-    mean_pt_cumulants:
+    mean_pT_cumulants:
         Computes the mean transverse momentum cumulants for each order k
         from the correlations.
 
@@ -74,12 +74,12 @@ class MultiParticlePtCorrelations:
         >>> particle_list = Jetscape("./particles.dat").particle_object_list()
         >>>
         >>> # Compute mean transverse momentum correlations
-        >>> mean_pt_correlations = corr_obj.mean_pt_correlations(particle_list_all_events)
-        >>> print(mean_pt_correlations)
+        >>> mean_pT_correlations = corr_obj.mean_pT_correlations(particle_list_all_events)
+        >>> print(mean_pT_correlations)
         >>>
         >>> # Compute mean transverse momentum cumulants
-        >>> mean_pt_cumulants = corr_obj.mean_pt_cumulants(particle_list_all_events)
-        >>> print(mean_pt_cumulants)
+        >>> mean_pT_cumulants = corr_obj.mean_pT_cumulants(particle_list_all_events)
+        >>> print(mean_pT_cumulants)
     """
 
     def __init__(self, max_order: int) -> None:
@@ -91,8 +91,8 @@ class MultiParticlePtCorrelations:
         if self.max_order < 1 or self.max_order > 8:
             raise ValueError("max_order must be greater than 0 and less than 9")
 
-        self.mean_pt_correlation: Union[np.ndarray, None] = None
-        self.mean_pt_correlation_error: Union[np.ndarray, None] = None
+        self.mean_pT_correlation: Union[np.ndarray, None] = None
+        self.mean_pT_correlation_error: Union[np.ndarray, None] = None
         self.kappa: Union[np.ndarray, None] = None
         self.kappa_error: Union[np.ndarray, None] = None
         self.N_events: Any = None
@@ -323,7 +323,7 @@ class MultiParticlePtCorrelations:
         for event in particle_list_all_events:
             self._transverse_momentum_correlations_event_num_denom(event)
 
-    def _compute_mean_pt_correlations(
+    def _compute_mean_pT_correlations(
         self, numerator_denominator_array: np.ndarray
     ) -> float:
         """
@@ -348,7 +348,7 @@ class MultiParticlePtCorrelations:
 
         return sum_numerator / sum_denominator
 
-    def mean_pt_correlations(
+    def mean_pT_correlations(
         self,
         particle_list_all_events: List[List[Particle]],
         compute_error: bool = True,
@@ -379,7 +379,7 @@ class MultiParticlePtCorrelations:
         -------
         np.ndarray or tuple
             Mean transverse momentum correlations for each order.
-            If compute_error is True, returns a tuple (mean_pt_correlation, mean_pt_correlation_error).
+            If compute_error is True, returns a tuple (mean_pT_correlation, mean_pT_correlation_error).
 
         Raises
         ------
@@ -411,35 +411,35 @@ class MultiParticlePtCorrelations:
         self.N_events = np.array(self.N_events)
         self.D_events = np.array(self.D_events)
 
-        mean_pt_correlations_store = np.zeros(self.max_order)
-        mean_pt_correlations_error_store = np.zeros(self.max_order)
+        mean_pT_correlations_store = np.zeros(self.max_order)
+        mean_pT_correlations_error_store = np.zeros(self.max_order)
         for order in range(self.max_order):
             # combine the numerator and denominator for each order in an array
             numerator_denominator_array = np.array(
                 [self.N_events[:, order], self.D_events[:, order]]
             ).T
-            mean_pt_correlations_store[order] = (
-                self._compute_mean_pt_correlations(numerator_denominator_array)
+            mean_pT_correlations_store[order] = (
+                self._compute_mean_pT_correlations(numerator_denominator_array)
             )
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                mean_pt_correlations_error_store[order] = (
+                mean_pT_correlations_error_store[order] = (
                     jackknife.compute_jackknife_estimates(
                         numerator_denominator_array,
-                        function=self._compute_mean_pt_correlations,
+                        function=self._compute_mean_pT_correlations,
                     )
                 )
 
-        self.mean_pt_correlation = mean_pt_correlations_store
+        self.mean_pT_correlation = mean_pT_correlations_store
         if compute_error:
-            self.mean_pt_correlation_error = mean_pt_correlations_error_store
+            self.mean_pT_correlation_error = mean_pT_correlations_error_store
             return (
-                mean_pt_correlations_store,
-                mean_pt_correlations_error_store,
+                mean_pT_correlations_store,
+                mean_pT_correlations_error_store,
             )
         else:
-            return mean_pt_correlations_store
+            return mean_pT_correlations_store
 
     def _kappa_cumulant(self, C: np.ndarray, k: int) -> float:
         """
@@ -543,7 +543,7 @@ class MultiParticlePtCorrelations:
             raise ValueError("Invalid order k for cumulant calculation")
         return kappa
 
-    def _compute_mean_pt_cumulants(self, data: np.ndarray, k: int) -> float:
+    def _compute_mean_pT_cumulants(self, data: np.ndarray, k: int) -> float:
         """
         Compute mean transverse momentum cumulants from data at order k.
 
@@ -573,7 +573,7 @@ class MultiParticlePtCorrelations:
         kappa_store = self._kappa_cumulant(C, k + 1)
         return kappa_store
 
-    def mean_pt_cumulants(
+    def mean_pT_cumulants(
         self,
         particle_list_all_events: List[List[Particle]],
         compute_error: bool = True,
@@ -647,7 +647,7 @@ class MultiParticlePtCorrelations:
             )
             combined_data[:, 0::2] = dataN
             combined_data[:, 1::2] = dataD
-            kappa_store[order] = self._compute_mean_pt_cumulants(
+            kappa_store[order] = self._compute_mean_pT_cumulants(
                 combined_data, order
             )
 
@@ -656,7 +656,7 @@ class MultiParticlePtCorrelations:
                 kappa_store_error[order] = (
                     jackknife.compute_jackknife_estimates(
                         combined_data,
-                        function=self._compute_mean_pt_cumulants,
+                        function=self._compute_mean_pT_cumulants,
                         k=order,
                     )
                 )

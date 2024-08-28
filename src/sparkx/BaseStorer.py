@@ -59,14 +59,14 @@ class BaseStorer(ABC):
         Keep uncharged particles only
     strange_particles:
         Keep strange particles only
-    pt_cut:
+    pT_cut:
         Apply pT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
     pseudorapidity_cut:
         Apply pseudorapidity cut to all particles
-    spatial_rapidity_cut:
-        Apply spatial rapidity (space-time rapidity) cut to all particles
+    spacetime_rapidity_cut:
+        Apply spacetime rapidity cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
      spacetime_cut:
@@ -369,7 +369,7 @@ class BaseStorer(ABC):
 
         return self
 
-    def pt_cut(
+    def pT_cut(
         self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
     ) -> "BaseStorer":
         """
@@ -463,25 +463,25 @@ class BaseStorer(ABC):
         self, cut_value: Union[float, Tuple[float, float]]
     ) -> "BaseStorer":
         """
-        Apply spatial rapidity (space-time rapidity) cut to all events and
-        remove all particles with spatial rapidity not complying with cut_value
+        Apply spacetime rapidity (space-time rapidity) cut to all events and
+        remove all particles with spcetime rapidity not complying with cut_value
 
         Parameters
         ----------
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with spatial rapidity
-            in [-1.0, 1.0] are kept.
+            For example, if cut_value = 1, only particles with spacetime
+            rapidity in [-1.0, 1.0] are kept.
 
         cut_value : tuple
-            To specify an asymmetric acceptance range for the spatial rapidity
+            To specify an asymmetric acceptance range for the spacetime rapidity
             of particles, pass a tuple (cut_min, cut_max)
 
         Returns
         -------
         self : BaseStorer object
-            Containing only particles complying with the spatial rapidity cut
+            Containing only particles complying with the spacetime rapidity cut
             for all events
         """
 

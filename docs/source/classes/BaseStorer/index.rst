@@ -19,7 +19,7 @@ BaseStorer
 .. automethod:: BaseStorer.participants
 .. automethod:: BaseStorer.spectators
 .. automethod:: BaseStorer.lower_event_energy_cut
-.. automethod:: BaseStorer.pt_cut
+.. automethod:: BaseStorer.pT_cut
 .. automethod:: BaseStorer.rapidity_cut
 .. automethod:: BaseStorer.pseudorapidity_cut
 .. automethod:: BaseStorer.spatial_rapidity_cut
