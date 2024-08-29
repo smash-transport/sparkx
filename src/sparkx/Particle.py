@@ -423,6 +423,7 @@ class Particle:
                             + " is not known by PDGID, charge could not be computed. Consider setting it by hand."
                         )
             else:
+                print(particle_array)
                 raise ValueError(
                     "The input file is corrupted! "
                     + "A line with wrong number of columns "
