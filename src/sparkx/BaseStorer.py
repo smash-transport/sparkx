@@ -509,9 +509,7 @@ class BaseStorer(ABC):
             Containing only events with a multiplicity >= min_multiplicity
         """
 
-        self.particle_list_ = multiplicity_cut(
-            self.particle_list_, min_multiplicity
-        )
+        self.particle_list_ = multiplicity_cut(self.particle_list_, min_multiplicity)
         self._update_num_output_per_event_after_filter()
 
         return self
