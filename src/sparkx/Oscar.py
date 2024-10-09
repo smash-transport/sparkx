@@ -177,6 +177,21 @@ class Oscar(BaseStorer):
         del self.loader_
 
     def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
+        """
+        Creates a new OscarLoader object.
+    
+        This method initializes a new OscarLoader object with the specified OSCAR file
+        and assigns it to the loader_ attribute.
+    
+        Parameters
+        ----------
+        OSCAR_FILE : str
+            The path to the OSCAR file to be loaded.
+    
+        Returns
+        -------
+        None
+        """
         self.loader_ = OscarLoader(OSCAR_FILE)
 
     def _particle_as_list(self, particle: Any) -> List[Union[float, int]]:

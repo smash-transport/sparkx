@@ -255,7 +255,7 @@ class ParticleObjectStorer(BaseStorer):
                         particle.baryon_number,
                     ]
                     f.write(",".join(map(str, particle_data)) + "\n")
-    
+
     def particle_status(
         self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
     ) -> "ParticleObjectStorer":

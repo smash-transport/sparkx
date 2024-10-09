@@ -201,6 +201,17 @@ class JetscapeLoader(BaseLoader):
         return skip_lines
 
     def event_end_lines(self) -> List[str]:
+        """
+        Returns the list of event end lines.
+    
+        This method returns the list of strings that mark the end of events
+        in the Jetscape data.
+    
+        Returns
+        -------
+        List[str]
+            A list of strings that mark the end of events in the Jetscape data.
+        """
         return self.event_end_lines_
 
     def __get_num_read_lines(self) -> int:

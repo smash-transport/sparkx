@@ -10,5 +10,3 @@ Oscar
 
 
 .. automethod:: Oscar.create_loader
-.. automethod:: Oscar.oscar_format
-   :noindex:

@@ -284,10 +284,33 @@ class OscarLoader(BaseLoader):
                 + "Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. "
             )
 
+
     def oscar_format(self) -> Optional[str]:
+        """
+        Returns the OSCAR format string.
+
+        This method returns the OSCAR format string that specifies the format
+        of the OSCAR data being loaded.
+
+        Returns
+        -------
+        Optional[str]
+            The OSCAR format string, or None if the format is not set.
+        """
         return self.oscar_format_
 
     def event_end_lines(self) -> List[str]:
+        """
+        Returns the list of event end lines.
+
+        This method returns the list of strings that mark the end of events
+        in the OSCAR data.
+
+        Returns
+        -------
+        List[str]
+            A list of strings that mark the end of events in the OSCAR data.
+        """
         return self.event_end_lines_
 
     def __get_num_read_lines(self) -> int:

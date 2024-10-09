@@ -181,13 +181,32 @@ class Jetscape(BaseStorer):
         )
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
-
-    def create_loader(
+def create_loader(
         self, JETSCAPE_FILE: Union[str, List[List["Particle"]]]
     ) -> None:
-        if not isinstance(JETSCAPE_FILE, str):
-            raise TypeError("The JETSCAPE_FILE must be a path.")
-        self.loader_ = JetscapeLoader(JETSCAPE_FILE)
+    """
+    Creates a new JetscapeLoader object.
+
+    This method initializes a new JetscapeLoader object with the specified JETSCAPE file
+    and assigns it to the loader_ attribute.
+
+    Parameters
+    ----------
+    JETSCAPE_FILE : Union[str, List[List["Particle"]]]
+        The path to the JETSCAPE file to be loaded. Must be a string.
+
+    Raises
+    ------
+    TypeError
+        If JETSCAPE_FILE is not a string.
+
+    Returns
+    -------
+    None
+    """
+    if not isinstance(JETSCAPE_FILE, str):
+        raise TypeError("The JETSCAPE_FILE must be a path.")
+    self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
     def _particle_as_list(

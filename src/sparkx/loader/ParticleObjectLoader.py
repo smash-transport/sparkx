@@ -43,6 +43,7 @@ class ParticleObjectLoader(BaseLoader):
     set_particle_list(kwargs: Dict[str, Any]) -> List[List["Particle"]]
         Sets the particle list based on the filters applied.
     """
+
     def __init__(
         self, particle_list: Union[str, List[List["Particle"]]]
     ) -> None:

@@ -1343,7 +1343,8 @@ class Lattice3D:
             particle data.
         quantity : str
             The quantity of the particle data to be added. Supported values are
-            'energy density', 'number', 'charge', and 'baryon number'.
+            'energy_density', 'number_density', 'charge_density', 
+            'baryon_density', and 'strangeness_density'.
         kernel : str, optional
             The type of kernel to use for smearing the particle data. Supported
             values are 'gaussian' and 'covariant'. The default is 'covariant'.

@@ -8,7 +8,3 @@ ParticleObjectLoader
     :members:
     :inherited-members:
 
-.. automethod:: ParticleObjectLoader.set_num_output_per_event
-   :noindex:
-.. automethod:: ParticleObjectLoader.set_particle_list
-   :noindex:

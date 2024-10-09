@@ -374,7 +374,7 @@ class BaseStorer(ABC):
     ) -> "BaseStorer":
         """
         Apply transverse momentum cut to all events by passing an acceptance
-        range by ::code`cut_value_tuple`. All particles outside this range will
+        range by :code:`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
@@ -409,12 +409,12 @@ class BaseStorer(ABC):
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with rapidity in
-            [-1.0, 1.0] are kept.
+            For example, if :code:`cut_value = 1`, only particles with rapidity in
+            :code:`[-1.0, 1.0]` are kept.
 
         cut_value : tuple
             To specify an asymmetric acceptance range for the rapidity
-            of particles, pass a tuple (cut_min, cut_max)
+            of particles, pass a tuple :code:`(cut_min, cut_max)`
 
         Returns
         -------
@@ -440,12 +440,12 @@ class BaseStorer(ABC):
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with pseudo-rapidity
-            in [-1.0, 1.0] are kept.
+            For example, if :code:`cut_value = 1`, only particles with rapidity in
+            :code:`[-1.0, 1.0]` are kept.
 
         cut_value : tuple
             To specify an asymmetric acceptance range for the pseudo-rapidity
-            of particles, pass a tuple (cut_min, cut_max)
+            of particles, pass a tuple :code:`(cut_min, cut_max)`
 
         Returns
         -------
@@ -471,12 +471,12 @@ class BaseStorer(ABC):
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if cut_value = 1, only particles with spacetime
-            rapidity in [-1.0, 1.0] are kept.
+            For example, if :code:`cut_value = 1`, only particles with spacetime
+            rapidity in :code:`[-1.0, 1.0]` are kept.
 
         cut_value : tuple
             To specify an asymmetric acceptance range for the spacetime rapidity
-            of particles, pass a tuple (cut_min, cut_max)
+            of particles, pass a tuple :code:`(cut_min, cut_max)`
 
         Returns
         -------
@@ -506,7 +506,7 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only events with a multiplicity >= min_multiplicity
+            Containing only events with a :code:`multiplicity >= min_multiplicity`
         """
 
         self.particle_list_ = multiplicity_cut(
@@ -519,14 +519,14 @@ class BaseStorer(ABC):
     def spacetime_cut(self, dim, cut_value_tuple: Tuple[float, float]):
         """
         Apply spacetime cut to all events by passing an acceptance range by
-        ::code`cut_value_tuple`. All particles outside this range will
+        :code:`cut_value_tuple`. All particles outside this range will
         be removed.
 
         Parameters
         ----------
         dim : string
             String naming the dimension on which to apply the cut.
-            Options: 't','x','y','z'
+            Options: :code:`t`,:code:`x`,:code:`y`,:code:`z`
         cut_value_tuple : tuple
             Tuple with the upper and lower limits of the coordinate space
             acceptance range :code:`(cut_min, cut_max)`. If one of the limits
@@ -550,17 +550,42 @@ class BaseStorer(ABC):
             raise ValueError("num_output_per_event_ is not set")
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
-        
+
         if self.num_output_per_event_.ndim == 1:
             # Handle the case where num_output_per_event_ is a one-dimensional array
             self.num_output_per_event_[1] = len(self.particle_list_[0])
         elif self.num_output_per_event_.ndim == 2:
             # Handle the case where num_output_per_event_ is a two-dimensional array
             for event in range(len(self.particle_list_)):
-                self.num_output_per_event_[event][1] = len(self.particle_list_[event])
+                self.num_output_per_event_[event][1] = len(
+                    self.particle_list_[event]
+                )
         else:
-            raise ValueError("num_output_per_event_ has an unexpected number of dimensions")
+            raise ValueError(
+                "num_output_per_event_ has an unexpected number of dimensions"
+            )
 
     @abstractmethod
-    def print_particle_lists_to_file(self, output_file) -> None:
+    def print_particle_lists_to_file(self, output_file: str) -> None:
+        """
+        Prints the particle lists to a specified file.
+
+        This method should be implemented by subclasses to print the particle
+        lists to the specified output file. The method raises a NotImplementedError
+        if it is not overridden by a subclass.
+
+        Parameters
+        ----------
+        output_file : str
+            The path to the file where the particle lists will be printed.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented by a subclass.
+
+        Returns
+        -------
+        None
+        """
         raise NotImplementedError("This method is not implemented yet")

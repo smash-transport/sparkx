@@ -6,6 +6,7 @@ Classes
 .. toctree::
    :maxdepth: 2
 
+   BaseStorer/index
    CentralityClasses/index
    EventCharacteristics/index
    flow/index
@@ -14,9 +15,9 @@ Classes
    JetAnalysis/index
    Jetscape/index
    Lattice3D/index
+   loader/index
    MultiParticlePtCorrelations/index
    Oscar/index
    Particle/index
-   BaseStorer/index
    ParticleObjectStorer/index
-   loader/index
+  
