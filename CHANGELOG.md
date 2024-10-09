@@ -25,10 +25,13 @@ Date:
 * Particle: Add member function to calculate the transverse mass of a particle
 * Oscar: Add transverse mass cut to methods
 * Jetscape: Add transverse mass cut to methods
+* Added ParticleObjectStorer to store generic particle lists
+* SPARKX checks now for static tying consistency
 
 ### Changed
 * Filter: Perform general clean up to reduce code duplications
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
+
 | Old Method Name                     | New Method Name             |
 |-------------------------------------|-----------------------------|
 | momentum_rapidity_Y()               | rapidity()                  |
@@ -38,12 +41,13 @@ Date:
 | pt_cut()                            | pT_cut()                    |
 | compute_mass_from_energy_momentum() | mass_from_energy_momentum() |
 | compute_charge_from_pdg()           | charge_from_pdg()           |
+* Changed class architecture to separate loader and storer classes
+* Changed code formatter to `black`
 
 ### Fixed
 * Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
+* Bugfix in the scaling function of Histogram
 
-### Added
-* Tests: Add HelperFunctions.py that contains free utility functions used in the tests and add corresponding tests.
 
 ## v1.3.0-Newton
 Date: 2024-07-25
