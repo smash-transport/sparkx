@@ -6,11 +6,11 @@ on:
       - main
       - sparkx_devel
     types:
-      - opened
-      - synchronize
+      - closed  # Trigger when the PR is closed (includes merging)
 
 jobs:
   code-formatting:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
