@@ -284,7 +284,6 @@ class OscarLoader(BaseLoader):
                 + "Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. "
             )
 
-
     def oscar_format(self) -> Optional[str]:
         """
         Returns the OSCAR format string.
