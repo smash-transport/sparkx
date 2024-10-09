@@ -34,7 +34,7 @@ class JetAnalysis:
         Jet radius parameter.
     jet_eta_range_: tuple
         Minimum and maximum pseudorapidity for jet selection.
-    jet_pt_range_: tuple
+    jet_pT_range_: tuple
         Minimum transverse momentum for jet selection and maximum transverse
         momentum to write out the jet.
     jet_data_: list
@@ -86,7 +86,7 @@ class JetAnalysis:
         >>> jet_analysis = JetAnalysis()
         >>>
         >>> # Perform the jet analysis
-        >>> jet_analysis.perform_jet_finding(hadron_data, jet_R=0.4, jet_eta_range=(-2., 2.), jet_pt_range=(10., None), output_filename=JET_ANALYSIS_OUTPUT_PATH)
+        >>> jet_analysis.perform_jet_finding(hadron_data, jet_R=0.4, jet_eta_range=(-2., 2.), jet_pT_range=(10., None), output_filename=JET_ANALYSIS_OUTPUT_PATH)
 
     If you want to analyze the jets further, you have to read in the jet data
     from the file like:
@@ -142,11 +142,11 @@ class JetAnalysis:
         self.hadron_data_ = None
         self.jet_R_ = None
         self.jet_eta_range_ = None
-        self.jet_pt_range_ = None
+        self.jet_pT_range_ = None
         self.jet_data_ = None
 
     def __initialize_and_check_parameters(
-        self, hadron_data, jet_R, jet_eta_range, jet_pt_range
+        self, hadron_data, jet_R, jet_eta_range, jet_pT_range
     ):
         """
         Initialize and check the parameters for jet analysis.
@@ -163,7 +163,7 @@ class JetAnalysis:
             Minimum and maximum pseudorapidity for jet selection.
             :code:`None` values are allowed and are exchanged
             by :math:`-\\infty` or :math:`+\\infty` automatically.
-        jet_pt_range: tuple
+        jet_pT_range: tuple
             Minimum transverse momentum for jet finding algorithm and maximum
             transverse momentum to write out the jet to a file.
             Values can be :code:`None`, then the lower bound is set to zero
@@ -200,25 +200,25 @@ class JetAnalysis:
                 + "upper one. They are interchanged automatically."
             )
 
-        # check the jet pt range
-        if not isinstance(jet_pt_range, tuple):
+        # check the jet pT range
+        if not isinstance(jet_pT_range, tuple):
             raise TypeError(
-                "jet_pt_range is not a tuple. "
+                "jet_pT_range is not a tuple. "
                 + "It must contain either values or None."
             )
-        if len(jet_pt_range) != 2:
-            raise ValueError("jet_pt_range must contain exactly two values.")
-        if any(pt is not None and pt < 0 for pt in jet_pt_range):
-            raise ValueError("All values in jet_pt_range must be non-negative.")
+        if len(jet_pT_range) != 2:
+            raise ValueError("jet_pT_range must contain exactly two values.")
+        if any(pT is not None and pT < 0 for pT in jet_pT_range):
+            raise ValueError("All values in jet_pT_range must be non-negative.")
 
-        lower_cut = 0.0 if jet_pt_range[0] is None else jet_pt_range[0]
-        upper_cut = float("inf") if jet_pt_range[1] is None else jet_pt_range[1]
+        lower_cut = 0.0 if jet_pT_range[0] is None else jet_pT_range[0]
+        upper_cut = float("inf") if jet_pT_range[1] is None else jet_pT_range[1]
         if lower_cut < upper_cut:
-            self.jet_pt_range_ = (lower_cut, upper_cut)
+            self.jet_pT_range_ = (lower_cut, upper_cut)
         else:
-            self.jet_pt_range_ = (upper_cut, lower_cut)
+            self.jet_pT_range_ = (upper_cut, lower_cut)
             warnings.warn(
-                "The lower jet pt cut value is larger than the "
+                "The lower jet pT cut value is larger than the "
                 + "upper one. They are interchanged automatically."
             )
 
@@ -355,7 +355,7 @@ class JetAnalysis:
         jet_pid = 10
         output_list = []
 
-        if jet.perp() < self.jet_pt_range_[1]:
+        if jet.perp() < self.jet_pT_range_[1]:
             output_list = [
                 [
                     0,
@@ -399,7 +399,7 @@ class JetAnalysis:
         hadron_data,
         jet_R,
         jet_eta_range,
-        jet_pt_range,
+        jet_pT_range,
         output_filename,
         assoc_only_charged=True,
         jet_algorithm=fj.antikt_algorithm,
@@ -421,7 +421,7 @@ class JetAnalysis:
             Minimum and maximum pseudorapidity for jet selection.
             :code:`None` values are allowed and are exchanged
             by :math:`-\\infty` or :math:`+\\infty` automatically.
-        jet_pt_range: tuple
+        jet_pT_range: tuple
             Minimum transverse momentum for jet finding algorithm and maximum
             transverse momentum to write out the jet to a file.
             Values can be :code:`None`, then the lower bound is set to zero
@@ -442,7 +442,7 @@ class JetAnalysis:
 
         """
         self.__initialize_and_check_parameters(
-            hadron_data, jet_R, jet_eta_range, jet_pt_range
+            hadron_data, jet_R, jet_eta_range, jet_pT_range
         )
         for event, hadron_data_event in enumerate(self.hadron_data_):
             new_file = False
@@ -469,7 +469,7 @@ class JetAnalysis:
             # perform the jet finding algorithm
             cluster = fj.ClusterSequence(event_PseudoJets, jet_definition)
             jets = fj.sorted_by_pt(
-                cluster.inclusive_jets(self.jet_pt_range_[0])
+                cluster.inclusive_jets(self.jet_pT_range_[0])
             )
             jets = jet_selector(jets)
 

@@ -123,9 +123,9 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
         if not isinstance(weight, str):
             raise TypeError("weight has to be a string")
-        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
+        elif weight not in ["pT", "pT2", "pTn", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "Invalid weight given, choose one of the following: 'pt', 'pt2', 'ptn', 'rapidity', 'pseudorapidity'"
+                "Invalid weight given, choose one of the following: 'pT', 'pT2', 'pTn', 'rapidity', 'pseudorapidity'"
             )
         else:
             self.weight_ = weight
@@ -145,11 +145,11 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             particle_weights = []
             for particle in particle_data[event]:
                 weight = 0.0
-                if self.weight_ == "pt":
+                if self.weight_ == "pT":
                     weight = particle.pT_abs()
-                elif self.weight_ == "pt2":
+                elif self.weight_ == "pT2":
                     weight = particle.pT_abs() ** 2.0
-                elif self.weight_ == "ptn":
+                elif self.weight_ == "pTn":
                     weight = particle.pT_abs() ** self.n_
                 elif self.weight_ == "rapidity":
                     weight = particle.rapidity()
@@ -467,7 +467,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             Bins used for the differential flow calculation.
         flow_as_function_of : str
             Variable on which the flow is calculated
-            ("pt", "rapidity", or "pseudorapidity").
+            ("pT", "rapidity", or "pseudorapidity").
         particle_data_event_plane : list
             List of particle data for the event plane calculation.
         self_corr : bool, optional
@@ -487,9 +487,9 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
             raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'"
+                "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
 
         particles_bin = []
@@ -499,7 +499,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
                 particles_event = []
                 for particle in particle_data[event]:
                     val = 0.0
-                    if flow_as_function_of == "pt":
+                    if flow_as_function_of == "pT":
                         val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
                         val = particle.rapidity()

@@ -598,7 +598,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Bins used for the differential flow calculation.
         flow_as_function_of : str
             Variable on which the flow is calculated
-            ("pt", "rapidity", or "pseudorapidity").
+            ("pT", "rapidity", or "pseudorapidity").
         poi_pdg : list
             List of PDG id for identified particle differential flow.
 
@@ -631,9 +631,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             for pdg in poi_pdg:
                 if not isinstance(pdg, int):
                     raise TypeError("poi_pdg elements must be integers")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'"
+                "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
 
         # differential flow needs the integrated flow as reference
@@ -647,7 +647,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 particles_event = []
                 for particle in particle_data[event]:
                     val = 0.0
-                    if flow_as_function_of == "pt":
+                    if flow_as_function_of == "pT":
                         val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
                         val = particle.rapidity()

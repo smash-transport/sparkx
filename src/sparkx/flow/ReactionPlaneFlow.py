@@ -67,8 +67,8 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>> v2 = flow2.integrated_flow(jetscape_flow)
         >>>
         >>> # Calculate the differential flow with error
-        >>> pt_bins = [0.0,0.5,1.0,2.0,3.0,4.0]
-        >>> v2_differential = flow2.integrated_flow(jetscape_flow,pt_bins,'pt')
+        >>> pT_bins = [0.0,0.5,1.0,2.0,3.0,4.0]
+        >>> v2_differential = flow2.integrated_flow(jetscape_flow,pT_bins,'pT')
 
     """
 
@@ -114,7 +114,6 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                     if np.isnan(particle_data[event][particle].weight)
                     else particle_data[event][particle].weight
                 )
-                pt = particle_data[event][particle].pT_abs()
                 phi = particle_data[event][particle].phi()
                 flow_event += weight * np.exp(1j * self.n_ * phi)
                 number_particles += weight
@@ -136,7 +135,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         bins : list or np.ndarray
             Bins used for the differential flow calculation.
         flow_as_function_of : str
-            Variable on which the flow is calculated ("pt", "rapidity", or "pseudorapidity").
+            Variable on which the flow is calculated ("pT", "rapidity", or "pseudorapidity").
 
         Returns
         -------
@@ -147,9 +146,9 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
             raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
             raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
-                "flow_as_function_of must be either 'pt', 'rapidity', 'pseudorapidity'"
+                "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
 
         particles_bin = []
@@ -159,7 +158,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                 particles_event = []
                 for particle in particle_data[event]:
                     val = 0.0
-                    if flow_as_function_of == "pt":
+                    if flow_as_function_of == "pT":
                         val = particle.pT_abs()
                     elif flow_as_function_of == "rapidity":
                         val = particle.rapidity()
@@ -189,7 +188,6 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
                         )
                         else binned_particle_data[bin][event][particle].weight
                     )
-                    pt = binned_particle_data[bin][event][particle].pT_abs()
                     phi = binned_particle_data[bin][event][particle].phi()
                     flow_event += weight * np.exp(1j * self.n_ * phi)
                     number_particles += weight

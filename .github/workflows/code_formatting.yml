@@ -1,4 +1,4 @@
-name: Code Formatting Check
+name: Code Formatting Check and Fix
 
 on:
   pull_request:
@@ -16,6 +16,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}  # Check out the pull request branch
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -27,6 +29,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install black==24.8.0
 
-    - name: Check code formatting
+    - name: Format code
       run: |
+        black --line-length 80 src/sparkx tests/
+
+    - name: Commit changes
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "action@github.com"
+        git add src/sparkx tests/
+        git commit -m "Automatically format code using black" || echo "No changes to commit"
+
+    - name: Push changes
+      run: |
+        git push origin ${{ github.head_ref }}
+
+    - name: Run format test again
+      run: |
+        # Add your test commands here
         black --check --line-length 80 src/sparkx tests/

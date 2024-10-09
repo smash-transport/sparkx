@@ -34,7 +34,7 @@ def test_jet_analysis(jet_analysis_instance, test_data, tmp_path):
         test_data,
         jet_R=0.4,
         jet_eta_range=(-2.0, 2.0),
-        jet_pt_range=(10.0, None),
+        jet_pT_range=(10.0, None),
         output_filename=tmp_path / "test_jet.csv",
     )
 

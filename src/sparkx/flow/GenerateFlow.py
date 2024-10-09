@@ -38,27 +38,27 @@ class GenerateFlow:
     generate_dummy_JETSCAPE_file:
         Generate a dummy JETSCAPE file with random particle momenta resulting in
         the same flow for all transverse momenta.
-    generate_dummy_JETSCAPE_file_realistic_pt_shape:
+    generate_dummy_JETSCAPE_file_realistic_pT_shape:
         Generate a dummy JETSCAPE file with particles having flow with a more
         realistic transverse momentum distribution.
     generate_dummy_JETSCAPE_file_multi_particle_correlations:
         Generate a dummy JETSCAPE file with random particle momenta resulting in
         the same flow for all transverse momenta. With this function multi-particle
         correlations can be introduced.
-    generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations:
+    generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations:
         Generate a dummy JETSCAPE file with particles having flow with a more
         realistic transverse momentum distribution. With this function multi-particle
         correlations can be introduced.
     generate_dummy_OSCAR_file:
         Generate dummy flow data in OSCAR format.
-    generate_dummy_OSCAR_file_realistic_pt_shape:
+    generate_dummy_OSCAR_file_realistic_pT_shape:
         Generate a dummy OSCAR2013 file with particles having flow with a more
         realistic transverse momentum distribution.
     generate_dummy_OSCAR_file_multi_particle_correlations:
         Generate a dummy OSCAR2013 file with random particle momenta resulting in
         the same flow for all transverse momenta. With this function multi-particle
         correlations can be introduced.
-    generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations:
+    generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations:
         Generate a dummy OSCAR2013 file with particles having flow with a more
         realistic transverse momentum distribution. With this function multi-particle
         correlations can be introduced.
@@ -82,8 +82,8 @@ class GenerateFlow:
 
     Notes
     -----
-    If you use the :py:meth:`generate_dummy_JETSCAPE_file_realistic_pt_shape` or
-    :py:meth:`generate_dummy_OSCAR_file_realistic_pt_shape` keep in mind, that the
+    If you use the :py:meth:`generate_dummy_JETSCAPE_file_realistic_pT_shape` or
+    :py:meth:`generate_dummy_OSCAR_file_realistic_pT_shape` keep in mind, that the
     flow values given during construction are used for the saturation value of the
     flow at large transverse momentum. They do **not** reflect the value of the
     integrated flow.
@@ -364,7 +364,7 @@ class GenerateFlow:
 
         return value
 
-    def __distribution_function_pT_differential(self, phi, vn_pt_list):
+    def __distribution_function_pT_differential(self, phi, vn_pT_list):
         """
         Calculates the pT-differential distribution function for a given
         azimuthal angle.
@@ -373,7 +373,7 @@ class GenerateFlow:
         ----------
         phi : float
             The azimuthal angle at which to calculate the distribution function.
-        vn_pt_list : list
+        vn_pT_list : list
             A list of flow harmonics vn for different transverse momenta pT.
 
         Returns
@@ -384,8 +384,8 @@ class GenerateFlow:
         f_harmonic = 1.0
         f_norm = 1.0
         for term in range(len(self.n_)):
-            f_harmonic += 2.0 * vn_pt_list[term] * np.cos(self.n_[term] * phi)
-            f_norm += 2.0 * np.abs(vn_pt_list[term])
+            f_harmonic += 2.0 * vn_pT_list[term] * np.cos(self.n_[term] * phi)
+            f_norm += 2.0 * np.abs(vn_pT_list[term])
 
         return f_harmonic / f_norm
 
@@ -431,7 +431,7 @@ class GenerateFlow:
         self.py_ = py
         self.pz_ = pz
 
-    def __generate_flow_realistic_pt_distribution(
+    def __generate_flow_realistic_pT_distribution(
         self, multiplicity, reaction_plane_angle
     ):
         pTmax = 4.5
@@ -454,9 +454,9 @@ class GenerateFlow:
                     pT_chosen = pT
                     need_momentum = False
 
-            vn_pt_list = []
+            vn_pT_list = []
             for harmonic in range(len(self.n_)):
-                vn_pt_list.append(
+                vn_pT_list.append(
                     self.__artificial_flow_pT_shape(
                         pT, pT0_bis, pT_sat, self.vn_[harmonic]
                     )
@@ -467,7 +467,7 @@ class GenerateFlow:
             while need_angle:
                 phi = 2.0 * np.pi * rd.random()
                 if rd.random() < self.__distribution_function_pT_differential(
-                    phi, vn_pt_list
+                    phi, vn_pT_list
                 ):
                     phi_chosen = phi
                     need_angle = False
@@ -564,7 +564,7 @@ class GenerateFlow:
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
-    def generate_dummy_JETSCAPE_file_realistic_pt_shape(
+    def generate_dummy_JETSCAPE_file_realistic_pT_shape(
         self,
         output_path,
         number_events,
@@ -624,7 +624,7 @@ class GenerateFlow:
                     reaction_plane_angle = 2.0 * np.pi * rd.random()
                 else:
                     reaction_plane_angle = 0.0
-                self.__generate_flow_realistic_pt_distribution(
+                self.__generate_flow_realistic_pT_distribution(
                     multiplicity, reaction_plane_angle
                 )
 
@@ -760,7 +760,7 @@ class GenerateFlow:
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
-    def generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations(
+    def generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations(
         self,
         output_path,
         number_events,
@@ -835,7 +835,7 @@ class GenerateFlow:
                     reaction_plane_angle = 2.0 * np.pi * rd.random()
                 else:
                     reaction_plane_angle = 0.0
-                self.__generate_flow_realistic_pt_distribution(
+                self.__generate_flow_realistic_pT_distribution(
                     multiplicity, reaction_plane_angle
                 )
                 self.__create_k_particle_correlations(
@@ -961,7 +961,7 @@ class GenerateFlow:
                     f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n"
                 )
 
-    def generate_dummy_OSCAR_file_realistic_pt_shape(
+    def generate_dummy_OSCAR_file_realistic_pT_shape(
         self,
         output_path,
         number_events,
@@ -1024,7 +1024,7 @@ class GenerateFlow:
                     reaction_plane_angle = 2.0 * np.pi * rd.random()
                 else:
                     reaction_plane_angle = 0.0
-                self.__generate_flow_realistic_pt_distribution(
+                self.__generate_flow_realistic_pT_distribution(
                     multiplicity, reaction_plane_angle
                 )
 
@@ -1175,7 +1175,7 @@ class GenerateFlow:
                     f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n"
                 )
 
-    def generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations(
+    def generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations(
         self,
         output_path,
         number_events,
@@ -1253,7 +1253,7 @@ class GenerateFlow:
                     reaction_plane_angle = 2.0 * np.pi * rd.random()
                 else:
                     reaction_plane_angle = 0.0
-                self.__generate_flow_realistic_pt_distribution(
+                self.__generate_flow_realistic_pT_distribution(
                     multiplicity, reaction_plane_angle
                 )
                 self.__create_k_particle_correlations(

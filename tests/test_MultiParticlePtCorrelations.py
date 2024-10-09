@@ -32,7 +32,7 @@ def test_MultiParticlePtCorrelations_initialization():
         MultiParticlePtCorrelations(max_order="9")
 
 
-def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
+def test_MultiParticlePtCorrelations_mean_pT_correlations(mpc_instance):
     particle_list = Oscar(TEST_OSCAR).particle_objects_list()
 
     compute_error = True
@@ -41,7 +41,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
     seed = 42
 
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error="true",
             delete_fraction=delete_fraction,
@@ -49,7 +49,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction="0.2",
@@ -57,7 +57,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=delete_fraction,
@@ -65,7 +65,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=2.0,
@@ -73,7 +73,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=-1.0,
@@ -81,7 +81,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_correlations(
+        mpc_instance.mean_pT_correlations(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=delete_fraction,
@@ -89,7 +89,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
             seed=seed,
         )
 
-    corr, corr_err = mpc_instance.mean_pt_correlations(
+    corr, corr_err = mpc_instance.mean_pT_correlations(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
@@ -103,10 +103,10 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations(mpc_instance):
     assert not np.isnan(corr_err).any()
 
 
-# similar test for mean_pt_cumulants
+# similar test for mean_pT_cumulants
 
 
-def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
+def test_MultiParticlePtCorrelations_mean_pT_cumulants(mpc_instance):
     particle_list = Oscar(TEST_OSCAR).particle_objects_list()
 
     compute_error = True
@@ -115,7 +115,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
     seed = 42
 
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error="true",
             delete_fraction=delete_fraction,
@@ -123,7 +123,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction="0.2",
@@ -131,7 +131,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
     with pytest.raises(TypeError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=delete_fraction,
@@ -139,7 +139,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=2.0,
@@ -147,7 +147,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=-1.0,
@@ -155,7 +155,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
     with pytest.raises(ValueError):
-        mpc_instance.mean_pt_cumulants(
+        mpc_instance.mean_pT_cumulants(
             particle_list_all_events=particle_list,
             compute_error=compute_error,
             delete_fraction=delete_fraction,
@@ -163,7 +163,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
             seed=seed,
         )
 
-    cumulants, cumulants_err = mpc_instance.mean_pt_cumulants(
+    cumulants, cumulants_err = mpc_instance.mean_pT_cumulants(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
@@ -177,7 +177,7 @@ def test_MultiParticlePtCorrelations_mean_pt_cumulants(mpc_instance):
     assert not np.isnan(cumulants_err).any()
 
 
-def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants(
+def test_MultiParticlePtCorrelations_mean_pT_correlations_and_cumulants(
     mpc_instance,
 ):
     # the first order must be the same for the correlations and cumulants
@@ -189,14 +189,14 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants(
     number_samples = 100
     seed = 42
 
-    corr, corr_err = mpc_instance.mean_pt_correlations(
+    corr, corr_err = mpc_instance.mean_pT_correlations(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
         number_samples=number_samples,
         seed=seed,
     )
-    cumulants, cumulants_err = mpc_instance.mean_pt_cumulants(
+    cumulants, cumulants_err = mpc_instance.mean_pT_cumulants(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
@@ -207,14 +207,14 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants(
     assert corr_err[0] == cumulants_err[0]
 
 
-def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants_physics(
+def test_MultiParticlePtCorrelations_mean_pT_correlations_and_cumulants_physics(
     mpc_instance,
 ):
-    # test with a dummy particle list, where all particles have the same pt
+    # test with a dummy particle list, where all particles have the same pT
     particle_list = []
     for _ in range(10):  # create 10 events
         event_particles = []
-        for _ in range(100):  # create 100 particles with the same pt
+        for _ in range(100):  # create 100 particles with the same pT
             p_array = np.array(
                 [
                     0,
@@ -235,14 +235,14 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants_physics(
     number_samples = 100
     seed = 42
 
-    corr, corr_err = mpc_instance.mean_pt_correlations(
+    corr, corr_err = mpc_instance.mean_pT_correlations(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
         number_samples=number_samples,
         seed=seed,
     )
-    cumulants, cumulants_err = mpc_instance.mean_pt_cumulants(
+    cumulants, cumulants_err = mpc_instance.mean_pT_cumulants(
         particle_list_all_events=particle_list,
         compute_error=compute_error,
         delete_fraction=delete_fraction,
@@ -258,7 +258,7 @@ def test_MultiParticlePtCorrelations_mean_pt_correlations_and_cumulants_physics(
     assert not np.isnan(cumulants).any()
     assert not np.isnan(cumulants_err).any()
 
-    # if there is no variation in pt, the uncertainty should be zero
+    # if there is no variation in pT, the uncertainty should be zero
     # check that the uncertainty is smaller 1e-10
     assert np.all(corr_err < 1e-10)
     assert np.all(cumulants_err < 1e-10)

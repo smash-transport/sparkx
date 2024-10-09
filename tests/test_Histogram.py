@@ -176,7 +176,6 @@ def test_add_bin_to_multiple_histograms():
     hist.add_value(5.6)
     hist.add_bin(6, 5.5)
     hist.add_value(5.6)
-    print(hist.histogram())
     assert np.allclose(
         hist.histogram(),
         np.array(

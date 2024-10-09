@@ -739,7 +739,7 @@ def spacetime_rapidity_cut(particle_list, cut_value):
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if cut_value = 1, only particles with spatial rapidity
+        For example, if cut_value = 1, only particles with spacetime rapidity
         in [-1.0, 1.0] are kept.
 
     cut_value : tuple
