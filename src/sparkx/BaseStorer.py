@@ -550,10 +550,16 @@ class BaseStorer(ABC):
             raise ValueError("num_output_per_event_ is not set")
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
-        for event in range(0, len(self.particle_list_)):
-            self.num_output_per_event_[event][1] = len(
-                self.particle_list_[event]
-            )
+        
+        if self.num_output_per_event_.ndim == 1:
+            # Handle the case where num_output_per_event_ is a one-dimensional array
+            self.num_output_per_event_[1] = len(self.particle_list_[0])
+        elif self.num_output_per_event_.ndim == 2:
+            # Handle the case where num_output_per_event_ is a two-dimensional array
+            for event in range(len(self.particle_list_)):
+                self.num_output_per_event_[event][1] = len(self.particle_list_[event])
+        else:
+            raise ValueError("num_output_per_event_ has an unexpected number of dimensions")
 
     @abstractmethod
     def print_particle_lists_to_file(self, output_file) -> None:
