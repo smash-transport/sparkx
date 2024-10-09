@@ -102,6 +102,16 @@ def test_add_value_single_number_to_multiple_histograms():
             [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]]
         ),
     )
+    
+def test_add_value_out_of_range():
+    # Test adding values out of the range for the histograms
+    hist = Histogram((0, 10, 10))
+    values_out = [10, -1, 12.5] 
+    for value in values_out:
+        with pytest.warns(UserWarning, match=f"Value {value} is out of histogram range."):
+            hist.add_value(value)
+    # Check if the histogram data remains unchanged
+    assert hist.histograms_[-1].sum() == 0 
 
 
 def test_remove_bin_out_of_range():
