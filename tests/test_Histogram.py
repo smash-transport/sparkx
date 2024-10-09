@@ -314,7 +314,7 @@ def test_average():
         hist.error_, np.array([0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0])
     )
     assert isinstance(hist.scaling_, np.ndarray)
-    assert not any(isinstance(i, np.ndarray) for i in hist.scaling_)
+    assert all(isinstance(i, np.ndarray) for i in hist.scaling_)
     assert np.allclose(counts_summed, hist.histogram_raw_count_)
 
 
@@ -361,7 +361,7 @@ def test_average_weighted_by_error():
         hist.error_, np.array([0.89442719, 1.41421356, 2.12132034]), atol=0.01
     )
     assert isinstance(hist.scaling_, np.ndarray)
-    assert not any(isinstance(i, np.ndarray) for i in hist.scaling_)
+    assert all(isinstance(i, np.ndarray) for i in hist.scaling_)
     assert np.allclose(counts_summed, hist.histogram_raw_count_)
 
 

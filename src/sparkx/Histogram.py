@@ -565,6 +565,9 @@ class Histogram:
         variance = np.average(
             (self.histograms_ - average) ** 2.0, axis=0, weights=weights
         )
+        # Ensure the result is a 2D array
+        if average.ndim == 1:
+            average = average.reshape(1, -1)
 
         self.histograms_ = average
         self.error_ = np.sqrt(variance)
@@ -573,6 +576,9 @@ class Histogram:
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
         self.scaling_ = self.scaling_[0]
+
+        if self.scaling_.ndim == 1:
+            self.scaling_ = self.scaling_.reshape(1, -1)
 
         self.number_of_histograms_ = 1
 
@@ -607,6 +613,10 @@ class Histogram:
         weights = 1 / self.error_**2
         average = np.average(self.histograms_, axis=0, weights=weights)
 
+         # Ensure the result is a 2D array
+        if average.ndim == 1:
+            average = average.reshape(1, -1)
+
         self.histograms_ = average
         self.error_ = np.sqrt(
             1.0 / np.sum(1.0 / np.square(self.error_), axis=0)
@@ -616,6 +626,9 @@ class Histogram:
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
         self.scaling_ = self.scaling_[0]
+
+        if self.scaling_.ndim == 1:
+            self.scaling_ = self.scaling_.reshape(1, -1)
 
         self.number_of_histograms_ = 1
 
@@ -688,9 +701,14 @@ class Histogram:
             self.error_[-1] *= value
 
         elif isinstance(value, (list, np.ndarray)):
-            self.histograms_[-1] *= np.asarray(value)
-            self.scaling_[-1] *= np.asarray(value)
-            self.scaling_[-1] *= np.asarray(value)
+            if np.asarray(value).shape != self.histograms_[-1].shape:
+                raise ValueError(
+                    "The shape of the scaling factor array is not compatible with the histogram shape"
+                )
+
+            value_array=np.asarray(value)
+            self.histograms_[-1] *= value_array
+            self.scaling_[-1] *= value_array
 
     def set_error(self, own_error):
         """
