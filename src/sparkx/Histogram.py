@@ -709,7 +709,6 @@ class Histogram:
             value_array=np.asarray(value)
             self.histograms_[-1] *= value_array
             self.scaling_[-1] *= value_array
-            self.scaling_[-1] *= value_array
 
     def set_error(self, own_error):
         """
