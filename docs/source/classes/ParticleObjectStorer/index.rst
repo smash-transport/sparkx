@@ -9,6 +9,6 @@ ParticleObjectStorer
     :inherited-members:
 
 .. automethod:: ParticleObjectStorer.create_loader
-.. automethod:: ParticleObjectStorer.particle_list
+   :noindex:
 .. automethod:: ParticleObjectStorer.particle_status
-.. automethod:: ParticleObjectStorer.print_particle_lists_to_file
+   :noindex:

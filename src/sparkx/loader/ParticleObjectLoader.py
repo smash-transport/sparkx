@@ -13,6 +13,36 @@ from typing import List, Tuple, Dict, Union, Any
 
 
 class ParticleObjectLoader(BaseLoader):
+    """
+    A loader class for handling particle objects.
+
+    The ParticleObjectLoader class is responsible for loading and filtering
+    particle objects from a specified list. It provides methods to initialize
+    the loader, apply filters, and set the particle list based on optional
+    arguments.
+
+    Attributes
+    ----------
+    particle_list_ : List[List["Particle"]]
+        The list of particle objects to load.
+    optional_arguments_ : Dict[str, Any]
+        A dictionary of optional arguments for loading and filtering particles.
+    num_events_ : int
+        The number of events in the particle list.
+    num_output_per_event_ : List[int]
+        The number of output particles per event after filtering.
+
+    Methods
+    -------
+    load(**kwargs: Any) -> Tuple[List[List["Particle"]], int, List[int]]
+        Loads the data from the dummy input based on the specified optional arguments.
+    set_num_output_per_event() -> List[int]
+        Sets the number of output particles per event based on the filters applied.
+    __apply_kwargs_filters(event: List[List["Particle"]], filters_dict: Dict[str, Any]) -> List[List["Particle"]]
+        Applies the specified filters to the event.
+    set_particle_list(kwargs: Dict[str, Any]) -> List[List["Particle"]]
+        Sets the particle list based on the filters applied.
+    """
     def __init__(
         self, particle_list: Union[str, List[List["Particle"]]]
     ) -> None:

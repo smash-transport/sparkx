@@ -460,12 +460,12 @@ class JetscapeLoader(BaseLoader):
 
         This method reads the JETSCAPE data file line by line and determines
         the number of output lines for each event. It does this by looking for
-        lines that contain a '#' and the particle_type_defining_string_.
+        lines that contain a '#' and the ``particle_type_defining_string_``.
         For each such line, it extracts the event number and the number of
         output lines from the line and appends them to a list.
         After reading the entire file, it converts the list to a numpy array
-        and stores it in the num_output_per_event_ attribute. It also sets
-        the num_events_ attribute to the length of the list.
+        and stores it in the ``num_output_per_event_`` attribute. It also sets
+        the ``num_events_`` attribute to the length of the list.
 
         Parameters
         ----------

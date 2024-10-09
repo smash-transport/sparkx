@@ -140,7 +140,7 @@ class ParticleObjectStorer(BaseStorer):
         """
         Creates a new ParticleObjectLoader object.
 
-        This method creates a new ParticleObjectLoader object with the specified list of particle objects and assigns it to the loader_ attribute.
+        This method creates a new ParticleObjectLoader object with the specified list of particle objects and assigns it to the ``loader_`` attribute.
 
         Parameters
         ----------
@@ -255,3 +255,30 @@ class ParticleObjectStorer(BaseStorer):
                         particle.baryon_number,
                     ]
                     f.write(",".join(map(str, particle_data)) + "\n")
+    
+    def particle_status(
+        self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
+    ) -> "ParticleObjectStorer":
+        """
+        Keep only particles with a given particle status
+
+        Parameters
+        ----------
+        status_list : int
+            To keep a particles with a single status only, pass a single status
+
+        status_list : tuple/list/array
+            To keep hadrons with different hadron status, pass a tuple or list
+            or array
+
+        Returns
+        -------
+        self : ParticleObjectStorer object
+            Containing only hadrons with status specified by status_list for
+            every event
+
+        """
+        self.particle_list_ = particle_status(self.particle_list_, status_list)
+        self._update_num_output_per_event_after_filter()
+
+        return self

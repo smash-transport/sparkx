@@ -16,34 +16,34 @@ from typing import Any, List, Optional, Union
 
 class Oscar(BaseStorer):
     """
-        Defines an Oscar object.
+    Defines an Oscar object.
 
-        The Oscar class contains a single .oscar file including all or only chosen
-        events in either the Oscar2013 or Oscar2013Extended format. It's methods
-        allow to directly act on all contained events as applying acceptance filters
-        (e.g. un/charged particles, spectators/participants) to keep/remove particles
-        by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
-        Once these filters are applied, the new data set can be accessed as a
+    The Oscar class contains a single .oscar file including all or only chosen
+    events in either the Oscar2013 or Oscar2013Extended format. It's methods
+    allow to directly act on all contained events as applying acceptance filters
+    (e.g. un/charged particles, spectators/participants) to keep/remove particles
+    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
+    Once these filters are applied, the new data set can be accessed as a
 
-        1) nested list containing all quantities of the Oscar format
-        2) list containing Particle objects from the Particle class
+    1) nested list containing all quantities of the Oscar format
+    2) list containing Particle objects from the Particle class
 
-        or it may be printed to a file complying with the input format.
+    or it may be printed to a file complying with the input format.
 
-        .. note::
-            If filters are applied, be aware that not all cuts commute.
+    .. note::
+        If filters are applied, be aware that not all cuts commute.
 
-        Parameters
-        ----------
-        OSCAR_FILE : str
-            Path to Oscar file
+    Parameters
+    ----------
+    OSCAR_FILE : str
+        Path to Oscar file
 
-        Other Parameters
-        ----------------
-        **kwargs : properties, optional
-            kwargs are used to specify optional properties like a chunk reading
-            and must be used like :code:`'property'='value'` where the possible
-            properties are specified below.
+    Other Parameters
+    ----------------
+    **kwargs : properties, optional
+        kwargs are used to specify optional properties like a chunk reading
+        and must be used like :code:`'property'='value'` where the possible
+        properties are specified below.
 
             .. list-table::
                 :header-rows: 1
@@ -70,114 +70,101 @@ class Oscar(BaseStorer):
 
                <br />
 
-        Attributes
-        ----------
-        PATH_OSCAR_ : str
-            Path to the Oscar file
-        oscar_format_ : str
-            Input Oscar format "Oscar2013" or "Oscar2013Extended" (set automatically)
-        num_output_per_event_ : numpy.array
-            Array containing the event number and the number of particles in this
-            event as num_output_per_event_[event i][num_output in event i] (updated
-            when filters are applied)
-        num_events_ : int
-            Number of events contained in the Oscar object (updated when filters
-            are applied)
-        event_end_lines_ : list
-            List containing all comment lines at the end of each event as str.
-            Needed to print the Oscar object to a file.
+    Attributes
+    ----------
+    PATH_OSCAR_ : str
+        Path to the Oscar file
+    oscar_format_ : str
+        Input Oscar format "Oscar2013" or "Oscar2013Extended" (set automatically)
+    num_output_per_event_ : numpy.array
+        Array containing the event number and the number of particles in this
+        event as num_output_per_event_[event i][num_output in event i] (updated
+        when filters are applied)
+    num_events_ : int
+        Number of events contained in the Oscar object (updated when filters
+        are applied)
+    event_end_lines_ : list
+        List containing all comment lines at the end of each event as str.
+        Needed to print the Oscar object to a file.
 
 
-        Methods
-        -------
-        oscar_format:
-            Get Oscar format of the input files
-        print_particle_lists_to_file:
-            Print current particle data to file with same format
+    Methods
+    -------
+    oscar_format:
+        Get Oscar format of the input files
+    print_particle_lists_to_file:
+        Print current particle data to file with same format
 
-        Examples
-        --------
+    Examples
+    --------
 
-        **1. Initialization**
+    **1. Initialization**
 
-        To create an Oscar object, the path to the Oscar file has to be passed.
-        By default the Oscar object will contain all events of the input file. If
-        the Oscar object should only contain certain events, the keyword argument
-        "events" must be used.
+    To create an Oscar object, the path to the Oscar file has to be passed.
+    By default the Oscar object will contain all events of the input file. If
+    the Oscar object should only contain certain events, the keyword argument
+    "events" must be used.
 
-        .. highlight:: python
-        .. code-block:: python
-            :linenos:
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
 
-            >>> from sparkx.Oscar import Oscar
-            >>>
-            >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
-            >>>
-            >>> # Oscar object containing all events
-            >>> oscar1 = Oscar(OSCAR_FILE_PATH)
-            >>>
-            >>> # Oscar object containing only the first event
-            >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
-            >>>
-            >>> # Oscar object containing only events 2, 3, 4 and 5
-            >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
+        >>> from sparkx.Oscar import Oscar
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>>
+        >>> # Oscar object containing all events
+        >>> oscar1 = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> # Oscar object containing only the first event
+        >>> oscar2 = Oscar(OSCAR_FILE_PATH, events=0)
+        >>>
+        >>> # Oscar object containing only events 2, 3, 4 and 5
+        >>> oscar3 = Oscar(OSCAR_FILE_PATH, events=(2,5))
 
-        **2. Method Usage**
+    **2. Method Usage**
 
-        All methods that apply filters to the Oscar data return :code:`self`. This
-        means that methods can be concatenated. To access the Oscar data as list to
-        store it into a variable, the method :code:`particle_list()` or
-        :code:`particle_objects_list` must be called in the end.
-        Let's assume we only want to keep participant pions in events with a
-        multiplicity > 500:
+    All methods that apply filters to the Oscar data return :code:`self`. This
+    means that methods can be concatenated. To access the Oscar data as list to
+    store it into a variable, the method :code:`particle_list()` or
+    :code:`particle_objects_list` must be called in the end.
+    Let's assume we only want to keep participant pions in events with a
+    multiplicity > 500:
 
-            >>> oscar = Oscar(OSCAR_FILE_PATH)
-            >>>
-            >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
-            >>>
-            >>> # save the pions of all events as nested list
-            >>> pions_list = pions.particle_list()
-            >>>
-            >>> # save the pions as list of Particle objects
-            >>> pions_particle_objects = pions.particle_objects_list()
-            >>>
-            >>> # print the pions to an oscar file
-            >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
+        >>> oscar = Oscar(OSCAR_FILE_PATH)
+        >>>
+        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>>
+        >>> # save the pions of all events as nested list
+        >>> pions_list = pions.particle_list()
+        >>>
+        >>> # save the pions as list of Particle objects
+        >>> pions_particle_objects = pions.particle_objects_list()
+        >>>
+        >>> # print the pions to an oscar file
+        >>> pions.print_particle_lists_to_file('./particle_lists.oscar')
 
-        **3. Constructor cuts**
+    **3. Constructor cuts**
 
-        Cuts can be performed directly in the constructor by passing a dictionary. This
-        has the advantage that memory is saved because the cuts are applied after reading
-        each single event. This is achieved by the keyword argument :code:`filters`, which
-        contains the filter dictionary. Filters are applied in the order in which they appear.
-        Let's assume we only want to keep participant pions in events with a
-        multiplicity > 500:
+    Cuts can be performed directly in the constructor by passing a dictionary. This
+    has the advantage that memory is saved because the cuts are applied after reading
+    each single event. This is achieved by the keyword argument :code:`filters`, which
+    contains the filter dictionary. Filters are applied in the order in which they appear.
+    Let's assume we only want to keep participant pions in events with a
+    multiplicity > 500:
 
-            >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)})
-            >>>
-            >>> # print the pions to an oscar file
-            >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')
+        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)})
+        >>>
+        >>> # print the pions to an oscar file
+        >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')
 
-        Notes
-        -----
-        If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list
-    <<<<<<< HEAD
-        specifying the dimension to be cut in the first entry and the tuple with the cut
-    =======
-        specifying the dimensiAR_FILE, **kwargs):
-            super().__init__(OSCAR_FILE,**kwargs)
-            self.PATH_OSCAR_ = OSCAR_FILE
-            self.oscar_format_=self.loader_.oscar_format()
-            self.event_end_lines_ = self.loader_.event_end_lines()
-            del self.loader_
-
-        def create_loader(self, OSCAR_FILE):
-            self.loader_= OscarLoader(OSCAR_FILE)on to be cut in the first entry and the tuple with the cut
-    >>>>>>> 14df26b (Formatting)
-        boundaries in the second entry is needed. For all other filters, the dictionary
-        only needs the filter name as key and the filter argument as value.
-        All filter functions without arguments need a :code:`True` in the dictionary.
-
+    Notes
+    -----
+    If the :code:`filters` keyword with the :code:`spacetime_cut` is used, then a list
+    specifying the dimension to be cut in the first entry and the tuple with the cut
+    boundaries in the second entry is needed. For all other filters, the dictionary
+    only needs the filter name as key and the filter argument as value.
+    All filter functions without arguments need a :code:`True` in the dictionary.
     """
 
     def __init__(self, OSCAR_FILE: str, **kwargs: Any) -> None:

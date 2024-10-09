@@ -19,4 +19,4 @@ Classes
    Particle/index
    BaseStorer/index
    ParticleObjectStorer/index
-   Loader/index
+   loader/index
