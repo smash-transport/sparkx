@@ -147,7 +147,7 @@ class BulkObservables:
     def dNdEta(self,
                bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = None) -> Histogram:
         """
-        Calculate the event averaged yield :math:`\\frac{dN}{d\eta}`
+        Calculate the event averaged yield :math:`\\frac{dN}{d\\eta}`
 
         Args:
         - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
