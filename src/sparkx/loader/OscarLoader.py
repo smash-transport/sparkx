@@ -585,9 +585,9 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end " in line:
+                    elif "#" in line and " end " in line:
                         self.event_end_lines_.append(line)
-                    elif "#" in line and "out" in line:
+                    elif "#" in line and " out " in line:
                         line_str = line.replace("\n", "").split(" ")
                         event = line_str[2]
                         num_output: int = int(line_str[4])
@@ -602,10 +602,10 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end" in line:
+                    elif "#" in line and " end " in line:
                         self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter - 2])
-                    elif "#" in line and "in" in line:
+                        event_output.append([event, line_counter - 1])
+                    elif "#" in line and " in " in line:
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         line_counter = 0
@@ -622,14 +622,14 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end" in line:
+                    elif "#" in line and " end " in line:
                         if line_memory == 1:
                             continue
                         self.event_end_lines_.append(line)
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         event_output.append([event, line_counter - 1])
-                    elif "#" in line and "out" in line:
+                    elif "#" in line and " out " in line:
                         line_counter = 0
                     else:
                         continue
