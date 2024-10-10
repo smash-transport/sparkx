@@ -104,15 +104,16 @@ def test_add_value_single_number_to_multiple_histograms():
     )
     
 def test_add_value_out_of_range():
-    # Test adding values out of the range for the histograms
+    # Test adding values outside the histogram range
     hist = Histogram((0, 10, 10))
-    values_out = [10, -1, 12.5] 
-    for value in values_out:
-        with pytest.warns(UserWarning, match=f"Value {value} is out of histogram range."):
-            hist.add_value(value)
-    # Check if the histogram data remains unchanged
-    assert hist.histograms_[-1].sum() == 0 
+    histogram_original = hist.histograms_.copy() 
+    values_out = [12.5, 10, -1] 
 
+    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
+        for value in values_out:
+            hist.add_value(value)
+    # Ensure that the histogram has not changed after trying to add out-of-range values
+    assert np.array_equal(hist.histograms_, histogram_original), "Histogram should not be modified with out-of-range values"
 
 def test_remove_bin_out_of_range():
     # Test removing a bin at an index out of range
