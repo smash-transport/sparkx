@@ -46,7 +46,8 @@ Date:
 
 ### Fixed
 * Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
-* Bugfix in the scaling function of Histogram
+* Histogram: Bugfix in the scaling function of Histogram
+* Oscar: Bugfix in comment line identification 
 
 
 ## v1.3.0-Newton
