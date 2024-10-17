@@ -151,6 +151,10 @@ class Particle:
         Compute charge from PDG code
     mT:
         Compute transverse mass
+    is_quark:
+        Is the particle a quark?
+    is_lepton:
+        Is the particle a lepton?
     is_meson:
         Is the particle a meson?
     is_baryon:
@@ -161,6 +165,18 @@ class Particle:
         Is the particle a strange particle?
     is_heavy_flavor:
         Is the particle a heavy flavor particle?
+    has_down:
+        Does the particle have a down quark?
+    has_up:
+        Does the particle have an up quark?
+    has_strange:
+        Does the particle have a strange quark?
+    has_charm:
+        Does the particle have a charm quark?
+    has_bottom:
+        Does the particle have a bottom quark?
+    has_top:
+        Does the particle have a top quark?
     weight:
         What is the weight of the particle?
     spin:
@@ -1141,6 +1157,40 @@ class Particle:
                 "The transverse mass is set to nan."
             )
             return np.nan
+        
+    def is_quark(self):
+        """
+        Is the particle a quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_quark
+    
+    def is_lepton(self):
+        """
+        Is the particle a lepton?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_lepton
 
     def is_meson(self) -> Union[bool, float]:
         """
@@ -1233,6 +1283,108 @@ class Particle:
             return True
         else:
             return False
+        
+    def has_down(self):
+        """
+        Does the particle contain a down quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_down
+    
+    def has_up(self):
+        """
+        Does the particle contain an up quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_up
+    
+    def has_strange(self):
+        """
+        Does the particle contain a strange quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_strange
+    
+    def has_charm(self):
+        """
+        Does the particle contain a charm quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_charm
+    
+    def has_bottom(self):
+        """
+        Does the particle contain a bottom quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_bottom
+    
+    def has_top(self):
+        """
+        Does the particle contain a top quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_top
 
     def spin(self) -> float:
         """
