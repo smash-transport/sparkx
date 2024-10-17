@@ -25,4 +25,10 @@ BaseStorer
 .. automethod:: BaseStorer.spatial_rapidity_cut
 .. automethod:: BaseStorer.multiplicity_cut
 .. automethod:: BaseStorer.spacetime_cut
+.. automethod:: BaseStorer.particle_status
+.. automethod:: BaseStorer.keep_hadrons
+.. automethod:: BaseStorer.keep_leptons
+.. automethod:: BaseStorer.keep_quarks
+.. automethod:: BaseStorer.keep_mesons
+.. automethod:: BaseStorer.keep_baryons
 .. automethod:: BaseStorer.print_particle_lists_to_file

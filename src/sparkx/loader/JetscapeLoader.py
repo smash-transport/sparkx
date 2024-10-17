@@ -272,7 +272,8 @@ class JetscapeLoader(BaseLoader):
         'particle_species', 'remove_particle_species',
         'lower_event_energy_cut', 'pT_cut', 'rapidity_cut',
         'pseudorapidity_cut', 'spacetime_rapidity_cut', 'multiplicity_cut',
-        and 'particle_status'.
+        'particle_status', 'keep_hadrons', 'keep_leptons', 'keep_quarks',
+        'keep_mesons', and 'keep_baryons'.
         If a key is not recognized, it raises a ValueError.
 
         Parameters
@@ -336,6 +337,21 @@ class JetscapeLoader(BaseLoader):
                 )
             elif i == "particle_status":
                 event = particle_status(event, filters_dict["particle_status"])
+            elif i == "keep_hadrons":
+                if filters_dict["keep_hadrons"]:
+                    event = keep_hadrons(event)
+            elif i == "keep_leptons":
+                if filters_dict["keep_leptons"]:
+                    event = keep_leptons(event)
+            elif i == "keep_quarks":
+                if filters_dict["keep_quarks"]:
+                    event = keep_quarks(event)
+            elif i == "keep_mesons":
+                if filters_dict["keep_mesons"]:
+                    event = keep_mesons(event)
+            elif i == "keep_baryons":
+                if filters_dict["keep_baryons"]:
+                    event = keep_baryons(event)
             else:
                 raise ValueError("The cut is unknown!")
 

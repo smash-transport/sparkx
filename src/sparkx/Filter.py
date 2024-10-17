@@ -897,3 +897,119 @@ def particle_status(particle_list: List[List[Particle]],
     particle_list = updated_particle_list
 
     return particle_list
+
+
+def keep_hadrons(particle_list):
+    """
+    Keep only hadrons in particle_list.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    for i in range(0, len(particle_list)):
+        particle_list[i] = [
+            elem
+            for elem in particle_list[i]
+            if elem.is_hadron() and not np.isnan(elem.is_hadron())
+        ]
+    return particle_list
+
+
+def keep_leptons(particle_list):
+    """
+    Keep only leptons in particle_list.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    for i in range(0, len(particle_list)):
+        particle_list[i] = [
+            elem
+            for elem in particle_list[i]
+            if elem.is_lepton() and not np.isnan(elem.is_lepton())
+        ]
+    return particle_list
+
+
+def keep_quarks(particle_list):
+    """
+    Keep only quarks in particle_list. This function can be used to filter all
+    gluons out if the input is a parton list.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    for i in range(0, len(particle_list)):
+        particle_list[i] = [
+            elem
+            for elem in particle_list[i]
+            if elem.is_quark() and not np.isnan(elem.is_quark())
+        ]
+    return particle_list
+
+
+def keep_mesons(particle_list):
+    """
+    Keep only mesons in particle_list.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    for i in range(0, len(particle_list)):
+        particle_list[i] = [
+            elem
+            for elem in particle_list[i]
+            if elem.is_meson() and not np.isnan(elem.is_meson())
+        ]
+    return particle_list
+
+
+def keep_baryons(particle_list):
+    """
+    Keep only baryons in particle_list.
+
+    Parameters
+    ----------
+    particle_list:
+        List with lists containing particle objects for the events
+
+    Returns
+    -------
+    list of lists
+        Filtered list of lists containing particle objects for each event
+    """
+    for i in range(0, len(particle_list)):
+        particle_list[i] = [
+            elem
+            for elem in particle_list[i]
+            if elem.is_baryon() and not np.isnan(elem.is_baryon())
+        ]
+    return particle_list

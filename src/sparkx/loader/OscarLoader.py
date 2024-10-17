@@ -371,7 +371,9 @@ class OscarLoader(BaseLoader):
         'particle_species', 'remove_particle_species', 'participants',
         'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
         'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
-        'multiplicity_cut'. If a key in the filters_dict dictionary does not
+        'multiplicity_cut', 'keep_hadrons', 'keep_leptons', 'keep_mesons',
+        'keep_baryons'.
+        If a key in the filters_dict dictionary does not
         match any of these filters, a ValueError is raised.
 
         Parameters
@@ -450,6 +452,18 @@ class OscarLoader(BaseLoader):
                 event = multiplicity_cut(
                     event, filters_dict["multiplicity_cut"]
                 )
+            elif i == "keep_hadrons":
+                if filters_dict["keep_hadrons"]:
+                    event = keep_hadrons(event)
+            elif i == "keep_leptons":
+                if filters_dict["keep_leptons"]:
+                    event = keep_leptons(event)
+            elif i == "keep_mesons":
+                if filters_dict["keep_mesons"]:
+                    event = keep_mesons(event)
+            elif i == "keep_baryons":
+                if filters_dict["keep_baryons"]:
+                    event = keep_baryons(event)
             else:
                 raise ValueError("The cut is unknown!")
 
