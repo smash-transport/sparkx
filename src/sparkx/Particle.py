@@ -161,8 +161,6 @@ class Particle:
         Is the particle a baryon?
     is_hadron:
         Is the particle a hadron?
-    is_strange:
-        Is the particle a strange particle?
     is_heavy_flavor:
         Is the particle a heavy flavor particle?
     has_down:
@@ -1243,23 +1241,6 @@ class Particle:
         if not self.pdg_valid:
             return np.nan
         return PDGID(self.pdg).is_hadron
-
-    def is_strange(self):
-        """
-        Does the particle contain strangeness?
-
-        Returns
-        -------
-        bool
-            True, False
-
-        Notes
-        -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
-        """
-        if not self.pdg_valid:
-            return np.nan
-        return PDGID(self.pdg).has_strange
 
     def is_heavy_flavor(self):
         """

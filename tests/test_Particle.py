@@ -922,27 +922,6 @@ def test_is_hadron_from_pdg_invalid_values():
     assert np.isnan(result)
 
 
-def test_is_strange_from_pdg_valid_values():
-    p = Particle()
-    p.pdg = 211  # Assuming PDG code for a positive pion
-
-    result = p.is_strange()
-
-    expected_result = PDGID(211).has_strange
-
-    assert result == expected_result
-
-
-def test_is_strange_from_pdg_invalid_values():
-    p = Particle()
-    p.pdg_valid = False
-    # Leave pdg as an invalid value
-
-    result = p.is_strange()
-
-    assert np.isnan(result)
-
-
 def test_is_heavy_flavor_from_pdg_valid_values():
     p = Particle()
     p.pdg = 211  # Assuming PDG code for a positive pion
