@@ -8,4 +8,3 @@ Jetscape
     :members:
     :inherited-members:
 
-.. automethod:: Jetscape.create_loader

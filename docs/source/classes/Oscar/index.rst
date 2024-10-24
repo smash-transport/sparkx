@@ -8,5 +8,3 @@ Oscar
     :members:
     :inherited-members:
 
-
-.. automethod:: Oscar.create_loader

@@ -10,6 +10,7 @@
 from sparkx.Filter import *
 import numpy as np
 from abc import ABC, abstractmethod
+from sparkx.Particle import Particle
 from typing import List, Union, Tuple, Optional
 from sparkx.loader.BaseLoader import BaseLoader
 
@@ -74,7 +75,7 @@ class BaseStorer(ABC):
     """
 
     def __init__(
-        self, path: Union[str, List[List["Particle"]]], **kwargs
+        self, path: Union[str, List[List[Particle]]], **kwargs
     ) -> None:
         """
         Parameters
@@ -94,7 +95,7 @@ class BaseStorer(ABC):
         self.loader_: Optional[BaseLoader] = None
         self.num_output_per_event_: Optional[np.ndarray] = None
         self.num_events_: Optional[int] = None
-        self.particle_list_: Optional[List] = None
+        self.particle_list_: List[List[Particle]] = [[]]
         self.create_loader(path)
         if self.loader_ is not None:
             (
@@ -229,7 +230,6 @@ class BaseStorer(ABC):
         self : BaseStorer object
             Containing uncharged particles in every event only
         """
-
         self.particle_list_ = uncharged_particles(self.particle_list_)
         self._update_num_output_per_event_after_filter()
 

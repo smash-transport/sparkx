@@ -10,6 +10,7 @@
 from sparkx.Filter import *
 import numpy as np
 from sparkx.loader.JetscapeLoader import JetscapeLoader
+from sparkx.Particle import Particle
 from sparkx.BaseStorer import BaseStorer
 from typing import List, Tuple, Union, Dict, Optional
 
@@ -181,18 +182,19 @@ class Jetscape(BaseStorer):
         )
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
+        
     def create_loader(
-            self, JETSCAPE_FILE: Union[str, List[List["Particle"]]]
+            self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
         ) -> None:
         """
         Creates a new JetscapeLoader object.
 
         This method initializes a new JetscapeLoader object with the specified JETSCAPE file
-        and assigns it to the loader_ attribute.
+        and assigns it to the loader attribute.
 
         Parameters
         ----------
-        JETSCAPE_FILE : Union[str, List[List["Particle"]]]
+        JETSCAPE_FILE : Union[str, List[List[Particle]]]
             The path to the JETSCAPE file to be loaded. Must be a string.
 
         Raises
@@ -210,7 +212,7 @@ class Jetscape(BaseStorer):
 
     # PRIVATE CLASS METHODS
     def _particle_as_list(
-        self, particle: "Particle"
+        self, particle: Particle
     ) -> List[Union[int, float]]:
         particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)

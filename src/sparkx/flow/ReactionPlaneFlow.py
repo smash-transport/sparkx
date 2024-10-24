@@ -8,8 +8,9 @@
 # ===================================================
 
 from sparkx.flow import FlowInterface
+from sparkx.Particle import Particle
 import numpy as np
-
+from typing import List, Union
 
 class ReactionPlaneFlow(FlowInterface.FlowInterface):
     """
@@ -72,7 +73,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, n=2):
+    def __init__(self, n: int=2) -> None:
         """
         Initialize the ReactionPlaneFlow object.
 
@@ -90,7 +91,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         else:
             self.n_ = n
 
-    def integrated_flow(self, particle_data):
+    def integrated_flow(self, particle_data: List[List[Particle]]) -> complex:
         """
         Compute the integrated flow.
 
@@ -124,7 +125,8 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         flow_event_average /= number_particles
         return flow_event_average
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of):
+    def differential_flow(self, particle_data: List[List[Particle]], bins: Union[np.ndarray, List[float]], 
+                          flow_as_function_of: str) -> List[complex]:
         """
         Compute the differential flow.
 
@@ -171,10 +173,8 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
 
         return self.__differential_flow_calculation(particles_bin)
 
-    def __differential_flow_calculation(self, binned_particle_data):
-        flow_differential = [
-            0.0 + 0.0j for i in range(len(binned_particle_data))
-        ]
+    def __differential_flow_calculation(self, binned_particle_data: List[List[List[Particle]]]) -> List[complex]:
+        flow_differential = [0. + 0.j for i in range(len(binned_particle_data))]
         for bin in range(len(binned_particle_data)):
             number_particles = 0.0
             flow_event_average = 0.0 + 0.0j

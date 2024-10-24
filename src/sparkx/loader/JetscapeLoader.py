@@ -441,7 +441,7 @@ class JetscapeLoader(BaseLoader):
                     line_list = (
                         line.replace("\n", "").replace("\t", " ").split(" ")
                     )
-                    particle = Particle("JETSCAPE", line_list)
+                    particle = Particle("JETSCAPE", np.asarray(line_list))
                     data.append(particle)
 
         # Correct num_output_per_event and num_events

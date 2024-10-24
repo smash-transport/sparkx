@@ -77,23 +77,23 @@ def test_get_value_by_index_invalid_indices(sample_lattice):
 
 def test_get_index_within_range(sample_lattice):
     values = np.linspace(0, 1, 10)
-    assert sample_lattice._Lattice3D__get_index(0.3, values, 10) == 2
+    assert sample_lattice._Lattice3D__get_index(0.3, values) == 2
 
 
 def test_get_index_at_lower_bound(sample_lattice):
     values = np.linspace(0, 1, 10)
-    assert sample_lattice._Lattice3D__get_index(0, values, 10) == 0
+    assert sample_lattice._Lattice3D__get_index(0, values) == 0
 
 
 def test_get_index_at_upper_bound(sample_lattice):
     values = np.linspace(0, 1, 10)
-    assert sample_lattice._Lattice3D__get_index(1, values, 10) == 9
+    assert sample_lattice._Lattice3D__get_index(1, values) == 9
 
 
 def test_get_index_outside_range_raises_error(sample_lattice):
     values = np.linspace(0, 1, 10)
     with pytest.raises(ValueError):
-        sample_lattice._Lattice3D__get_index(2, values, 10)
+        sample_lattice._Lattice3D__get_index(2, values)
 
 
 def test_get_index_nearest_neighbor_within_range(sample_lattice):

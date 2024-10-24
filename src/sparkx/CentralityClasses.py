@@ -9,7 +9,7 @@
 
 import numpy as np
 import warnings
-from typing import List, Union
+from typing import Union, List
 
 
 class CentralityClasses:
@@ -64,18 +64,13 @@ class CentralityClasses:
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
 
-    def __init__(
-        self,
-        events_multiplicity: Union[List[float], np.ndarray],
-        centrality_bins: Union[List[float], np.ndarray],
-    ) -> None:
+    def __init__(self, events_multiplicity: Union[List[float], np.ndarray],
+                 centrality_bins: Union[List[float], np.ndarray]) -> None:
         if not isinstance(events_multiplicity, (list, np.ndarray)):
             raise TypeError(
-                "'events_multiplicity' is not list or numpy.ndarray"
-            )
+                "'events_multiplicity' is not list or numpy.ndarray")
         if not isinstance(centrality_bins, (list, np.ndarray)):
             raise TypeError("'centrality_bins' is not list or numpy.ndarray")
-
         # Check if centrality_bins is sorted
         if not all(
             centrality_bins[i] <= centrality_bins[i + 1]
@@ -112,10 +107,10 @@ class CentralityClasses:
         self.events_multiplicity_ = events_multiplicity
         self.centrality_bins_ = unique_bins
 
-        self.dNchdetaMin_: list[float] = []
-        self.dNchdetaMax_: list[float] = []
-        self.dNchdetaAvg_: list[float] = []
-        self.dNchdetaAvgErr_: list[float] = []
+        self.dNchdetaMin_: List[float] = []
+        self.dNchdetaMax_: List[float] = []
+        self.dNchdetaAvg_: List[float] = []
+        self.dNchdetaAvgErr_: List[float] = []
 
         self.__create_centrality_classes()
 
@@ -289,7 +284,6 @@ class CentralityClasses:
         # Check if fname is a string
         if not isinstance(fname, str):
             raise TypeError("'fname' should be a string.")
-
         # Write the information to the file
         with open(fname, "w") as out_stream:
             out_stream.write(

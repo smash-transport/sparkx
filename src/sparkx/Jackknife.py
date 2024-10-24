@@ -101,15 +101,21 @@ class Jackknife:
         if not isinstance(seed, int):
             raise TypeError("seed must be an integer.")
 
+        if not isinstance(delete_fraction, float):
+            raise TypeError("delete_fraction must be a float.")
+        if not isinstance(number_samples, int):
+            raise TypeError("number_samples must be an integer.")
+        if not isinstance(seed, int):
+            raise TypeError("seed must be an integer.")
         if delete_fraction < 0.0 or delete_fraction >= 1.0:
             raise ValueError("delete_fraction must be between 0 and 1.")
         if number_samples < 1:
             raise ValueError("number_samples must be greater than 0.")
 
-        self.delete_fraction: float = delete_fraction
-        self.number_samples: int = number_samples
+        self.delete_fraction = delete_fraction
+        self.number_samples = number_samples
 
-        self.seed: int = seed
+        self.seed = seed
         self._init_random()
 
     def _init_random(self) -> None:
@@ -140,13 +146,8 @@ class Jackknife:
         data = np.delete(data, delete_indices, axis=0)
         return data
 
-    def _apply_function_to_reduced_data(
-        self,
-        reduced_data: np.ndarray,
-        function: Callable[..., Any],
-        *args,
-        **kwargs,
-    ) -> Any:
+    def _apply_function_to_reduced_data(self, reduced_data: np.ndarray, 
+                                        function: Callable[..., Any], *args, **kwargs) -> Any:
         """
         Apply a function to the reduced data.
 
@@ -358,7 +359,7 @@ class Jackknife:
             raise TypeError("data must be a numpy array.")
         if not callable(function):
             raise TypeError("function must be a callable object.")
-
+        
         # Check if the function returns a single number
         test_result = function(
             data[: max(1, len(data) // 100)], *args, **kwargs

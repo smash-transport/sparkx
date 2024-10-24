@@ -10,9 +10,13 @@
 import numpy as np
 from sparkx.Particle import Particle
 import warnings
+from typing import Tuple, List, Union, Optional
 
 
-def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
+def __ensure_tuple_is_valid_else_raise_error(
+    value_tuple: Tuple[Optional[Union[int, float]], 
+                       Optional[Union[float, int]]], 
+    allow_none: bool =False) -> None:
     """
     Validates a tuple for specific conditions.
 
@@ -63,7 +67,7 @@ def __ensure_tuple_is_valid_else_raise_error(value_tuple, allow_none=False):
             raise ValueError("At least one cut limit must be set to a number")
 
 
-def charged_particles(particle_list):
+def charged_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only charged particles in particle_list.
 
@@ -86,7 +90,7 @@ def charged_particles(particle_list):
     return particle_list
 
 
-def uncharged_particles(particle_list):
+def uncharged_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only uncharged particles in particle_list.
 
@@ -109,7 +113,7 @@ def uncharged_particles(particle_list):
     return particle_list
 
 
-def strange_particles(particle_list):
+def strange_particles(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only strange particles in particle_list.
 
@@ -132,7 +136,8 @@ def strange_particles(particle_list):
     return particle_list
 
 
-def particle_species(particle_list, pdg_list):
+def particle_species(particle_list: List[List[Particle]],
+                     pdg_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> List[List[Particle]]:
     """
     Keep only particle species given by their PDG ID in every event.
 
@@ -172,7 +177,6 @@ def particle_species(particle_list, pdg_list):
 
     if isinstance(pdg_list, (int, float, str, np.integer)):
         pdg_list = int(pdg_list)
-
         for i in range(0, len(particle_list)):
             particle_list[i] = [
                 elem
@@ -199,7 +203,8 @@ def particle_species(particle_list, pdg_list):
     return particle_list
 
 
-def remove_particle_species(particle_list, pdg_list):
+def remove_particle_species(particle_list: List[List[Particle]],
+                            pdg_list: Union[int, Tuple[int, ...], List[int], np.ndarray]) -> List[List[Particle]]:
     """
     Remove particle species from particle_list by their PDG ID in every
     event.
@@ -240,7 +245,6 @@ def remove_particle_species(particle_list, pdg_list):
 
     if isinstance(pdg_list, (int, float, str, np.integer)):
         pdg_list = int(pdg_list)
-
         for i in range(0, len(particle_list)):
             particle_list[i] = [
                 elem
@@ -267,7 +271,7 @@ def remove_particle_species(particle_list, pdg_list):
     return particle_list
 
 
-def participants(particle_list):
+def participants(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only participants in particle_list.
 
@@ -291,7 +295,7 @@ def participants(particle_list):
     return particle_list
 
 
-def spectators(particle_list):
+def spectators(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
     Keep only spectators in particle_list.
 
@@ -315,7 +319,8 @@ def spectators(particle_list):
     return particle_list
 
 
-def lower_event_energy_cut(particle_list, minimum_event_energy):
+def lower_event_energy_cut(particle_list: List[List[Particle]],
+                           minimum_event_energy: Union[int, float]) -> List[List[Particle]]:
     """
     Filters out events with total energy lower than a threshold.
     Events with smaller energies are removed and not kept as empty events.
@@ -369,7 +374,8 @@ def lower_event_energy_cut(particle_list, minimum_event_energy):
     return particle_list
 
 
-def spacetime_cut(particle_list, dim, cut_value_tuple):
+def spacetime_cut(particle_list: List[List[Particle]], dim: str,
+                  cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
     Apply spacetime cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -451,9 +457,10 @@ def spacetime_cut(particle_list, dim, cut_value_tuple):
     return updated_particle_list
 
 
-def pT_cut(particle_list, cut_value_tuple):
+def pT_cut(particle_list: List[List[Particle]],
+           cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
-    Apply p_t cut to all events by passing an acceptance range by
+    Apply p_T cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
     be removed.
 
@@ -521,7 +528,8 @@ def pT_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
-def mT_cut(particle_list, cut_value_tuple):
+def mT_cut(particle_list: List[List[Particle]],
+           cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
     Apply transverse mass cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
@@ -588,7 +596,8 @@ def mT_cut(particle_list, cut_value_tuple):
     return updated_particle_list
 
 
-def rapidity_cut(particle_list, cut_value):
+def rapidity_cut(particle_list: List[List[Particle]], 
+                 cut_value: Union[int, float, Tuple[float, float]]) -> List[List[Particle]]:
     """
     Apply rapidity cut to all events and remove all particles with rapidity
     not complying with cut_value.
@@ -657,7 +666,8 @@ def rapidity_cut(particle_list, cut_value):
     return updated_particle_list
 
 
-def pseudorapidity_cut(particle_list, cut_value):
+def pseudorapidity_cut(particle_list: List[List[Particle]], 
+                       cut_value: Union[int, float, Tuple[float, float]]) -> List[List[Particle]]:
     """
     Apply pseudo-rapidity cut to all events and remove all particles with
     pseudo-rapidity not complying with cut_value.
@@ -795,7 +805,8 @@ def spacetime_rapidity_cut(particle_list, cut_value):
     return updated_particle_list
 
 
-def multiplicity_cut(particle_list, min_multiplicity):
+def multiplicity_cut(particle_list: List[List[Particle]], 
+                     min_multiplicity: int) -> List[List[Particle]]:
     """
     Apply multiplicity cut. Remove all events with a multiplicity lower
     than min_multiplicity.
@@ -830,7 +841,8 @@ def multiplicity_cut(particle_list, min_multiplicity):
     return particle_list
 
 
-def particle_status(particle_list, status_list):
+def particle_status(particle_list: List[List[Particle]], 
+                    status_list: Union[int, np.ndarray, List[int], Tuple[int, ...]]) -> List[List[Particle]]:
     """
     Keep only particles with a given particle status.
 

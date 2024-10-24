@@ -9,9 +9,10 @@
 
 import particle.data
 import csv
+from typing import Union, List
 
 
-def pdg_to_latex(pdg_id):
+def pdg_to_latex(pdg_id: Union[int, List[int]]) -> Union[str, List[str]]:
     """
     Converts a given PDG ID or a list of PDG IDs into the corresponding LaTeX
     formatted particle name as sts or a list of LaTeX formatted particle names
@@ -49,10 +50,10 @@ def pdg_to_latex(pdg_id):
         pdg_id = [pdg_id]
 
     path = particle.data.basepath / "particle2022.csv"
-    latex_names = [0] * len(pdg_id)
+    latex_names = [''] * len(pdg_id)
 
-    with open(path) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",")
+    with path.open() as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
         counter_row = 0
 
         for row in csv_reader:
@@ -64,7 +65,7 @@ def pdg_to_latex(pdg_id):
                     latex_names[index] = row[17]
             counter_row += 1
 
-    if 0 in latex_names:
-        raise ValueError("pdg_id contains invalid PDG ID")
+    if '' in latex_names:
+        raise ValueError('pdg_id contains invalid PDG ID')
 
     return latex_names

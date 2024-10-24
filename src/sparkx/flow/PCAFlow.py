@@ -8,9 +8,11 @@
 # ===================================================
 
 from sparkx.flow import FlowInterface
+from sparkx.Particle import Particle
 import numpy as np
 import warnings
 import random as rd
+from typing import Optional, Union, List, Any
 
 rd.seed(42)
 
@@ -105,10 +107,10 @@ class PCAFlow(FlowInterface.FlowInterface):
         or number_subcalc is less than 2.
     """
 
-    def __init__(self, n=2, alpha=2, number_subcalc=4):
+    def __init__(self, n: int=2, alpha: int=2, number_subcalc: int=4) -> None:
         # flow harmonic to compute
         if not isinstance(n, int):
-            raise TypeError("n has to be int")
+            raise TypeError('n has to be int')
         elif n <= 0:
             raise ValueError(
                 "n-th harmonic with value n<=0 can not be computed"
@@ -118,46 +120,46 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         # order in sub-leading flow up to which the flow is computed
         if not isinstance(alpha, int):
-            raise TypeError("alpha has to be int")
+            raise TypeError('alpha has to be int')
         elif alpha < 1:
-            raise ValueError("alpha has to be >= 1")
+            raise ValueError('alpha has to be >= 1')
         else:
             self.alpha_ = alpha
 
         # number of sub-calculations to estimate the error of the flow
         if not isinstance(number_subcalc, int):
-            raise TypeError("number_subcalc has to be int")
+            raise TypeError('number_subcalc has to be int')
         elif number_subcalc < 2:
-            raise ValueError("number_subcalc has to be >= 2")
+            raise ValueError('number_subcalc has to be >= 2')
         else:
             self.number_subcalc_ = number_subcalc
 
-        self.number_events_ = None
-        self.subcalc_counter_ = 0
+        self.number_events_: Optional[int] = None
+        self.subcalc_counter_: int = 0
 
-        self.normalization_ = None
-        self.bin_multiplicity_total_ = None
-        self.sigma_multiplicity_total_ = []
-        self.number_events_subcalc_ = None
-        self.QnRe_total_ = None
-        self.QnIm_total_ = None
-        self.SigmaQnReSub_total_ = None
-        self.SigmaQnImSub_total_ = None
-        self.VnDelta_total_ = None
-        self.SigmaVnDelta_total_ = None
+        self.normalization_: Optional[np.ndarray] = None
+        self.bin_multiplicity_total_: Optional[np.ndarray] = None
+        self.sigma_multiplicity_total_: List[np.ndarray] = []
+        self.number_events_subcalc_: Optional[np.ndarray] = None
+        self.QnRe_total_: Optional[np.ndarray] = None
+        self.QnIm_total_: Optional[np.ndarray] = None
+        self.SigmaQnReSub_total_: Optional[np.ndarray] = None
+        self.SigmaQnImSub_total_: Optional[np.ndarray] = None
+        self.VnDelta_total_: Optional[np.ndarray] = None
+        self.SigmaVnDelta_total_: Optional[np.ndarray] = None
 
-        self.FlowSubCalc_ = None
-        self.Flow_ = None
-        self.FlowUncertainty_ = None
+        self.FlowSubCalc_: Optional[np.ndarray] = None
+        self.Flow_: Optional[np.ndarray] = None
+        self.FlowUncertainty_: Optional[np.ndarray] = None
 
-        self.Pearson_r_ = None
-        self.Pearson_r_uncertainty_ = None
+        self.Pearson_r_: Optional[np.ndarray] = None
+        self.Pearson_r_uncertainty_: Optional[np.ndarray] = None
 
-    def integrated_flow(self, particle_data):
+    def integrated_flow(self, particle_data: List[List[Particle]]) -> None:
         warnings.warn("Integrated flow is not supported for PCAFlow")
         return None
 
-    def __compute_normalization(self, bins):
+    def __compute_normalization(self, bins: Union[List[float], np.ndarray]) -> None:
         self.normalization_ = np.zeros((len(bins) - 1))
         bin_widths = np.diff(bins)
         for bin in range(len(bins) - 1):
@@ -166,8 +168,11 @@ class PCAFlow(FlowInterface.FlowInterface):
             )
 
     def __update_event(
-        self, event_data, bins, flow_as_function_of, event_number
-    ):
+            self,
+            event_data: List[Particle],
+            bins: Union[List[float], np.ndarray],
+            flow_as_function_of : str,
+            event_number: int) -> None:
         """
         Update the anisotropic flow calculations based on particle data from
         a single event.
@@ -188,6 +193,27 @@ class PCAFlow(FlowInterface.FlowInterface):
         -------
         None
         """
+        if self.normalization_ is None:
+            raise TypeError("'normalization_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.bin_multiplicity_total_ is None:
+            raise TypeError("'bin_multiplicity_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.sigma_multiplicity_total_ is None:
+            raise TypeError("'sigma_multiplicity_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.number_events_subcalc_ is None:
+            raise TypeError("'number_events_subcalc_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.QnRe_total_ is None:
+            raise TypeError("'QnRe_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.QnIm_total_ is None:
+            raise TypeError("'QnIm_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.SigmaQnReSub_total_ is None:
+            raise TypeError("'SigmaQnReSub_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.SigmaQnImSub_total_ is None:
+            raise TypeError("'SigmaQnImSub_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.VnDelta_total_ is None:
+            raise TypeError("'VnDelta_total_' is None. It must be initialized before calling the '__update_event' function.")
+        if self.SigmaVnDelta_total_ is None:
+            raise TypeError("'SigmaVnDelta' is None. It must be initialized before calling the '__update_event' function.")
+        
         number_bins = len(bins) - 1
         bin_multiplicity_event = np.zeros(number_bins)
         QnRe = np.zeros(number_bins)
@@ -217,12 +243,10 @@ class PCAFlow(FlowInterface.FlowInterface):
             )
 
         # update the sub-calculation counter if needed
-        number_events_subcalc = self.number_events_ // self.number_subcalc_
-        if (
-            (event_number % number_events_subcalc == 0)
-            and (event_number != 0)
-            and (self.subcalc_counter_ < self.number_subcalc_ - 1)
-        ):
+        if self.number_events_ is not None:
+            number_events_subcalc = self.number_events_ // self.number_subcalc_
+        if (event_number % number_events_subcalc == 0) and (event_number != 0) and (
+                self.subcalc_counter_ < self.number_subcalc_ - 1):
             self.subcalc_counter_ += 1
 
         random_reaction_plane = rd.random() * 2.0 * np.pi
@@ -290,7 +314,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         self.VnDelta_total_ += VnDelta_event
         self.SigmaVnDelta_total_ += SigmaVnDelta_event
 
-    def __compute_flow_PCA(self, bins):
+    def __compute_flow_PCA(self, bins: Union[List[float], np.ndarray]) -> None:
         """
         Perform Principal Component Analysis (PCA) to compute the anisotropic
         flow.
@@ -304,6 +328,27 @@ class PCAFlow(FlowInterface.FlowInterface):
         -------
         None
         """
+        if self.VnDelta_total_ is None:
+            raise TypeError("'VnDelta_total_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.QnRe_total_ is None:
+            raise TypeError("'QnRe_total_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.QnIm_total_ is None:
+            raise TypeError("'QnIm_total_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.SigmaVnDelta_total_ is None:
+            raise TypeError("'SigmaVnDelta_total_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.number_events_subcalc_ is None:
+            raise TypeError("'number_events_subcalc_' is None. It must be initialize before calling the '__compute_flow_PCA' function." )
+        if self.SigmaQnReSub_total_ is None:
+            raise TypeError("'SigmaQnReSub_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.SigmaQnImSub_total_ is None:
+            raise TypeError("'SigmaQnImSub_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.number_events_ is None:
+            raise TypeError("'number_events_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.bin_multiplicity_total_ is None:
+            raise TypeError("'bin_multiplicity_total_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        if self.normalization_ is None:
+            raise TypeError("'normalization_' is None. It must be initialized before calling the '__compute_flow_PCA' function.")
+        
         number_bins = len(bins) - 1
 
         for a in range(number_bins):
@@ -390,7 +435,7 @@ class PCAFlow(FlowInterface.FlowInterface):
                 else:
                     self.Flow_[bin][alpha] = None
 
-    def __compute_uncertainty(self, bins):
+    def __compute_uncertainty(self, bins: Union[List[float], np.ndarray]) -> None:
         """
         Compute the uncertainty of the anisotropic flow for each bin and
         order alpha.
@@ -404,6 +449,11 @@ class PCAFlow(FlowInterface.FlowInterface):
         -------
         None
         """
+        if self.FlowSubCalc_ is None:
+            raise TypeError("'FlowSubCalc_' is None. It must be initialized before calling the '__compute_uncertainty' function.")
+        if self.Flow_ is None:
+            raise TypeError("'Flow_' is None. It must be initialized before calling the '__compute_uncertainty' function.")
+        
         number_bins = len(bins) - 1
         self.FlowUncertainty_ = np.zeros((number_bins, self.alpha_))
 
@@ -430,7 +480,7 @@ class PCAFlow(FlowInterface.FlowInterface):
                 if np.isnan(self.FlowUncertainty_[bin][alpha]):
                     self.Flow_[bin][alpha] = np.nan
 
-    def __compute_factorization_breaking(self, bins):
+    def __compute_factorization_breaking(self, bins: Union[List[float], np.ndarray]) -> None:
         """
         Compute the factorization breaking using the Pearson correlation
         coefficient Eq. (12), Ref. [1].
@@ -444,6 +494,11 @@ class PCAFlow(FlowInterface.FlowInterface):
         -------
         None
         """
+        if self.VnDelta_total_ is None:
+            raise TypeError("'VnDelta_total_' is None. It must be initialized before calling the '__compute_factorization_breaking' function.")
+        if self.SigmaVnDelta_total_ is None:
+            raise TypeError("'SigmaVnDelta_total_' is None. It must be initialized before calling the '__compute_factorization_breaking' function.")
+        
         # compute the Pearson coefficient Eq. (12), Ref. [1]
         number_bins = len(bins) - 1
         r = np.zeros((number_bins, number_bins))
@@ -483,7 +538,9 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         self.Pearson_r_uncertainty_ = r_err
 
-    def differential_flow(self, particle_data, bins, flow_as_function_of):
+    def differential_flow(self, particle_data: List[List[Particle]], 
+                          bins: Union[List[float], np.ndarray], 
+                          flow_as_function_of: str) -> List[Optional[np.ndarray]]:
         """
         Compute the differential flow.
 
@@ -512,10 +569,10 @@ class PCAFlow(FlowInterface.FlowInterface):
         - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to `np.nan`.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError("bins has to be list or np.ndarray")
+            raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
-            raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
+            raise TypeError('flow_as_function_of is not a string')
+        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
@@ -534,7 +591,7 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         return [self.Flow_, self.FlowUncertainty_]
 
-    def Pearson_correlation(self):
+    def Pearson_correlation(self) -> List[Optional[np.ndarray]]:
         """
         Retrieve the Pearson correlation coefficient and its uncertainty
         (Eq. (12), Ref. [1]).

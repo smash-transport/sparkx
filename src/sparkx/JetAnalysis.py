@@ -12,6 +12,7 @@ import fastjet as fj
 import csv
 import warnings
 from sparkx.Particle import Particle
+from typing import Optional, List, Tuple, Any
 
 
 class JetAnalysis:
@@ -138,16 +139,16 @@ class JetAnalysis:
            <br />
     """
 
-    def __init__(self):
-        self.hadron_data_ = None
-        self.jet_R_ = None
-        self.jet_eta_range_ = None
-        self.jet_pT_range_ = None
-        self.jet_data_ = None
+    def __init__(self) -> None:
+        self.hadron_data_: Optional[List[List[Particle]]] = None
+        self.jet_R_: Optional[float] = None
+        self.jet_eta_range_: Optional[tuple] = None
+        self.jet_pT_range_: Optional[tuple] = None
+        self.jet_data_: Optional[List[List[Any]]] = None
 
-    def __initialize_and_check_parameters(
-        self, hadron_data, jet_R, jet_eta_range, jet_pT_range
-    ):
+    def __initialize_and_check_parameters(self, hadron_data: List[List[Particle]], jet_R: float, 
+                                          jet_eta_range: Tuple[Optional[float], Optional[float]], 
+                                          jet_pT_range: Tuple[Optional[float], Optional[float]]) -> None:
         """
         Initialize and check the parameters for jet analysis.
 
@@ -175,6 +176,13 @@ class JetAnalysis:
         if jet_R <= 0.0:
             raise ValueError("jet_R must be larger than 0")
         self.jet_R_ = jet_R
+        
+        # check jet eta range
+        if not isinstance(jet_eta_range, tuple):
+            raise TypeError("jet_eta_range is not a tuple. " +
+                            "It must contain either values or None.")
+        if len(jet_eta_range) != 2:
+            raise ValueError("jet_eta_range must contain exactly two values.")
 
         # check jet eta range
         if not isinstance(jet_eta_range, tuple):
@@ -195,24 +203,20 @@ class JetAnalysis:
             self.jet_eta_range_ = (lower_cut, upper_cut)
         else:
             self.jet_eta_range_ = (upper_cut, lower_cut)
-            warnings.warn(
-                "The lower jet eta cut value is larger than the "
-                + "upper one. They are interchanged automatically."
-            )
+            warnings.warn("The lower jet eta cut value is larger than the " +
+                          "upper one. They are interchanged automatically.")
 
-        # check the jet pT range
+        # check the jet pt range
         if not isinstance(jet_pT_range, tuple):
-            raise TypeError(
-                "jet_pT_range is not a tuple. "
-                + "It must contain either values or None."
-            )
+            raise TypeError("jet_pT_range is not a tuple. " +
+                            "It must contain either values or None.")
         if len(jet_pT_range) != 2:
             raise ValueError("jet_pT_range must contain exactly two values.")
         if any(pT is not None and pT < 0 for pT in jet_pT_range):
             raise ValueError("All values in jet_pT_range must be non-negative.")
 
-        lower_cut = 0.0 if jet_pT_range[0] is None else jet_pT_range[0]
-        upper_cut = float("inf") if jet_pT_range[1] is None else jet_pT_range[1]
+        lower_cut = 0. if jet_pT_range[0] is None else jet_pT_range[0]
+        upper_cut = float('inf') if jet_pT_range[1] is None else jet_pT_range[1]
         if lower_cut < upper_cut:
             self.jet_pT_range_ = (lower_cut, upper_cut)
         else:
@@ -222,7 +226,7 @@ class JetAnalysis:
                 + "upper one. They are interchanged automatically."
             )
 
-    def create_fastjet_PseudoJets(self, event_hadrons):
+    def create_fastjet_PseudoJets(self, event_hadrons: List[Particle]) -> List[fj.PseudoJet]:
         """
         Convert hadron data to a list of fastjet.PseudoJet objects.
 
@@ -242,9 +246,8 @@ class JetAnalysis:
         ]
         return event_list_PseudoJets
 
-    def fill_associated_particles(
-        self, jet, event, status_selection, only_charged
-    ):
+    def fill_associated_particles(self, jet: fj.PseudoJet, event: int, status_selection: str, 
+                                  only_charged: bool) -> List[Particle]:
         """
         Select particles in the jet cone.
 
@@ -265,6 +268,12 @@ class JetAnalysis:
         list
             List of associated particles in the jet cone.
         """
+        if self.hadron_data_ is None:
+            raise TypeError("'hadron_data_' is None. It must be initialized before calling the 'hadron_data_' function.")
+        
+        if not (0 <= event < len(self.hadron_data_)):
+            raise IndexError(f"Event index {event} is out of range.")
+        
         associated_hadrons = []
         for hadron in self.hadron_data_[event]:
             if np.isnan(hadron.status):
@@ -287,7 +296,7 @@ class JetAnalysis:
                 associated_hadrons.append(hadron)
         return associated_hadrons
 
-    def jet_hole_subtraction(self, jet, holes):
+    def jet_hole_subtraction(self, jet: fj.PseudoJet, holes: List[Particle]) -> fj.PseudoJet:
         """
         Subtract energy-momentum contributions from holes in the jet.
 
@@ -325,9 +334,9 @@ class JetAnalysis:
         jet.reset(jet_px, jet_py, jet_pz, jet_E)
         return jet
 
-    def write_jet_output(
-        self, output_filename, jet, associated_hadrons, event, new_file=False
-    ):
+    def write_jet_output(self, output_filename: str, jet: fj.PseudoJet, 
+                         associated_hadrons: List[Particle], event: int,
+                         new_file: Optional[bool] = False) -> bool:
         """
         Write the jet and associated hadron information to a CSV file.
 
@@ -350,6 +359,9 @@ class JetAnalysis:
         bool
             False if successful.
         """
+        if self.jet_pT_range_ is None:
+            raise TypeError("'jet_pT_range_' is None. It must be initialized before calling the 'write_jet_output' function.")
+        
         # jet data from reconstruction
         jet_status = 10
         jet_pid = 10
@@ -394,16 +406,11 @@ class JetAnalysis:
 
         return False
 
-    def perform_jet_finding(
-        self,
-        hadron_data,
-        jet_R,
-        jet_eta_range,
-        jet_pT_range,
-        output_filename,
-        assoc_only_charged=True,
-        jet_algorithm=fj.antikt_algorithm,
-    ):
+    def perform_jet_finding(self, hadron_data: List[List[Particle]], jet_R: float,
+            jet_eta_range: Tuple[Optional[float], Optional[float]],
+            jet_pT_range: Tuple[Optional[float], Optional[float]],
+            output_filename: str, assoc_only_charged: bool = True,
+            jet_algorithm: fj = fj.antikt_algorithm) -> None:
         """
         Perform the jet analysis for multiple events. The function generates a
         file containing the jets consisting of a leading particle and associated
@@ -444,6 +451,13 @@ class JetAnalysis:
         self.__initialize_and_check_parameters(
             hadron_data, jet_R, jet_eta_range, jet_pT_range
         )
+        if self.hadron_data_ is None:
+            raise TypeError("'hadron_data_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
+        if self.jet_eta_range_ is None:
+            raise TypeError("'jet_eta_range_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
+        if self.jet_pT_range_ is None:
+            raise TypeError("'jet_pT_range_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
+        
         for event, hadron_data_event in enumerate(self.hadron_data_):
             new_file = False
             event_PseudoJets = self.create_fastjet_PseudoJets(hadron_data_event)
@@ -492,7 +506,7 @@ class JetAnalysis:
                     output_filename, jet, associated_particles, event, new_file
                 )
 
-    def read_jet_data(self, input_filename):
+    def read_jet_data(self, input_filename: str) -> None:
         """
         Read the jet data from a CSV file and store it in the
         :code:`JetAnalysis` object.
@@ -503,8 +517,8 @@ class JetAnalysis:
             Filename of the CSV file containing the jet data.
         """
         jet_data = []
-        current_jet = []
-        with open(input_filename, "r", newline="") as f:
+        current_jet: List[List[Any]] = []
+        with open(input_filename, 'r', newline='') as f:
             reader = csv.reader(f)
             for row in reader:
                 jet_index = int(row[0])
@@ -527,7 +541,7 @@ class JetAnalysis:
                 jet_data.append(current_jet)
         self.jet_data_ = jet_data
 
-    def get_jets(self):
+    def get_jets(self) -> List[List[float]]:
         """
         Get a list of jets from the jet data.
 
@@ -537,9 +551,12 @@ class JetAnalysis:
             List of jets. Contains all data of the jet output file rows in each
             element of the list (:code:`[jet][column]`).
         """
+        if self.jet_data_ is None:
+            raise TypeError("'jet_data_' is None. It must be initialized before calling this function.")
+        
         return [jet[0] for jet in self.jet_data_]
 
-    def get_associated_particles(self):
+    def get_associated_particles(self) -> List[List[List[float]]]:
         """
         Get a list of associated particles for all jets.
 
@@ -549,6 +566,9 @@ class JetAnalysis:
             List of associated particles for each jet in each element
             (:code:`[jet][associated_particle][column]`).
         """
+        if self.jet_data_ is None:
+            raise TypeError("'jet_data_' is None. It must be initialized before calling this function.")
+        
         associated_particles_list = []
         for jet in self.jet_data_:
             associated_particles = jet[1:]
