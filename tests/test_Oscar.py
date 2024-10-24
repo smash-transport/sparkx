@@ -497,8 +497,8 @@ def test_filter_in_oscar(tmp_path):
     oscar_participants.participants()
     oscar_spectators.spectators()
     oscar_empty.participants().spectators()
-    oscar_spectators_strange.spectators().strange_particles()
-    oscar_participants_strange.participants().strange_particles()
+    oscar_spectators_strange.spectators().keep_strange()
+    oscar_participants_strange.participants().keep_strange()
 
     assert np.array_equal(
         oscar_participants.num_output_per_event(), np.array([[0, 10], [1, 11]])
@@ -649,10 +649,10 @@ def test_filter_in_oscar_constructor(tmp_path):
         oscar_file, filters={"participants": True, "spectators": True}
     )
     oscar_spectators_strange = Oscar(
-        oscar_file, filters={"spectators": True, "strange_particles": True}
+        oscar_file, filters={"spectators": True, "keep_strange": True}
     )
     oscar_participants_strange = Oscar(
-        oscar_file, filters={"participants": True, "strange_particles": True}
+        oscar_file, filters={"participants": True, "keep_strange": True}
     )
 
     assert np.array_equal(

@@ -303,7 +303,7 @@ def test_filter_strangeness_in_Jetscape(tmp_path, particle_list_strange):
     tmp_jetscape_file = create_temporary_jetscape_file(tmp_path, 2)
     jetscape = Jetscape(tmp_jetscape_file)
     jetscape.particle_list_ = particle_list_strange
-    jetscape.strange_particles()
+    jetscape.keep_strange()
 
     assert np.array_equal(
         jetscape.num_output_per_event(), np.array([[1, 5], [2, 7]])

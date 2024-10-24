@@ -62,6 +62,8 @@ class BaseStorer(ABC):
         Keep strange particles only
     pT_cut:
         Apply pT cut to all particles
+    mT_cut:
+        Apply mT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
     pseudorapidity_cut:
@@ -235,21 +237,6 @@ class BaseStorer(ABC):
 
         return self
 
-    def strange_particles(self) -> "BaseStorer":
-        """
-        Keep only strange particles in particle_list
-
-        Returns
-        -------
-        self : BaseStorer object
-            Containing strange particles in every event only
-        """
-
-        self.particle_list_ = strange_particles(self.particle_list_)
-        self._update_num_output_per_event_after_filter()
-
-        return self
-
     def particle_species(
         self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
     ) -> "BaseStorer":
@@ -393,6 +380,34 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def mT_cut(
+        self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
+    ) -> "BaseStorer":
+        """
+        Apply transverse mass cut to all events by passing an acceptance
+        range by :code:`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the mT acceptance
+            range :code:`(cut_min, cut_max)`. If one of the limits is not
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+            or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing only particles complying with the transverse mass
+            cut for all events
+        """
+
+        self.particle_list_ = mT_cut(self.particle_list_, cut_value_tuple)
         self._update_num_output_per_event_after_filter()
 
         return self
@@ -541,6 +556,160 @@ class BaseStorer(ABC):
         self.particle_list_ = spacetime_cut(
             self.particle_list_, dim, cut_value_tuple
         )
+        self._update_num_output_per_event_after_filter()
+
+        return self
+
+    def keep_hadrons(self) -> "BaseStorer":
+        """
+        Keep only hadrons in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons in every event only
+        """
+        self.particle_list_ = keep_hadrons(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_leptons(self) -> "BaseStorer":
+        """
+        Keep only leptons in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing leptons in every event only
+        """
+        self.particle_list_ = keep_leptons(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_mesons(self) -> "BaseStorer":
+        """
+        Keep only mesons in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing mesons in every event only
+        """
+        self.particle_list_ = keep_mesons(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_baryons(self) -> "BaseStorer":
+        """
+        Keep only baryons in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing baryons in every event only
+        """
+        self.particle_list_ = keep_baryons(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_up(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing up quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing up quarks in every event only
+        """
+        self.particle_list_ = keep_up(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_down(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing down quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing down quarks in every event only
+        """
+        self.particle_list_ = keep_down(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_strange(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing strange quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing strange quarks in every event only
+        """
+        self.particle_list_ = keep_strange(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_charm(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing charm quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing charm quarks in every event only
+        """
+        self.particle_list_ = keep_charm(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_bottom(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing bottom quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing bottom quarks in every event only
+        """
+        self.particle_list_ = keep_bottom(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def keep_top(self) -> "BaseStorer":
+        """
+        Keep only hadrons containing top quarks in particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing hadrons containing top quarks in every event only
+        """
+        self.particle_list_ = keep_top(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def remove_photons(self) -> "BaseStorer":
+        """
+        Remove photons from particle_list
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing all but photons in every event
+        """
+        self.particle_list_ = remove_photons(self.particle_list_)
         self._update_num_output_per_event_after_filter()
 
         return self
