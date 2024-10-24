@@ -9,6 +9,7 @@
 
 from sparkx.loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
+from sparkx.Particle import Particle
 import os
 from typing import Dict, List, Tuple, Optional, Union, Any
 
@@ -98,7 +99,7 @@ class OscarLoader(BaseLoader):
 
     def load(
         self, **kwargs: Dict[str, Any]
-    ) -> Tuple[List[List["Particle"]], int, np.ndarray]:
+    ) -> Tuple[List[List[Particle]], int, np.ndarray]:
         """
         Loads the OSCAR data from the specified file.
 
@@ -359,8 +360,8 @@ class OscarLoader(BaseLoader):
         return cumulated_lines
 
     def __apply_kwargs_filters(
-        self, event: List[List["Particle"]], filters_dict: Dict[str, Any]
-    ) -> List[List["Particle"]]:
+        self, event: List[List[Particle]], filters_dict: Dict[str, Any]
+    ) -> List[List[Particle]]:
         """
         Applies the specified filters to the given event.
 
@@ -522,7 +523,7 @@ class OscarLoader(BaseLoader):
                 elif "#" in line:
                     raise ValueError("Comment line unexpectedly found: " + line)
                 else:
-                    line_list = line.replace("\n", "").split(" ")
+                    line_list = np.asarray(line.replace("\n", "").split(" "))
                     particle = Particle(self.oscar_format_, line_list)
                     data.append(particle)
 
@@ -575,7 +576,7 @@ class OscarLoader(BaseLoader):
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             line_counter: int
-            event: int | str
+            event: Union[int, str]
             line_str: List[str]
             if (
                 self.oscar_format_ != "Oscar2013Extended_IC"

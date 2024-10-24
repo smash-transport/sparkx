@@ -457,10 +457,10 @@ def spacetime_cut(particle_list: List[List[Particle]], dim: str,
     return updated_particle_list
 
 
-def pt_cut(particle_list: List[List[Particle]],
+def pT_cut(particle_list: List[List[Particle]],
            cut_value_tuple: Tuple[Optional[float], Optional[float]]) -> List[List[Particle]]:
     """
-    Apply p_t cut to all events by passing an acceptance range by
+    Apply p_T cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
     be removed.
 

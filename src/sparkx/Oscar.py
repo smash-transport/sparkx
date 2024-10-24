@@ -172,7 +172,7 @@ class Oscar(BaseStorer):
         self.PATH_OSCAR_: str = OSCAR_FILE
         if not isinstance(self.loader_, OscarLoader):
             raise TypeError("The loader must be an instance of OscarLoader.")
-        self.oscar_format_: Union[str | None] = self.loader_.oscar_format()
+        self.oscar_format_: Union[str, None] = self.loader_.oscar_format()
         self.event_end_lines_: List[str] = self.loader_.event_end_lines()
         del self.loader_
 
@@ -181,7 +181,7 @@ class Oscar(BaseStorer):
         Creates a new OscarLoader object.
     
         This method initializes a new OscarLoader object with the specified OSCAR file
-        and assigns it to the loader_ attribute.
+        and assigns it to the loader attribute.
     
         Parameters
         ----------

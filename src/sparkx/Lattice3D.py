@@ -266,8 +266,6 @@ class Lattice3D:
             The value for which the index is to be determined.
         values : list or numpy.ndarray
             The list or array containing the range of values, sorted ascending.
-        num_points : int
-            The number of points in the range.
 
         Returns
         -------
@@ -1230,7 +1228,7 @@ class Lattice3D:
                         or z < self.z_min_
                         or z > self.z_max_
                     ):
-                        value = 0
+                        value = 0.0
                     else:
                         value = self.interpolate_value(x, y, z)
                     new_lattice.set_value_by_index(i, j, k, value)
@@ -1277,6 +1275,8 @@ class Lattice3D:
             raise TypeError(
                 "Unsupported operand type. The operand must be of type 'Lattice3D'."
             )
+        if self.spacing_x_ is None or self.spacing_y_ is None or self.spacing_z_ is None:
+            raise TypeError("At least one of the 'spacing' is None.")
         # Check if both lattices have the same spacing
         if (
             (

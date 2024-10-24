@@ -343,7 +343,7 @@ class MultiParticlePtCorrelations:
 
         return sum_numerator / sum_denominator
 
-    def mean_pt_correlations(self,
+    def mean_pT_correlations(self,
                              particle_list_all_events: List[List[Particle]],
                              compute_error: bool = True,
                              delete_fraction: float = 0.4,

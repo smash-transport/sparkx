@@ -655,7 +655,7 @@ class Histogram:
             np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
-        self.scaling_ = self.scaling_[0]
+        self.scaling_ = np.asarray(self.scaling_[0])
 
         if self.scaling_.ndim == 1:
             self.scaling_ = self.scaling_.reshape(1, -1)
@@ -716,7 +716,7 @@ class Histogram:
             np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
         self.histogram_raw_count_ = np.sum(self.histograms_raw_count_, axis=0)
-        self.scaling_ = self.scaling_[0]
+        self.scaling_ = np.asarray(self.scaling_[0])
 
         if self.scaling_.ndim == 1:
             self.scaling_ = self.scaling_.reshape(1, -1)

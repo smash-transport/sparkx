@@ -188,7 +188,7 @@ class GenerateFlow:
             momentum_radial: float
                 The magnitude of the momentum.
         """
-        momentum_radial = 0
+        momentum_radial = 0.0
         energy = 0.0
         if temperature > 0.6 * mass:
             while True:
@@ -364,7 +364,7 @@ class GenerateFlow:
 
         return value
 
-    def __distribution_function_pT_differential(self, phi: float, vn_pt_list: List[float]) -> float:
+    def __distribution_function_pT_differential(self, phi: float, vn_pT_list: List[float]) -> float:
         """
         Calculates the pT-differential distribution function for a given
         azimuthal angle.
@@ -433,7 +433,7 @@ class GenerateFlow:
         self.py_ = py
         self.pz_ = pz
 
-    def __generate_flow_realistic_pt_distribution(
+    def __generate_flow_realistic_pT_distribution(
             self, multiplicity: int, reaction_plane_angle: float) -> None:
         pTmax = 4.5
         pTmin = 0.1
@@ -568,7 +568,7 @@ class GenerateFlow:
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
-    def generate_dummy_JETSCAPE_file_realistic_pt_shape(
+    def generate_dummy_JETSCAPE_file_realistic_pT_shape(
             self,
             output_path: str,
             number_events: int,
@@ -761,7 +761,7 @@ class GenerateFlow:
 
             output.write("#	sigmaGen	0.0	sigmaErr	0.0")
 
-    def generate_dummy_JETSCAPE_file_realistic_pt_shape_multi_particle_correlations(
+    def generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations(
             self,
             output_path: str,
             number_events: int,
@@ -962,7 +962,7 @@ class GenerateFlow:
                 output.write(
                     f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")
 
-    def generate_dummy_OSCAR_file_realistic_pt_shape(
+    def generate_dummy_OSCAR_file_realistic_pT_shape(
             self,
             output_path: str,
             number_events: int,
@@ -1172,7 +1172,7 @@ class GenerateFlow:
                 output.write(
                     f"# event {event} end 0 impact  -1.000 scattering_projectile_target no\n")
 
-    def generate_dummy_OSCAR_file_realistic_pt_shape_multi_particle_correlations(
+    def generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations(
             self,
             output_path: str,
             number_events: int,

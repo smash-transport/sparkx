@@ -397,8 +397,8 @@ class EventCharacteristics:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles."
             )
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError("The input is not a list nor a numpy.ndarray.")
+        if not isinstance(self.event_data_, list):
+            raise TypeError("The input is not a list.")
 
         energy_density = Lattice3D(
             x_min,
@@ -628,8 +628,8 @@ class EventCharacteristics:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles."
             )
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError("The input is not a list nor a numpy.ndarray.")
+        if not isinstance(self.event_data_, list):
+            raise TypeError("The input is not a list.")
 
         energy_density = Lattice3D(
             x_min,

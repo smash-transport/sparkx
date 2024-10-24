@@ -143,12 +143,12 @@ class JetAnalysis:
         self.hadron_data_: Optional[List[List[Particle]]] = None
         self.jet_R_: Optional[float] = None
         self.jet_eta_range_: Optional[tuple] = None
-        self.jet_pt_range_: Optional[tuple] = None
+        self.jet_pT_range_: Optional[tuple] = None
         self.jet_data_: Optional[List[List[Any]]] = None
 
     def __initialize_and_check_parameters(self, hadron_data: List[List[Particle]], jet_R: float, 
                                           jet_eta_range: Tuple[Optional[float], Optional[float]], 
-                                          jet_pt_range: Tuple[Optional[float], Optional[float]]) -> None:
+                                          jet_pT_range: Tuple[Optional[float], Optional[float]]) -> None:
         """
         Initialize and check the parameters for jet analysis.
 
@@ -207,16 +207,16 @@ class JetAnalysis:
                           "upper one. They are interchanged automatically.")
 
         # check the jet pt range
-        if not isinstance(jet_pt_range, tuple):
-            raise TypeError("jet_pt_range is not a tuple. " +
+        if not isinstance(jet_pT_range, tuple):
+            raise TypeError("jet_pT_range is not a tuple. " +
                             "It must contain either values or None.")
-        if len(jet_pt_range) != 2:
-            raise ValueError("jet_pt_range must contain exactly two values.")
-        if any(pt is not None and pt < 0 for pt in jet_pt_range):
-            raise ValueError("All values in jet_pt_range must be non-negative.")
+        if len(jet_pT_range) != 2:
+            raise ValueError("jet_pT_range must contain exactly two values.")
+        if any(pT is not None and pT < 0 for pT in jet_pT_range):
+            raise ValueError("All values in jet_pT_range must be non-negative.")
 
-        lower_cut = 0. if jet_pt_range[0] is None else jet_pt_range[0]
-        upper_cut = float('inf') if jet_pt_range[1] is None else jet_pt_range[1]
+        lower_cut = 0. if jet_pT_range[0] is None else jet_pT_range[0]
+        upper_cut = float('inf') if jet_pT_range[1] is None else jet_pT_range[1]
         if lower_cut < upper_cut:
             self.jet_pT_range_ = (lower_cut, upper_cut)
         else:
@@ -359,8 +359,8 @@ class JetAnalysis:
         bool
             False if successful.
         """
-        if self.jet_pt_range_ is None:
-            raise TypeError("'jet_pt_range_' is None. It must be initialized before calling the 'write_jet_output' function.")
+        if self.jet_pT_range_ is None:
+            raise TypeError("'jet_pT_range_' is None. It must be initialized before calling the 'write_jet_output' function.")
         
         # jet data from reconstruction
         jet_status = 10
@@ -408,7 +408,7 @@ class JetAnalysis:
 
     def perform_jet_finding(self, hadron_data: List[List[Particle]], jet_R: float,
             jet_eta_range: Tuple[Optional[float], Optional[float]],
-            jet_pt_range: Tuple[Optional[float], Optional[float]],
+            jet_pT_range: Tuple[Optional[float], Optional[float]],
             output_filename: str, assoc_only_charged: bool = True,
             jet_algorithm: fj = fj.antikt_algorithm) -> None:
         """
@@ -448,16 +448,16 @@ class JetAnalysis:
         package is fixed here.
 
         """
+        self.__initialize_and_check_parameters(
+            hadron_data, jet_R, jet_eta_range, jet_pT_range
+        )
         if self.hadron_data_ is None:
             raise TypeError("'hadron_data_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
         if self.jet_eta_range_ is None:
             raise TypeError("'jet_eta_range_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
-        if self.jet_pt_range_ is None:
-            raise TypeError("'jet_pt_range_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
+        if self.jet_pT_range_ is None:
+            raise TypeError("'jet_pT_range_' is None. It must be initialized before calling the 'perform_jet_finding' function.")
         
-        self.__initialize_and_check_parameters(
-            hadron_data, jet_R, jet_eta_range, jet_pT_range
-        )
         for event, hadron_data_event in enumerate(self.hadron_data_):
             new_file = False
             event_PseudoJets = self.create_fastjet_PseudoJets(hadron_data_event)
@@ -516,9 +516,6 @@ class JetAnalysis:
         input_filename: str
             Filename of the CSV file containing the jet data.
         """
-        if self.jet_data_ is None:
-            raise TypeError("'jet_data_' is None. It must be initialized before calling the 'read_jet_data' function.")
-        
         jet_data = []
         current_jet: List[List[Any]] = []
         with open(input_filename, 'r', newline='') as f:

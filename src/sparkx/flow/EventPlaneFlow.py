@@ -98,7 +98,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, n: int = 2, weight: str = "pt2", pseudorapidity_gap: float = 0.) -> None:
+    def __init__(self, n: int = 2, weight: str = "pT2", pseudorapidity_gap: float = 0.) -> None:
         """
         Initialize the ScalarProductFlow object.
 
@@ -107,7 +107,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
         n : int, optional
             The value of the harmonic. Default is 2.
         weight : str, optional
-            The weight used for calculating the flow. Default is "pt2".
+            The weight used for calculating the flow. Default is "pT2".
         pseudorapidity_gap : float, optional
             The pseudorapidity gap used for dividing the particles into sub-events.
             Default is 0.0.
@@ -123,7 +123,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             self.n_ = n
         if not isinstance(weight, str):
             raise TypeError('weight has to be a string')
-        elif weight not in ["pt", "pt2", "ptn", "rapidity", "pseudorapidity"]:
+        elif weight not in ["pT", "pT2", "pTn", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "Invalid weight given, choose one of the following: 'pT', 'pT2', 'pTn', 'rapidity', 'pseudorapidity'"
             )
@@ -495,7 +495,7 @@ class EventPlaneFlow(FlowInterface.FlowInterface):
             raise TypeError('bins has to be list or np.ndarray')
         if not isinstance(flow_as_function_of, str):
             raise TypeError('flow_as_function_of is not a string')
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
