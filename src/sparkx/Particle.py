@@ -13,6 +13,7 @@ from particle import PDGID
 import warnings
 from typing import Optional, Union
 
+
 class Particle:
     """Defines a particle object.
 
@@ -221,7 +222,11 @@ class Particle:
 
     __slots__ = ["data_"]
 
-    def __init__(self, input_format: Optional[str] = None, particle_array: Optional[np.ndarray] = None) -> None:
+    def __init__(
+        self,
+        input_format: Optional[str] = None,
+        particle_array: Optional[np.ndarray] = None,
+    ) -> None:
         self.data_: np.ndarray = np.array(25 * [np.nan], dtype=float)
         self.pdg_valid: bool = False
 
@@ -233,7 +238,9 @@ class Particle:
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(input_format, particle_array)
 
-    def __initialize_from_array(self, input_format: str, particle_array: np.ndarray) -> None:
+    def __initialize_from_array(
+        self, input_format: str, particle_array: np.ndarray
+    ) -> None:
         """
         Initialize instance attributes based on the provided input format and array.
 
@@ -836,6 +843,7 @@ class Particle:
         All particle quantities are then printed in the next line separated by
         a comma.
         """
+
         def int_isnan(value: float) -> Union[int, float]:
             if np.isnan(value):
                 return np.nan

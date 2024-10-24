@@ -182,10 +182,10 @@ class Jetscape(BaseStorer):
         )
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
-        
+
     def create_loader(
-            self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
-        ) -> None:
+        self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
+    ) -> None:
         """
         Creates a new JetscapeLoader object.
 
@@ -211,9 +211,7 @@ class Jetscape(BaseStorer):
         self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def _particle_as_list(
-        self, particle: Particle
-    ) -> List[Union[int, float]]:
+    def _particle_as_list(self, particle: Particle) -> List[Union[int, float]]:
         particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)

@@ -179,15 +179,15 @@ class Oscar(BaseStorer):
     def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
         """
         Creates a new OscarLoader object.
-    
+
         This method initializes a new OscarLoader object with the specified OSCAR file
         and assigns it to the loader attribute.
-    
+
         Parameters
         ----------
         OSCAR_FILE : str
             The path to the OSCAR file to be loaded.
-    
+
         Returns
         -------
         None

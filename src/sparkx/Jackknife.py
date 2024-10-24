@@ -146,8 +146,13 @@ class Jackknife:
         data = np.delete(data, delete_indices, axis=0)
         return data
 
-    def _apply_function_to_reduced_data(self, reduced_data: np.ndarray, 
-                                        function: Callable[..., Any], *args, **kwargs) -> Any:
+    def _apply_function_to_reduced_data(
+        self,
+        reduced_data: np.ndarray,
+        function: Callable[..., Any],
+        *args,
+        **kwargs,
+    ) -> Any:
         """
         Apply a function to the reduced data.
 
@@ -359,7 +364,7 @@ class Jackknife:
             raise TypeError("data must be a numpy array.")
         if not callable(function):
             raise TypeError("function must be a callable object.")
-        
+
         # Check if the function returns a single number
         test_result = function(
             data[: max(1, len(data) // 100)], *args, **kwargs
