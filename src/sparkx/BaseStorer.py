@@ -585,16 +585,19 @@ class BaseStorer(ABC):
 
         return self
 
-    def multiplicity_cut(self, min_multiplicity: int) -> "BaseStorer":
+    def multiplicity_cut(
+        self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
+        ) -> "BaseStorer":
         """
-        Apply multiplicity cut. Remove all events with a multiplicity lower
-        than :code:`min_multiplicity`.
+        Apply multiplicity cut. Remove all events with a multiplicity not
+        complying with cut_value.
 
         Parameters
         ----------
-        min_multiplicity : int
-            Lower bound for multiplicity. If the multiplicity of an event is
-            lower than :code:`min_multiplicity`, this event is discarded.
+        cut_value_tuple : tuple
+            Upper and lower bound for multiplicity. If the multiplicity of an event is
+            not in this range, the event is discarded. The range is inclusive on the 
+            lower bound and exclusive on the upper bound.
 
         Returns
         -------
@@ -603,7 +606,7 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = multiplicity_cut(
-            self.particle_list_, min_multiplicity
+            self.particle_list_, cut_value_tuple
         )
         self._update_num_output_per_event_after_filter()
 
@@ -840,16 +843,19 @@ class BaseStorer(ABC):
             raise ValueError("num_output_per_event_ is not set")
         if self.particle_list_ is None:
             raise ValueError("particle_list_ is not set")
-
         if self.num_output_per_event_.ndim == 1:
             # Handle the case where num_output_per_event_ is a one-dimensional array
             self.num_output_per_event_[1] = len(self.particle_list_[0])
         elif self.num_output_per_event_.ndim == 2:
             # Handle the case where num_output_per_event_ is a two-dimensional array
+            updated_num_output_per_event = np.ndarray((len(self.particle_list_),2), dtype=int)
             for event in range(len(self.particle_list_)):
-                self.num_output_per_event_[event][1] = len(
+                updated_num_output_per_event[event][0] = event
+                updated_num_output_per_event[event][1] = len(
                     self.particle_list_[event]
                 )
+            self.num_output_per_event_ = updated_num_output_per_event
+            self.num_events_ = len(self.particle_list_)
         else:
             raise ValueError(
                 "num_output_per_event_ has an unexpected number of dimensions"

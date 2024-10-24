@@ -9,6 +9,7 @@
 
 from sparkx.Filter import *
 import numpy as np
+import warnings
 from sparkx.loader.OscarLoader import OscarLoader
 from sparkx.BaseStorer import BaseStorer
 from typing import Any, List, Optional, Union, Dict
@@ -387,7 +388,9 @@ class Oscar(BaseStorer):
                 raise ValueError("The number of output per event is empty.")
             if self.num_events_ is None:
                 raise ValueError("The number of events is empty.")
-            if self.num_events_ > 1:
+            if self.num_events_ == 0:
+                warnings.warn("The number of events is zero.")
+            elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
