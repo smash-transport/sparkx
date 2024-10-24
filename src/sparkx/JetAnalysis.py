@@ -8,7 +8,7 @@
 # ===================================================
 
 import numpy as np
-import fastjet as fj
+import fastjet as fj # type: ignore
 import csv
 import warnings
 from sparkx.Particle import Particle

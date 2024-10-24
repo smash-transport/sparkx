@@ -13,7 +13,6 @@ BaseStorer
 .. automethod:: BaseStorer.particle_objects_list
 .. automethod:: BaseStorer.charged_particles
 .. automethod:: BaseStorer.uncharged_particles
-.. automethod:: BaseStorer.strange_particles
 .. automethod:: BaseStorer.particle_species
 .. automethod:: BaseStorer.remove_particle_species
 .. automethod:: BaseStorer.participants
@@ -25,10 +24,15 @@ BaseStorer
 .. automethod:: BaseStorer.spatial_rapidity_cut
 .. automethod:: BaseStorer.multiplicity_cut
 .. automethod:: BaseStorer.spacetime_cut
-.. automethod:: BaseStorer.particle_status
 .. automethod:: BaseStorer.keep_hadrons
 .. automethod:: BaseStorer.keep_leptons
-.. automethod:: BaseStorer.keep_quarks
 .. automethod:: BaseStorer.keep_mesons
 .. automethod:: BaseStorer.keep_baryons
+.. automethod:: BaseStorer.keep_up
+.. automethod:: BaseStorer.keep_down
+.. automethod:: BaseStorer.keep_strange
+.. automethod:: BaseStorer.keep_charm
+.. automethod:: BaseStorer.keep_bottom
+.. automethod:: BaseStorer.keep_top
+.. automethod:: BaseStorer.remove_photons
 .. automethod:: BaseStorer.print_particle_lists_to_file

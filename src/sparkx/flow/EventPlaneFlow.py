@@ -8,9 +8,9 @@
 # ===================================================
 
 from sparkx.flow import FlowInterface
-import numpy as np
-from scipy import special
-import scipy.optimize as optimize
+import numpy as np # type: ignore
+from scipy import special # type: ignore
+import scipy.optimize as optimize # type: ignore
 import warnings
 from sparkx.Particle import Particle
 from typing import List, Tuple, Union

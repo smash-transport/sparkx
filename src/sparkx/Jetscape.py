@@ -274,6 +274,20 @@ class Jetscape(BaseStorer):
         raise NotImplementedError(
             "Spacetime cuts are not possible for Jetscape events."
         )
+    
+    def keep_quarks(self) -> "Jetscape":
+        """
+        Keep only quarks in the Jetscape object.
+
+        Returns
+        -------
+        self : Jetscape object
+            Containing only quarks for every event.
+        """
+        self.particle_list_ = keep_quarks(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
 
     def get_sigmaGen(self) -> Tuple[float, float]:
         """

@@ -9,13 +9,12 @@
 
 import numpy as np
 import warnings
-from scipy.interpolate import interpn
-from scipy.stats import multivariate_normal
+from scipy.interpolate import interpn # type: ignore
+from scipy.stats import multivariate_normal # type: ignore
 from typing import Optional, List, Union, Tuple, Callable
 from sparkx.Particle import Particle
-
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D # type: ignore
 import matplotlib.cm as cm
 
 
@@ -970,7 +969,7 @@ class Lattice3D:
 
         # Create a 3D plot
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
+        ax: Axes3D = fig.add_subplot(111, projection="3d")
 
         # Scatter plot the lattice points
         scatter = ax.scatter(X_flat, Y_flat, Z_flat, c=values_flat, cmap=cmap)

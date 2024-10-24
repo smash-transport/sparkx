@@ -367,12 +367,13 @@ class OscarLoader(BaseLoader):
 
         This method applies a series of filters to the event data based on the
         keys in the filters_dict dictionary. The filters include:
-        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'charged_particles', 'uncharged_particles',
         'particle_species', 'remove_particle_species', 'participants',
         'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
         'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
-        'multiplicity_cut', 'keep_hadrons', 'keep_leptons', 'keep_mesons',
-        'keep_baryons'.
+        'multiplicity_cut', 'keep_hadrons', 'keep_leptons',
+        'keep_mesons', 'keep_baryons', 'keep_up', 'keep_down', 'keep_strange',
+        'keep_charm', 'keep_bottom', 'keep_top' and 'remove_photons'.
         If a key in the filters_dict dictionary does not
         match any of these filters, a ValueError is raised.
 
@@ -405,9 +406,6 @@ class OscarLoader(BaseLoader):
             elif i == "uncharged_particles":
                 if filters_dict["uncharged_particles"]:
                     event = uncharged_particles(event)
-            elif i == "strange_particles":
-                if filters_dict["strange_particles"]:
-                    event = strange_particles(event)
             elif i == "particle_species":
                 event = particle_species(
                     event, filters_dict["particle_species"]
@@ -464,6 +462,27 @@ class OscarLoader(BaseLoader):
             elif i == "keep_baryons":
                 if filters_dict["keep_baryons"]:
                     event = keep_baryons(event)
+            elif i == "keep_up":
+                if filters_dict["keep_up"]:
+                    event = keep_up(event)
+            elif i == "keep_down":
+                if filters_dict["keep_down"]:
+                    event = keep_down(event)
+            elif i == "keep_strange":
+                if filters_dict["keep_strange"]:
+                    event = keep_strange(event)
+            elif i == "keep_charm":
+                if filters_dict["keep_charm"]:
+                    event = keep_charm(event)
+            elif i == "keep_bottom":
+                if filters_dict["keep_bottom"]:
+                    event = keep_bottom(event)
+            elif i == "keep_top":
+                if filters_dict["keep_top"]:
+                    event = keep_top(event)
+            elif i == "remove_photons":
+                if filters_dict["remove_photons"]:
+                    event = remove_photons(event)
             else:
                 raise ValueError("The cut is unknown!")
 
