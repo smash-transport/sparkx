@@ -22,15 +22,16 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 Date:
 
 ### Added
+* Particle: Add member functions mT, is_quark, is_lepton, has_up, has_down, has_strange, has_charm, has_bottom, has_top
+* Filter: Add keep_up, keep_down, keep_charm, keep_bottom, keep_top, keep_hadrons, keep_leptons, keep_quarks, keep_mesons, keep_baryons, remove_photons filters
 * Oscar: Add transverse mass cut to methods
 * Jetscape: Add transverse mass cut to methods
 * Added ParticleObjectStorer to store generic particle lists
 * SPARKX checks now for static tying consistency
 
 ### Changed
-* Particle: Add member function to calculate the transverse mass of a particle
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
-* Particle: Add functions is_quark, is_lepton, has_up, has_down, has_strange, has_charm, has_bottom, has_top
+* Particle: Add functions 
 
 | Old Method Name                     | New Method Name             |
 |-------------------------------------|-----------------------------|
@@ -44,8 +45,7 @@ Date:
 | is_strange()                        | has_strange()               |
 
 * Filter: Perform general clean up to reduce code duplications
-* Filter: Rename strange_particles filter to keep_strange, add keep_up, keep_down, keep_charm, keep_bottom, keep_top filters
-* Filter: Add keep_hadrons, keep_leptons, keep_quarks, keep_mesons, keep_baryons, remove_photons filters
+* Filter: Rename strange_particles filter to keep_strange
 * Changed class architecture to separate loader and storer classes
 * Changed code formatter to `black`
 

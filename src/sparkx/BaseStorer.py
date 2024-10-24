@@ -62,6 +62,8 @@ class BaseStorer(ABC):
         Keep strange particles only
     pT_cut:
         Apply pT cut to all particles
+    mT_cut:
+        Apply mT cut to all particles
     rapidity_cut:
         Apply rapidity cut to all particles
     pseudorapidity_cut:
@@ -378,6 +380,34 @@ class BaseStorer(ABC):
         """
 
         self.particle_list_ = pT_cut(self.particle_list_, cut_value_tuple)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+    
+    def mT_cut(
+        self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
+    ) -> "BaseStorer":
+        """
+        Apply transverse mass cut to all events by passing an acceptance
+        range by :code:`cut_value_tuple`. All particles outside this range will
+        be removed.
+
+        Parameters
+        ----------
+        cut_value_tuple : tuple
+            Tuple with the upper and lower limits of the mT acceptance
+            range :code:`(cut_min, cut_max)`. If one of the limits is not
+            required, set it to :code:`None`, i.e. :code:`(None, cut_max)`
+            or :code:`(cut_min, None)`.
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing only particles complying with the transverse mass
+            cut for all events
+        """
+
+        self.particle_list_ = mT_cut(self.particle_list_, cut_value_tuple)
         self._update_num_output_per_event_after_filter()
 
         return self
