@@ -97,7 +97,9 @@ class BulkObservables:
                     hist.add_value(particle_method())
                 else:
                     raise AttributeError(f"'{quantity}' is not a callable method of Particle")
-            if num_events > 1:
+
+            # Do not add an empty histogram at the end
+            if num_events > 1 and not event == (num_events - 1):
                 hist.add_histogram()
 
         hist.average()
