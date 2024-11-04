@@ -11,7 +11,7 @@ from sparkx.Filter import *
 import numpy as np
 from abc import ABC, abstractmethod
 from sparkx.Particle import Particle
-from typing import List, Union, Tuple, Optional
+from typing import List, Union, Tuple, Optional, Any
 from sparkx.loader.BaseLoader import BaseLoader
 
 
@@ -77,7 +77,7 @@ class BaseStorer(ABC):
     """
 
     def __init__(
-        self, path: Union[str, List[List[Particle]]], **kwargs
+        self, path: Union[str, List[List[Particle]]], **kwargs: Any
     ) -> None:
         """
         Parameters
@@ -383,7 +383,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def mT_cut(
         self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
     ) -> "BaseStorer":
@@ -531,7 +531,9 @@ class BaseStorer(ABC):
 
         return self
 
-    def spacetime_cut(self, dim, cut_value_tuple: Tuple[float, float]):
+    def spacetime_cut(
+        self, dim: str, cut_value_tuple: Tuple[float, float]
+    ) -> "BaseStorer":
         """
         Apply spacetime cut to all events by passing an acceptance range by
         :code:`cut_value_tuple`. All particles outside this range will
@@ -573,7 +575,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_leptons(self) -> "BaseStorer":
         """
         Keep only leptons in particle_list
@@ -587,7 +589,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_mesons(self) -> "BaseStorer":
         """
         Keep only mesons in particle_list
@@ -601,7 +603,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_baryons(self) -> "BaseStorer":
         """
         Keep only baryons in particle_list
@@ -615,7 +617,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_up(self) -> "BaseStorer":
         """
         Keep only hadrons containing up quarks in particle_list
@@ -629,7 +631,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_down(self) -> "BaseStorer":
         """
         Keep only hadrons containing down quarks in particle_list
@@ -643,7 +645,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_strange(self) -> "BaseStorer":
         """
         Keep only hadrons containing strange quarks in particle_list
@@ -657,7 +659,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_charm(self) -> "BaseStorer":
         """
         Keep only hadrons containing charm quarks in particle_list
@@ -671,7 +673,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_bottom(self) -> "BaseStorer":
         """
         Keep only hadrons containing bottom quarks in particle_list
@@ -685,7 +687,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def keep_top(self) -> "BaseStorer":
         """
         Keep only hadrons containing top quarks in particle_list
@@ -699,7 +701,7 @@ class BaseStorer(ABC):
         self._update_num_output_per_event_after_filter()
 
         return self
-    
+
     def remove_photons(self) -> "BaseStorer":
         """
         Remove photons from particle_list

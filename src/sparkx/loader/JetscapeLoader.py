@@ -203,10 +203,10 @@ class JetscapeLoader(BaseLoader):
     def event_end_lines(self) -> List[str]:
         """
         Returns the list of event end lines.
-    
+
         This method returns the list of strings that mark the end of events
         in the Jetscape data.
-    
+
         Returns
         -------
         List[str]

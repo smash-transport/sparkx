@@ -64,11 +64,15 @@ class CentralityClasses:
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
 
-    def __init__(self, events_multiplicity: Union[List[float], np.ndarray],
-                 centrality_bins: Union[List[float], np.ndarray]) -> None:
+    def __init__(
+        self,
+        events_multiplicity: Union[List[float], np.ndarray],
+        centrality_bins: Union[List[float], np.ndarray],
+    ) -> None:
         if not isinstance(events_multiplicity, (list, np.ndarray)):
             raise TypeError(
-                "'events_multiplicity' is not list or numpy.ndarray")
+                "'events_multiplicity' is not list or numpy.ndarray"
+            )
         if not isinstance(centrality_bins, (list, np.ndarray)):
             raise TypeError("'centrality_bins' is not list or numpy.ndarray")
         # Check if centrality_bins is sorted

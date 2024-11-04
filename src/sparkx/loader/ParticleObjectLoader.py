@@ -164,11 +164,11 @@ class ParticleObjectLoader(BaseLoader):
         in the filters_dict dictionary. The filters include
         'charged_particles', 'uncharged_particles',
         'particle_species', 'remove_particle_species', 'participants',
-        'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut', 
-        'mT_cut', 'rapidity_cut', 'pseudorapidity_cut', 
-        'spacetime_rapidity_cut', 'multiplicity_cut', 'particle_status', 
-        'keep_hadrons', 'keep_leptons', 'keep_quarks', 'keep_mesons', 
-        'keep_baryons', 'keep_up', 'keep_down', 'keep_strange', 'keep_charm', 
+        'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
+        'mT_cut', 'rapidity_cut', 'pseudorapidity_cut',
+        'spacetime_rapidity_cut', 'multiplicity_cut', 'particle_status',
+        'keep_hadrons', 'keep_leptons', 'keep_quarks', 'keep_mesons',
+        'keep_baryons', 'keep_up', 'keep_down', 'keep_strange', 'keep_charm',
         'keep_bottom', 'keep_top' and 'remove_photons'.
         If a key in the filters_dict dictionary does not
         match any of these filters, a ValueError is raised.

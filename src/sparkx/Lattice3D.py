@@ -9,12 +9,12 @@
 
 import numpy as np
 import warnings
-from scipy.interpolate import interpn # type: ignore
-from scipy.stats import multivariate_normal # type: ignore
+from scipy.interpolate import interpn  # type: ignore
+from scipy.stats import multivariate_normal  # type: ignore
 from typing import Optional, List, Union, Tuple, Callable
 from sparkx.Particle import Particle
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D # type: ignore
+from mpl_toolkits.mplot3d import Axes3D  # type: ignore
 import matplotlib.cm as cm
 
 
@@ -145,10 +145,21 @@ class Lattice3D:
 
     """
 
-    def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float,
-                 z_min: float, z_max: float, num_points_x: int, num_points_y: int, 
-                 num_points_z: int, n_sigma_x: Optional[float]=None, 
-                 n_sigma_y: Optional[float]=None, n_sigma_z: Optional[float]=None) -> None:
+    def __init__(
+        self,
+        x_min: float,
+        x_max: float,
+        y_min: float,
+        y_max: float,
+        z_min: float,
+        z_max: float,
+        num_points_x: int,
+        num_points_y: int,
+        num_points_z: int,
+        n_sigma_x: Optional[float] = None,
+        n_sigma_y: Optional[float] = None,
+        n_sigma_z: Optional[float] = None,
+    ) -> None:
         self.x_min_ = x_min
         self.x_max_ = x_max
         self.y_min_ = y_min
@@ -158,28 +169,43 @@ class Lattice3D:
         self.num_points_x_ = num_points_x
         self.num_points_y_ = num_points_y
         self.num_points_z_ = num_points_z
-        self.cell_volume_: float = abs((x_max - x_min) * (y_max - y_min) * \
-                                (z_max - z_min) / (num_points_x * num_points_y * num_points_z))
+        self.cell_volume_: float = abs(
+            (x_max - x_min)
+            * (y_max - y_min)
+            * (z_max - z_min)
+            / (num_points_x * num_points_y * num_points_z)
+        )
 
         self.x_values_: np.ndarray = np.linspace(x_min, x_max, num_points_x)
         self.y_values_: np.ndarray = np.linspace(y_min, y_max, num_points_y)
         self.z_values_: np.ndarray = np.linspace(z_min, z_max, num_points_z)
 
-        self.grid_: np.ndarray = np.zeros((num_points_x, num_points_y, num_points_z))
+        self.grid_: np.ndarray = np.zeros(
+            (num_points_x, num_points_y, num_points_z)
+        )
 
         self.n_sigma_x_ = float(n_sigma_x) if n_sigma_x is not None else 3
         self.n_sigma_y_ = float(n_sigma_y) if n_sigma_y is not None else 3
         self.n_sigma_z_ = float(n_sigma_z) if n_sigma_z is not None else 3
 
-        self.spacing_x_: Optional[float] = self.x_values_[
-            1] - self.x_values_[0] if num_points_x > 1 else None
-        self.spacing_y_: Optional[float] = self.y_values_[
-            1] - self.y_values_[0] if num_points_y > 1 else None
-        self.spacing_z_: Optional[float] = self.z_values_[
-            1] - self.z_values_[0] if num_points_z > 1 else None
-        self.density_x_: float = (self.x_max_ - self.x_min_) / self.num_points_x_
-        self.density_y_: float = (self.y_max_ - self.y_min_) / self.num_points_y_
-        self.density_z_: float = (self.z_max_ - self.z_min_) / self.num_points_z_
+        self.spacing_x_: Optional[float] = (
+            self.x_values_[1] - self.x_values_[0] if num_points_x > 1 else None
+        )
+        self.spacing_y_: Optional[float] = (
+            self.y_values_[1] - self.y_values_[0] if num_points_y > 1 else None
+        )
+        self.spacing_z_: Optional[float] = (
+            self.z_values_[1] - self.z_values_[0] if num_points_z > 1 else None
+        )
+        self.density_x_: float = (
+            self.x_max_ - self.x_min_
+        ) / self.num_points_x_
+        self.density_y_: float = (
+            self.y_max_ - self.y_min_
+        ) / self.num_points_y_
+        self.density_z_: float = (
+            self.z_max_ - self.z_min_
+        ) / self.num_points_z_
 
     def __is_valid_index(self, i: int, j: int, k: int) -> bool:
         """
@@ -205,8 +231,9 @@ class Lattice3D:
             and (0 <= k < self.num_points_z_)
         )
 
-    def set_value_by_index(self, i: int, j: int, k: int, 
-                           value: Union[int, float]) -> None:
+    def set_value_by_index(
+        self, i: int, j: int, k: int, value: Union[int, float]
+    ) -> None:
         """
         Set the value at the specified indices (i, j, k) in the grid.
 
@@ -230,7 +257,9 @@ class Lattice3D:
         else:
             self.grid_[i, j, k] = value
 
-    def get_value_by_index(self, i: int, j: int, k: int) -> Optional[Union[int, float]]:
+    def get_value_by_index(
+        self, i: int, j: int, k: int
+    ) -> Optional[Union[int, float]]:
         """
         Get the value at the specified indices (i, j, k) in the grid.
 
@@ -254,8 +283,9 @@ class Lattice3D:
         else:
             return self.grid_[i, j, k]
 
-    def __get_index(self, value: Union[int, float], 
-                    values: Union[np.ndarray, List[float]]) -> int:
+    def __get_index(
+        self, value: Union[int, float], values: Union[np.ndarray, List[float]]
+    ) -> int:
         """
         Get the index corresponding to the given value within a specified range.
 
@@ -285,8 +315,9 @@ class Lattice3D:
 
         return int(index - 1)
 
-    def __get_index_nearest_neighbor(self, value: Union[int, float], 
-                                     values: Union[np.ndarray, List[float]]) -> int:
+    def __get_index_nearest_neighbor(
+        self, value: Union[int, float], values: Union[np.ndarray, List[float]]
+    ) -> int:
         """
         Get the index corresponding to the nearest neighbor of a given value
         within a specified range.
@@ -316,8 +347,9 @@ class Lattice3D:
 
         return index
 
-    def __get_indices(self, x: Union[int, float], y: Union[int, float], 
-                      z: Union[int, float]) -> Tuple[int, int, int]:
+    def __get_indices(
+        self, x: Union[int, float], y: Union[int, float], z: Union[int, float]
+    ) -> Tuple[int, int, int]:
         """
         Get the indices corresponding to the given coordinates within the lattice.
 
@@ -346,9 +378,9 @@ class Lattice3D:
         k = self.__get_index(z, self.z_values_)
         return i, j, k
 
-    def __get_indices_nearest_neighbor(self, x: Union[int, float], 
-                                       y: Union[int, float], 
-                                       z: Union[int, float]) -> Tuple[int, int, int]:
+    def __get_indices_nearest_neighbor(
+        self, x: Union[int, float], y: Union[int, float], z: Union[int, float]
+    ) -> Tuple[int, int, int]:
         """
         Get the indices corresponding to the nearest neighbor
         given coordinates within the lattice.
@@ -378,8 +410,13 @@ class Lattice3D:
         k = self.__get_index_nearest_neighbor(z, self.z_values_)
         return i, j, k
 
-    def set_value(self, x: Union[int, float], y: Union[int, float], 
-                  z: Union[int, float], value: Union[int, float]) -> None:
+    def set_value(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        z: Union[int, float],
+        value: Union[int, float],
+    ) -> None:
         """
         Set the value at the specified coordinates within the lattice.
 
@@ -402,8 +439,13 @@ class Lattice3D:
         i, j, k = self.__get_indices(x, y, z)
         self.set_value_by_index(i, j, k, value)
 
-    def set_value_nearest_neighbor(self, x: Union[int, float], y: Union[int, float], 
-                                   z: Union[int, float], value: Union[int, float]) -> None:
+    def set_value_nearest_neighbor(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        z: Union[int, float],
+        value: Union[int, float],
+    ) -> None:
         """
         Set the value at the nearest neighbor of the
         specified coordinates within the lattice.
@@ -427,8 +469,9 @@ class Lattice3D:
         i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
         self.set_value_by_index(i, j, k, value)
 
-    def get_value(self, x: Union[int, float], y: Union[int, float], 
-                  z: Union[int, float]) -> Optional[Union[int, float]]:
+    def get_value(
+        self, x: Union[int, float], y: Union[int, float], z: Union[int, float]
+    ) -> Optional[Union[int, float]]:
         """
         Get the value at the specified coordinates within the lattice.
 
@@ -454,8 +497,9 @@ class Lattice3D:
         i, j, k = self.__get_indices(x, y, z)
         return self.get_value_by_index(i, j, k)
 
-    def get_value_nearest_neighbor(self, x: Union[int, float], y: Union[int, float], 
-                                   z: Union[int, float]) -> Optional[Union[int, float]]:
+    def get_value_nearest_neighbor(
+        self, x: Union[int, float], y: Union[int, float], z: Union[int, float]
+    ) -> Optional[Union[int, float]]:
         """
         Get the value of the nearest neighbor at the specified coordinates
         within the lattice.
@@ -482,7 +526,9 @@ class Lattice3D:
         i, j, k = self.__get_indices_nearest_neighbor(x, y, z)
         return self.get_value_by_index(i, j, k)
 
-    def __get_value(self, index: int, values: np.ndarray, num_points: int) -> float:
+    def __get_value(
+        self, index: int, values: np.ndarray, num_points: int
+    ) -> float:
         """
         Retrieve the value associated with the given index.
 
@@ -510,7 +556,9 @@ class Lattice3D:
             raise ValueError("Index is outside the specified range.")
         return values[index]
 
-    def get_coordinates(self, i: int, j: int, k: int) -> Tuple[float, float, float]:
+    def get_coordinates(
+        self, i: int, j: int, k: int
+    ) -> Tuple[float, float, float]:
         """
         Retrieve the coordinates associated with the given indices.
 
@@ -540,7 +588,9 @@ class Lattice3D:
         z = self.__get_value(k, self.z_values_, self.num_points_z_)
         return x, y, z
 
-    def __find_closest_index(self, value: float, values: Union[np.ndarray, List[float]]) -> int:
+    def __find_closest_index(
+        self, value: float, values: Union[np.ndarray, List[float]]
+    ) -> int:
         """
         Find the index of the closest value to the given value in a list of values.
 
@@ -559,7 +609,7 @@ class Lattice3D:
         """
         if isinstance(values, list):
             values = np.array(values, dtype=float)
-            
+
         index = np.argmin(np.abs(values - value))
         return int(index)
 
@@ -588,8 +638,9 @@ class Lattice3D:
             and (self.z_min_ <= z <= self.z_max_)
         )
 
-    def find_closest_indices(self, x: float, y: float, 
-                             z: float) -> Tuple[int, int, int]:
+    def find_closest_indices(
+        self, x: float, y: float, z: float
+    ) -> Tuple[int, int, int]:
         """
         Find the closest indices in the lattice corresponding to the given coordinates.
 
@@ -617,7 +668,9 @@ class Lattice3D:
         k = self.__find_closest_index(z, self.z_values_)
         return i, j, k
 
-    def interpolate_value(self, x: float, y: float, z: float, method: str='nearest') -> float:
+    def interpolate_value(
+        self, x: float, y: float, z: float, method: str = "nearest"
+    ) -> float:
         """
         Interpolate the value at the specified position using (up to) trilinear
         interpolation.
@@ -652,8 +705,11 @@ class Lattice3D:
             method=method,
         )[0]
 
-    def __operate_on_lattice(self, other: 'Lattice3D', 
-                             operation: Callable[[np.ndarray, np.ndarray], np.ndarray]) -> 'Lattice3D':
+    def __operate_on_lattice(
+        self,
+        other: "Lattice3D",
+        operation: Callable[[np.ndarray, np.ndarray], np.ndarray],
+    ) -> "Lattice3D":
         """
         Apply a binary operation on two Lattice3D objects element-wise.
 
@@ -702,7 +758,7 @@ class Lattice3D:
 
         return result
 
-    def __add__(self, other: 'Lattice3D') -> 'Lattice3D':
+    def __add__(self, other: "Lattice3D") -> "Lattice3D":
         """
         Add two Lattice3D objects element-wise.
 
@@ -719,7 +775,7 @@ class Lattice3D:
         """
         return self.__operate_on_lattice(other, lambda x, y: x + y)
 
-    def __sub__(self, other: 'Lattice3D') -> 'Lattice3D':
+    def __sub__(self, other: "Lattice3D") -> "Lattice3D":
         """
         Subtract two Lattice3D objects element-wise.
 
@@ -736,7 +792,7 @@ class Lattice3D:
         """
         return self.__operate_on_lattice(other, lambda x, y: x - y)
 
-    def __mul__(self, other: 'Lattice3D') -> 'Lattice3D':
+    def __mul__(self, other: "Lattice3D") -> "Lattice3D":
         """
         Multiply two Lattice3D objects element-wise.
 
@@ -753,7 +809,7 @@ class Lattice3D:
         """
         return self.__operate_on_lattice(other, lambda x, y: x * y)
 
-    def __truediv__(self, other: 'Lattice3D') -> 'Lattice3D':
+    def __truediv__(self, other: "Lattice3D") -> "Lattice3D":
         """
         Divide two Lattice3D objects element-wise.
 
@@ -775,7 +831,7 @@ class Lattice3D:
         """
         return self.__operate_on_lattice(other, lambda x, y: x / y)
 
-    def average(self, *lattices: 'Lattice3D') -> 'Lattice3D':
+    def average(self, *lattices: "Lattice3D") -> "Lattice3D":
         """
         Compute the average of multiple Lattice3D objects element-wise.
 
@@ -901,7 +957,7 @@ class Lattice3D:
         np.savetxt(filename, data, delimiter=",")
 
     @classmethod
-    def load_from_csv(cls, filename: str) -> 'Lattice3D':
+    def load_from_csv(cls, filename: str) -> "Lattice3D":
         """
         Load lattice data, including metadata, from a CSV file.
 
@@ -987,7 +1043,9 @@ class Lattice3D:
         # Show the plot
         plt.show()
 
-    def extract_slice(self, axis: str, index: int) -> Tuple[np.ndarray, Tuple[np.ndarray, np.ndarray], str]:
+    def extract_slice(
+        self, axis: str, index: int
+    ) -> Tuple[np.ndarray, Tuple[np.ndarray, np.ndarray], str]:
         """
         Extract a 2D slice from the lattice along the specified axis at the
         given index.
@@ -1099,8 +1157,9 @@ class Lattice3D:
             filename, slice_data, delimiter=",", header=header, comments=""
         )
 
-    def interpolate_to_lattice(self, num_points_x: int, num_points_y: int, 
-                               num_points_z: int) -> 'Lattice3D':
+    def interpolate_to_lattice(
+        self, num_points_x: int, num_points_y: int, num_points_z: int
+    ) -> "Lattice3D":
         """
         Interpolate the current lattice data to a new lattice with the specified
         number of points along each axis.
@@ -1154,10 +1213,18 @@ class Lattice3D:
 
         return new_lattice
 
-    def interpolate_to_lattice_new_extent(self, num_points_x: int, num_points_y: int, 
-                                          num_points_z: int, x_min: float, x_max: float,
-                                          y_min: float, y_max: float, z_min: float,
-                                          z_max: float) -> 'Lattice3D':
+    def interpolate_to_lattice_new_extent(
+        self,
+        num_points_x: int,
+        num_points_y: int,
+        num_points_z: int,
+        x_min: float,
+        x_max: float,
+        y_min: float,
+        y_max: float,
+        z_min: float,
+        z_max: float,
+    ) -> "Lattice3D":
         """
         Interpolate the current lattice data to a new lattice with the specified
         number of points and extent.
@@ -1246,8 +1313,13 @@ class Lattice3D:
         for i, j, k in np.ndindex(self.grid_.shape):
             self.grid_[i, j, k] = 0
 
-    def add_same_spaced_grid(self, other: 'Lattice3D', center_x: float, center_y: float, 
-                             center_z: float) -> None:
+    def add_same_spaced_grid(
+        self,
+        other: "Lattice3D",
+        center_x: float,
+        center_y: float,
+        center_z: float,
+    ) -> None:
         """
         Add the values of grid points of another lattice with same spacing.
 
@@ -1274,7 +1346,11 @@ class Lattice3D:
             raise TypeError(
                 "Unsupported operand type. The operand must be of type 'Lattice3D'."
             )
-        if self.spacing_x_ is None or self.spacing_y_ is None or self.spacing_z_ is None:
+        if (
+            self.spacing_x_ is None
+            or self.spacing_y_ is None
+            or self.spacing_z_ is None
+        ):
             raise TypeError("At least one of the 'spacing' is None.")
         # Check if both lattices have the same spacing
         if (
@@ -1319,8 +1395,14 @@ class Lattice3D:
                 "The provided lattices do not have identical spacing."
             )
 
-    def add_particle_data(self, particle_data: List[Particle], sigma: float, quantity: str,
-                          kernel: str ="covariant", add: bool =False) -> None:
+    def add_particle_data(
+        self,
+        particle_data: List[Particle],
+        sigma: float,
+        quantity: str,
+        kernel: str = "covariant",
+        add: bool = False,
+    ) -> None:
         """
         Add particle data to the lattice.
 
@@ -1333,7 +1415,7 @@ class Lattice3D:
             particle data.
         quantity : str
             The quantity of the particle data to be added. Supported values are
-            'energy_density', 'number_density', 'charge_density', 
+            'energy_density', 'number_density', 'charge_density',
             'baryon_density', and 'strangeness_density'.
         kernel : str, optional
             The type of kernel to use for smearing the particle data. Supported
@@ -1413,12 +1495,18 @@ class Lattice3D:
                 raise ValueError("Unknown kernel type for lattice.")
 
             if self.spacing_x_ is None:
-                raise TypeError("'spacing_x_' is None. It must be initialized before calling the 'add_particle_data' function.")
+                raise TypeError(
+                    "'spacing_x_' is None. It must be initialized before calling the 'add_particle_data' function."
+                )
             if self.spacing_y_ is None:
-                raise TypeError("'spacing_y_' is None. It must be initialized before calling the 'add_particle_data' function.")
+                raise TypeError(
+                    "'spacing_y_' is None. It must be initialized before calling the 'add_particle_data' function."
+                )
             if self.spacing_z_ is None:
-                raise TypeError("'spacing_z_' is None. It must be initialized before calling the 'add_particle_data' function.")
-            
+                raise TypeError(
+                    "'spacing_z_' is None. It must be initialized before calling the 'add_particle_data' function."
+                )
+
             # Determine the range of cells within the boundary
             range_x = self.n_sigma_x_ * sigma
             num_x = round(range_x / self.spacing_x_)
@@ -1491,7 +1579,7 @@ class Lattice3D:
             self.add_same_spaced_grid(temp_lattice, x_grid, y_grid, z_grid)
 
 
-def print_lattice(lattice: 'Lattice3D') -> None:
+def print_lattice(lattice: "Lattice3D") -> None:
     for i in range(lattice.num_points_x_):
         for j in range(lattice.num_points_y_):
             for k in range(lattice.num_points_z_):
