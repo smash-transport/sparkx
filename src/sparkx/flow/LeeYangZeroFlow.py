@@ -369,7 +369,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         AvgQxSqPQySq = 0.0
 
         G = np.zeros(
-            (len(self.theta_space_), len(self.r_space_)), dtype=np.complex_
+            (len(self.theta_space_), len(self.r_space_)), dtype=np.complex128
         )
         self.__sample_random_reaction_planes(len(particle_data))
 
@@ -390,7 +390,8 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 ]
 
             g = np.zeros(
-                (len(self.theta_space_), len(self.r_space_)), dtype=np.complex_
+                (len(self.theta_space_), len(self.r_space_)),
+                dtype=np.complex128,
             )
             for theta in range(len(self.theta_space_)):
                 for r in range(len(self.r_space_)):
@@ -474,7 +475,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         number_events = len(particle_data)
 
         denominator_event_avg = np.zeros(
-            len(self.theta_space_), dtype=np.complex_
+            len(self.theta_space_), dtype=np.complex128
         )
         for event in range(number_events):
             event_multiplicity = len(particle_data[event])
@@ -491,7 +492,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                     phi + self.rand_reaction_planes_[event] for phi in phi_j
                 ]
 
-            g = np.zeros(len(self.theta_space_), dtype=np.complex_)
+            g = np.zeros(len(self.theta_space_), dtype=np.complex128)
             if self.r0theta_ is not None:
                 for theta in range(len(self.theta_space_)):
                     g[theta] = self.__g_theta(
@@ -569,7 +570,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         number_particles_tot = 0.0
         numerator_particle_avg = np.zeros(
-            len(self.theta_space_), dtype=np.complex_
+            len(self.theta_space_), dtype=np.complex128
         )
         for event in range(number_events):
             event_multiplicity = len(particle_data_bin[event])
@@ -587,7 +588,7 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                     phi + self.rand_reaction_planes_[event] for phi in phi_j
                 ]
 
-            g = np.zeros(len(self.theta_space_), dtype=np.complex_)
+            g = np.zeros(len(self.theta_space_), dtype=np.complex128)
             if self.r0theta_ is not None:
                 for theta in range(len(self.theta_space_)):
                     g[theta] = self.__g_theta(
