@@ -117,10 +117,10 @@ class BaseStorer(ABC):
         Returns a numpy array containing the event number (starting with 1)
         and the corresponding number of particles created in this event as
 
-        num_output_per_event[event_n, number_of_particles_in_event_n]
+        :code:`num_output_per_event[event_n, number_of_particles_in_event_n]`
 
-        num_output_per_event is updated with every manipulation e.g. after
-        applying cuts.
+        :code:`num_output_per_event` is updated with every manipulation e.g. 
+        after applying cuts.
 
         Returns
         -------
@@ -132,23 +132,22 @@ class BaseStorer(ABC):
 
     def num_events(self) -> Optional[int]:
         """
-        Returns the number of events in particle_list
+        Returns the number of events in :code:`particle_list`.
 
-        num_events is updated with every manipulation e.g. after
+        :code:`num_events` is updated with every manipulation e.g. after
         applying cuts.
 
         Returns
         -------
         num_events_ : int
-            Number of events in particle_list
+            Number of events in :code:`particle_list`
         """
         return self.num_events_
 
     def particle_objects_list(self) -> Optional[List]:
         """
         Returns a nested python list containing all particles from
-        the data as particle objects
-        from Particle:
+        the data as particle objects from :code:`Particle`:
 
            | Single Event:    [particle_object]
            | Multiple Events: [event][particle_object]
@@ -156,7 +155,7 @@ class BaseStorer(ABC):
         Returns
         -------
         particle_list_ : list
-            List of particle objects from Particle
+            List of particle objects from :code:`Particle`
         """
         return self.particle_list_
 
@@ -176,7 +175,6 @@ class BaseStorer(ABC):
         -------
         list
             Nested list containing the current data
-
         """
         num_events = self.num_events_
 
@@ -210,14 +208,13 @@ class BaseStorer(ABC):
 
     def charged_particles(self) -> "BaseStorer":
         """
-        Keep only charged particles in particle_list
+        Keep only charged particles in :code:`particle_list`.
 
         Returns
         -------
         self : BaseStorer object
             Containing charged particles in every event only
         """
-
         self.particle_list_ = charged_particles(self.particle_list_)
 
         self._update_num_output_per_event_after_filter()
@@ -225,7 +222,7 @@ class BaseStorer(ABC):
 
     def uncharged_particles(self) -> "BaseStorer":
         """
-        Keep only uncharged particles in particle_list
+        Keep only uncharged particles in :code:`particle_list`.
 
         Returns
         -------
@@ -241,7 +238,7 @@ class BaseStorer(ABC):
         self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
     ) -> "BaseStorer":
         """
-        Keep only particle species given by their PDG ID in every event
+        Keep only particle species given by their PDG ID in every event.
 
         Parameters
         ----------
@@ -255,10 +252,9 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only particle species specified by pdg_list for every event
-
+            Containing only particle species specified by :code:`pdg_list` for 
+            every event
         """
-
         self.particle_list_ = particle_species(self.particle_list_, pdg_list)
         self._update_num_output_per_event_after_filter()
 
@@ -268,8 +264,8 @@ class BaseStorer(ABC):
         self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
     ) -> "BaseStorer":
         """
-        Remove particle species from particle_list by their PDG ID in every
-        event
+        Remove particle species from :code:`particle_list` by their PDG ID in 
+        every event.
 
         Parameters
         ----------
@@ -284,9 +280,7 @@ class BaseStorer(ABC):
         -------
         self : BaseStorer object
             Containing all but the specified particle species in every event
-
         """
-
         self.particle_list_ = remove_particle_species(
             self.particle_list_, pdg_list
         )
@@ -296,14 +290,13 @@ class BaseStorer(ABC):
 
     def participants(self) -> "BaseStorer":
         """
-        Keep only participants in particle_list
+        Keep only participants in :code:`particle_list`.
 
         Returns
         -------
         self : BaseStorer object
             Containing participants in every event only
         """
-
         self.particle_list_ = participants(self.particle_list_)
         self._update_num_output_per_event_after_filter()
 
@@ -311,14 +304,13 @@ class BaseStorer(ABC):
 
     def spectators(self) -> "BaseStorer":
         """
-        Keep only spectators in particle_list
+        Keep only spectators in :code:`particle_list`.
 
         Returns
         -------
         self : BaseStorer object
             Containing spectators in every event only
         """
-
         self.particle_list_ = spectators(self.particle_list_)
         self._update_num_output_per_event_after_filter()
 
@@ -333,7 +325,8 @@ class BaseStorer(ABC):
         Parameters
         ----------
         minimum_event_energy : int or float
-            The minimum event energy threshold. Should be a positive integer or float.
+            The minimum event energy threshold. Should be a positive integer or 
+            float.
 
         Returns
         -------
@@ -344,11 +337,12 @@ class BaseStorer(ABC):
         Raises
         ------
         TypeError
-            If the minimum_event_energy parameter is not an integer or float.
+            If the :code:`minimum_event_energy` parameter is not an integer or 
+            float.
         ValueError
-            If the minimum_event_energy parameter is less than or equal to 0.
+            If the :code:`minimum_event_energy` parameter is less than or 
+            equal to 0.
         """
-
         self.particle_list_ = lower_event_energy_cut(
             self.particle_list_, minimum_event_energy
         )
@@ -417,15 +411,15 @@ class BaseStorer(ABC):
     ) -> "BaseStorer":
         """
         Apply rapidity cut to all events and remove all particles with rapidity
-        not complying with cut_value
+        not complying with :code:`cut_value`.
 
         Parameters
         ----------
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if :code:`cut_value = 1`, only particles with rapidity in
-            :code:`[-1.0, 1.0]` are kept.
+            For example, if :code:`cut_value = 1`, only particles with rapidity 
+            in :code:`[-1.0, 1.0]` are kept.
 
         cut_value : tuple
             To specify an asymmetric acceptance range for the rapidity
@@ -437,7 +431,6 @@ class BaseStorer(ABC):
             Containing only particles complying with the rapidity cut
             for all events
         """
-
         self.particle_list_ = rapidity_cut(self.particle_list_, cut_value)
         self._update_num_output_per_event_after_filter()
 
@@ -448,7 +441,7 @@ class BaseStorer(ABC):
     ) -> "BaseStorer":
         """
         Apply pseudo-rapidity cut to all events and remove all particles with
-        pseudo-rapidity not complying with cut_value
+        pseudo-rapidity not complying with :code:`cut_value`.
 
         Parameters
         ----------
@@ -474,12 +467,13 @@ class BaseStorer(ABC):
 
         return self
 
-    def spatial_rapidity_cut(
+    def spacetime_rapidity_cut(
         self, cut_value: Union[float, Tuple[float, float]]
     ) -> "BaseStorer":
         """
         Apply spacetime rapidity (space-time rapidity) cut to all events and
-        remove all particles with spcetime rapidity not complying with cut_value
+        remove all particles with spacetime rapidity not complying with 
+        cut_value.
 
         Parameters
         ----------
@@ -510,13 +504,13 @@ class BaseStorer(ABC):
     def multiplicity_cut(self, min_multiplicity: int) -> "BaseStorer":
         """
         Apply multiplicity cut. Remove all events with a multiplicity lower
-        than min_multiplicity
+        than :code:`min_multiplicity`.
 
         Parameters
         ----------
         min_multiplicity : int
             Lower bound for multiplicity. If the multiplicity of an event is
-            lower than min_multiplicity, this event is discarded.
+            lower than :code:`min_multiplicity`, this event is discarded.
 
         Returns
         -------
@@ -553,7 +547,8 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only particles complying with the spacetime cut for all events
+            Containing only particles complying with the spacetime cut for all 
+            events
         """
         self.particle_list_ = spacetime_cut(
             self.particle_list_, dim, cut_value_tuple
@@ -562,9 +557,35 @@ class BaseStorer(ABC):
 
         return self
 
+    def particle_status(
+        self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
+    ) -> "BaseStorer":
+        """
+        Keep only particles with a given particle status.
+
+        Parameters
+        ----------
+        status_list : int
+            To keep a particles with a single status only, pass a single status
+
+        status_list : tuple/list/array
+            To keep hadrons with different hadron status, pass a tuple or list
+            or array
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing only hadrons with status specified by 
+            :code:`status_list` for every event
+        """
+        self.particle_list_ = particle_status(self.particle_list_, status_list)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+
     def keep_hadrons(self) -> "BaseStorer":
         """
-        Keep only hadrons in particle_list
+        Keep only hadrons in :code:`particle_list`.
 
         Returns
         -------
@@ -578,7 +599,7 @@ class BaseStorer(ABC):
 
     def keep_leptons(self) -> "BaseStorer":
         """
-        Keep only leptons in particle_list
+        Keep only leptons in :code:`particle_list`.
 
         Returns
         -------
@@ -590,9 +611,23 @@ class BaseStorer(ABC):
 
         return self
 
+    def keep_quarks(self) -> "BaseStorer":
+        """
+        Keep only quarks in the :code:`particle_list`.
+
+        Returns
+        -------
+        self : BaseStorer object
+            Containing quarks in every event only
+        """
+        self.particle_list_ = keep_quarks(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
+
     def keep_mesons(self) -> "BaseStorer":
         """
-        Keep only mesons in particle_list
+        Keep only mesons in :code:`particle_list`.
 
         Returns
         -------
@@ -606,7 +641,7 @@ class BaseStorer(ABC):
 
     def keep_baryons(self) -> "BaseStorer":
         """
-        Keep only baryons in particle_list
+        Keep only baryons in :code:`particle_list`.
 
         Returns
         -------
@@ -620,7 +655,7 @@ class BaseStorer(ABC):
 
     def keep_up(self) -> "BaseStorer":
         """
-        Keep only hadrons containing up quarks in particle_list
+        Keep only hadrons containing up quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -634,7 +669,7 @@ class BaseStorer(ABC):
 
     def keep_down(self) -> "BaseStorer":
         """
-        Keep only hadrons containing down quarks in particle_list
+        Keep only hadrons containing down quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -648,7 +683,7 @@ class BaseStorer(ABC):
 
     def keep_strange(self) -> "BaseStorer":
         """
-        Keep only hadrons containing strange quarks in particle_list
+        Keep only hadrons containing strange quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -662,7 +697,7 @@ class BaseStorer(ABC):
 
     def keep_charm(self) -> "BaseStorer":
         """
-        Keep only hadrons containing charm quarks in particle_list
+        Keep only hadrons containing charm quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -676,7 +711,7 @@ class BaseStorer(ABC):
 
     def keep_bottom(self) -> "BaseStorer":
         """
-        Keep only hadrons containing bottom quarks in particle_list
+        Keep only hadrons containing bottom quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -690,7 +725,7 @@ class BaseStorer(ABC):
 
     def keep_top(self) -> "BaseStorer":
         """
-        Keep only hadrons containing top quarks in particle_list
+        Keep only hadrons containing top quarks in :code:`particle_list`.
 
         Returns
         -------
@@ -704,7 +739,7 @@ class BaseStorer(ABC):
 
     def remove_photons(self) -> "BaseStorer":
         """
-        Remove photons from particle_list
+        Remove photons from :code:`particle_list`.
 
         Returns
         -------
@@ -742,8 +777,8 @@ class BaseStorer(ABC):
         Prints the particle lists to a specified file.
 
         This method should be implemented by subclasses to print the particle
-        lists to the specified output file. The method raises a NotImplementedError
-        if it is not overridden by a subclass.
+        lists to the specified output file. The method raises a 
+        :code:`NotImplementedError` if it is not overridden by a subclass.
 
         Parameters
         ----------
