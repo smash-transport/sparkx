@@ -77,7 +77,7 @@ class ParticleObjectLoader(BaseLoader):
 
     def load(
         self, **kwargs: Any
-    ) -> Tuple[List[List["Particle"]], int, List[int]]:
+    ) -> Tuple[List[List["Particle"]], int, List[int], List[str]]:
         """
         Loads the data from the dummy input based on the specified optional arguments.
 
@@ -143,6 +143,7 @@ class ParticleObjectLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
+            []
         )
 
     def set_num_output_per_event(self) -> List[int]:

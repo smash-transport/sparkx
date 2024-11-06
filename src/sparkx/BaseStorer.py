@@ -98,12 +98,14 @@ class BaseStorer(ABC):
         self.num_output_per_event_: Optional[np.ndarray] = None
         self.num_events_: Optional[int] = None
         self.particle_list_: List[List[Particle]] = [[]]
+        self.custom_attr_list: List = []
         self.create_loader(path)
         if self.loader_ is not None:
             (
                 self.particle_list_,
                 self.num_events_,
                 self.num_output_per_event_,
+                self.custom_attr_list
             ) = self.loader_.load(**kwargs)
         else:
             raise ValueError("Loader has not been created properly")

@@ -11,7 +11,7 @@ import numpy as np
 import math
 from particle import PDGID
 import warnings
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 
 class Particle:
@@ -211,6 +211,8 @@ class Particle:
 
     * "Oscar2013Extended_Photons"
 
+    * "ASCIICustom"
+
     * "JETSCAPE"
 
     .. highlight:: python
@@ -238,6 +240,7 @@ class Particle:
         self,
         input_format: Optional[str] = None,
         particle_array: Optional[np.ndarray] = None,
+        attribute_list: List[str] = []
     ) -> None:
         self.data_: np.ndarray = np.array(25 * [np.nan], dtype=float)
         self.pdg_valid: bool = False
@@ -246,15 +249,21 @@ class Particle:
             (input_format is None) and (particle_array is not None)
         ):
             raise ValueError("'input_format' or 'particle_array' not given")
+        
+        if attribute_list is None and input_format == "ASCIICustom":
+            raise ValueError("'attribute_list' not given")
+
+        if attribute_list!=[] and input_format != "ASCIICustom":
+            raise ValueError("'OscarCustom' format requires 'attribute_list' to be given.")
 
         if (input_format is not None) and (particle_array is not None):
-            self.__initialize_from_array(input_format, particle_array)
+            self.__initialize_from_array(input_format, particle_array, attribute_list)
 
     def __initialize_from_array(
-        self, input_format: str, particle_array: np.ndarray
+        self, input_format: str, particle_array: np.ndarray, attribute_list: List[str]
     ) -> None:
         """
-        Initialize instance attributes based on the provided input format and array.
+        Initialize instance attributes based on the provided input format and array, and optionally an atttribute list.
 
         Parameters
         ----------
@@ -289,6 +298,31 @@ class Particle:
         # first entry: index in data array
         # second entry: index in line
         attribute_mapping = {
+            "Allfields": {
+                "t": [0,0],
+                "x": [1,0],
+                "y": [2,0],
+                "z": [3,0],
+                "mass": [4,0],
+                "E": [5,0],
+                "px": [6,0],
+                "py": [7,0],
+                "pz_": [8,0],
+                "pdg": [9,0],
+                "ID": [11,0],
+                "charge": [12,0],
+                "ncoll": [13,0],
+                "form_time": [14,0],
+                "xsecfac": [15,0],
+                "proc_id_origin": [16,0],
+                "proc_type_origin": [17,0],
+                "t_last_coll": [18,0],
+                "pdg_mother1": [19,0],
+                "pdg_mother2": [20,0],
+                "status_": [21,0],
+                "baryon_number": [22,0],
+                "strangeness": [23,0],
+            },
             "Oscar2013": {
                 "t_": [0, 0],
                 "x_": [1, 1],
@@ -384,16 +418,20 @@ class Particle:
                 "pz_": [8, 6],
             },
         }
-        if input_format in attribute_mapping:
-            if len(particle_array) == len(attribute_mapping[input_format]) or (
-                input_format in ["Oscar2013Extended", "Oscar2013Extended_IC"]
-                and len(particle_array) <= len(attribute_mapping[input_format])
-                and len(particle_array)
-                >= len(attribute_mapping[input_format]) - 2
-            ):
+        if input_format == "ASCIICustom":
+            mapping_dict = {}
+            for attr in attribute_list:
+                mapping_dict[attr] = [attribute_mapping["Allfields"][attr][0], list(attribute_list).index(attr)]
+            attribute_mapping["ASCIICustom"] = mapping_dict
+        if input_format in attribute_mapping or input_format=="ASCIICustom":
+            if (input_format == "ASCIICustom" or len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
+                    and len(particle_array) <=  len(attribute_mapping[input_format])\
+                    and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array) <= (index[1]):
                         continue
+                    if input_format == "ASCIICustom":
+                        attribute = attribute + "_"
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
                     # to ensure similar behaving as if we were reading in data
                     # into ints.
@@ -430,7 +468,10 @@ class Particle:
                 # It is important for JETSCAPE particles to compute pdg_valid
                 # here because the charge_from_pdg function depends on
                 # it.
-                self.pdg_valid = PDGID(self.pdg).is_valid
+                if np.isnan(self.pdg):
+                    self.pdg_valid = False
+                else:
+                    self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
                     self.mass = self.mass_from_energy_momentum()
@@ -452,12 +493,18 @@ class Particle:
             raise ValueError(f"Unsupported input format '{input_format}'")
 
         if not self.pdg_valid:
-            warnings.warn(
-                "The PDG code "
-                + str(int(self.pdg))
-                + " is not valid. "
+            if np.isnan(self.pdg):
+                warnings.warn(
+                "No PDG code given!"
                 + "All properties extracted from the PDG are set to default values."
             )
+            else:
+                warnings.warn(
+                    "The PDG code "
+                    + str(int(self.pdg))
+                    + " is not valid. "
+                    + "All properties extracted from the PDG are set to default values."
+                )
 
     @property
     def t(self) -> float:

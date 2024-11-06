@@ -51,6 +51,16 @@ def oscar_old_extended_file_path():
     )
 
 
+@pytest.fixture
+def oscar_custom_file_path():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(
+        os.path.dirname(__file__),
+        "test_files",
+        "test_custom_oscar.dat",
+    )
+
+
 def create_temporary_oscar_file(
     path, num_events, oscar_format, output_per_event_list=None
 ):
@@ -698,4 +708,11 @@ def test_old_extended_oscar_print(oscar_old_extended_file_path, output_path):
     oscar = Oscar(oscar_old_extended_file_path)
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_old_extended_file_path, output_path)
+    os.remove(output_path)
+
+
+def test_custom_oscar_print(oscar_custom_file_path, output_path):
+    oscar = Oscar(oscar_custom_file_path)
+    oscar.print_particle_lists_to_file(output_path)
+    assert filecmp.cmp(oscar_custom_file_path, output_path)
     os.remove(output_path)
