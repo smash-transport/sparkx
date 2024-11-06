@@ -13,6 +13,7 @@ from particle import PDGID
 import warnings
 from typing import Optional, Union
 
+
 class Particle:
     """Defines a particle object.
 
@@ -151,16 +152,30 @@ class Particle:
         Compute charge from PDG code
     mT:
         Compute transverse mass
+    is_quark:
+        Is the particle a quark?
+    is_lepton:
+        Is the particle a lepton?
     is_meson:
         Is the particle a meson?
     is_baryon:
         Is the particle a baryon?
     is_hadron:
         Is the particle a hadron?
-    is_strange:
-        Is the particle a strange particle?
     is_heavy_flavor:
         Is the particle a heavy flavor particle?
+    has_down:
+        Does the particle have a down quark?
+    has_up:
+        Does the particle have an up quark?
+    has_strange:
+        Does the particle have a strange quark?
+    has_charm:
+        Does the particle have a charm quark?
+    has_bottom:
+        Does the particle have a bottom quark?
+    has_top:
+        Does the particle have a top quark?
     weight:
         What is the weight of the particle?
     spin:
@@ -215,13 +230,15 @@ class Particle:
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
     by 3 to make it an integer.
-    The functions `is_strange()` and `is_heavy_flavor()` should not be used in this
-    case.
     """
 
     __slots__ = ["data_"]
 
-    def __init__(self, input_format: Optional[str] = None, particle_array: Optional[np.ndarray] = None) -> None:
+    def __init__(
+        self,
+        input_format: Optional[str] = None,
+        particle_array: Optional[np.ndarray] = None,
+    ) -> None:
         self.data_: np.ndarray = np.array(25 * [np.nan], dtype=float)
         self.pdg_valid: bool = False
 
@@ -233,7 +250,9 @@ class Particle:
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(input_format, particle_array)
 
-    def __initialize_from_array(self, input_format: str, particle_array: np.ndarray) -> None:
+    def __initialize_from_array(
+        self, input_format: str, particle_array: np.ndarray
+    ) -> None:
         """
         Initialize instance attributes based on the provided input format and array.
 
@@ -836,6 +855,7 @@ class Particle:
         All particle quantities are then printed in the next line separated by
         a comma.
         """
+
         def int_isnan(value: float) -> Union[int, float]:
             if np.isnan(value):
                 return np.nan
@@ -1068,6 +1088,11 @@ class Particle:
 
         This function is called automatically if a JETSCAPE file is read in.
 
+        We consider particles with the following PDG codes as massless:
+        photons (22), gluons (21), e-neutrinos (12, -12),
+        mu-neutrinos (14, -14), tau-neutrinos (16, -16),
+        tau-prime-neutrinos (18, -18).
+
         Returns
         -------
         float
@@ -1075,9 +1100,11 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
-        is returned.
+        If one of the needed particle quantities (four-momentum) is not given,
+        then `np.nan` is returned.
         """
+        # photons and gluons are massless, consider neutrinos as massless
+        massless_pdg = [22, 21, 12, -12, 14, -14, 16, -16, 18, -18]
         if (
             np.isnan(self.E)
             or np.isnan(self.px)
@@ -1085,8 +1112,7 @@ class Particle:
             or np.isnan(self.pz)
         ):
             return np.nan
-        # photons and gluons are massless
-        elif self.pdg == 22 or self.pdg == 21:
+        elif self.pdg in massless_pdg:
             return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
@@ -1142,6 +1168,40 @@ class Particle:
             )
             return np.nan
 
+    def is_quark(self) -> Union[bool, float]:
+        """
+        Is the particle a quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_quark
+
+    def is_lepton(self) -> Union[bool, float]:
+        """
+        Is the particle a lepton?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_lepton
+
     def is_meson(self) -> Union[bool, float]:
         """
         Is the particle a meson?
@@ -1193,23 +1253,6 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).is_hadron
 
-    def is_strange(self) -> Union[bool, float]:
-        """
-        Does the particle contain strangeness?
-
-        Returns
-        -------
-        bool
-            True, False
-
-        Notes
-        -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
-        """
-        if not self.pdg_valid:
-            return np.nan
-        return PDGID(self.pdg).has_strange
-
     def is_heavy_flavor(self) -> Union[bool, float]:
         """
         Is the particle a heavy flavor hadron?
@@ -1233,6 +1276,108 @@ class Particle:
             return True
         else:
             return False
+
+    def has_down(self) -> Union[bool, float]:
+        """
+        Does the particle contain a down quark? Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_down
+
+    def has_up(self) -> Union[bool, float]:
+        """
+        Does the particle contain an up quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_up
+
+    def has_strange(self) -> Union[bool, float]:
+        """
+        Does the particle contain a strange quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_strange
+
+    def has_charm(self) -> Union[bool, float]:
+        """
+        Does the particle contain a charm quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_charm
+
+    def has_bottom(self) -> Union[bool, float]:
+        """
+        Does the particle contain a bottom quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_bottom
+
+    def has_top(self) -> Union[bool, float]:
+        """
+        Does the particle contain a top quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_top
 
     def spin(self) -> float:
         """

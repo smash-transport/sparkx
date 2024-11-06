@@ -816,6 +816,27 @@ def test_charge_from_pdg_invalid_values():
     assert np.isnan(result)
 
 
+def test_is_quark_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 1  # Assuming PDG code for a positive pion
+
+    result = p.is_quark()
+
+    expected_result = PDGID(1).is_quark
+
+    assert result == expected_result
+    assert result == True
+
+def test_is_quark_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_quark()
+
+    assert np.isnan(result)
+
+
 def test_is_meson_from_pdg_valid_values():
     p = Particle()
     p.pdg = 211  # Assuming PDG code for a positive pion
@@ -825,6 +846,28 @@ def test_is_meson_from_pdg_valid_values():
     expected_result = PDGID(211).is_meson
 
     assert result == expected_result
+
+
+def test_is_lepton_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 11  # Assuming PDG code for a positron
+
+    result = p.is_lepton()
+
+    expected_result = PDGID(11).is_lepton
+
+    assert result == expected_result
+    assert result == True
+
+
+def test_is_lepton_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.is_lepton()
+
+    assert np.isnan(result)
 
 
 def test_is_meson_from_pdg_invalid_values():
@@ -879,27 +922,6 @@ def test_is_hadron_from_pdg_invalid_values():
     assert np.isnan(result)
 
 
-def test_is_strange_from_pdg_valid_values():
-    p = Particle()
-    p.pdg = 211  # Assuming PDG code for a positive pion
-
-    result = p.is_strange()
-
-    expected_result = PDGID(211).has_strange
-
-    assert result == expected_result
-
-
-def test_is_strange_from_pdg_invalid_values():
-    p = Particle()
-    p.pdg_valid = False
-    # Leave pdg as an invalid value
-
-    result = p.is_strange()
-
-    assert np.isnan(result)
-
-
 def test_is_heavy_flavor_from_pdg_valid_values():
     p = Particle()
     p.pdg = 211  # Assuming PDG code for a positive pion
@@ -919,6 +941,138 @@ def test_is_heavy_flavor_from_pdg_invalid_values():
     # Leave pdg as an invalid value
 
     result = p.is_heavy_flavor()
+
+    assert np.isnan(result)
+
+
+def test_has_down_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.has_down()
+
+    expected_result = PDGID(211).has_down
+
+    assert result == expected_result
+    assert result == True
+
+
+def test_has_down_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_down()
+
+    assert np.isnan(result)
+
+
+def test_has_up_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.has_up()
+
+    expected_result = PDGID(211).has_up
+
+    assert result == expected_result
+    assert result == True
+
+
+def test_has_up_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_up()
+
+    assert np.isnan(result)
+
+
+def test_has_strange_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 111  # Assuming PDG code for a positive pion
+
+    result = p.has_strange()
+
+    expected_result = PDGID(211).has_strange
+
+    assert result == expected_result
+    assert result == False
+
+
+def test_has_strange_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_strange()
+
+    assert np.isnan(result)
+
+
+def test_has_charm_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.has_charm()
+
+    expected_result = PDGID(211).has_charm
+
+    assert result == expected_result
+    assert result == False
+
+
+def test_has_charm_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_charm()
+
+    assert np.isnan(result)
+
+
+def test_has_bottom_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.has_bottom()
+
+    expected_result = PDGID(211).has_bottom
+
+    assert result == expected_result
+    assert result == False
+
+
+def test_has_bottom_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_bottom()
+
+    assert np.isnan(result)
+
+
+def test_has_top_from_pdg_valid_values():
+    p = Particle()
+    p.pdg = 211  # Assuming PDG code for a positive pion
+
+    result = p.has_top()
+
+    expected_result = PDGID(211).has_top
+
+    assert result == expected_result
+    assert result == False
+
+
+def test_has_top_from_pdg_invalid_values():
+    p = Particle()
+    p.pdg_valid = False
+    # Leave pdg as an invalid value
+
+    result = p.has_top()
 
     assert np.isnan(result)
 

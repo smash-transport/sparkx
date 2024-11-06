@@ -50,10 +50,10 @@ def pdg_to_latex(pdg_id: Union[int, List[int]]) -> Union[str, List[str]]:
         pdg_id = [pdg_id]
 
     path = particle.data.basepath / "particle2022.csv"
-    latex_names = [''] * len(pdg_id)
+    latex_names = [""] * len(pdg_id)
 
     with path.open() as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file, delimiter=",")
         counter_row = 0
 
         for row in csv_reader:
@@ -65,7 +65,7 @@ def pdg_to_latex(pdg_id: Union[int, List[int]]) -> Union[str, List[str]]:
                     latex_names[index] = row[17]
             counter_row += 1
 
-    if '' in latex_names:
-        raise ValueError('pdg_id contains invalid PDG ID')
+    if "" in latex_names:
+        raise ValueError("pdg_id contains invalid PDG ID")
 
     return latex_names

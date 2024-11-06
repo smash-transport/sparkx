@@ -86,7 +86,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, n: int=2, weight: str="pt2", pseudorapidity_gap: float=0.) -> None:
+    def __init__(
+        self, n: int = 2, weight: str = "pt2", pseudorapidity_gap: float = 0.0
+    ) -> None:
         """
         Initialize the ScalarProductFlow object.
 
@@ -128,7 +130,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         else:
             self.pseudorapidity_gap_ = pseudorapidity_gap
 
-    def __compute_particle_weights(self, particle_data: List[List[Particle]]) -> List[List[float]]:
+    def __compute_particle_weights(
+        self, particle_data: List[List[Particle]]
+    ) -> List[List[float]]:
         event_weights = []
         for event in range(len(particle_data)):
             particle_weights = []
@@ -148,7 +152,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             event_weights.append(particle_weights)
         return event_weights
 
-    def __compute_flow_vectors(self, particle_data: List[List[Particle]], weights: List[List[float]]) -> List[complex]:
+    def __compute_flow_vectors(
+        self, particle_data: List[List[Particle]], weights: List[List[float]]
+    ) -> List[complex]:
         # Q vector whole event
         Q_vector = []
         for event in range(len(particle_data)):
@@ -161,8 +167,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return Q_vector
 
-    def __compute_event_angles_sub_events(self, particle_data: List[List[Particle]], 
-                                          weights: List[List[float]]) -> Tuple[List[complex], List[complex]]:
+    def __compute_event_angles_sub_events(
+        self, particle_data: List[List[Particle]], weights: List[List[float]]
+    ) -> Tuple[List[complex], List[complex]]:
         # Q vector sub-event A
         Q_vector_A = []
         relevant_weights_A = []
@@ -208,7 +215,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return Q_vector_A, Q_vector_B
 
-    def __compute_u_vectors(self, particle_data: List[List[Particle]]) -> List[List[complex]]:
+    def __compute_u_vectors(
+        self, particle_data: List[List[Particle]]
+    ) -> List[List[complex]]:
         u_vectors = []  # [event][particle]
         for event in particle_data:
             u_vector_event = []
@@ -220,7 +229,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
 
         return u_vectors
 
-    def __compute_event_plane_resolution(self, Q_vector_A: List[complex], Q_vector_B: List[complex]) -> float:
+    def __compute_event_plane_resolution(
+        self, Q_vector_A: List[complex], Q_vector_B: List[complex]
+    ) -> float:
         # implements Eq.15 from arXiv:0809.2949
         QnSquared = np.asarray(
             [
@@ -232,13 +243,14 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         return 2.0 * np.sqrt(QnSquaredSum)
 
     def __compute_flow_particles(
-            self,
-            particle_data: List[List[Particle]],
-            weights: List[List[float]],
-            Q_vector: List[complex],
-            u_vectors: List[List[complex]],
-            resolution: float,
-            self_corr: bool) -> List[List[float]]:
+        self,
+        particle_data: List[List[Particle]],
+        weights: List[List[float]],
+        Q_vector: List[complex],
+        u_vectors: List[List[complex]],
+        resolution: float,
+        self_corr: bool,
+    ) -> List[List[float]]:
         flow_values = []
         for event in range(len(particle_data)):
             flow_values_event = []
@@ -257,7 +269,9 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             flow_values.extend([flow_values_event])
         return flow_values
 
-    def __calculate_reference(self, particle_data_event_plane: List[List[Particle]]) -> Tuple[float, List[complex]]:
+    def __calculate_reference(
+        self, particle_data_event_plane: List[List[Particle]]
+    ) -> Tuple[float, List[complex]]:
         event_weights_event_plane = self.__compute_particle_weights(
             particle_data_event_plane
         )
@@ -274,11 +288,12 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         return resolution, Q_vector
 
     def __calculate_particle_flow(
-            self,
-            particle_data: List[List[Particle]],
-            resolution: float,
-            Q_vector: List[complex],
-            self_corr: bool) -> List[List[float]]:
+        self,
+        particle_data: List[List[Particle]],
+        resolution: float,
+        Q_vector: List[complex],
+        self_corr: bool,
+    ) -> List[List[float]]:
         event_weights = self.__compute_particle_weights(particle_data)
         u_vectors = self.__compute_u_vectors(particle_data)
 
@@ -291,8 +306,11 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
             self_corr,
         )
 
-    def __calculate_flow_event_average(self, particle_data: List[List[Particle]], 
-                                       flow_particle_list: List[List[float]]) -> Tuple[float, float]:
+    def __calculate_flow_event_average(
+        self,
+        particle_data: List[List[Particle]],
+        flow_particle_list: List[List[float]],
+    ) -> Tuple[float, float]:
         # compute the integrated flow
         number_of_particles = 0.0
         flowvalue = 0.0
@@ -324,10 +342,11 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         return vn_integrated, sigma
 
     def integrated_flow(
-            self,
-            particle_data: List[List[Particle]],
-            particle_data_event_plane: List[List[Particle]],
-            self_corr: bool =True) -> Tuple[float, float]:
+        self,
+        particle_data: List[List[Particle]],
+        particle_data_event_plane: List[List[Particle]],
+        self_corr: bool = True,
+    ) -> Tuple[float, float]:
         """
         Compute the integrated flow.
 
@@ -360,12 +379,13 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
         )
 
     def differential_flow(
-            self,
-            particle_data: List[List[Particle]],
-            bins: Union[np.ndarray, List[float]],
-            flow_as_function_of: str,
-            particle_data_event_plane: List[List[Particle]],
-            self_corr: bool =True) -> List[Tuple[float, float]]:
+        self,
+        particle_data: List[List[Particle]],
+        bins: Union[np.ndarray, List[float]],
+        flow_as_function_of: str,
+        particle_data_event_plane: List[List[Particle]],
+        self_corr: bool = True,
+    ) -> List[Tuple[float, float]]:
         """
         Compute the differential flow.
 

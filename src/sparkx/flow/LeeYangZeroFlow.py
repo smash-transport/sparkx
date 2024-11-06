@@ -83,7 +83,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
     """
 
-    def __init__(self, vmin: float, vmax: float, vstep: float, n: int = 2) -> None:
+    def __init__(
+        self, vmin: float, vmax: float, vstep: float, n: int = 2
+    ) -> None:
 
         self.j01_: float = 2.4048256
         self.J1rootJ0_: float = 0.5191147  # J1(j01)
@@ -92,9 +94,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             raise ValueError("'vmin' is larger than 'vmax'")
         if (vmax - vmin) < vstep:
             raise ValueError(
-                "'vstep' is larger than the difference between minimum and maximum flow")
+                "'vstep' is larger than the difference between minimum and maximum flow"
+            )
         if not isinstance(n, int):
-            raise TypeError('n has to be int')
+            raise TypeError("n has to be int")
         elif n <= 0:
             raise ValueError(
                 "n-th harmonic with value n<=0 can not be computed"
@@ -104,10 +107,14 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
         # define the r_space_ such that one achieves the wanted precision vstep
         number_interpolation_points_r = np.ceil((vmax - vmin) / vstep)
-        self.r_space_: np.ndarray = np.array([self.j01_ / (vmax - vstep * r_i)
-                                 for r_i in range(int(number_interpolation_points_r))])
+        self.r_space_: np.ndarray = np.array(
+            [
+                self.j01_ / (vmax - vstep * r_i)
+                for r_i in range(int(number_interpolation_points_r))
+            ]
+        )
         # equally spaced between 0 and pi/n
-        self.theta_space_: np.ndarray = np.linspace(0., np.pi / self.n_, 5)
+        self.theta_space_: np.ndarray = np.linspace(0.0, np.pi / self.n_, 5)
 
         self.computed_integrated_flow_: bool = False
         self.chi_: Optional[float] = None
@@ -117,8 +124,14 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         self.denominator_event_avg_diff_: Optional[np.ndarray] = None
         self.numerator_event_avg_diff_: Optional[np.ndarray] = None
 
-    def __g_theta(self, n: int, r: float, theta: float, 
-                  weight_j: Union[List[float], np.ndarray], phi_j: Union[List[float], np.ndarray]) -> complex:
+    def __g_theta(
+        self,
+        n: int,
+        r: float,
+        theta: float,
+        weight_j: Union[List[float], np.ndarray],
+        phi_j: Union[List[float], np.ndarray],
+    ) -> complex:
         """
         Calculate the generating function g^{\\theta}(\\mathrm{i}r) defined by
         Eq. (3) in Ref. [3].
@@ -147,9 +160,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(
-                weight_j, (list, np.ndarray)) or not isinstance(
-                phi_j, (list, np.ndarray)):
+        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
+            phi_j, (list, np.ndarray)
+        ):
             raise ValueError("Not the correct input format for g_theta")
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
@@ -161,8 +174,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             )
         return g_theta
 
-    def __Q_x(self, n: int, weight_j: Union[List[float], np.ndarray], 
-              phi_j: Union[List[float], np.ndarray]) -> float:
+    def __Q_x(
+        self,
+        n: int,
+        weight_j: Union[List[float], np.ndarray],
+        phi_j: Union[List[float], np.ndarray],
+    ) -> float:
         """
         Calculate the quantity Q_x defined by Eq. (4) in Ref. [3].
 
@@ -186,10 +203,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(
-                weight_j, (list, np.ndarray)) or not isinstance(
-                phi_j, (list, np.ndarray)):
-            raise ValueError('Not the correct input format for g_theta')
+        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
+            phi_j, (list, np.ndarray)
+        ):
+            raise ValueError("Not the correct input format for g_theta")
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
         Q_x = 0.0
@@ -197,8 +214,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Q_x += weight_j[j] * np.cos(n * phi_j[j])
         return Q_x
 
-    def __Q_y(self, n: int, weight_j: Union[List[float], np.ndarray], 
-              phi_j: Union[List[float], np.ndarray]) -> float:
+    def __Q_y(
+        self,
+        n: int,
+        weight_j: Union[List[float], np.ndarray],
+        phi_j: Union[List[float], np.ndarray],
+    ) -> float:
         """
         Calculate the quantity Q_y defined by Eq. (4) in Ref. [3].
 
@@ -222,10 +243,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             If input formats for weight_j or phi_j are incorrect, or if the
             lengths of weight_j and phi_j differ.
         """
-        if not isinstance(
-                weight_j, (list, np.ndarray)) or not isinstance(
-                phi_j, (list, np.ndarray)):
-            raise ValueError('Not the correct input format for g_theta')
+        if not isinstance(weight_j, (list, np.ndarray)) or not isinstance(
+            phi_j, (list, np.ndarray)
+        ):
+            raise ValueError("Not the correct input format for g_theta")
         if len(weight_j) != len(phi_j):
             raise ValueError("weight_j and phi_j do not have the same length")
         Q_y = 0.0
@@ -233,7 +254,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             Q_y += weight_j[j] * np.sin(n * phi_j[j])
         return Q_y
 
-    def __sigma(self, QxSqPQySq: float, Qx: float, Qy: float, VnInfty: float) -> float:
+    def __sigma(
+        self, QxSqPQySq: float, Qx: float, Qy: float, VnInfty: float
+    ) -> float:
         """
         Calculate the value of :math:`\\sigma` based on Eq. (7) in Ref. [3].
 
@@ -316,7 +339,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             rd.uniform(0.0, 2.0 * np.pi) for _ in range(events)
         ]
 
-    def integrated_flow(self, particle_data: List[List[Particle]]) -> List[Optional[float]]:
+    def integrated_flow(
+        self, particle_data: List[List[Particle]]
+    ) -> List[Optional[float]]:
         """
         Computes the integrated flow.
 
@@ -337,14 +362,14 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         If `vn_inf` is `np.nan` or `np.inf`, the method returns `[None, None, None]`.
         """
         number_events = len(particle_data)
-        mean_multiplicity = 0.
+        mean_multiplicity = 0.0
 
         AvgQx = 0.0
         AvgQy = 0.0
         AvgQxSqPQySq = 0.0
 
         G = np.zeros(
-            (len(self.theta_space_), len(self.r_space_)), dtype=np.complex_
+            (len(self.theta_space_), len(self.r_space_)), dtype=np.complex128
         )
         self.__sample_random_reaction_planes(len(particle_data))
 
@@ -360,10 +385,13 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
             # randomize the event plane
             if self.rand_reaction_planes_ is not None:
-                phi_j = [phi + self.rand_reaction_planes_[event] for phi in phi_j]
+                phi_j = [
+                    phi + self.rand_reaction_planes_[event] for phi in phi_j
+                ]
 
             g = np.zeros(
-                (len(self.theta_space_), len(self.r_space_)), dtype=np.complex_
+                (len(self.theta_space_), len(self.r_space_)),
+                dtype=np.complex128,
             )
             for theta in range(len(self.theta_space_)):
                 for r in range(len(self.r_space_)):
@@ -438,14 +466,17 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                 chi_value,
             ]
 
-    def __compute_reference_differential_flow(self, 
-                                              particle_data: List[List[Particle]]) -> None:
+    def __compute_reference_differential_flow(
+        self, particle_data: List[List[Particle]]
+    ) -> None:
         """
         This function computes the event average in the denominator of Eq. (9) in Ref. [3].
         """
         number_events = len(particle_data)
 
-        denominator_event_avg = np.zeros(len(self.theta_space_), dtype=np.complex_)
+        denominator_event_avg = np.zeros(
+            len(self.theta_space_), dtype=np.complex128
+        )
         for event in range(number_events):
             event_multiplicity = len(particle_data[event])
 
@@ -457,9 +488,11 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
             # randomize the event plane
             if self.rand_reaction_planes_ is not None:
-                phi_j = [phi + self.rand_reaction_planes_[event] for phi in phi_j]
+                phi_j = [
+                    phi + self.rand_reaction_planes_[event] for phi in phi_j
+                ]
 
-            g = np.zeros(len(self.theta_space_), dtype=np.complex_)
+            g = np.zeros(len(self.theta_space_), dtype=np.complex128)
             if self.r0theta_ is not None:
                 for theta in range(len(self.theta_space_)):
                     g[theta] = self.__g_theta(
@@ -467,14 +500,19 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         self.r0theta_[theta],
                         self.theta_space_[theta],
                         weight_j,
-                        phi_j)
+                        phi_j,
+                    )
 
-                    sum_j = 0.
+                    sum_j = 0.0
                     for p in range(event_multiplicity):
-                        numerator = weight_j[p] * \
-                            np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
-                        denominator = 1.0 + 1.0j * \
-                            self.r0theta_[theta] * weight_j[p] * np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
+                        numerator = weight_j[p] * np.cos(
+                            self.n_ * (phi_j[p] - self.theta_space_[theta])
+                        )
+                        denominator = 1.0 + 1.0j * self.r0theta_[
+                            theta
+                        ] * weight_j[p] * np.cos(
+                            self.n_ * (phi_j[p] - self.theta_space_[theta])
+                        )
                         sum_j += numerator / denominator
 
                     g[theta] *= sum_j
@@ -483,7 +521,9 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         denominator_event_avg /= number_events
         self.denominator_event_avg_diff_ = denominator_event_avg
 
-    def __vn_differential_uncertainty(self, number_particles_tot: Union[int, float]) -> float:
+    def __vn_differential_uncertainty(
+        self, number_particles_tot: Union[int, float]
+    ) -> float:
         """
         Calculates the differential flow uncertainty.
 
@@ -498,13 +538,19 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             The calculated differential flow uncertainty.
         """
         if self.chi_ is None:
-            raise TypeError("'chi_' is None. It must be initialized before calling the '__vn_differential_uncertainty' function.")
-        
-        err_sq = (1. / (4. * number_particles_tot**self.J1rootJ0_**2.)) * (np.exp(self.j01_**2. /
-                                                                                  (2. * self.chi_**2.)) - np.exp(-self.j01_**2. / (2. * self.chi_**2.)) * (-0.2375362))
+            raise TypeError(
+                "'chi_' is None. It must be initialized before calling the '__vn_differential_uncertainty' function."
+            )
+
+        err_sq = (1.0 / (4.0 * number_particles_tot**self.J1rootJ0_**2.0)) * (
+            np.exp(self.j01_**2.0 / (2.0 * self.chi_**2.0))
+            - np.exp(-self.j01_**2.0 / (2.0 * self.chi_**2.0)) * (-0.2375362)
+        )
         return np.sqrt(err_sq)
 
-    def __compute_differential_flow_bin(self, particle_data_bin: List[List[Particle]]) -> List[Optional[float]]:
+    def __compute_differential_flow_bin(
+        self, particle_data_bin: List[List[Particle]]
+    ) -> List[Optional[float]]:
         """
         Computes the differential flow in the given phase space bin with Eq. (9)
         in Ref. [3].
@@ -522,8 +568,10 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         """
         number_events = len(particle_data_bin)
 
-        number_particles_tot = 0.
-        numerator_particle_avg = np.zeros(len(self.theta_space_), dtype=np.complex_)
+        number_particles_tot = 0.0
+        numerator_particle_avg = np.zeros(
+            len(self.theta_space_), dtype=np.complex128
+        )
         for event in range(number_events):
             event_multiplicity = len(particle_data_bin[event])
             number_particles_tot += event_multiplicity
@@ -536,9 +584,11 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
 
             # randomize the event plane
             if self.rand_reaction_planes_ is not None:
-                phi_j = [phi + self.rand_reaction_planes_[event] for phi in phi_j]
+                phi_j = [
+                    phi + self.rand_reaction_planes_[event] for phi in phi_j
+                ]
 
-            g = np.zeros(len(self.theta_space_), dtype=np.complex_)
+            g = np.zeros(len(self.theta_space_), dtype=np.complex128)
             if self.r0theta_ is not None:
                 for theta in range(len(self.theta_space_)):
                     g[theta] = self.__g_theta(
@@ -546,14 +596,19 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
                         self.r0theta_[theta],
                         self.theta_space_[theta],
                         weight_j,
-                        phi_j)
+                        phi_j,
+                    )
 
-                    sum_j = 0.
+                    sum_j = 0.0
                     for p in range(event_multiplicity):
                         numerator = np.cos(
-                            self.n_ * (phi_j[p] - self.theta_space_[theta]))
-                        denominator = 1.0 + 1.0j * \
-                            self.r0theta_[theta] * weight_j[p] * np.cos(self.n_ * (phi_j[p] - self.theta_space_[theta]))
+                            self.n_ * (phi_j[p] - self.theta_space_[theta])
+                        )
+                        denominator = 1.0 + 1.0j * self.r0theta_[
+                            theta
+                        ] * weight_j[p] * np.cos(
+                            self.n_ * (phi_j[p] - self.theta_space_[theta])
+                        )
                         sum_j += numerator / denominator
 
                     g[theta] *= sum_j
@@ -564,16 +619,20 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         self.numerator_event_avg_diff_ = numerator_particle_avg
 
         if self.denominator_event_avg_diff_ is None:
-            raise TypeError("'denominator_event_avg_diff_' is None. It must be initialized before calling the '__compute_differential_flow_bin' function.")
-        
+            raise TypeError(
+                "'denominator_event_avg_diff_' is None. It must be initialized before calling the '__compute_differential_flow_bin' function."
+            )
+
         vn_theta = []
         if self.Vntheta_ is not None:
             for theta in range(len(self.theta_space_)):
                 vn_theta.append(
-                    self.Vntheta_[theta] *
-                    np.real(
-                        self.numerator_event_avg_diff_[theta] /
-                        self.denominator_event_avg_diff_[theta]))
+                    self.Vntheta_[theta]
+                    * np.real(
+                        self.numerator_event_avg_diff_[theta]
+                        / self.denominator_event_avg_diff_[theta]
+                    )
+                )
 
         vn_differential = np.mean(vn_theta)
         # factor 1/2 because the statistical error on Vninf is a factor 2
@@ -588,11 +647,12 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
             return [vn_differential, vn_differential_uncertainty]
 
     def differential_flow(
-            self,
-            particle_data: List[List[Particle]],
-            bins: Union[np.ndarray, List[float]],
-            flow_as_function_of: str,
-            poi_pdg: Optional[Union[List[int], np.ndarray]] = None) -> List[List[Optional[float]]]:
+        self,
+        particle_data: List[List[Particle]],
+        bins: Union[np.ndarray, List[float]],
+        flow_as_function_of: str,
+        poi_pdg: Optional[Union[List[int], np.ndarray]] = None,
+    ) -> List[List[Optional[float]]]:
         """
         Compute the differential flow.
 
@@ -628,15 +688,15 @@ class LeeYangZeroFlow(FlowInterface.FlowInterface):
         lead to wrong results.
         """
         if not isinstance(bins, (list, np.ndarray)):
-            raise TypeError('bins has to be list or np.ndarray')
+            raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
-            raise TypeError('flow_as_function_of is not a string')
+            raise TypeError("flow_as_function_of is not a string")
         if poi_pdg is not None:
             if not isinstance(poi_pdg, (list, np.ndarray)):
-                raise TypeError('poi_pdg has to be list or np.ndarray')
+                raise TypeError("poi_pdg has to be list or np.ndarray")
             for pdg in poi_pdg:
                 if not isinstance(pdg, int):
-                    raise TypeError('poi_pdg elements must be integers')
+                    raise TypeError("poi_pdg elements must be integers")
         if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"

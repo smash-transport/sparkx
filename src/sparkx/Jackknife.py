@@ -146,8 +146,13 @@ class Jackknife:
         data = np.delete(data, delete_indices, axis=0)
         return data
 
-    def _apply_function_to_reduced_data(self, reduced_data: np.ndarray, 
-                                        function: Callable[..., Any], *args, **kwargs) -> Any:
+    def _apply_function_to_reduced_data(
+        self,
+        reduced_data: np.ndarray,
+        function: Callable[..., Any],
+        *args: tuple,
+        **kwargs: Any,
+    ) -> Any:
         """
         Apply a function to the reduced data.
 
@@ -171,7 +176,11 @@ class Jackknife:
         return function(reduced_data, *args, **kwargs)
 
     def _compute_one_jackknife_sample(
-        self, data: np.ndarray, function: Callable[..., Any], *args, **kwargs
+        self,
+        data: np.ndarray,
+        function: Callable[..., Any],
+        *args: tuple,
+        **kwargs: Any,
     ) -> Any:
         """
         Compute one Jackknife sample.
@@ -200,12 +209,12 @@ class Jackknife:
 
     @staticmethod
     def _helper_unpack(
-        instance,
+        instance: "Jackknife",
         index: int,
         data: np.ndarray,
         function: Callable[..., Any],
         args: tuple,
-        kwargs: dict,
+        kwargs: Any,
     ) -> Any:
         """
         Helper function to unpack the arguments for parallel processing.
@@ -256,8 +265,8 @@ class Jackknife:
         data: np.ndarray,
         function: Callable[..., Any],
         num_cores: Optional[int] = None,
-        *args,
-        **kwargs,
+        *args: tuple,
+        **kwargs: Any,
     ) -> np.ndarray:
         """
         Compute all Jackknife samples.
@@ -311,8 +320,8 @@ class Jackknife:
         data: np.ndarray,
         function: Callable[..., Any] = np.mean,
         num_cores: Optional[int] = None,
-        *args,
-        **kwargs,
+        *args: tuple,
+        **kwargs: Any,
     ) -> float:
         """
         Compute the Jackknife uncertainty estimates for a function applied to
@@ -359,7 +368,7 @@ class Jackknife:
             raise TypeError("data must be a numpy array.")
         if not callable(function):
             raise TypeError("function must be a callable object.")
-        
+
         # Check if the function returns a single number
         test_result = function(
             data[: max(1, len(data) // 100)], *args, **kwargs

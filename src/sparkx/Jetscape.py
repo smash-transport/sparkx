@@ -182,10 +182,10 @@ class Jetscape(BaseStorer):
         )
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
-        
+
     def create_loader(
-            self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
-        ) -> None:
+        self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
+    ) -> None:
         """
         Creates a new JetscapeLoader object.
 
@@ -211,9 +211,7 @@ class Jetscape(BaseStorer):
         self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def _particle_as_list(
-        self, particle: Particle
-    ) -> List[Union[int, float]]:
+    def _particle_as_list(self, particle: Particle) -> List[Union[int, float]]:
         particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)
@@ -255,7 +253,7 @@ class Jetscape(BaseStorer):
 
     def spacetime_cut(
         self, dim: str, cut_value_tuple: Tuple[float, float]
-    ) -> None:
+    ) -> "Jetscape":
         """
         Raises an error because spacetime cuts are not possible for Jetscape events.
 
@@ -274,6 +272,20 @@ class Jetscape(BaseStorer):
         raise NotImplementedError(
             "Spacetime cuts are not possible for Jetscape events."
         )
+
+    def keep_quarks(self) -> "Jetscape":
+        """
+        Keep only quarks in the Jetscape object.
+
+        Returns
+        -------
+        self : Jetscape object
+            Containing only quarks for every event.
+        """
+        self.particle_list_ = keep_quarks(self.particle_list_)
+        self._update_num_output_per_event_after_filter()
+
+        return self
 
     def get_sigmaGen(self) -> Tuple[float, float]:
         """

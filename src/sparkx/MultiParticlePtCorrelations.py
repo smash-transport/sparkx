@@ -95,7 +95,9 @@ class MultiParticlePtCorrelations:
         self.N_events: Any = None
         self.D_events: Any = None
 
-    def _P_W_k(self, particle_list_event: List[Particle]) -> tuple[np.ndarray, np.ndarray]:
+    def _P_W_k(
+        self, particle_list_event: List[Particle]
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         This implements Eq. 7 in [1].
 
@@ -343,13 +345,14 @@ class MultiParticlePtCorrelations:
 
         return sum_numerator / sum_denominator
 
-    def mean_pT_correlations(self,
-                             particle_list_all_events: List[List[Particle]],
-                             compute_error: bool = True,
-                             delete_fraction: float = 0.4,
-                             number_samples: int = 100,
-                             seed: int = 42) -> Union[np.ndarray, Tuple[np.ndarray,
-                                                            np.ndarray]]:
+    def mean_pT_correlations(
+        self,
+        particle_list_all_events: List[List[Particle]],
+        compute_error: bool = True,
+        delete_fraction: float = 0.4,
+        number_samples: int = 100,
+        seed: int = 42,
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """
         Computes mean transverse momentum correlations for each order up to
         max_order using Eq. [14] in Ref. [1].
