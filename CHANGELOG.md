@@ -48,6 +48,7 @@ Date:
 * Filter: Rename strange_particles filter to keep_strange
 * Changed class architecture to separate loader and storer classes
 * Changed code formatter to `black`
+* SPARKX requires now python versions >= 3.9
 
 ### Fixed
 * Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
