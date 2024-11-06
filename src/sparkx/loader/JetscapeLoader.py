@@ -271,7 +271,7 @@ class JetscapeLoader(BaseLoader):
         'charged_particles', 'uncharged_particles',
         'particle_species', 'remove_particle_species',
         'lower_event_energy_cut', 'pT_cut', 'mT_cut', 'rapidity_cut',
-        'pseudorapidity_cut', 'spacetime_rapidity_cut', 'multiplicity_cut',
+        'pseudorapidity_cut', 'multiplicity_cut',
         'particle_status', 'keep_hadrons', 'keep_leptons', 'keep_quarks',
         'keep_mesons', 'keep_baryons', 'keep_up', 'keep_down', 'keep_strange',
         'keep_charm', 'keep_bottom', 'keep_top' and 'remove_photons'.
@@ -328,10 +328,6 @@ class JetscapeLoader(BaseLoader):
             elif i == "pseudorapidity_cut":
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
-                )
-            elif i == "spacetime_rapidity_cut":
-                event = spacetime_rapidity_cut(
-                    event, filters_dict["spacetime_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
                 event = multiplicity_cut(

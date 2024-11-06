@@ -224,38 +224,40 @@ class Jetscape(BaseStorer):
         return particle_list
 
     # PUBLIC CLASS METHODS
-    def particle_status(
-        self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
-    ) -> "Jetscape":
+    def participants(self) -> "Jetscape":
         """
-        Keep only particles with a given particle status
-
-        Parameters
-        ----------
-        status_list : int
-            To keep a particles with a single status only, pass a single status
-
-        status_list : tuple/list/array
-            To keep hadrons with different hadron status, pass a tuple or list
-            or array
+        Raises an error because participants are not defined for Jetscape 
+        events.
 
         Returns
         -------
-        self : Jetscape object
-            Containing only hadrons with status specified by status_list for
-            every event
-
+        NotImplementedError
+            Always, because participants are not defined for Jetscape events.
         """
-        self.particle_list_ = particle_status(self.particle_list_, status_list)
-        self._update_num_output_per_event_after_filter()
+        raise NotImplementedError(
+            "Participants are not defined for Jetscape events."
+        )
 
-        return self
+    def spectators(self) -> "Jetscape":
+        """
+        Raises an error because spectators are not defined for Jetscape 
+        events.
+
+        Returns
+        -------
+        NotImplementedError
+            Always, because spectators are not defined for Jetscape events.
+        """
+        raise NotImplementedError(
+            "Spectators are not defined for Jetscape events."
+        )
 
     def spacetime_cut(
         self, dim: str, cut_value_tuple: Tuple[float, float]
     ) -> "Jetscape":
         """
-        Raises an error because spacetime cuts are not possible for Jetscape events.
+        Raises an error because spacetime cuts are not possible for Jetscape 
+        events.
 
         Parameters
         ----------
@@ -273,23 +275,38 @@ class Jetscape(BaseStorer):
             "Spacetime cuts are not possible for Jetscape events."
         )
 
-    def keep_quarks(self) -> "Jetscape":
+    def spacetime_rapidity_cut(
+        self, cut_value: Union[float, Tuple[float, float]]
+    ) -> "Jetscape":
         """
-        Keep only quarks in the Jetscape object.
+        Raises an error because spacetime rapidity cuts are not possible for 
+        Jetscape events.
 
-        Returns
-        -------
-        self : Jetscape object
-            Containing only quarks for every event.
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applied symmetrically
+            around 0.
+            For example, if :code:`cut_value = 1`, only particles with spacetime
+            rapidity in :code:`[-1.0, 1.0]` are kept.
+
+        cut_value : tuple
+            To specify an asymmetric acceptance range for the spacetime rapidity
+            of particles, pass a tuple :code:`(cut_min, cut_max)`
+
+        Raises
+        ------
+        NotImplementedError
+            Always, because spacetime rapidity cuts are not possible for 
+            Jetscape events.
         """
-        self.particle_list_ = keep_quarks(self.particle_list_)
-        self._update_num_output_per_event_after_filter()
-
-        return self
+        raise NotImplementedError(
+            "Spacetime rapidity cuts are not possible for Jetscape events."
+        )
 
     def get_sigmaGen(self) -> Tuple[float, float]:
         """
-        Returns the value of sigmaGen.
+        Returns the value of sigmaGen and the uncertainty in a tuple.
 
         Returns
         -------

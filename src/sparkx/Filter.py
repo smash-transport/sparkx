@@ -73,7 +73,7 @@ def charged_particles(
     particle_list: List[List[Particle]],
 ) -> List[List[Particle]]:
     """
-    Keep only charged particles in particle_list.
+    Keep only charged particles in :code:`particle_list`.
 
     Parameters
     ----------
@@ -98,7 +98,7 @@ def uncharged_particles(
     particle_list: List[List[Particle]],
 ) -> List[List[Particle]]:
     """
-    Keep only uncharged particles in particle_list.
+    Keep only uncharged particles in :code:`particle_list`.
 
     Parameters
     ----------
@@ -193,7 +193,7 @@ def remove_particle_species(
     pdg_list: Union[int, Tuple[int, ...], List[int], np.ndarray],
 ) -> List[List[Particle]]:
     """
-    Remove particle species from particle_list by their PDG ID in every
+    Remove particle species from :code:`particle_list` by their PDG ID in every
     event.
 
     Parameters
@@ -260,7 +260,7 @@ def remove_particle_species(
 
 def participants(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only participants in particle_list.
+    Keep only participants in :code:`particle_list`.
 
     Parameters
     ----------
@@ -284,7 +284,7 @@ def participants(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def spectators(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only spectators in particle_list.
+    Keep only spectators in :code:`particle_list`.
 
     Parameters
     ----------
@@ -319,7 +319,8 @@ def lower_event_energy_cut(
         List with lists containing particle objects for the events
 
     minimum_event_energy : int or float
-        The minimum event energy threshold. Should be a positive integer or float.
+        The minimum event energy threshold. Should be a positive integer or 
+        float.
 
     Returns
     -------
@@ -329,11 +330,11 @@ def lower_event_energy_cut(
     Raises
     ------
     TypeError
-        If the minimum_event_energy parameter is not an integer or float.
+        If the :code:`minimum_event_energy` parameter is not an integer or float.
     ValueError
-        If the minimum_event_energy parameter is less than or equal to 0.
+        If the :code:`minimum_event_energy` parameter is less than or equal to 0.
     ValueError
-        If the minimum_event_energy parameter is NaN.
+        If the :code:`minimum_event_energy` parameter is :code:`NaN`.
     """
     if not isinstance(minimum_event_energy, (int, float)):
         raise TypeError(
@@ -453,7 +454,7 @@ def pT_cut(
     cut_value_tuple: Tuple[Optional[float], Optional[float]],
 ) -> List[List[Particle]]:
     """
-    Apply p_T cut to all events by passing an acceptance range by
+    Apply pT cut to all events by passing an acceptance range by
     ::code`cut_value_tuple`. All particles outside this range will
     be removed.
 
@@ -607,12 +608,12 @@ def rapidity_cut(
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if cut_value = 1, only particles with rapidity in
+        For example, if :code:`cut_value = 1`, only particles with rapidity in
         [-1.0, 1.0] are kept.
 
     cut_value : tuple
         To specify an asymmetric acceptance range for the rapidity
-        of particles, pass a tuple (cut_min, cut_max)
+        of particles, pass a tuple :code:`(cut_min, cut_max)`
 
     Returns
     -------
@@ -669,7 +670,7 @@ def pseudorapidity_cut(
 ) -> List[List[Particle]]:
     """
     Apply pseudo-rapidity cut to all events and remove all particles with
-    pseudo-rapidity not complying with cut_value.
+    pseudo-rapidity not complying with :code:`cut_value`.
 
     Parameters
     ----------
@@ -679,12 +680,12 @@ def pseudorapidity_cut(
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if cut_value = 1, only particles with pseudo-rapidity
-        in [-1.0, 1.0] are kept.
+        For example, if :code:`cut_value = 1`, only particles with 
+        pseudo-rapidity in [-1.0, 1.0] are kept.
 
     cut_value : tuple
         To specify an asymmetric acceptance range for the pseudo-rapidity
-        of particles, pass a tuple (cut_min, cut_max)
+        of particles, pass a tuple :code:`(cut_min, cut_max)`
 
     Returns
     -------
@@ -741,7 +742,7 @@ def spacetime_rapidity_cut(
 ) -> List[List[Particle]]:
     """
     Apply space-time rapidity cut to all events and remove all particles with
-    space-time rapidity not complying with cut_value.
+    space-time rapidity not complying with :code:`cut_value`.
 
     Parameters
     ----------
@@ -751,12 +752,12 @@ def spacetime_rapidity_cut(
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if cut_value = 1, only particles with spacetime rapidity
-        in [-1.0, 1.0] are kept.
+        For example, if :code:`cut_value = 1`, only particles with spacetime 
+        rapidity in [-1.0, 1.0] are kept.
 
     cut_value : tuple
         To specify an asymmetric acceptance range for the space-time rapidity
-        of particles, pass a tuple (cut_min, cut_max)
+        of particles, pass a tuple :code:`(cut_min, cut_max)`
 
     Returns
     -------
@@ -812,7 +813,7 @@ def multiplicity_cut(
 ) -> List[List[Particle]]:
     """
     Apply multiplicity cut. Remove all events with a multiplicity lower
-    than min_multiplicity.
+    than :code:`min_multiplicity`.
 
     Parameters
     ----------
@@ -821,7 +822,7 @@ def multiplicity_cut(
 
     min_multiplicity : int
         Lower bound for multiplicity. If the multiplicity of an event is
-        lower than min_multiplicity, this event is discarded.
+        lower than :code:`min_multiplicity`, this event is discarded.
 
     Returns
     -------
@@ -906,7 +907,7 @@ def particle_status(
 
 def keep_hadrons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons in particle_list.
+    Keep only hadrons in :code:`particle_list`.
 
     Parameters
     ----------
@@ -929,7 +930,7 @@ def keep_hadrons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_leptons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only leptons in particle_list.
+    Keep only leptons in :code:`particle_list`.
 
     Parameters
     ----------
@@ -976,7 +977,7 @@ def keep_quarks(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_mesons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only mesons in particle_list.
+    Keep only mesons in :code:`particle_list`.
 
     Parameters
     ----------
@@ -999,7 +1000,7 @@ def keep_mesons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_baryons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only baryons in particle_list.
+    Keep only baryons in :code:`particle_list`.
 
     Parameters
     ----------
@@ -1022,7 +1023,7 @@ def keep_baryons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_up(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing up quarks in particle_list.
+    Keep only hadrons containing up quarks in :code:`particle_list`.
     This filter does not work for partons.
 
     Parameters
@@ -1046,7 +1047,8 @@ def keep_up(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_down(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing down quarks in particle_list.
+    Keep only hadrons containing down quarks in :code:`particle_list`.
+    This filter does not work for partons.
 
     Parameters
     ----------
@@ -1069,7 +1071,7 @@ def keep_down(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_strange(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing strange quarks in particle_list.
+    Keep only hadrons containing strange quarks in :code:`particle_list`.
     This filter does not work for partons.
 
     Parameters
@@ -1093,7 +1095,7 @@ def keep_strange(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_charm(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing charm quarks in particle_list.
+    Keep only hadrons containing charm quarks in :code:`particle_list`.
     This filter does not work for partons.
 
     Parameters
@@ -1117,7 +1119,7 @@ def keep_charm(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_bottom(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing bottom quarks in particle_list.
+    Keep only hadrons containing bottom quarks in :code:`particle_list`.
     This filter does not work for partons.
 
     Parameters
@@ -1141,7 +1143,7 @@ def keep_bottom(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def keep_top(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Keep only hadrons containing top quarks in particle_list.
+    Keep only hadrons containing top quarks in :code:`particle_list`.
     This filter does not work for partons.
 
     Parameters
@@ -1165,7 +1167,7 @@ def keep_top(particle_list: List[List[Particle]]) -> List[List[Particle]]:
 
 def remove_photons(particle_list: List[List[Particle]]) -> List[List[Particle]]:
     """
-    Remove all photons from particle_list.
+    Remove all photons from :code:`particle_list`.
 
     Parameters
     ----------

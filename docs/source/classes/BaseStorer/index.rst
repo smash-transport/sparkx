@@ -22,11 +22,13 @@ BaseStorer
 .. automethod:: BaseStorer.mT_cut
 .. automethod:: BaseStorer.rapidity_cut
 .. automethod:: BaseStorer.pseudorapidity_cut
-.. automethod:: BaseStorer.spatial_rapidity_cut
+.. automethod:: BaseStorer.spacetime_rapidity_cut
 .. automethod:: BaseStorer.multiplicity_cut
 .. automethod:: BaseStorer.spacetime_cut
+.. automethod:: BaseStorer.particle_status
 .. automethod:: BaseStorer.keep_hadrons
 .. automethod:: BaseStorer.keep_leptons
+.. automethod:: BaseStorer.keep_quarks
 .. automethod:: BaseStorer.keep_mesons
 .. automethod:: BaseStorer.keep_baryons
 .. automethod:: BaseStorer.keep_up

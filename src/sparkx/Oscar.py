@@ -243,6 +243,45 @@ class Oscar(BaseStorer):
 
         return particle_list
 
+    def particle_status(
+        self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
+    ) -> "Oscar":
+        """
+        Raises an error because the method is not implemented for the Oscar 
+        class.
+
+        Parameters
+        ----------
+        status_list : int
+            To keep a particles with a single status only, pass a single status
+
+        status_list : tuple/list/array
+            To keep hadrons with different hadron status, pass a tuple or list
+            or array
+
+        Returns
+        -------
+        NotImplementedError
+            This method is not implemented for the Oscar class.
+        """
+        raise NotImplementedError(
+            "particle_status is not implemented for the Oscar class."
+        )
+
+    def keep_quarks(self) -> "Oscar":
+        """
+        Raises an error because the method is not implemented for the Oscar 
+        class.
+
+        Returns
+        -------
+        NotImplementedError
+            This method is not implemented for the Oscar class.
+        """
+        raise NotImplementedError(
+            "keep_quarks is not implemented for the Oscar class."
+        )
+
     def oscar_format(self) -> Union[str, None]:
         """
         Get the Oscar format of the input file.
