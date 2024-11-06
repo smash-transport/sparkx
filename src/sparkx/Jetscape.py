@@ -289,7 +289,7 @@ class Jetscape(BaseStorer):
 
     def get_sigmaGen(self) -> Tuple[float, float]:
         """
-        Returns the value of sigmaGen.
+        Returns the value of sigmaGen and the uncertainty in a tuple.
 
         Returns
         -------
