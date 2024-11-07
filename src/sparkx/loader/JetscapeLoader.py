@@ -72,7 +72,7 @@ class JetscapeLoader(BaseLoader):
 
     def load(
         self, **kwargs: Any
-    ) -> Tuple[List[List[Particle]], int, np.ndarray]:
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
         """
         Loads the data from the JETSCAPE file based on the specified optional arguments.
 
@@ -156,6 +156,7 @@ class JetscapeLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
+            []
         )
 
     # PRIVATE CLASS METHODS

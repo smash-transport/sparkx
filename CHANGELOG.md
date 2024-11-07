@@ -28,6 +28,7 @@ Date:
 * Jetscape: Add transverse mass cut to methods
 * Added ParticleObjectStorer to store generic particle lists
 * SPARKX checks now for static tying consistency
+* Added support for the SMASH 3.2 feature of ASCIICustom output format
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:

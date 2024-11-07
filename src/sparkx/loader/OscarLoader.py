@@ -67,6 +67,7 @@ class OscarLoader(BaseLoader):
     event_end_lines_: List[str]
     num_events_: int
     num_output_per_event_: np.ndarray
+    custom_attr_list: List[str]
 
     def __init__(self, OSCAR_FILE: str):
         """
@@ -82,24 +83,25 @@ class OscarLoader(BaseLoader):
         Raises
         ------
         FileNotFoundError
-            If the input file does not have the '.oscar' extension.
+            If the input file does not have the '.oscar' or '.dat' extension.
 
         Returns
         -------
         None
         """
-        if not ".oscar" in OSCAR_FILE:
+        if not ".oscar" in OSCAR_FILE and not ".dat" in OSCAR_FILE:
             raise FileNotFoundError(
                 "Input file is not in the OSCAR format. Input "
-                "file must have the ending .oscar"
+                "file must have the ending .oscar or .dat"
             )
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
+        self.custom_attr_list = []
 
     def load(
         self, **kwargs: Dict[str, Any]
-    ) -> Tuple[List[List[Particle]], int, np.ndarray]:
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
         """
         Loads the OSCAR data from the specified file.
 
@@ -163,6 +165,7 @@ class OscarLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
+            self.custom_attr_list
         )
 
     def _get_num_skip_lines(self) -> int:
@@ -239,6 +242,38 @@ class OscarLoader(BaseLoader):
                 + "or corrupted."
             )
 
+    def _set_custom_attr_list(self, header_line: List[str]) -> List[str]:
+        self.custom_attr_list = []
+        attr_map = {
+            't': 't',
+            'x': 'x',
+            'y': 'y',
+            'z': 'z',
+            'mass': 'mass',
+            'p0': 'E',
+            'px': 'px',
+            'py': 'py',
+            'pz': 'pz',
+            'pdg': 'pdg',
+            'ID': 'ID',
+            'charge': 'charge',
+            'ncoll': 'ncoll',
+            'form_time': 'form_time',
+            'xsecfac': 'xsecfac',
+            'proc_id_origin': 'proc_id_origin',
+            'proc_type_origin': 'proc_type_origin',
+            'time_last_coll': 'time_last_coll',
+            'pdg_mother1': 'pdg_mother1',
+            'pdg_mother2': 'pdg_mother2',
+            'baryon_number': 'baryon_number',
+            'strangeness': 'strangeness'
+        }
+        for i in range(0, len(header_line)):
+            attr_name = attr_map.get(header_line[i])
+            if attr_name is not None:
+                self.custom_attr_list.append(attr_name)
+        return self.custom_attr_list
+
     def set_oscar_format(self) -> None:
         """
         Sets the number of events in the OSCAR data file.
@@ -279,10 +314,16 @@ class OscarLoader(BaseLoader):
             or first_line_list[0] == "#!OSCAR2013Extended"
         ):
             self.oscar_format_ = "Oscar2013Extended"
+        elif (
+            first_line_list[0] == "#!ASCIICustom"
+        ):
+            self.oscar_format_ = "ASCIICustom"
+            value_line=first_line_list[2:]
+            self.custom_attr_list = self._set_custom_attr_list(value_line)
         else:
             raise TypeError(
                 "Input file must follow the Oscar2013, "
-                + "Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. "
+                + "Oscar2013Extended, Oscar2013Extended_IC, Oscar2013Extended_Photons or ASCIICustom format. "
             )
 
     def oscar_format(self) -> Optional[str]:
@@ -559,7 +600,10 @@ class OscarLoader(BaseLoader):
                     raise ValueError("Comment line unexpectedly found: " + line)
                 else:
                     line_list = np.asarray(line.replace("\n", "").split(" "))
-                    particle = Particle(self.oscar_format_, line_list)
+                    if(self.oscar_format_ == "ASCIICustom"):
+                        particle = Particle(self.oscar_format_, line_list, self.custom_attr_list)
+                    else:
+                        particle = Particle(self.oscar_format_, line_list)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events

@@ -21,7 +21,7 @@ class MockLoader(BaseLoader):
         particle_list = [[[1, 2, 3], [4, 5, 6]]]  # Example particle data
         num_events = 1
         num_output_per_event = np.array([[1, len(particle_list[0])]])
-        return particle_list, num_events, num_output_per_event
+        return particle_list, num_events, num_output_per_event, []
 
 
 # Concrete subclass for testing purposes
