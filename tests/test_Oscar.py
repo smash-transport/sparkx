@@ -716,3 +716,20 @@ def test_custom_oscar_print(oscar_custom_file_path, output_path):
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_custom_file_path, output_path)
     os.remove(output_path)
+def test_update_after_merge_warning(oscar_file_path):
+    # Create two Oscar instances with different formats
+    oscar1 = Oscar(oscar_file_path)
+    oscar1.oscar_format_ = "Oscar2013"
+    oscar1.event_end_lines_ = [10, 20, 30]
+
+    oscar2 = Oscar(oscar_file_path)
+    oscar2.oscar_format_ = "Oscar2013Extended"
+    oscar2.event_end_lines_ = [40, 50, 60]
+
+    # Check if a UserWarning is issued when merging
+    with pytest.warns(UserWarning, match="Oscar format of the merged instances do not match"):
+        oscar1._update_after_merge(oscar2)
+
+    # Check if the event_end_lines_ are updated correctly
+    assert oscar1.event_end_lines_ == [10, 20, 30, 40, 50, 60]
+

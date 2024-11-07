@@ -42,7 +42,9 @@ class ConcreteStorer(BaseStorer):
         with open(output_file, "w") as file:
             for event in self.particle_list():
                 file.write(str(event) + "\n")
-
+    
+    def _update_after_merge(self, other: "ConcreteStorer") -> None:
+        pass
 
 class ConcreteStorer2(ConcreteStorer):
     pass

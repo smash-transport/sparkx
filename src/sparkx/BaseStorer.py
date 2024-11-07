@@ -159,12 +159,37 @@ class BaseStorer(ABC):
         combined_num_output_per_event[self.num_events_:, 0] += self.num_events_
 
         combined_storer: BaseStorer = self.__class__.__new__(self.__class__)
+        combined_storer._update_after_merge(other)
         combined_storer.particle_list_ = combined_particle_list
         combined_storer.num_output_per_event_ = combined_num_output_per_event
         combined_storer.num_events_ = self.num_events_ + other.num_events_
         combined_storer.loader_ = None  # Loader is not applicable for combined object
 
         return combined_storer
+    
+    @abstractmethod
+    def _update_after_merge(self, other: "BaseStorer") -> None:
+        """
+        Updates the attributes of the current instance after merging with another BaseStorer object.
+
+        This method should be implemented by subclasses to update the attributes of the current instance after merging
+        with another BaseStorer object. The method raises a NotImplementedError if it is not overridden by a subclass.
+
+        Parameters
+        ----------
+        other : BaseStorer
+            The other BaseStorer object that was merged with the current instance.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented by a subclass.
+
+        Returns
+        -------
+        None
+        """
+        raise NotImplementedError("This method is not implemented yet")
 
     @abstractmethod
     def create_loader(self, arg: Union[str, List[List["Particle"]]]) -> None:

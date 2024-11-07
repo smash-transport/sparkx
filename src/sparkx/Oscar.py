@@ -275,6 +275,29 @@ class Oscar(BaseStorer):
         raise NotImplementedError(
             "keep_quarks is not implemented for the Oscar class."
         )
+    
+    def _update_after_merge(self, other: BaseStorer) -> None:
+        """
+        Updates the current instance after merging with another Oscar instance.
+
+        This method is called after merging two Oscar instances to update the
+        attributes of the current instance based on the attributes of the other instance.
+
+        Parameters
+        ----------
+        other : Oscar
+            The other Oscar instance that was merged with the current instance.
+
+        Raises
+        ------
+        UserWarning
+            If the Oscar formats of the two instances do not match, a warning is issued.
+        """
+        if not isinstance(other, Oscar):
+            raise TypeError("Can only add Oscar objects to Oscar.")
+        if self.oscar_format_ != other.oscar_format_:
+            warnings.warn("Oscar format of the merged instances do not match. Taking the left-hand side Oscar format.")
+        self.event_end_lines_ = self.event_end_lines_ + other.event_end_lines_
 
     def oscar_format(self) -> Union[str, None]:
         """
