@@ -159,6 +159,7 @@ class BaseStorer(ABC):
         combined_num_output_per_event[self.num_events_:, 0] += self.num_events_
 
         combined_storer: BaseStorer = self.__class__.__new__(self.__class__)
+        combined_storer.__dict__.update(self.__dict__)  # Inherit all properties from self
         combined_storer._update_after_merge(other)
         combined_storer.particle_list_ = combined_particle_list
         combined_storer.num_output_per_event_ = combined_num_output_per_event
