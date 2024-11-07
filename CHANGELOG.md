@@ -29,6 +29,7 @@ Date:
 * Added ParticleObjectStorer to store generic particle lists
 * SPARKX checks now for static tying consistency
 * Added support for the SMASH 3.2 feature of ASCIICustom output format
+* Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
