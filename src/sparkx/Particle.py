@@ -273,10 +273,14 @@ class Particle:
             - "Oscar2013Extended"
             - "Oscar2013Extended_IC"
             - "Oscar2013Extended_Photons"
+            - "ASCIICustom"
             - "JETSCAPE"
 
         particle_array : numpy.ndarray
             An array containing particle information.
+
+        attribute_list: List[str]
+            A list containing coded information which element of particle_array corresponds to which attribute of the Particle instance.
 
         Raises
         ------
