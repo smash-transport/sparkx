@@ -850,7 +850,7 @@ class BaseStorer(ABC):
             # Handle the case where num_output_per_event_ is a two-dimensional array
             updated_num_output_per_event = np.ndarray((len(self.particle_list_),2), dtype=int)
             for event in range(len(self.particle_list_)):
-                updated_num_output_per_event[event][0] = event
+                updated_num_output_per_event[event][0] = event + self.num_output_per_event_[0][0]
                 updated_num_output_per_event[event][1] = len(
                     self.particle_list_[event]
                 )

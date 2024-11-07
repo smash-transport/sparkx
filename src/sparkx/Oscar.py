@@ -134,7 +134,7 @@ class Oscar(BaseStorer):
 
         >>> oscar = Oscar(OSCAR_FILE_PATH)
         >>>
-        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = oscar.multiplicity_cut(500, None).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -154,7 +154,7 @@ class Oscar(BaseStorer):
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
 
-        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)})
+        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':(500,None), 'participants':True, 'particle_species':(211, -211, 111)})
         >>>
         >>> # print the pions to an oscar file
         >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')

@@ -812,7 +812,7 @@ def multiplicity_cut(
     particle_list: List[List[Particle]], cut_value_tuple: tuple
 ) -> List[List[Particle]]:
     """
-    Apply multiplicity cut. Remove all events with a multiplicity not coplying
+    Apply multiplicity cut. Remove all events with a multiplicity not complying
     with cut_value_tuple.
 
     Parameters
