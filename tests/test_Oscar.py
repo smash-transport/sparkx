@@ -712,10 +712,12 @@ def test_old_extended_oscar_print(oscar_old_extended_file_path, output_path):
 
 
 def test_custom_oscar_print(oscar_custom_file_path, output_path):
-    oscar = Oscar(oscar_custom_file_path)
+    with pytest.warns(UserWarning, match="No PDG code given! All properties extracted from the PDG are set to default values."):
+        oscar = Oscar(oscar_custom_file_path)
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_custom_file_path, output_path)
     os.remove(output_path)
+
 def test_update_after_merge_warning(oscar_file_path):
     # Create two Oscar instances with different formats
     oscar1 = Oscar(oscar_file_path)
