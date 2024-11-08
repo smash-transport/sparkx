@@ -222,7 +222,35 @@ class Jetscape(BaseStorer):
         particle_list[6] = float(particle.pz)
 
         return particle_list
+    
+    def _update_after_merge(self, other: BaseStorer) -> None:
+        """
+        Updates the current instance after merging with another Jetscape instance.
 
+        This method is called after merging two Jetscape instances to update the
+        attributes of the current instance based on the attributes of the other instance.
+        The last line and filename are taken from the left-hand instance.
+        :code:`sigmaGen` is averaged.
+
+        Parameters
+        ----------
+        other : Jetscape
+            The other Jetscape instance that was merged with the current instance.
+
+        Raises
+        ------
+        UserWarning
+            If the Jetscape :code:`particle_type_` or :code:`particle_type_defining_string_` of the two instances do not match, a warning is issued.
+        """
+        if not isinstance(other, Jetscape):
+            raise TypeError("Can only add Jetscape objects to Jetscape.")
+        if self.particle_type_ != other.particle_type_:
+            raise TypeError("particle_types of the merged instances do not match.")
+        if self.particle_type_defining_string_ != other.particle_type_defining_string_:
+            raise TypeError("particle_type_defining_string of the merged instances do not match.")
+        
+        self.sigmaGen_ = ((self.sigmaGen_[0] + other.sigmaGen_[0])/2.0, 0.5*np.sqrt(self.sigmaGen_[1]**2 + other.sigmaGen_[1]**2))
+    
     # PUBLIC CLASS METHODS
     def participants(self) -> "Jetscape":
         """

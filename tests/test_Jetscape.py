@@ -499,3 +499,29 @@ def test_Jetscape_read_parton_file(jetscape_file_path_partons):
     # Test construction with wrong particletype (not string)
     with pytest.raises(TypeError):
         Jetscape(jetscape_file_path_partons, particletype=1)
+
+def test_update_after_merge_warning(jetscape_file_path):
+    # Create two Jetscape instances with different particle types and defining strings
+    jetscape1 = Jetscape(jetscape_file_path)
+    jetscape1.particle_type_ = "parton"
+    jetscape1.particle_type_defining_string_ = "parton"
+    jetscape1.sigmaGen_ = (1,2)
+
+    jetscape2 = Jetscape(jetscape_file_path)
+    jetscape2.particle_type_ = "hadron"
+    jetscape2.particle_type_defining_string_ = "hadron"
+    jetscape2.sigmaGen_ = (2,2)
+
+    # Check if a UserWarning is issued when merging
+    with pytest.raises(TypeError):
+        jetscape1._update_after_merge(jetscape2)
+
+    with pytest.raises(TypeError):
+        jetscape1._update_after_merge(jetscape2)
+
+    jetscape2.particle_type_ = "parton"
+    jetscape2.particle_type_defining_string_ = "parton"
+
+    jetscape1._update_after_merge(jetscape2)
+
+    assert jetscape1.sigmaGen_ == (1.5,np.sqrt(2))

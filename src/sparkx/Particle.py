@@ -499,7 +499,7 @@ class Particle:
         if not self.pdg_valid:
             if np.isnan(self.pdg):
                 warnings.warn(
-                "No PDG code given!"
+                "No PDG code given! "
                 + "All properties extracted from the PDG are set to default values."
             )
             else:

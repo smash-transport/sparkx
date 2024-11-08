@@ -134,6 +134,9 @@ class ParticleObjectStorer(BaseStorer):
         super().__init__(particle_object_list, **kwargs)
         del self.loader_
 
+    def _update_after_merge(self, other: BaseStorer) -> None:
+        pass
+
     def create_loader(
         self, particle_object_list: Union[str, List[List["Particle"]]]
     ) -> None:

@@ -109,6 +109,88 @@ class BaseStorer(ABC):
             ) = self.loader_.load(**kwargs)
         else:
             raise ValueError("Loader has not been created properly")
+        
+    def __add__(self, other: "BaseStorer") -> "BaseStorer":
+        """
+        Adds two BaseStorer objects by combining their particle lists and updating num_output_per_event accordingly.
+
+        This method ensures that both objects are instances of the same class before combining them. If the objects
+        are not of the same class, a TypeError is raised.
+
+        Parameters
+        ----------
+        other : BaseStorer
+            The other BaseStorer object to be added.
+
+        Raises
+        ------
+        TypeError
+            If the other object is not an instance of BaseStorer or if the objects are not of the same class.
+
+        Returns
+        -------
+        BaseStorer
+            A new BaseStorer object with combined particle lists and updated num_output_per_event.
+        """
+        if not isinstance(other, BaseStorer):
+            raise TypeError("Can only add BaseStorer objects")
+        
+        # Ensure that both instances are of the same class
+        if type(self) is not type(other):
+            raise TypeError("Can only add objects of the same class")
+
+        combined_particle_list: list = self.particle_list_ + other.particle_list_
+
+        # Ensure num_output_per_event_ is not None
+        if self.num_output_per_event_ is None:
+            self.num_output_per_event_ = np.empty((0, 2), dtype=int)
+        if other.num_output_per_event_ is None:
+            other.num_output_per_event_ = np.empty((0, 2), dtype=int)
+        if self.num_events_ is None:
+            self.num_events_ = 0
+        if other.num_events_ is None:
+            other.num_events_ = 0
+
+        combined_num_output_per_event: np.ndarray = np.concatenate(
+            (self.num_output_per_event_, other.num_output_per_event_)
+        )
+
+        # Adjust event_number for the parts that originally belonged to other
+        combined_num_output_per_event[self.num_events_:, 0] += self.num_events_
+
+        combined_storer: BaseStorer = self.__class__.__new__(self.__class__)
+        combined_storer.__dict__.update(self.__dict__)  # Inherit all properties from self
+        combined_storer._update_after_merge(other)
+        combined_storer.particle_list_ = combined_particle_list
+        combined_storer.num_output_per_event_ = combined_num_output_per_event
+        combined_storer.num_events_ = self.num_events_ + other.num_events_
+        combined_storer.loader_ = None  # Loader is not applicable for combined object
+
+        return combined_storer
+    
+    @abstractmethod
+    def _update_after_merge(self, other: "BaseStorer") -> None:
+        """
+        Updates the attributes of the current instance after merging with another BaseStorer object.
+
+        This method should be implemented by subclasses to update the attributes of the current instance after merging
+        with another BaseStorer object. The method raises a NotImplementedError if it is not overridden by a subclass.
+
+        Parameters
+        ----------
+        other : BaseStorer
+            The other BaseStorer object that was merged with the current instance.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented by a subclass.
+
+        Returns
+        -------
+        None
+        """
+        raise NotImplementedError("This method is not implemented yet")
 
     @abstractmethod
     def create_loader(self, arg: Union[str, List[List["Particle"]]]) -> None:
