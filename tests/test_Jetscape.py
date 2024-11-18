@@ -471,6 +471,15 @@ def test_Jetscape_print_with_empty_events(
     assert filecmp.cmp(jetscape_file_no_hadrons, output_path)
     os.remove(output_path)
 
+def test_Jetscape_print_with_no_events(
+        jetscape_file_path, output_path
+):
+    jetscape = Jetscape(jetscape_file_path)
+    jetscape.particle_list_ = [[], [], [], [], []]
+    jetscape.multiplicity_cut((100000000,None))
+    with pytest.warns(UserWarning):
+        jetscape.print_particle_lists_to_file(output_path)
+    os.remove(output_path)
 
 def test_Jetscape_get_sigmaGen(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path)

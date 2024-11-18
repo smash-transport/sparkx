@@ -131,7 +131,7 @@ class Jetscape(BaseStorer):
 
         >>> jetscape = Jetscape(JETSCAPE_FILE_PATH)
         >>>
-        >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = jetscape.multiplicity_cut(500, None).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -151,7 +151,7 @@ class Jetscape(BaseStorer):
     Let's assume we only want to keep pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':(500,None), 'particle_species':(211, -211, 111)}})
         >>>
         >>> # print the pions to a jetscape file
         >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
@@ -363,13 +363,15 @@ class Jetscape(BaseStorer):
             raise ValueError("The number of output per event is empty.")
         if self.num_events_ is None:
             raise ValueError("The number of events is empty.")
-
+        
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
 
             list_of_particles = self.particle_list()
-            if self.num_events_ > 1:
+            if self.num_events_ == 0:
+                warnings.warn("The number of events is zero.")
+            elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]

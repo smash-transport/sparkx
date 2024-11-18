@@ -694,6 +694,16 @@ def test_standard_oscar_print(tmp_path, output_path):
     os.remove(output_path)
 
 
+def test_empty_oscar_print(tmp_path, output_path):
+    tmp_oscar_file = create_temporary_oscar_file(
+        tmp_path, 5, "Oscar2013", [1, 7, 0, 36, 5]
+    )
+    oscar = Oscar(tmp_oscar_file).multiplicity_cut((100000000,None))
+    with pytest.warns(UserWarning):
+        oscar.print_particle_lists_to_file(output_path)
+    os.remove(output_path)
+
+
 def test_extended_oscar_print(tmp_path, output_path):
     tmp_oscar_file = create_temporary_oscar_file(
         tmp_path, 5, "Oscar2013Extended", [4, 1, 42, 0, 3]

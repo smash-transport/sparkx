@@ -809,35 +809,59 @@ def spacetime_rapidity_cut(
 
 
 def multiplicity_cut(
-    particle_list: List[List[Particle]], min_multiplicity: int
+    particle_list: List[List[Particle]], cut_value_tuple: tuple
 ) -> List[List[Particle]]:
     """
-    Apply multiplicity cut. Remove all events with a multiplicity lower
-    than :code:`min_multiplicity`.
+    Apply multiplicity cut. Remove all events with a multiplicity not complying
+    with cut_value_tuple.
 
     Parameters
     ----------
     particle_list:
         List with lists containing particle objects for the events
 
-    min_multiplicity : int
-        Lower bound for multiplicity. If the multiplicity of an event is
-        lower than :code:`min_multiplicity`, this event is discarded.
+   cut_value_tuple : tuple
+        Upper and lower bound for multiplicity. If the multiplicity of an event is
+        not in this range, the event is discarded. The range is inclusive on the 
+        lower bound and exclusive on the upper bound.
 
     Returns
     -------
     list of lists
         Filtered list of lists containing particle objects for each event
     """
-    if not isinstance(min_multiplicity, int):
-        raise TypeError("Input value for multiplicity cut must be an int")
-    if min_multiplicity < 0:
-        raise ValueError("Minimum multiplicity must >= 0")
+    if not isinstance(cut_value_tuple, tuple):
+        raise TypeError(
+            "Input value must be a tuple containing either "
+            + "positive numbers or None of length two"
+        )
+
+    __ensure_tuple_is_valid_else_raise_error(cut_value_tuple, allow_none=True)
+
+    # Check if the cut limits are positive if they are not None
+    if (cut_value_tuple[0] is not None and cut_value_tuple[0] < 0) or (
+        cut_value_tuple[1] is not None and cut_value_tuple[1] < 0
+    ):
+        raise ValueError("The cut limits must be positive or None")
+
+    if cut_value_tuple[0] is None:
+        lower_cut = float("-inf")
+    else:
+        lower_cut = cut_value_tuple[0]
+
+    if cut_value_tuple[1] is None:
+        upper_cut = float("inf")
+    else:
+        upper_cut = cut_value_tuple[1]
+
+    # Ensure cut values are in the correct order
+    lim_max = max(upper_cut, lower_cut)
+    lim_min = min(upper_cut, lower_cut)
 
     idx_keep_event = []
     for idx, event_particles in enumerate(particle_list):
         multiplicity = len(event_particles)
-        if multiplicity >= min_multiplicity:
+        if multiplicity >= lower_cut and multiplicity < upper_cut:
             idx_keep_event.append(idx)
 
     particle_list = [particle_list[idx] for idx in idx_keep_event]

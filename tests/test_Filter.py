@@ -770,18 +770,20 @@ def particle_list_multiplicity():
 
 def test_multiplicity_cut(particle_list_multiplicity):
     # Test cases for valid input
-    assert multiplicity_cut(particle_list_multiplicity, 7) == [
+    assert multiplicity_cut(particle_list_multiplicity, (7,None)) == [
         particle_list_multiplicity[1]
     ]
-    assert multiplicity_cut(particle_list_multiplicity, 11) == []
+    assert multiplicity_cut(particle_list_multiplicity, (5,10)) == [
+        particle_list_multiplicity[0]
+    ]
+    assert multiplicity_cut(particle_list_multiplicity, (11, None)) == []
 
     # Test cases for invalid input
     with pytest.raises(TypeError):
-        multiplicity_cut(particle_list_multiplicity, min_multiplicity=3.5)
+        multiplicity_cut(particle_list_multiplicity, cut_value=(-3.5,4))
 
-    with pytest.raises(ValueError):
-        multiplicity_cut(particle_list_multiplicity, min_multiplicity=-1)
-
+    with pytest.raises(TypeError):
+        multiplicity_cut(particle_list_multiplicity, cut_value=(0,'a'))
 
 @pytest.fixture
 def particle_list_status():

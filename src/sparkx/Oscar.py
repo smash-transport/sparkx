@@ -9,6 +9,7 @@
 
 from sparkx.Filter import *
 import numpy as np
+import warnings
 from sparkx.loader.OscarLoader import OscarLoader
 from sparkx.BaseStorer import BaseStorer
 from typing import Any, List, Optional, Union, Dict
@@ -133,7 +134,7 @@ class Oscar(BaseStorer):
 
         >>> oscar = Oscar(OSCAR_FILE_PATH)
         >>>
-        >>> pions = oscar.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = oscar.multiplicity_cut(500, None).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -153,7 +154,7 @@ class Oscar(BaseStorer):
     Let's assume we only want to keep participant pions in events with a
     multiplicity > 500:
 
-        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':500, 'participants':True, 'particle_species':(211, -211, 111)})
+        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'multiplicity_cut':(500,None), 'participants':True, 'particle_species':(211, -211, 111)})
         >>>
         >>> # print the pions to an oscar file
         >>> oscar.print_particle_lists_to_file('./particle_lists.oscar')
@@ -387,7 +388,9 @@ class Oscar(BaseStorer):
                 raise ValueError("The number of output per event is empty.")
             if self.num_events_ is None:
                 raise ValueError("The number of events is empty.")
-            if self.num_events_ > 1:
+            if self.num_events_ == 0:
+                warnings.warn("The number of events is zero.")
+            elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
