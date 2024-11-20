@@ -52,7 +52,7 @@ def test_dNdy_invalid_input(oscar_extended_file_path):
         bulk_obs.dNdy((1.1, 2.2, 3.3))
 
 
-def test_dNdy_valid(oscar_extended_file_path):
+def test_dNdy_valid():
     # store the y values and the counts in that bin in two events to create 
     # particles accordingly    
     y_bins_and_counts = [
@@ -114,6 +114,8 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
 
     bulk_obs = BulkObservables(extended_particle_objects_list)
 
+    warn_msg = "Bins must be positive for dNdpT! All negative bins will be empty."
+
     with pytest.raises(TypeError):
         bulk_obs.dNdpT(1.2)
 
@@ -129,8 +131,17 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
     with pytest.raises(ValueError):
         bulk_obs.dNdpT((1.1, 2.2, 3.3))
 
+    with pytest.warns(UserWarning, match=warn_msg):
+        bulk_obs.dNdpT((-1.2, 2.2, 3))
 
-def test_dNdpT_valid(oscar_extended_file_path):
+    with pytest.warns(UserWarning, match=warn_msg):
+        bulk_obs.dNdpT((-2.2, -1.2, 3))
+
+    with pytest.warns(UserWarning, match=warn_msg):
+        bulk_obs.dNdpT([-0.2, 0.0, 0.11, 0.39, 0.52, 0.87, 0.99])
+
+
+def test_dNdpT_valid():
     pT_bins_and_counts = [
     [[0.1, 8], [0.3, 1], [0.6, 5], [1.1, 10], [1.8, 4]],     # Event 1
     [[0.2, 6], [0.7, 2], [1.3, 7], [1.6, 3], [1.9, 9]],      # Event 2
@@ -183,3 +194,51 @@ def test_dNdpT_valid(oscar_extended_file_path):
     bins = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
     dNdpT_list = bulk_obs.dNdpT(bins).histogram()[0]
     assert dNdpT_list  == pytest.approx(dNdpT_expected, rel=1e-6)
+
+def test_dNdEta():
+    # As al differential yields rely on the same function and the other
+    # tests already capture all cases, we will just make sure that the
+    # function can be called and that the correct attribute was used. To
+    # do that, we will simply check that the histogram is not empty
+
+    particles_list_singe_event = []
+
+    for i in range(30):
+        p = Particle()
+        # set components to random values in [-1.0, 1.0)
+        p.px = (np.random.random() * 2) - 0.5
+        p.py = (np.random.random() * 2) - 0.5
+        p.pz = (np.random.random() * 2) - 0.5
+
+        particles_list_singe_event.append(p)
+
+    particle_objects_list = [particles_list_singe_event]
+
+    # Create the BulkObservables object and call dNdEta
+    bulk_obs = BulkObservables(particle_objects_list)
+    dNdEta_hist = bulk_obs.dNdEta((-5, 5, 11)).histogram()[0]
+
+    # Check that not all bins are zero
+    assert any(dNdEta_hist)
+
+def test_dNdmT():
+    particles_list_singe_event = []
+
+    for i in range(30):
+        print(i)
+        p = Particle()
+        # set components such that mT=3
+        p.E = 5
+        p.pz = 4
+
+        particles_list_singe_event.append(p)
+
+    particle_objects_list = [particles_list_singe_event]
+
+    # Create the BulkObservables object and call dNdmT 
+    bulk_obs = BulkObservables(particle_objects_list)  
+    dNdmT_hist = bulk_obs.dNdmT((0.0, 10, 10)).histogram()[0]
+
+    # Check that the bin for mT=3 is filled and all others are not
+    assert dNdmT_hist[3] == 30
+    assert all(value == 0 for i, value in enumerate(dNdmT_hist) if i != 3)
