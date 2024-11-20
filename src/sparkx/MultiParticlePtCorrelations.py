@@ -56,8 +56,8 @@ class MultiParticlePtCorrelations:
 
     Examples
     --------
-    A demonstration of how to use the MultiParticlePtCorrelations class to
-    calculate transverse momentum correlations and cumulants.
+    A demonstration of how to use the :code:`MultiParticlePtCorrelations` class 
+    to calculate transverse momentum correlations and cumulants.
 
     .. highlight:: python
     .. code-block:: python
@@ -366,9 +366,9 @@ class MultiParticlePtCorrelations:
         compute_error : bool, optional
             Whether to compute error estimates (default is True).
         delete_fraction : float, optional
-            Fraction of data to delete for jackknife method (default is 0.4).
+            Fraction of data to delete for Jackknife method (default is 0.4).
         number_samples : int, optional
-            Number of jackknife samples (default is 100).
+            Number of Jackknife samples (default is 100).
         seed : int, optional
             Random seed for reproducibility (default is 42).
 
@@ -376,18 +376,18 @@ class MultiParticlePtCorrelations:
         -------
         np.ndarray or tuple
             Mean transverse momentum correlations for each order.
-            If compute_error is True, returns a tuple (mean_pT_correlation, mean_pT_correlation_error).
+            If compute_error is True, returns a tuple :code:`(mean_pT_correlation, mean_pT_correlation_error)`.
 
         Raises
         ------
         TypeError
-            If delete_fraction is not a float.
-            If number_samples is not an integer.
-            If seed is not an integer.
-            If compute_error is not a boolean.
+            If :code:`delete_fraction` is not a float.
+            If :code:`number_samples` is not an integer.
+            If :code:`seed` is not an integer.
+            If :code:`compute_error` is not a boolean.
         ValueError
-            If delete_fraction is not between 0 and 1.
-            If number_samples is not greater than 0.
+            If :code:`delete_fraction` is not between 0 and 1.
+            If :code:`number_samples` is not greater than 0.
         """
         if not isinstance(delete_fraction, float):
             raise TypeError("delete_fraction must be a float")
@@ -547,7 +547,7 @@ class MultiParticlePtCorrelations:
         Parameters
         ----------
         data : np.ndarray
-            Array of shape (num_events, 2*(k+1)) containing numerators and
+            Array of shape :code:`(num_events, 2*(k+1))` containing numerators and
             denominators up to order k.
         k : int
             Order of cumulant to compute.
@@ -587,11 +587,11 @@ class MultiParticlePtCorrelations:
         particle_list_all_events : list
             List of events, where each event is a list of particle objects.
         compute_error : bool, optional
-            Whether to compute error estimates (default is True).
+            Whether to compute error estimates (default is :code:`True`).
         delete_fraction : float, optional
-            Fraction of data to delete for jackknife method (default is 0.4).
+            Fraction of data to delete for Jackknife method (default is 0.4).
         number_samples : int, optional
-            Number of jackknife samples (default is 100).
+            Number of Jackknife samples (default is 100).
         seed : int, optional
             Random seed for reproducibility (default is 42).
 
@@ -599,18 +599,18 @@ class MultiParticlePtCorrelations:
         -------
         np.ndarray or tuple
             Mean transverse momentum cumulants for each order.
-            If compute_error is True, returns a tuple (kappa, kappa_error).
+            If :code:`compute_error` is :code:`True`, returns a tuple :code:`(kappa, kappa_error)`.
 
         Raises
         ------
         TypeError
-            If delete_fraction is not a float.
-            If number_samples is not an integer.
-            If seed is not an integer.
-            If compute_error is not a boolean.
+            If :code:`delete_fraction` is not a float.
+            If :code:`number_samples` is not an integer.
+            If :code:`seed` is not an integer.
+            If :code:`compute_error` is not a boolean.
         ValueError
-            If delete_fraction is not between 0 and 1.
-            If number_samples is not greater than 0.
+            If :code:`delete_fraction` is not between 0 and 1.
+            If :code:`number_samples` is not greater than 0.
         """
         if not isinstance(delete_fraction, float):
             raise TypeError("delete_fraction must be a float")

@@ -39,7 +39,7 @@ class ScalarProductFlow(FlowInterface.FlowInterface):
     n : int, optional
         The value of the harmonic. Default is 2.
     weight : str, optional
-        The weight used for calculating the flow. Default is "pt2".
+        The weight used for calculating the flow. Default is :code:`pt2`.
     pseudorapidity_gap : float, optional
         The pseudorapidity gap used for dividing the particles into sub-events.
         Default is 0.0.

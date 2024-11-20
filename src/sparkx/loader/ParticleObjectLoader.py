@@ -90,6 +90,7 @@ class ParticleObjectLoader(BaseLoader):
         ----------
         kwargs : dict
             A dictionary of optional arguments. The following keys are recognized:
+
             - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
             - 'filters': A list of filters to apply to the data.
 
@@ -300,6 +301,7 @@ class ParticleObjectLoader(BaseLoader):
         ----------
         kwargs : dict
             Dictionary containing the filters to be applied. The following keys are recognized:
+
             - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
             - 'filters': A list of filters to apply to the data.
 

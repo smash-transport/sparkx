@@ -101,10 +101,10 @@ class PCAFlow(FlowInterface.FlowInterface):
     Raises
     ------
     TypeError
-        If n, alpha, or number_subcalc is not an integer.
+        If :code:`n`, :code:`alpha`, or :code:`number_subcalc` is not an integer.
     ValueError
-        If n is not a positive integer, alpha is less than 1,
-        or number_subcalc is less than 2.
+        If :code:`n` is not a positive integer, alpha is less than 1,
+        or :code:`number_subcalc` is less than 2.
     """
 
     def __init__(
@@ -628,8 +628,8 @@ class PCAFlow(FlowInterface.FlowInterface):
 
         Notes
         -----
-        - The flow or the uncertainty can be accessed by: `function_return[bin][alpha]`
-        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to `np.nan`.
+        - The flow or the uncertainty can be accessed by: :code:`function_return[bin][alpha]`
+        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to :code:`np.nan`.
         """
         if not isinstance(bins, (list, np.ndarray)):
             raise TypeError("bins has to be list or np.ndarray")

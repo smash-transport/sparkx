@@ -98,5 +98,6 @@ Troubleshooting
 ---------------
 
 If you encounter issues:
+
 * Ensure all dependencies are installed with the correct versions.
 * Check the `GitHub repository <https://github.com/smash-transport/sparkx/issues>`_ to report bugs or view open issues.

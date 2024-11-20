@@ -105,7 +105,7 @@ class EventCharacteristics:
         TypeError
             If the input is not a list or numpy.ndarray when deriving
             characteristics from particles.
-            If at least one element in the input is not of type Particle.
+            If at least one element in the input is not of type :code:`Particle`.
         """
         # check if the input is a Lattice3D object
         if isinstance(event_data, Lattice3D):
@@ -271,7 +271,7 @@ class EventCharacteristics:
 
             \\varepsilon_{m,n}e^{\\mathrm{i}n\\Phi_{m,n}} = -\\frac{\\lbrace{r^{m}e^{\\mathrm{i}n\\phi}\\rbrace}}{\\lbrace{r^{m}\\rbrace}}
 
-        For `harmonic_n=1`, :math:`n=3` is used. If `harmonic_m` is provided,
+        For :code:`harmonic_n=1`, :code:`n=3` is used. If :code:`harmonic_m` is provided,
         then the given value is used as radial exponent.
 
         Parameters
@@ -361,7 +361,7 @@ class EventCharacteristics:
         Raises
         ------
         TypeError
-            If the given IC_info is not a string and if the class is initialized
+            If the given :code:`IC_info` is not a string and if the class is initialized
             with a lattice.
 
         Returns
@@ -608,7 +608,7 @@ class EventCharacteristics:
         Raises
         ------
         TypeError
-            If the given IC_info is not a string and if the class is initialized
+            If the given :code:`IC_info` is not a string and if the class is initialized
             with a lattice.
 
         Returns

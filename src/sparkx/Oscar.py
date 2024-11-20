@@ -20,10 +20,11 @@ class Oscar(BaseStorer):
     Defines an Oscar object.
 
     The Oscar class contains a single .oscar file including all or only chosen
-    events in either the Oscar2013 or Oscar2013Extended format. It's methods
+    events in either the Oscar2013, Oscar2013Extended, Oscar2013Extended_IC, 
+    Oscar2013Extended_Photons or ASCIICustom format. It's methods
     allow to directly act on all contained events as applying acceptance filters
-    (e.g. un/charged particles, spectators/participants) to keep/remove particles
-    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
+    (e.g. un-/charged particles, spectators/participants) to keep/remove particles
+    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo-/rapidity, pT).
     Once these filters are applied, the new data set can be accessed as a
 
     1) nested list containing all quantities of the Oscar format
@@ -76,11 +77,13 @@ class Oscar(BaseStorer):
     PATH_OSCAR_ : str
         Path to the Oscar file
     oscar_format_ : str
-        Input Oscar format "Oscar2013" or "Oscar2013Extended" (set automatically)
+        Input Oscar format "Oscar2013", "Oscar2013Extended", 
+        "Oscar2013Extended_IC", "Oscar2013Extended_Photons", 
+        "ASCIICustom" (set automatically)
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
-        event as num_output_per_event_[event i][num_output in event i] (updated
-        when filters are applied)
+        event as :code:`num_output_per_event_[event i][num_output in event i]`
+        (updated when filters are applied)
     num_events_ : int
         Number of events contained in the Oscar object (updated when filters
         are applied)

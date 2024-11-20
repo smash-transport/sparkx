@@ -27,7 +27,8 @@ class CentralityClasses:
     Raises
     ------
     TypeError
-        If `events_multiplicity` or `centrality_bins` is not a list or numpy.ndarray.
+        If :code:`events_multiplicity` or :code:`centrality_bins` is not a list 
+        or :code:`numpy.ndarray`.
 
     Attributes
     ----------
@@ -268,7 +269,7 @@ class CentralityClasses:
         Raises
         ------
         TypeError
-            If `fname` is not a string.
+            If :code:`fname` is not a string.
 
         Examples
         --------

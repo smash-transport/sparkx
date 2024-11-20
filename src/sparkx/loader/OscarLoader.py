@@ -111,6 +111,7 @@ class OscarLoader(BaseLoader):
         ----------
         **kwargs : dict, optional
             A dictionary of optional arguments. The following keys are recognized:
+
             - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
             - 'filters': A list of filters to apply to the data.
 
@@ -123,6 +124,7 @@ class OscarLoader(BaseLoader):
         -------
         tuple
             A tuple containing the following elements:
+
             - A list of particles loaded from the OSCAR data.
             - The number of events in the OSCAR data.
             - The number of particles in each event in the OSCAR data.
@@ -547,6 +549,7 @@ class OscarLoader(BaseLoader):
         ----------
         kwargs : dict
             A dictionary of optional arguments. The following keys are recognized:
+
             - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
             - 'filters': A list of filters to apply to the data.
 
