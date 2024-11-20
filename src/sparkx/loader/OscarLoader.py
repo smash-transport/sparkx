@@ -368,7 +368,6 @@ class OscarLoader(BaseLoader):
         keys in the filters_dict dictionary. The filters include:
         'charged_particles', 'uncharged_particles', 'strange_particles',
         'particle_species', 'remove_particle_species', 'participants',
-git rebase --continue
         'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
         'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
         'multiplicity_cut'. If a key in the filters_dict dictionary does not
