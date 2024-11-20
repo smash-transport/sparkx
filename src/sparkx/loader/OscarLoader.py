@@ -9,6 +9,7 @@
 
 from sparkx.loader.BaseLoader import BaseLoader
 from sparkx.Filter import *
+from sparkx.Particle import Particle
 import os
 from typing import Dict, List, Tuple, Optional, Union, Any
 
@@ -66,6 +67,7 @@ class OscarLoader(BaseLoader):
     event_end_lines_: List[str]
     num_events_: int
     num_output_per_event_: np.ndarray
+    custom_attr_list: List[str]
 
     def __init__(self, OSCAR_FILE: str):
         """
@@ -81,24 +83,25 @@ class OscarLoader(BaseLoader):
         Raises
         ------
         FileNotFoundError
-            If the input file does not have the '.oscar' extension.
+            If the input file does not have the '.oscar' or '.dat' extension.
 
         Returns
         -------
         None
         """
-        if not ".oscar" in OSCAR_FILE:
+        if not ".oscar" in OSCAR_FILE and not ".dat" in OSCAR_FILE:
             raise FileNotFoundError(
                 "Input file is not in the OSCAR format. Input "
-                "file must have the ending .oscar"
+                "file must have the ending .oscar or .dat"
             )
 
         self.PATH_OSCAR_ = OSCAR_FILE
         self.oscar_format_ = None
+        self.custom_attr_list = []
 
     def load(
         self, **kwargs: Dict[str, Any]
-    ) -> Tuple[List[List["Particle"]], int, np.ndarray]:
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
         """
         Loads the OSCAR data from the specified file.
 
@@ -162,6 +165,7 @@ class OscarLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
+            self.custom_attr_list
         )
 
     def _get_num_skip_lines(self) -> int:
@@ -238,6 +242,38 @@ class OscarLoader(BaseLoader):
                 + "or corrupted."
             )
 
+    def _set_custom_attr_list(self, header_line: List[str]) -> List[str]:
+        self.custom_attr_list = []
+        attr_map = {
+            't': 't',
+            'x': 'x',
+            'y': 'y',
+            'z': 'z',
+            'mass': 'mass',
+            'p0': 'E',
+            'px': 'px',
+            'py': 'py',
+            'pz': 'pz',
+            'pdg': 'pdg',
+            'ID': 'ID',
+            'charge': 'charge',
+            'ncoll': 'ncoll',
+            'form_time': 'form_time',
+            'xsecfac': 'xsecfac',
+            'proc_id_origin': 'proc_id_origin',
+            'proc_type_origin': 'proc_type_origin',
+            'time_last_coll': 'time_last_coll',
+            'pdg_mother1': 'pdg_mother1',
+            'pdg_mother2': 'pdg_mother2',
+            'baryon_number': 'baryon_number',
+            'strangeness': 'strangeness'
+        }
+        for i in range(0, len(header_line)):
+            attr_name = attr_map.get(header_line[i])
+            if attr_name is not None:
+                self.custom_attr_list.append(attr_name)
+        return self.custom_attr_list
+
     def set_oscar_format(self) -> None:
         """
         Sets the number of events in the OSCAR data file.
@@ -278,10 +314,16 @@ class OscarLoader(BaseLoader):
             or first_line_list[0] == "#!OSCAR2013Extended"
         ):
             self.oscar_format_ = "Oscar2013Extended"
+        elif (
+            first_line_list[0] == "#!ASCIICustom"
+        ):
+            self.oscar_format_ = "ASCIICustom"
+            value_line=first_line_list[2:]
+            self.custom_attr_list = self._set_custom_attr_list(value_line)
         else:
             raise TypeError(
                 "Input file must follow the Oscar2013, "
-                + "Oscar2013Extended, Oscar2013Extended_IC or Oscar2013Extended_Photons format. "
+                + "Oscar2013Extended, Oscar2013Extended_IC, Oscar2013Extended_Photons or ASCIICustom format. "
             )
 
     def oscar_format(self) -> Optional[str]:
@@ -358,18 +400,22 @@ class OscarLoader(BaseLoader):
         return cumulated_lines
 
     def __apply_kwargs_filters(
-        self, event: List[List["Particle"]], filters_dict: Dict[str, Any]
-    ) -> List[List["Particle"]]:
+        self, event: List[List[Particle]], filters_dict: Dict[str, Any]
+    ) -> List[List[Particle]]:
         """
         Applies the specified filters to the given event.
 
         This method applies a series of filters to the event data based on the
         keys in the filters_dict dictionary. The filters include:
-        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'charged_particles', 'uncharged_particles',
         'particle_species', 'remove_particle_species', 'participants',
         'spectators', 'lower_event_energy_cut', 'spacetime_cut', 'pT_cut',
-        'rapidity_cut', 'pseudorapidity_cut', 'spacetime_rapidity_cut', and
-        'multiplicity_cut'. If a key in the filters_dict dictionary does not
+        'mT_cut', 'rapidity_cut', 'pseudorapidity_cut',
+        'spacetime_rapidity_cut', 'multiplicity_cut', 'keep_hadrons',
+        'keep_leptons', 'keep_mesons', 'keep_baryons', 'keep_up', 'keep_down',
+        'keep_strange', 'keep_charm', 'keep_bottom', 'keep_top' and
+        'remove_photons'.
+        If a key in the filters_dict dictionary does not
         match any of these filters, a ValueError is raised.
 
         Parameters
@@ -401,9 +447,6 @@ class OscarLoader(BaseLoader):
             elif i == "uncharged_particles":
                 if filters_dict["uncharged_particles"]:
                     event = uncharged_particles(event)
-            elif i == "strange_particles":
-                if filters_dict["strange_particles"]:
-                    event = strange_particles(event)
             elif i == "particle_species":
                 event = particle_species(
                     event, filters_dict["particle_species"]
@@ -434,6 +477,8 @@ class OscarLoader(BaseLoader):
                 )
             elif i == "pT_cut":
                 event = pT_cut(event, filters_dict["pT_cut"])
+            elif i == "mT_cut":
+                event = mT_cut(event, filters_dict["mT_cut"])
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
@@ -448,6 +493,39 @@ class OscarLoader(BaseLoader):
                 event = multiplicity_cut(
                     event, filters_dict["multiplicity_cut"]
                 )
+            elif i == "keep_hadrons":
+                if filters_dict["keep_hadrons"]:
+                    event = keep_hadrons(event)
+            elif i == "keep_leptons":
+                if filters_dict["keep_leptons"]:
+                    event = keep_leptons(event)
+            elif i == "keep_mesons":
+                if filters_dict["keep_mesons"]:
+                    event = keep_mesons(event)
+            elif i == "keep_baryons":
+                if filters_dict["keep_baryons"]:
+                    event = keep_baryons(event)
+            elif i == "keep_up":
+                if filters_dict["keep_up"]:
+                    event = keep_up(event)
+            elif i == "keep_down":
+                if filters_dict["keep_down"]:
+                    event = keep_down(event)
+            elif i == "keep_strange":
+                if filters_dict["keep_strange"]:
+                    event = keep_strange(event)
+            elif i == "keep_charm":
+                if filters_dict["keep_charm"]:
+                    event = keep_charm(event)
+            elif i == "keep_bottom":
+                if filters_dict["keep_bottom"]:
+                    event = keep_bottom(event)
+            elif i == "keep_top":
+                if filters_dict["keep_top"]:
+                    event = keep_top(event)
+            elif i == "remove_photons":
+                if filters_dict["remove_photons"]:
+                    event = remove_photons(event)
             else:
                 raise ValueError("The cut is unknown!")
 
@@ -505,7 +583,7 @@ class OscarLoader(BaseLoader):
                         "First line of the event is not a comment "
                         + 'line or does not contain "out"'
                     )
-                elif "event" in line and ("out" in line or "in " in line):
+                elif "event" in line and ("out" in line or "in "  in line or " start" in line):
                     continue
                 elif "#" in line and "end" in line:
                     if "filters" in self.optional_arguments_.keys():
@@ -521,8 +599,11 @@ class OscarLoader(BaseLoader):
                 elif "#" in line:
                     raise ValueError("Comment line unexpectedly found: " + line)
                 else:
-                    line_list = line.replace("\n", "").split(" ")
-                    particle = Particle(self.oscar_format_, line_list)
+                    line_list = np.asarray(line.replace("\n", "").split(" "))
+                    if(self.oscar_format_ == "ASCIICustom"):
+                        particle = Particle(self.oscar_format_, line_list, self.custom_attr_list)
+                    else:
+                        particle = Particle(self.oscar_format_, line_list)
                     data.append(particle)
 
         # Correct num_output_per_event and num_events
@@ -574,7 +655,7 @@ class OscarLoader(BaseLoader):
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             line_counter: int
-            event: int | str
+            event: Union[int, str]
             line_str: List[str]
             if (
                 self.oscar_format_ != "Oscar2013Extended_IC"
@@ -584,9 +665,9 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end " in line:
+                    elif "#" in line and " end " in line:
                         self.event_end_lines_.append(line)
-                    elif "#" in line and "out" in line:
+                    elif "#" in line and " out " in line:
                         line_str = line.replace("\n", "").split(" ")
                         event = line_str[2]
                         num_output: int = int(line_str[4])
@@ -601,10 +682,10 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end" in line:
+                    elif "#" in line and " end" in line:
                         self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter - 2])
-                    elif "#" in line and "in" in line:
+                        event_output.append([event, line_counter - 1])
+                    elif "#" in line and ( " in " in line or " start" in line):
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         line_counter = 0
@@ -621,14 +702,14 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and "end" in line:
+                    elif "#" in line and " end " in line:
                         if line_memory == 1:
                             continue
                         self.event_end_lines_.append(line)
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         event_output.append([event, line_counter - 1])
-                    elif "#" in line and "out" in line:
+                    elif "#" in line and " out " in line:
                         line_counter = 0
                     else:
                         continue

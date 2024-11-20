@@ -9,7 +9,7 @@
 
 import numpy as np
 from sparkx.Jackknife import Jackknife
-from typing import List, Tuple, Union, Any
+from typing import Union, Optional, Any, List, Tuple
 from sparkx.Particle import Particle
 
 
@@ -84,23 +84,20 @@ class MultiParticlePtCorrelations:
 
     def __init__(self, max_order: int) -> None:
         self.max_order = max_order
-        # Check if max_order is an integer
-        if not isinstance(self.max_order, int):
-            raise TypeError("max_order must be an integer")
         # Check that max_order is greater than 0 and less than 9
         if self.max_order < 1 or self.max_order > 8:
             raise ValueError("max_order must be greater than 0 and less than 9")
 
-        self.mean_pT_correlation: Union[np.ndarray, None] = None
-        self.mean_pT_correlation_error: Union[np.ndarray, None] = None
-        self.kappa: Union[np.ndarray, None] = None
-        self.kappa_error: Union[np.ndarray, None] = None
+        self.mean_pt_correlation: Optional[np.ndarray] = None
+        self.mean_pt_correlation_error: Optional[np.ndarray] = None
+        self.kappa: Optional[np.ndarray] = None
+        self.kappa_error: Optional[np.ndarray] = None
         self.N_events: Any = None
         self.D_events: Any = None
 
     def _P_W_k(
         self, particle_list_event: List[Particle]
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         This implements Eq. 7 in [1].
 

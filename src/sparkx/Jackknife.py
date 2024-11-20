@@ -100,15 +100,21 @@ class Jackknife:
         if not isinstance(seed, int):
             raise TypeError("seed must be an integer.")
 
+        if not isinstance(delete_fraction, float):
+            raise TypeError("delete_fraction must be a float.")
+        if not isinstance(number_samples, int):
+            raise TypeError("number_samples must be an integer.")
+        if not isinstance(seed, int):
+            raise TypeError("seed must be an integer.")
         if delete_fraction < 0.0 or delete_fraction >= 1.0:
             raise ValueError("delete_fraction must be between 0 and 1.")
         if number_samples < 1:
             raise ValueError("number_samples must be greater than 0.")
 
-        self.delete_fraction: float = delete_fraction
-        self.number_samples: int = number_samples
+        self.delete_fraction = delete_fraction
+        self.number_samples = number_samples
 
-        self.seed: int = seed
+        self.seed = seed
         self._init_random()
 
     def _init_random(self) -> None:
@@ -143,8 +149,8 @@ class Jackknife:
         self,
         reduced_data: np.ndarray,
         function: Callable[..., Any],
-        *args,
-        **kwargs,
+        *args: tuple,
+        **kwargs: Any,
     ) -> Any:
         """
         Apply a function to the reduced data.
@@ -169,7 +175,11 @@ class Jackknife:
         return function(reduced_data, *args, **kwargs)
 
     def _compute_one_jackknife_sample(
-        self, data: np.ndarray, function: Callable[..., Any], *args, **kwargs
+        self,
+        data: np.ndarray,
+        function: Callable[..., Any],
+        *args: tuple,
+        **kwargs: Any,
     ) -> Any:
         """
         Compute one Jackknife sample.
@@ -198,12 +208,12 @@ class Jackknife:
 
     @staticmethod
     def _helper_unpack(
-        instance,
+        instance: "Jackknife",
         index: int,
         data: np.ndarray,
         function: Callable[..., Any],
         args: tuple,
-        kwargs: dict,
+        kwargs: Any,
     ) -> Any:
         """
         Helper function to unpack the arguments for parallel processing.
@@ -254,8 +264,8 @@ class Jackknife:
         data: np.ndarray,
         function: Callable[..., Any],
         num_cores: Optional[int] = None,
-        *args,
-        **kwargs,
+        *args: tuple,
+        **kwargs: Any,
     ) -> np.ndarray:
         """
         Compute all Jackknife samples.
@@ -309,8 +319,8 @@ class Jackknife:
         data: np.ndarray,
         function: Callable[..., Any] = np.mean,
         num_cores: Optional[int] = None,
-        *args,
-        **kwargs,
+        *args: tuple,
+        **kwargs: Any,
     ) -> float:
         """
         Compute the Jackknife uncertainty estimates for a function applied to

@@ -11,7 +11,7 @@ import numpy as np
 from sparkx.Particle import Particle
 from sparkx.Lattice3D import Lattice3D
 import warnings
-from typing import Union, List, Optional, Any
+from typing import Union, Optional, Any, List, Tuple
 
 
 class EventCharacteristics:
@@ -308,20 +308,20 @@ class EventCharacteristics:
 
     def generate_eBQS_densities_Milne_from_OSCAR_IC(
         self,
-        x_min: float,
-        x_max: float,
-        y_min: float,
-        y_max: float,
-        z_min: float,
-        z_max: float,
+        x_min: Union[float, int],
+        x_max: Union[float, int],
+        y_min: Union[float, int],
+        y_max: Union[float, int],
+        z_min: Union[float, int],
+        z_max: Union[float, int],
         Nx: int,
         Ny: int,
         Nz: int,
-        n_sigma_x: float,
-        n_sigma_y: float,
-        n_sigma_z: float,
-        sigma_smear: float,
-        eta_range: Union[list, tuple],
+        n_sigma_x: Union[float, int],
+        n_sigma_y: Union[float, int],
+        n_sigma_z: Union[float, int],
+        sigma_smear: Union[float, int],
+        eta_range: Union[List[Union[int, float]], Tuple[Union[float, int]]],
         output_filename: str,
         IC_info: Optional[str] = None,
     ) -> None:
@@ -398,8 +398,8 @@ class EventCharacteristics:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles."
             )
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError("The input is not a list nor a numpy.ndarray.")
+        if not isinstance(self.event_data_, list):
+            raise TypeError("The input is not a list.")
 
         energy_density = Lattice3D(
             x_min,
@@ -481,7 +481,7 @@ class EventCharacteristics:
         # range
         x = energy_density.x_values_
         y = energy_density.y_values_
-        eta = np.linspace(eta_range[0], eta_range[1], eta_range[2])
+        eta = np.linspace(eta_range[0], eta_range[1], int(eta_range[2]))
         if (
             1.05
             * tau
@@ -560,19 +560,19 @@ class EventCharacteristics:
 
     def generate_eBQS_densities_Minkowski_from_OSCAR_IC(
         self,
-        x_min: float,
-        x_max: float,
-        y_min: float,
-        y_max: float,
-        z_min: float,
-        z_max: float,
+        x_min: Union[float, int],
+        x_max: Union[float, int],
+        y_min: Union[float, int],
+        y_max: Union[float, int],
+        z_min: Union[float, int],
+        z_max: Union[float, int],
         Nx: int,
         Ny: int,
         Nz: int,
-        n_sigma_x: float,
-        n_sigma_y: float,
-        n_sigma_z: float,
-        sigma_smear: float,
+        n_sigma_x: Union[float, int],
+        n_sigma_y: Union[float, int],
+        n_sigma_z: Union[float, int],
+        sigma_smear: Union[float, int],
         output_filename: str,
         IC_info: Optional[str] = None,
     ) -> None:
@@ -637,8 +637,8 @@ class EventCharacteristics:
             raise TypeError(
                 "The smearing function only works with EventCharacteristics derived from particles."
             )
-        if not isinstance(self.event_data_, (list, np.ndarray)):
-            raise TypeError("The input is not a list nor a numpy.ndarray.")
+        if not isinstance(self.event_data_, list):
+            raise TypeError("The input is not a list.")
 
         energy_density = Lattice3D(
             x_min,

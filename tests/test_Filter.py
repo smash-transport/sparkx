@@ -68,10 +68,195 @@ def particle_list_strange():
 
 
 def test_strange_particles(particle_nan_quantities, particle_list_strange):
-    return_list = strange_particles(particle_nan_quantities)
+    return_list = keep_strange(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
-    return_list = strange_particles(particle_list_strange)
+    return_list = keep_strange(particle_list_strange)
+    assert len(return_list[0]) == 5
+
+
+@pytest.fixture
+def particle_list_baryons_electrons():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 11
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_hadrons(particle_nan_quantities, particle_list_baryons_electrons):
+    return_list = keep_hadrons(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_hadrons(particle_list_baryons_electrons)
+    assert len(return_list[0]) == 5
+
+
+def test_keep_leptons(particle_nan_quantities, particle_list_baryons_electrons):
+    return_list = keep_leptons(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_leptons(particle_list_baryons_electrons)
+    assert len(return_list[0]) == 4
+
+
+def test_keep_baryons(particle_nan_quantities, particle_list_baryons_electrons):
+    return_list = keep_baryons(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_baryons(particle_list_baryons_electrons)
+    assert len(return_list[0]) == 5
+
+
+@pytest.fixture
+def particle_list_quarks_electrons():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 11
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_quarks(particle_nan_quantities, particle_list_quarks_electrons):
+    return_list = keep_quarks(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_quarks(particle_list_quarks_electrons)
+    assert len(return_list[0]) == 5
+
+
+@pytest.fixture
+def particle_list_baryons_mesons():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 211
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_mesons(particle_nan_quantities, particle_list_baryons_mesons):
+    return_list = keep_mesons(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_mesons(particle_list_baryons_mesons)
+    assert len(return_list[0]) == 4
+
+
+@pytest.fixture
+def particle_list_hadrons_with_up_down_quarks():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 11
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_up_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_up_down_quarks):
+    return_list = keep_up(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_up(particle_list_hadrons_with_up_down_quarks)
+    assert len(return_list[0]) == 5
+
+
+def test_keep_down_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_up_down_quarks):
+    return_list = keep_down(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_down(particle_list_hadrons_with_up_down_quarks)
+    assert len(return_list[0]) == 5
+
+
+@pytest.fixture
+def particle_list_hadrons_with_charm_quarks():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 411
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_charm_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_charm_quarks):
+    return_list = keep_charm(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_charm(particle_list_hadrons_with_charm_quarks)
+    assert len(return_list[0]) == 4
+
+@pytest.fixture
+def particle_list_hadrons_with_bottom_quarks():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 511
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_keep_bottom_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_bottom_quarks):
+    return_list = keep_bottom(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_bottom(particle_list_hadrons_with_bottom_quarks)
+    assert len(return_list[0]) == 4
+
+
+def test_keep_top_quark(particle_nan_quantities, particle_list_hadrons_with_bottom_quarks):
+    return_list = keep_top(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = keep_top(particle_list_hadrons_with_bottom_quarks)
+    assert len(return_list[0]) == 0
+
+
+@pytest.fixture
+def particle_list_hadrons_with_photons():
+    particle_list = []
+    for i in range(5):
+        p = Particle()
+        p.pdg = 2212
+        particle_list.append(p)
+    for i in range(4):
+        p = Particle()
+        p.pdg = 22
+        particle_list.append(p)
+    return [particle_list]
+
+
+def test_remove_photons(particle_nan_quantities, particle_list_hadrons_with_photons):
+    return_list = remove_photons(particle_nan_quantities)
+    assert len(return_list[0]) == 0
+
+    return_list = remove_photons(particle_list_hadrons_with_photons)
     assert len(return_list[0]) == 5
 
 
@@ -585,18 +770,20 @@ def particle_list_multiplicity():
 
 def test_multiplicity_cut(particle_list_multiplicity):
     # Test cases for valid input
-    assert multiplicity_cut(particle_list_multiplicity, 7) == [
+    assert multiplicity_cut(particle_list_multiplicity, (7,None)) == [
         particle_list_multiplicity[1]
     ]
-    assert multiplicity_cut(particle_list_multiplicity, 11) == []
+    assert multiplicity_cut(particle_list_multiplicity, (5,10)) == [
+        particle_list_multiplicity[0]
+    ]
+    assert multiplicity_cut(particle_list_multiplicity, (11, None)) == []
 
     # Test cases for invalid input
     with pytest.raises(TypeError):
-        multiplicity_cut(particle_list_multiplicity, min_multiplicity=3.5)
+        multiplicity_cut(particle_list_multiplicity, cut_value=(-3.5,4))
 
-    with pytest.raises(ValueError):
-        multiplicity_cut(particle_list_multiplicity, min_multiplicity=-1)
-
+    with pytest.raises(TypeError):
+        multiplicity_cut(particle_list_multiplicity, cut_value=(0,'a'))
 
 @pytest.fixture
 def particle_list_status():

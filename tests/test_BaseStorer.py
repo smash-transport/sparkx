@@ -21,7 +21,7 @@ class MockLoader(BaseLoader):
         particle_list = [[[1, 2, 3], [4, 5, 6]]]  # Example particle data
         num_events = 1
         num_output_per_event = np.array([[1, len(particle_list[0])]])
-        return particle_list, num_events, num_output_per_event
+        return particle_list, num_events, num_output_per_event, []
 
 
 # Concrete subclass for testing purposes
@@ -42,6 +42,12 @@ class ConcreteStorer(BaseStorer):
         with open(output_file, "w") as file:
             for event in self.particle_list():
                 file.write(str(event) + "\n")
+    
+    def _update_after_merge(self, other: "ConcreteStorer") -> None:
+        pass
+
+class ConcreteStorer2(ConcreteStorer):
+    pass
 
 
 # Fixtures for creating instances
@@ -104,3 +110,67 @@ def test_print_particle_lists_to_file(concrete_storer, tmp_path):
     with open(output_file, "r") as f:
         content = f.read()
     assert content == "[1, 2, 3]\n[4, 5, 6]\n"
+
+def test_add_storer():
+    storer1 = ConcreteStorer(path="dummy_path")
+    storer2 = ConcreteStorer(path="dummy_path")
+    storer3 = ConcreteStorer2(path="dummy_path")
+
+    # Mock data for storer1
+    storer1.particle_list_ = [
+        [[1, 2, 3], [4, 5, 6]],
+        [[7, 8, 9], [10, 11, 12]],
+        [[7, 8, 9], [10, 11, 12], [10, 11, 12]]
+    ]
+    storer1.num_output_per_event_ = np.array([[1, 2], [2, 2], [3, 3]])
+    storer1.num_events_ = 3
+
+    # Mock data for storer2
+    storer2.particle_list_ = [
+        [[13, 14, 15]],
+        [[19, 20, 21], [22, 23, 24]]
+    ]
+    storer2.num_output_per_event_ = np.array([[1, 1], [2, 2]])
+    storer2.num_events_ = 2
+
+    # Add the two storers
+    combined_storer = storer1 + storer2
+
+    # Expected combined data
+    expected_particle_list = [
+        [[1, 2, 3], [4, 5, 6]],
+        [[7, 8, 9], [10, 11, 12]],
+        [[7, 8, 9], [10, 11, 12], [10, 11, 12]],
+        [[13, 14, 15]],
+        [[19, 20, 21], [22, 23, 24]]
+    ]
+    expected_num_output_per_event = np.array([[1, 2], [2, 2],[3, 3], [4, 1], [5, 2]])
+    expected_num_events = 5
+
+     # Add the two storers
+    combined_storer2 = storer2 + storer1
+
+    # Expected combined data
+    expected_particle_list2 = [
+        [[13, 14, 15]],
+        [[19, 20, 21], [22, 23, 24]],
+        [[1, 2, 3], [4, 5, 6]],
+        [[7, 8, 9], [10, 11, 12]],
+        [[7, 8, 9], [10, 11, 12], [10, 11, 12]]
+    ]
+    expected_num_output_per_event2 = np.array([[1, 1], [2, 2],[3, 2], [4, 2], [5, 3]])
+    expected_num_events2 = 5
+
+    # Assertions
+    assert combined_storer.particle_list_ == expected_particle_list
+    assert np.array_equal(combined_storer.num_output_per_event_, expected_num_output_per_event)
+    assert combined_storer.num_events_ == expected_num_events
+    assert combined_storer2.particle_list_ == expected_particle_list2
+    assert np.array_equal(combined_storer2.num_output_per_event_, expected_num_output_per_event2)
+    assert combined_storer2.num_events_ == expected_num_events2
+
+    with pytest.raises(TypeError):
+        storer1 + 1
+    
+    with pytest.raises(TypeError):
+        storer1 + storer3

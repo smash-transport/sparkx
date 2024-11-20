@@ -72,7 +72,7 @@ class JetscapeLoader(BaseLoader):
 
     def load(
         self, **kwargs: Any
-    ) -> Tuple[List[List[Particle]], int, np.ndarray]:
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
         """
         Loads the data from the JETSCAPE file based on the specified optional arguments.
 
@@ -156,6 +156,7 @@ class JetscapeLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
+            []
         )
 
     # PRIVATE CLASS METHODS
@@ -268,12 +269,15 @@ class JetscapeLoader(BaseLoader):
 
         This method applies a series of filters to the event based on the keys
         in the filters_dict dictionary. The filters include
-        'charged_particles', 'uncharged_particles', 'strange_particles',
+        'charged_particles', 'uncharged_particles',
         'particle_species', 'remove_particle_species',
-        'lower_event_energy_cut', 'pT_cut', 'rapidity_cut',
-        'pseudorapidity_cut', 'spacetime_rapidity_cut', 'multiplicity_cut',
-        and 'particle_status'.
-        If a key is not recognized, it raises a ValueError.
+        'lower_event_energy_cut', 'pT_cut', 'mT_cut', 'rapidity_cut',
+        'pseudorapidity_cut', 'multiplicity_cut',
+        'particle_status', 'keep_hadrons', 'keep_leptons', 'keep_quarks',
+        'keep_mesons', 'keep_baryons', 'keep_up', 'keep_down', 'keep_strange',
+        'keep_charm', 'keep_bottom', 'keep_top' and 'remove_photons'.
+        If a key in the filters_dict dictionary does not
+        match any of these filters, a ValueError is raised.
 
         Parameters
         ----------
@@ -287,7 +291,8 @@ class JetscapeLoader(BaseLoader):
         Raises
         ------
         ValueError
-            If a key in the filters_dict dictionary is not recognized.
+            If a key in the filters_dict dictionary does not match any of the
+            supported filters.
 
         Returns
         -------
@@ -303,9 +308,6 @@ class JetscapeLoader(BaseLoader):
             elif i == "uncharged_particles":
                 if filters_dict["uncharged_particles"]:
                     event = uncharged_particles(event)
-            elif i == "strange_particles":
-                if filters_dict["strange_particles"]:
-                    event = strange_particles(event)
             elif i == "particle_species":
                 event = particle_species(
                     event, filters_dict["particle_species"]
@@ -320,15 +322,13 @@ class JetscapeLoader(BaseLoader):
                 )
             elif i == "pT_cut":
                 event = pT_cut(event, filters_dict["pT_cut"])
+            elif i == "mT_cut":
+                event = mT_cut(event, filters_dict["mT_cut"])
             elif i == "rapidity_cut":
                 event = rapidity_cut(event, filters_dict["rapidity_cut"])
             elif i == "pseudorapidity_cut":
                 event = pseudorapidity_cut(
                     event, filters_dict["pseudorapidity_cut"]
-                )
-            elif i == "spacetime_rapidity_cut":
-                event = spacetime_rapidity_cut(
-                    event, filters_dict["spacetime_rapidity_cut"]
                 )
             elif i == "multiplicity_cut":
                 event = multiplicity_cut(
@@ -336,6 +336,42 @@ class JetscapeLoader(BaseLoader):
                 )
             elif i == "particle_status":
                 event = particle_status(event, filters_dict["particle_status"])
+            elif i == "keep_hadrons":
+                if filters_dict["keep_hadrons"]:
+                    event = keep_hadrons(event)
+            elif i == "keep_leptons":
+                if filters_dict["keep_leptons"]:
+                    event = keep_leptons(event)
+            elif i == "keep_quarks":
+                if filters_dict["keep_quarks"]:
+                    event = keep_quarks(event)
+            elif i == "keep_mesons":
+                if filters_dict["keep_mesons"]:
+                    event = keep_mesons(event)
+            elif i == "keep_baryons":
+                if filters_dict["keep_baryons"]:
+                    event = keep_baryons(event)
+            elif i == "keep_up":
+                if filters_dict["keep_up"]:
+                    event = keep_up(event)
+            elif i == "keep_down":
+                if filters_dict["keep_down"]:
+                    event = keep_down(event)
+            elif i == "keep_strange":
+                if filters_dict["keep_strange"]:
+                    event = keep_strange(event)
+            elif i == "keep_charm":
+                if filters_dict["keep_charm"]:
+                    event = keep_charm(event)
+            elif i == "keep_bottom":
+                if filters_dict["keep_bottom"]:
+                    event = keep_bottom(event)
+            elif i == "keep_top":
+                if filters_dict["keep_top"]:
+                    event = keep_top(event)
+            elif i == "remove_photons":
+                if filters_dict["remove_photons"]:
+                    event = remove_photons(event)
             else:
                 raise ValueError("The cut is unknown!")
 
@@ -441,7 +477,7 @@ class JetscapeLoader(BaseLoader):
                     line_list = (
                         line.replace("\n", "").replace("\t", " ").split(" ")
                     )
-                    particle = Particle("JETSCAPE", line_list)
+                    particle = Particle("JETSCAPE", np.asarray(line_list))
                     data.append(particle)
 
         # Correct num_output_per_event and num_events

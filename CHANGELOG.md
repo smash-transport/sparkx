@@ -22,15 +22,18 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 Date:
 
 ### Added
-* Particle: Add member function to calculate the transverse mass of a particle
+* Particle: Add member functions mT, is_quark, is_lepton, has_up, has_down, has_strange, has_charm, has_bottom, has_top
+* Filter: Add keep_up, keep_down, keep_charm, keep_bottom, keep_top, keep_hadrons, keep_leptons, keep_quarks, keep_mesons, keep_baryons, remove_photons filters
 * Oscar: Add transverse mass cut to methods
 * Jetscape: Add transverse mass cut to methods
 * Added ParticleObjectStorer to store generic particle lists
 * SPARKX checks now for static tying consistency
+* Added support for the SMASH 3.2 feature of ASCIICustom output format
+* Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
 
 ### Changed
-* Filter: Perform general clean up to reduce code duplications
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
+* Particle: Add functions 
 
 | Old Method Name                     | New Method Name             |
 |-------------------------------------|-----------------------------|
@@ -41,12 +44,18 @@ Date:
 | pt_cut()                            | pT_cut()                    |
 | compute_mass_from_energy_momentum() | mass_from_energy_momentum() |
 | compute_charge_from_pdg()           | charge_from_pdg()           |
+| is_strange()                        | has_strange()               |
+
+* Filter: Perform general clean up to reduce code duplications
+* Filter: Rename strange_particles filter to keep_strange
 * Changed class architecture to separate loader and storer classes
 * Changed code formatter to `black`
+* SPARKX requires now python versions >= 3.9
 
 ### Fixed
 * Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
-* Bugfix in the scaling function of Histogram
+* Histogram: Bugfix in the scaling function of Histogram
+* Oscar: Bugfix in comment line identification 
 
 
 ## v1.3.0-Newton

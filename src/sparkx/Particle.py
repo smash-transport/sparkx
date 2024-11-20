@@ -11,6 +11,7 @@ import numpy as np
 import math
 from particle import PDGID
 import warnings
+from typing import Optional, Union, List
 
 
 class Particle:
@@ -151,16 +152,30 @@ class Particle:
         Compute charge from PDG code
     mT:
         Compute transverse mass
+    is_quark:
+        Is the particle a quark?
+    is_lepton:
+        Is the particle a lepton?
     is_meson:
         Is the particle a meson?
     is_baryon:
         Is the particle a baryon?
     is_hadron:
         Is the particle a hadron?
-    is_strange:
-        Is the particle a strange particle?
     is_heavy_flavor:
         Is the particle a heavy flavor particle?
+    has_down:
+        Does the particle have a down quark?
+    has_up:
+        Does the particle have an up quark?
+    has_strange:
+        Does the particle have a strange quark?
+    has_charm:
+        Does the particle have a charm quark?
+    has_bottom:
+        Does the particle have a bottom quark?
+    has_top:
+        Does the particle have a top quark?
     weight:
         What is the weight of the particle?
     spin:
@@ -196,6 +211,8 @@ class Particle:
 
     * "Oscar2013Extended_Photons"
 
+    * "ASCIICustom"
+
     * "JETSCAPE"
 
     .. highlight:: python
@@ -215,27 +232,38 @@ class Particle:
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
     by 3 to make it an integer.
-    The functions `is_strange()` and `is_heavy_flavor()` should not be used in this
-    case.
     """
 
     __slots__ = ["data_"]
 
-    def __init__(self, input_format=None, particle_array=None):
-        self.data_ = np.array(25 * [np.nan], dtype=float)
-        self.pdg_valid = False
+    def __init__(
+        self,
+        input_format: Optional[str] = None,
+        particle_array: Optional[np.ndarray] = None,
+        attribute_list: List[str] = []
+    ) -> None:
+        self.data_: np.ndarray = np.array(25 * [np.nan], dtype=float)
+        self.pdg_valid: bool = False
 
         if ((input_format is not None) and (particle_array is None)) or (
             (input_format is None) and (particle_array is not None)
         ):
             raise ValueError("'input_format' or 'particle_array' not given")
+        
+        if attribute_list is None and input_format == "ASCIICustom":
+            raise ValueError("'attribute_list' not given")
+
+        if attribute_list!=[] and input_format != "ASCIICustom":
+            raise ValueError("'OscarCustom' format requires 'attribute_list' to be given.")
 
         if (input_format is not None) and (particle_array is not None):
-            self.__initialize_from_array(input_format, particle_array)
+            self.__initialize_from_array(input_format, particle_array, attribute_list)
 
-    def __initialize_from_array(self, input_format, particle_array):
+    def __initialize_from_array(
+        self, input_format: str, particle_array: np.ndarray, attribute_list: List[str]
+    ) -> None:
         """
-        Initialize instance attributes based on the provided input format and array.
+        Initialize instance attributes based on the provided input format and array, and optionally an atttribute list.
 
         Parameters
         ----------
@@ -245,10 +273,14 @@ class Particle:
             - "Oscar2013Extended"
             - "Oscar2013Extended_IC"
             - "Oscar2013Extended_Photons"
+            - "ASCIICustom"
             - "JETSCAPE"
 
         particle_array : numpy.ndarray
             An array containing particle information.
+
+        attribute_list: List[str]
+            A list containing coded information which element of particle_array corresponds to which attribute of the Particle instance.
 
         Raises
         ------
@@ -270,6 +302,31 @@ class Particle:
         # first entry: index in data array
         # second entry: index in line
         attribute_mapping = {
+            "Allfields": {
+                "t": [0,0],
+                "x": [1,0],
+                "y": [2,0],
+                "z": [3,0],
+                "mass": [4,0],
+                "E": [5,0],
+                "px": [6,0],
+                "py": [7,0],
+                "pz_": [8,0],
+                "pdg": [9,0],
+                "ID": [11,0],
+                "charge": [12,0],
+                "ncoll": [13,0],
+                "form_time": [14,0],
+                "xsecfac": [15,0],
+                "proc_id_origin": [16,0],
+                "proc_type_origin": [17,0],
+                "t_last_coll": [18,0],
+                "pdg_mother1": [19,0],
+                "pdg_mother2": [20,0],
+                "status_": [21,0],
+                "baryon_number": [22,0],
+                "strangeness": [23,0],
+            },
             "Oscar2013": {
                 "t_": [0, 0],
                 "x_": [1, 1],
@@ -365,16 +422,20 @@ class Particle:
                 "pz_": [8, 6],
             },
         }
-        if input_format in attribute_mapping:
-            if len(particle_array) == len(attribute_mapping[input_format]) or (
-                input_format in ["Oscar2013Extended", "Oscar2013Extended_IC"]
-                and len(particle_array) <= len(attribute_mapping[input_format])
-                and len(particle_array)
-                >= len(attribute_mapping[input_format]) - 2
-            ):
+        if input_format == "ASCIICustom":
+            mapping_dict = {}
+            for attr in attribute_list:
+                mapping_dict[attr] = [attribute_mapping["Allfields"][attr][0], list(attribute_list).index(attr)]
+            attribute_mapping["ASCIICustom"] = mapping_dict
+        if input_format in attribute_mapping or input_format=="ASCIICustom":
+            if (input_format == "ASCIICustom" or len(particle_array) == len(attribute_mapping[input_format]) or (input_format in ["Oscar2013Extended","Oscar2013Extended_IC"]\
+                    and len(particle_array) <=  len(attribute_mapping[input_format])\
+                    and len(particle_array) >=  len(attribute_mapping[input_format])-2)):
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array) <= (index[1]):
                         continue
+                    if input_format == "ASCIICustom":
+                        attribute = attribute + "_"
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
                     # to ensure similar behaving as if we were reading in data
                     # into ints.
@@ -411,7 +472,10 @@ class Particle:
                 # It is important for JETSCAPE particles to compute pdg_valid
                 # here because the charge_from_pdg function depends on
                 # it.
-                self.pdg_valid = PDGID(self.pdg).is_valid
+                if np.isnan(self.pdg):
+                    self.pdg_valid = False
+                else:
+                    self.pdg_valid = PDGID(self.pdg).is_valid
 
                 if input_format == "JETSCAPE":
                     self.mass = self.mass_from_energy_momentum()
@@ -433,15 +497,21 @@ class Particle:
             raise ValueError(f"Unsupported input format '{input_format}'")
 
         if not self.pdg_valid:
-            warnings.warn(
-                "The PDG code "
-                + str(int(self.pdg))
-                + " is not valid. "
+            if np.isnan(self.pdg):
+                warnings.warn(
+                "No PDG code given! "
                 + "All properties extracted from the PDG are set to default values."
             )
+            else:
+                warnings.warn(
+                    "The PDG code "
+                    + str(int(self.pdg))
+                    + " is not valid. "
+                    + "All properties extracted from the PDG are set to default values."
+                )
 
     @property
-    def t(self):
+    def t(self) -> float:
         """Get or set the time of the particle.
 
         Returns
@@ -451,11 +521,11 @@ class Particle:
         return self.data_[0]
 
     @t.setter
-    def t(self, value):
+    def t(self, value: float) -> None:
         self.data_[0] = value
 
     @property
-    def x(self):
+    def x(self) -> float:
         """Get or set the x-position of the particle.
 
         Returns
@@ -465,11 +535,11 @@ class Particle:
         return self.data_[1]
 
     @x.setter
-    def x(self, value):
+    def x(self, value: float) -> None:
         self.data_[1] = value
 
     @property
-    def y(self):
+    def y(self) -> float:
         """Get or set the y-position of the particle.
 
         Returns
@@ -479,11 +549,11 @@ class Particle:
         return self.data_[2]
 
     @y.setter
-    def y(self, value):
+    def y(self, value: float) -> None:
         self.data_[2] = value
 
     @property
-    def z(self):
+    def z(self) -> float:
         """Get or set the z-position of the particle.
 
         Returns
@@ -493,11 +563,11 @@ class Particle:
         return self.data_[3]
 
     @z.setter
-    def z(self, value):
+    def z(self, value: float) -> None:
         self.data_[3] = value
 
     @property
-    def mass(self):
+    def mass(self) -> float:
         """Get or set the mass of the particle.
 
         Returns
@@ -507,11 +577,11 @@ class Particle:
         return self.data_[4]
 
     @mass.setter
-    def mass(self, value):
+    def mass(self, value: float) -> None:
         self.data_[4] = value
 
     @property
-    def E(self):
+    def E(self) -> float:
         """Get or set the energy of the particle.
 
         Returns
@@ -521,11 +591,11 @@ class Particle:
         return self.data_[5]
 
     @E.setter
-    def E(self, value):
+    def E(self, value: float) -> None:
         self.data_[5] = value
 
     @property
-    def px(self):
+    def px(self) -> float:
         """Get or set the momentum x-component of the particle.
 
         Returns
@@ -535,11 +605,11 @@ class Particle:
         return self.data_[6]
 
     @px.setter
-    def px(self, value):
+    def px(self, value: float) -> None:
         self.data_[6] = value
 
     @property
-    def py(self):
+    def py(self) -> float:
         """Get or set the momentum y-component of the particle.
 
         Returns
@@ -549,11 +619,11 @@ class Particle:
         return self.data_[7]
 
     @py.setter
-    def py(self, value):
+    def py(self, value: float) -> None:
         self.data_[7] = value
 
     @property
-    def pz(self):
+    def pz(self) -> float:
         """Get or set the momentum z-component of the particle.
 
         Returns
@@ -563,11 +633,11 @@ class Particle:
         return self.data_[8]
 
     @pz.setter
-    def pz(self, value):
+    def pz(self, value: float) -> None:
         self.data_[8] = value
 
     @property
-    def pdg(self):
+    def pdg(self) -> Union[int, float]:
         """Get or set the PDG code of the particle.
 
         Returns
@@ -579,7 +649,7 @@ class Particle:
         return int(self.data_[9])
 
     @pdg.setter
-    def pdg(self, value):
+    def pdg(self, value: float) -> None:
         self.data_[9] = value
         self.pdg_valid = PDGID(self.pdg).is_valid
 
@@ -592,7 +662,7 @@ class Particle:
             )
 
     @property
-    def ID(self):
+    def ID(self) -> Union[int, float]:
         """Get or set the ID of the particle.
 
         This is a unique number in SMASH.
@@ -606,11 +676,11 @@ class Particle:
         return int(self.data_[11])
 
     @ID.setter
-    def ID(self, value):
+    def ID(self, value: float) -> None:
         self.data_[11] = value
 
     @property
-    def charge(self):
+    def charge(self) -> Union[int, float]:
         """Get or set the electrical charge of the particle.
 
         Returns
@@ -622,7 +692,7 @@ class Particle:
         return int(self.data_[12])
 
     @charge.setter
-    def charge(self, value):
+    def charge(self, value: float) -> None:
         # this is for the case a parton is created from the JETSCAPE reader
         # handle quarks with 3 times the charge to make it integer
         if np.abs(value) < 1:
@@ -630,7 +700,7 @@ class Particle:
         self.data_[12] = value
 
     @property
-    def ncoll(self):
+    def ncoll(self) -> Union[int, float]:
         """Get or set the number of collisions of the particle.
 
         Returns
@@ -642,11 +712,11 @@ class Particle:
         return int(self.data_[13])
 
     @ncoll.setter
-    def ncoll(self, value):
+    def ncoll(self, value: float) -> None:
         self.data_[13] = value
 
     @property
-    def form_time(self):
+    def form_time(self) -> float:
         """Get or set the formation time of the particle.
 
         Returns
@@ -656,11 +726,11 @@ class Particle:
         return self.data_[14]
 
     @form_time.setter
-    def form_time(self, value):
+    def form_time(self, value: float) -> None:
         self.data_[14] = value
 
     @property
-    def xsecfac(self):
+    def xsecfac(self) -> float:
         """Get or set the cross section scaling factor of the particle.
 
         Returns
@@ -670,11 +740,11 @@ class Particle:
         return self.data_[15]
 
     @xsecfac.setter
-    def xsecfac(self, value):
+    def xsecfac(self, value: float) -> None:
         self.data_[15] = value
 
     @property
-    def proc_id_origin(self):
+    def proc_id_origin(self) -> Union[int, float]:
         """Get or set the process ID of the particle's origin.
 
         Returns
@@ -686,11 +756,11 @@ class Particle:
         return int(self.data_[16])
 
     @proc_id_origin.setter
-    def proc_id_origin(self, value):
+    def proc_id_origin(self, value: float) -> None:
         self.data_[16] = value
 
     @property
-    def proc_type_origin(self):
+    def proc_type_origin(self) -> Union[int, float]:
         """Get or set the process type of the particle's origin.
 
         Returns
@@ -702,11 +772,11 @@ class Particle:
         return int(self.data_[17])
 
     @proc_type_origin.setter
-    def proc_type_origin(self, value):
+    def proc_type_origin(self, value: float) -> None:
         self.data_[17] = value
 
     @property
-    def t_last_coll(self):
+    def t_last_coll(self) -> float:
         """Get or set the last time of a collision of the particle.
 
         Returns
@@ -716,11 +786,11 @@ class Particle:
         return self.data_[18]
 
     @t_last_coll.setter
-    def t_last_coll(self, value):
+    def t_last_coll(self, value: float) -> None:
         self.data_[18] = value
 
     @property
-    def pdg_mother1(self):
+    def pdg_mother1(self) -> Union[int, float]:
         """Get the PDG code of the first mother particle.
 
         Returns
@@ -732,11 +802,11 @@ class Particle:
         return int(self.data_[19])
 
     @pdg_mother1.setter
-    def pdg_mother1(self, value):
+    def pdg_mother1(self, value: float) -> None:
         self.data_[19] = value
 
     @property
-    def pdg_mother2(self):
+    def pdg_mother2(self) -> Union[int, float]:
         """Get the PDG code of the second mother particle.
 
         Returns
@@ -748,11 +818,11 @@ class Particle:
         return int(self.data_[20])
 
     @pdg_mother2.setter
-    def pdg_mother2(self, value):
+    def pdg_mother2(self, value: float) -> None:
         self.data_[20] = value
 
     @property
-    def status(self):
+    def status(self) -> Union[int, float]:
         """
         Get the hadron status (stores information on the module origin of
         a JETSCAPE hadron).
@@ -766,11 +836,11 @@ class Particle:
         return int(self.data_[21])
 
     @status.setter
-    def status(self, value):
+    def status(self, value: float) -> None:
         self.data_[21] = value
 
     @property
-    def baryon_number(self):
+    def baryon_number(self) -> Union[int, float]:
         """Get the baryon number of the particle.
 
         Returns
@@ -782,11 +852,11 @@ class Particle:
         return int(self.data_[22])
 
     @baryon_number.setter
-    def baryon_number(self, value):
+    def baryon_number(self, value: float) -> None:
         self.data_[22] = value
 
     @property
-    def strangeness(self):
+    def strangeness(self) -> Union[int, float]:
         """Get the strangeness of the particle.
 
         Returns
@@ -798,11 +868,11 @@ class Particle:
         return int(self.data_[23])
 
     @strangeness.setter
-    def strangeness(self, value):
+    def strangeness(self, value: float) -> None:
         self.data_[23] = value
 
     @property
-    def weight(self):
+    def weight(self) -> float:
         """Get the weight of the particle.
 
         Returns
@@ -812,11 +882,11 @@ class Particle:
         return self.data_[24]
 
     @weight.setter
-    def weight(self, value):
+    def weight(self, value: float) -> None:
         self.data_[24] = value
 
     @property
-    def pdg_valid(self):
+    def pdg_valid(self) -> bool:
         """Get the validity of the PDG code of the particle.
 
         Returns
@@ -826,10 +896,10 @@ class Particle:
         return bool(self.data_[10])
 
     @pdg_valid.setter
-    def pdg_valid(self, value):
+    def pdg_valid(self, value: bool) -> None:
         self.data_[10] = 1 if value else 0
 
-    def print_particle(self):
+    def print_particle(self) -> None:
         """Print the whole particle information as csv string.
 
         This function prints a header line with the different quantities.
@@ -837,7 +907,7 @@ class Particle:
         a comma.
         """
 
-        def int_isnan(value):
+        def int_isnan(value: float) -> Union[int, float]:
             if np.isnan(value):
                 return np.nan
             else:
@@ -857,7 +927,7 @@ class Particle:
               {int_isnan(self.status)},{int_isnan(self.baryon_number)},{int_isnan(self.strangeness)},{self.weight}"
         )
 
-    def angular_momentum(self):
+    def angular_momentum(self) -> Union[np.ndarray, float]:
         """
         Compute the angular momentum :math:`\\vec{L}=\\vec{r} \\times \\vec{p}` of a particle.
 
@@ -886,7 +956,7 @@ class Particle:
             p = [self.px, self.py, self.pz]
             return np.cross(r, p)
 
-    def rapidity(self):
+    def rapidity(self) -> float:
         """
         Compute the momentum rapidity :math:`Y=\\frac{1}{2}\\ln\\left(\\frac{E+p_z}{E-p_z}\\right)` of the particle.
 
@@ -911,7 +981,7 @@ class Particle:
 
             return 0.5 * np.log((self.E + self.pz) / denominator)
 
-    def p_abs(self):
+    def p_abs(self) -> float:
         """
         Compute the absolute momentum :math:`|\\vec{p}|=\\sqrt{p_x^2+p_y^2+p_z^2}` of the particle.
 
@@ -930,7 +1000,7 @@ class Particle:
         else:
             return np.sqrt(self.px**2.0 + self.py**2.0 + self.pz**2.0)
 
-    def pT_abs(self):
+    def pT_abs(self) -> float:
         """
         Compute the absolute transverse momentum :math:`|\\vec{p}_{\\mathrm{T}}|=\\sqrt{p_x^2+p_y^2}` of the particle.
 
@@ -949,7 +1019,7 @@ class Particle:
         else:
             return np.sqrt(self.px**2.0 + self.py**2.0)
 
-    def phi(self):
+    def phi(self) -> float:
         """
         Compute the azimuthal angle of the particle.
 
@@ -971,7 +1041,7 @@ class Particle:
             else:
                 return math.atan2(self.py, self.px)
 
-    def theta(self):
+    def theta(self) -> float:
         """
         Compute the polar angle of the particle.
 
@@ -993,7 +1063,7 @@ class Particle:
             else:
                 return np.arccos(self.pz / self.p_abs())
 
-    def pseudorapidity(self):
+    def pseudorapidity(self) -> float:
         """
         Compute the pseudorapidity :math:`\\eta=\\frac{1}{2}\\ln\\left(\\frac{|\\vec{p}|+p_z}{|\\vec{p}|-p_z}\\right)` of the particle.
 
@@ -1019,7 +1089,7 @@ class Particle:
 
             return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
 
-    def spacetime_rapidity(self):
+    def spacetime_rapidity(self) -> float:
         """
         Compute the space-time rapidity :math:`\\eta_s=\\frac{1}{2}\\ln\\left(\\frac{t+z}{t-z}\\right)` of the particle.
 
@@ -1041,7 +1111,7 @@ class Particle:
             else:
                 raise ValueError("|z| < t not fulfilled")
 
-    def proper_time(self):
+    def proper_time(self) -> float:
         """
         Compute the proper time :math:`\\tau=\\sqrt{t^2-z^2}` of the particle.
 
@@ -1063,11 +1133,16 @@ class Particle:
             else:
                 raise ValueError("|z| < t not fulfilled")
 
-    def mass_from_energy_momentum(self):
+    def mass_from_energy_momentum(self) -> float:
         """
         Compute the mass from the energy momentum relation.
 
         This function is called automatically if a JETSCAPE file is read in.
+
+        We consider particles with the following PDG codes as massless:
+        photons (22), gluons (21), e-neutrinos (12, -12),
+        mu-neutrinos (14, -14), tau-neutrinos (16, -16),
+        tau-prime-neutrinos (18, -18).
 
         Returns
         -------
@@ -1076,9 +1151,11 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
-        is returned.
+        If one of the needed particle quantities (four-momentum) is not given,
+        then `np.nan` is returned.
         """
+        # photons and gluons are massless, consider neutrinos as massless
+        massless_pdg = [22, 21, 12, -12, 14, -14, 16, -16, 18, -18]
         if (
             np.isnan(self.E)
             or np.isnan(self.px)
@@ -1086,8 +1163,7 @@ class Particle:
             or np.isnan(self.pz)
         ):
             return np.nan
-        # photons and gluons are massless
-        elif self.pdg == 22 or self.pdg == 21:
+        elif self.pdg in massless_pdg:
             return 0.0
         else:
             if abs(self.E) >= abs(self.p_abs()):
@@ -1099,7 +1175,7 @@ class Particle:
                 )
                 return np.nan
 
-    def charge_from_pdg(self):
+    def charge_from_pdg(self) -> float:
         """
         Compute the charge from the PDG code.
 
@@ -1118,7 +1194,7 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).charge
 
-    def mT(self):
+    def mT(self) -> float:
         """
         Compute the transverse mass :math:`m_{T}=\\sqrt{E^2-p_z^2}` of the particle.
 
@@ -1143,7 +1219,41 @@ class Particle:
             )
             return np.nan
 
-    def is_meson(self):
+    def is_quark(self) -> Union[bool, float]:
+        """
+        Is the particle a quark?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_quark
+
+    def is_lepton(self) -> Union[bool, float]:
+        """
+        Is the particle a lepton?
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).is_lepton
+
+    def is_meson(self) -> Union[bool, float]:
         """
         Is the particle a meson?
 
@@ -1160,7 +1270,7 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).is_meson
 
-    def is_baryon(self):
+    def is_baryon(self) -> Union[bool, float]:
         """
         Is the particle a baryon?
 
@@ -1177,7 +1287,7 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).is_baryon
 
-    def is_hadron(self):
+    def is_hadron(self) -> Union[bool, float]:
         """
         Is the particle a hadron?
 
@@ -1194,24 +1304,7 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).is_hadron
 
-    def is_strange(self):
-        """
-        Does the particle contain strangeness?
-
-        Returns
-        -------
-        bool
-            True, False
-
-        Notes
-        -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
-        """
-        if not self.pdg_valid:
-            return np.nan
-        return PDGID(self.pdg).has_strange
-
-    def is_heavy_flavor(self):
+    def is_heavy_flavor(self) -> Union[bool, float]:
         """
         Is the particle a heavy flavor hadron?
 
@@ -1235,7 +1328,109 @@ class Particle:
         else:
             return False
 
-    def spin(self):
+    def has_down(self) -> Union[bool, float]:
+        """
+        Does the particle contain a down quark? Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_down
+
+    def has_up(self) -> Union[bool, float]:
+        """
+        Does the particle contain an up quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_up
+
+    def has_strange(self) -> Union[bool, float]:
+        """
+        Does the particle contain a strange quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_strange
+
+    def has_charm(self) -> Union[bool, float]:
+        """
+        Does the particle contain a charm quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_charm
+
+    def has_bottom(self) -> Union[bool, float]:
+        """
+        Does the particle contain a bottom quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_bottom
+
+    def has_top(self) -> Union[bool, float]:
+        """
+        Does the particle contain a top quark?  Does not work with partons.
+
+        Returns
+        -------
+        bool
+            True, False
+
+        Notes
+        -----
+        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        """
+        if not self.pdg_valid:
+            return np.nan
+        return PDGID(self.pdg).has_top
+
+    def spin(self) -> float:
         """
         Get the total spin :math:`J` of the particle.
 
@@ -1252,7 +1447,7 @@ class Particle:
             return np.nan
         return PDGID(self.pdg).J
 
-    def spin_degeneracy(self):
+    def spin_degeneracy(self) -> Union[int, float]:
         """
         Get the number of all possible spin projections (:math:`2J + 1`).
 

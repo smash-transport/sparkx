@@ -51,6 +51,16 @@ def oscar_old_extended_file_path():
     )
 
 
+@pytest.fixture
+def oscar_custom_file_path():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(
+        os.path.dirname(__file__),
+        "test_files",
+        "test_custom_oscar.dat",
+    )
+
+
 def create_temporary_oscar_file(
     path, num_events, oscar_format, output_per_event_list=None
 ):
@@ -497,8 +507,8 @@ def test_filter_in_oscar(tmp_path):
     oscar_participants.participants()
     oscar_spectators.spectators()
     oscar_empty.participants().spectators()
-    oscar_spectators_strange.spectators().strange_particles()
-    oscar_participants_strange.participants().strange_particles()
+    oscar_spectators_strange.spectators().keep_strange()
+    oscar_participants_strange.participants().keep_strange()
 
     assert np.array_equal(
         oscar_participants.num_output_per_event(), np.array([[0, 10], [1, 11]])
@@ -649,10 +659,10 @@ def test_filter_in_oscar_constructor(tmp_path):
         oscar_file, filters={"participants": True, "spectators": True}
     )
     oscar_spectators_strange = Oscar(
-        oscar_file, filters={"spectators": True, "strange_particles": True}
+        oscar_file, filters={"spectators": True, "keep_strange": True}
     )
     oscar_participants_strange = Oscar(
-        oscar_file, filters={"participants": True, "strange_particles": True}
+        oscar_file, filters={"participants": True, "keep_strange": True}
     )
 
     assert np.array_equal(
@@ -684,6 +694,16 @@ def test_standard_oscar_print(tmp_path, output_path):
     os.remove(output_path)
 
 
+def test_empty_oscar_print(tmp_path, output_path):
+    tmp_oscar_file = create_temporary_oscar_file(
+        tmp_path, 5, "Oscar2013", [1, 7, 0, 36, 5]
+    )
+    oscar = Oscar(tmp_oscar_file).multiplicity_cut((100000000,None))
+    with pytest.warns(UserWarning):
+        oscar.print_particle_lists_to_file(output_path)
+    os.remove(output_path)
+
+
 def test_extended_oscar_print(tmp_path, output_path):
     tmp_oscar_file = create_temporary_oscar_file(
         tmp_path, 5, "Oscar2013Extended", [4, 1, 42, 0, 3]
@@ -699,3 +719,29 @@ def test_old_extended_oscar_print(oscar_old_extended_file_path, output_path):
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_old_extended_file_path, output_path)
     os.remove(output_path)
+
+
+def test_custom_oscar_print(oscar_custom_file_path, output_path):
+    with pytest.warns(UserWarning, match="No PDG code given! All properties extracted from the PDG are set to default values."):
+        oscar = Oscar(oscar_custom_file_path)
+    oscar.print_particle_lists_to_file(output_path)
+    assert filecmp.cmp(oscar_custom_file_path, output_path)
+    os.remove(output_path)
+
+def test_update_after_merge_warning(oscar_file_path):
+    # Create two Oscar instances with different formats
+    oscar1 = Oscar(oscar_file_path)
+    oscar1.oscar_format_ = "Oscar2013"
+    oscar1.event_end_lines_ = [10, 20, 30]
+
+    oscar2 = Oscar(oscar_file_path)
+    oscar2.oscar_format_ = "Oscar2013Extended"
+    oscar2.event_end_lines_ = [40, 50, 60]
+
+    # Check if a UserWarning is issued when merging
+    with pytest.warns(UserWarning, match="Oscar format of the merged instances do not match"):
+        oscar1._update_after_merge(oscar2)
+
+    # Check if the event_end_lines_ are updated correctly
+    assert oscar1.event_end_lines_ == [10, 20, 30, 40, 50, 60]
+

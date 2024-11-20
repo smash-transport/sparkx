@@ -10,6 +10,7 @@
 from sparkx.Filter import *
 import numpy as np
 from sparkx.loader.JetscapeLoader import JetscapeLoader
+from sparkx.Particle import Particle
 from sparkx.BaseStorer import BaseStorer
 from typing import List, Tuple, Union, Dict, Optional
 
@@ -130,7 +131,7 @@ class Jetscape(BaseStorer):
 
         >>> jetscape = Jetscape(JETSCAPE_FILE_PATH)
         >>>
-        >>> pions = jetscape.multiplicity_cut(500).participants().particle_species((211, -211, 111))
+        >>> pions = jetscape.multiplicity_cut(500, None).participants().particle_species((211, -211, 111))
         >>>
         >>> # save the pions of all events as nested list
         >>> pions_list = pions.particle_list()
@@ -150,7 +151,7 @@ class Jetscape(BaseStorer):
     Let's assume we only want to keep pions in events with a
     multiplicity > 500:
 
-        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':500, 'particle_species':(211, -211, 111)}})
+        >>> jetscape = Jetscape(JETSCAPE_FILE_PATH, filters={'multiplicity_cut':(500,None), 'particle_species':(211, -211, 111)}})
         >>>
         >>> # print the pions to a jetscape file
         >>> jetscape.print_particle_lists_to_file('./particle_lists.dat')
@@ -183,17 +184,18 @@ class Jetscape(BaseStorer):
         del self.loader_
 
     def create_loader(
-        self, JETSCAPE_FILE: Union[str, List[List["Particle"]]]
+
+        self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
     ) -> None:
         """
         Creates a new JetscapeLoader object.
 
         This method initializes a new JetscapeLoader object with the specified JETSCAPE file
-        and assigns it to the loader_ attribute.
+        and assigns it to the loader attribute.
 
         Parameters
         ----------
-        JETSCAPE_FILE : Union[str, List[List["Particle"]]]
+        JETSCAPE_FILE : Union[str, List[List[Particle]]]
             The path to the JETSCAPE file to be loaded. Must be a string.
 
         Raises
@@ -210,9 +212,7 @@ class Jetscape(BaseStorer):
         self.loader_ = JetscapeLoader(JETSCAPE_FILE)
 
     # PRIVATE CLASS METHODS
-    def _particle_as_list(
-        self, particle: "Particle"
-    ) -> List[Union[int, float]]:
+    def _particle_as_list(self, particle: Particle) -> List[Union[int, float]]:
         particle_list: List[Union[int, float]] = [0.0] * 7
         particle_list[0] = int(particle.ID)
         particle_list[1] = int(particle.pdg)
@@ -223,40 +223,70 @@ class Jetscape(BaseStorer):
         particle_list[6] = float(particle.pz)
 
         return particle_list
-
-    # PUBLIC CLASS METHODS
-    def particle_status(
-        self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
-    ) -> "Jetscape":
+    
+    def _update_after_merge(self, other: BaseStorer) -> None:
         """
-        Keep only particles with a given particle status
+        Updates the current instance after merging with another Jetscape instance.
+
+        This method is called after merging two Jetscape instances to update the
+        attributes of the current instance based on the attributes of the other instance.
+        The last line and filename are taken from the left-hand instance.
+        :code:`sigmaGen` is averaged.
 
         Parameters
         ----------
-        status_list : int
-            To keep a particles with a single status only, pass a single status
+        other : Jetscape
+            The other Jetscape instance that was merged with the current instance.
 
-        status_list : tuple/list/array
-            To keep hadrons with different hadron status, pass a tuple or list
-            or array
+        Raises
+        ------
+        UserWarning
+            If the Jetscape :code:`particle_type_` or :code:`particle_type_defining_string_` of the two instances do not match, a warning is issued.
+        """
+        if not isinstance(other, Jetscape):
+            raise TypeError("Can only add Jetscape objects to Jetscape.")
+        if self.particle_type_ != other.particle_type_:
+            raise TypeError("particle_types of the merged instances do not match.")
+        if self.particle_type_defining_string_ != other.particle_type_defining_string_:
+            raise TypeError("particle_type_defining_string of the merged instances do not match.")
+        
+        self.sigmaGen_ = ((self.sigmaGen_[0] + other.sigmaGen_[0])/2.0, 0.5*np.sqrt(self.sigmaGen_[1]**2 + other.sigmaGen_[1]**2))
+    
+    # PUBLIC CLASS METHODS
+    def participants(self) -> "Jetscape":
+        """
+        Raises an error because participants are not defined for Jetscape 
+        events.
 
         Returns
         -------
-        self : Jetscape object
-            Containing only hadrons with status specified by status_list for
-            every event
-
+        NotImplementedError
+            Always, because participants are not defined for Jetscape events.
         """
-        self.particle_list_ = particle_status(self.particle_list_, status_list)
-        self._update_num_output_per_event_after_filter()
+        raise NotImplementedError(
+            "Participants are not defined for Jetscape events."
+        )
 
-        return self
+    def spectators(self) -> "Jetscape":
+        """
+        Raises an error because spectators are not defined for Jetscape 
+        events.
+
+        Returns
+        -------
+        NotImplementedError
+            Always, because spectators are not defined for Jetscape events.
+        """
+        raise NotImplementedError(
+            "Spectators are not defined for Jetscape events."
+        )
 
     def spacetime_cut(
         self, dim: str, cut_value_tuple: Tuple[float, float]
-    ) -> None:
+    ) -> "Jetscape":
         """
-        Raises an error because spacetime cuts are not possible for Jetscape events.
+        Raises an error because spacetime cuts are not possible for Jetscape 
+        events.
 
         Parameters
         ----------
@@ -274,9 +304,38 @@ class Jetscape(BaseStorer):
             "Spacetime cuts are not possible for Jetscape events."
         )
 
+    def spacetime_rapidity_cut(
+        self, cut_value: Union[float, Tuple[float, float]]
+    ) -> "Jetscape":
+        """
+        Raises an error because spacetime rapidity cuts are not possible for 
+        Jetscape events.
+
+        Parameters
+        ----------
+        cut_value : float
+            If a single value is passed, the cut is applied symmetrically
+            around 0.
+            For example, if :code:`cut_value = 1`, only particles with spacetime
+            rapidity in :code:`[-1.0, 1.0]` are kept.
+
+        cut_value : tuple
+            To specify an asymmetric acceptance range for the spacetime rapidity
+            of particles, pass a tuple :code:`(cut_min, cut_max)`
+
+        Raises
+        ------
+        NotImplementedError
+            Always, because spacetime rapidity cuts are not possible for 
+            Jetscape events.
+        """
+        raise NotImplementedError(
+            "Spacetime rapidity cuts are not possible for Jetscape events."
+        )
+
     def get_sigmaGen(self) -> Tuple[float, float]:
         """
-        Returns the value of sigmaGen.
+        Returns the value of sigmaGen and the uncertainty in a tuple.
 
         Returns
         -------
@@ -305,13 +364,15 @@ class Jetscape(BaseStorer):
             raise ValueError("The number of output per event is empty.")
         if self.num_events_ is None:
             raise ValueError("The number of events is empty.")
-
+        
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
 
             list_of_particles = self.particle_list()
-            if self.num_events_ > 1:
+            if self.num_events_ == 0:
+                warnings.warn("The number of events is zero.")
+            elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
                     num_out = self.num_output_per_event_[i, 1]
