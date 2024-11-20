@@ -820,7 +820,7 @@ def multiplicity_cut(
     particle_list:
         List with lists containing particle objects for the events
 
-   cut_value_tuple : tuple
+    cut_value_tuple : tuple
         Upper and lower bound for multiplicity. If the multiplicity of an event is
         not in this range, the event is discarded. The range is inclusive on the 
         lower bound and exclusive on the upper bound.

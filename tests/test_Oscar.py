@@ -237,6 +237,23 @@ def test_oscar_format(tmp_path):
     oscar = Oscar(tmp_oscar_extended_file)
     assert oscar.oscar_format() == "Oscar2013Extended"
 
+def test_oscar_impact_parameter(oscar_extended_file_path):
+    oscar = Oscar(oscar_extended_file_path)
+    impact_parameters = oscar.impact_parameters()
+    assert impact_parameters == [0.0, 1.0, 2.0, 3.0, 4.0]
+
+    oscar1 = Oscar(oscar_extended_file_path, events=(1))
+    impact_parameters = oscar1.impact_parameters()
+    assert impact_parameters == [1.0]
+
+    oscar2 = Oscar(oscar_extended_file_path, events=(1, 2))
+    impact_parameters = oscar2.impact_parameters()
+    assert impact_parameters == [1.0, 2.0]
+
+    oscar1 = Oscar(oscar_extended_file_path, 
+                   filters={'multiplicity_cut': (50, None)})
+    impact_parameters = oscar1.impact_parameters()
+    assert impact_parameters == [4.0]
 
 def test_num_output_per_event(tmp_path, oscar_old_extended_file_path):
     num_events = 7
