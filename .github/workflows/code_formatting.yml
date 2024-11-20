@@ -17,7 +17,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: ${{ github.head_ref }}  # Check out the pull request branch
+        ref: ${{ github.sha }}  # Check out the exact commit of the merged PR
 
     - name: Set up Python
       uses: actions/setup-python@v2
