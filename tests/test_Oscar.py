@@ -253,7 +253,9 @@ def test_oscar_impact_parameter(oscar_extended_file_path):
     oscar1 = Oscar(oscar_extended_file_path, 
                    filters={'multiplicity_cut': (50, None)})
     impact_parameters = oscar1.impact_parameters()
-    assert impact_parameters == [4.0]
+    # When all events are empty we still want to return the impact parameters
+    # It is user responsibility to check if the events are empty
+    assert impact_parameters == [0.0, 1.0, 2.0, 3.0, 4.0]
 
 def test_num_output_per_event(tmp_path, oscar_old_extended_file_path):
     num_events = 7
