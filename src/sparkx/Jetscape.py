@@ -361,9 +361,8 @@ class Jetscape(BaseStorer):
             raise ValueError("The particle list is empty.")
         if self.num_output_per_event_ is None:
             raise ValueError("The number of output per event is empty.")
-        if self.num_events_ is None:
-            raise ValueError("The number of events is empty.")
-        
+        if self.num_events_ == 1 and self.particle_list_ == [[]]:
+                warnings.warn("The number of events is zero.")
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
@@ -371,6 +370,8 @@ class Jetscape(BaseStorer):
             list_of_particles = self.particle_list()
             if self.num_events_ == 0:
                 warnings.warn("The number of events is zero.")
+            elif self.num_events_ is None:
+                warnings.warn("The number of events is None.")
             elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]

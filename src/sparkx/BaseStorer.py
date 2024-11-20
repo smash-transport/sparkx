@@ -860,6 +860,8 @@ class BaseStorer(ABC):
             raise ValueError(
                 "num_output_per_event_ has an unexpected number of dimensions"
             )
+        if self.particle_list_ == []:
+            self.particle_list_ = [[]]
 
     @abstractmethod
     def print_particle_lists_to_file(self, output_file: str) -> None:

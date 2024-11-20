@@ -423,6 +423,7 @@ class JetscapeLoader(BaseLoader):
         particle_list: List[List[Particle]] = []
         data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
+        cut_events=0
         with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             self._skip_lines(jetscape_file)
 
@@ -431,15 +432,26 @@ class JetscapeLoader(BaseLoader):
                 if not line:
                     raise IndexError("Index out of range of JETSCAPE file")
                 elif "#" in line and "sigmaGen" in line:
+                    old_data_len=len(data)
                     if "filters" in self.optional_arguments_.keys():
                         data = self.__apply_kwargs_filters(
                             [data], kwargs["filters"]
                         )[0]
-                        self.num_output_per_event_[len(particle_list)] = (
-                            len(particle_list) + 1,
-                            len(data),
-                        )
-                    particle_list.append(data)
+                        if (len(data) != 0 or old_data_len==0):
+                            self.num_output_per_event_[len(particle_list)] = (
+                                len(particle_list)+1,
+                                len(data),
+                            )
+                        else:
+                            self.num_output_per_event_ = np.atleast_2d(np.delete(self.num_output_per_event_, len(particle_list), axis=0))                  
+                            if self.num_output_per_event_.shape[0] == 0:
+                                self.num_output_per_event_ = np.array([])
+                            elif len(particle_list) < self.num_output_per_event_.shape[0]:
+                                self.num_output_per_event_[len(particle_list):, 0] -= 1
+                    if (len(data) != 0 or old_data_len==0 ):
+                        particle_list.append(data)
+                    else:
+                        cut_events = cut_events + 1
                 elif i == 0 and "#" not in line and "weight" not in line:
                     raise ValueError(
                         "First line of the event is not a comment "
@@ -465,15 +477,26 @@ class JetscapeLoader(BaseLoader):
                     if int(line_list[2]) == first_event_header:
                         continue
                     else:
+                        old_data_len=len(data)
                         if "filters" in self.optional_arguments_.keys():
                             data = self.__apply_kwargs_filters(
                                 [data], kwargs["filters"]
                             )[0]
-                            self.num_output_per_event_[len(particle_list)] = (
-                                len(particle_list) + 1,
-                                len(data),
-                            )
-                        particle_list.append(data)
+                            if (len(data) != 0 or old_data_len==0):
+                                self.num_output_per_event_[len(particle_list)] = (
+                                    len(particle_list)+1,
+                                    len(data),
+                                )
+                            else:
+                                self.num_output_per_event_ = np.atleast_2d(np.delete(self.num_output_per_event_, len(particle_list), axis=0))                  
+                                if self.num_output_per_event_.shape[0] == 0:
+                                    self.num_output_per_event_ = np.array([])
+                                elif len(particle_list) < self.num_output_per_event_.shape[0]:
+                                    self.num_output_per_event_[len(particle_list):, 0] -= 1
+                        if (len(data) != 0 or old_data_len==0 ):
+                            particle_list.append(data)
+                        else:
+                            cut_events = cut_events + 1
                         data = []
                 else:
                     line_list = (
@@ -481,7 +504,8 @@ class JetscapeLoader(BaseLoader):
                     )
                     particle = Particle("JETSCAPE", np.asarray(line_list))
                     data.append(particle)
-
+        
+        self.num_events_=self.num_events_-cut_events
         # Correct num_output_per_event and num_events
         if not kwargs or "events" not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
@@ -500,6 +524,9 @@ class JetscapeLoader(BaseLoader):
             update = self.num_output_per_event_[event_start : event_end + 1]
             self.num_output_per_event_ = update
             self.num_events_ = int(event_end - event_start + 1)
+
+        if particle_list == []:
+            particle_list = [[]]
 
         return particle_list
 

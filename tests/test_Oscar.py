@@ -595,8 +595,11 @@ def test_filter_in_oscar_constructor(tmp_path):
     oscar_charged_participants = Oscar(
         oscar_file, filters={"charged_particles": True, "participants": True}
     )
-    oscar_uncharged_specators = Oscar(
+    oscar_uncharged_spectators = Oscar(
         oscar_file, filters={"uncharged_particles": True, "spectators": True}
+    )
+    oscar_empty_multiplicity = Oscar(
+        oscar_file, filters={"multiplicity_cut": (99999999,None)}
     )
 
     assert np.array_equal(
@@ -606,17 +609,20 @@ def test_filter_in_oscar_constructor(tmp_path):
         oscar_uncharged.num_output_per_event(), np.array([[0, 18], [1, 20]])
     )
     assert np.array_equal(
-        oscar_empty.num_output_per_event(), np.array([[0, 0], [1, 0]])
+        oscar_empty.num_output_per_event(), np.array([])
     )
     assert np.array_equal(
         oscar_charged_participants.num_output_per_event(),
         np.array([[0, 12], [1, 10]]),
     )
     assert np.array_equal(
-        oscar_uncharged_specators.num_output_per_event(),
-        np.array([[0, 0], [1, 10]]),
+        oscar_uncharged_spectators.num_output_per_event(),
+        np.array([[0, 10]]),
     )
-    del oscar_file, oscar_empty
+    assert np.array_equal(
+        oscar_empty_multiplicity.num_output_per_event(), np.array([])
+    )
+    del oscar_file, oscar_charged, oscar_uncharged, oscar_empty, oscar_uncharged_spectators, oscar_empty_multiplicity
 
     # Create a particle list to be loaded into the Oscar object
     oscar_file = str(tmp_path / "particle_lists.oscar")
@@ -672,7 +678,7 @@ def test_filter_in_oscar_constructor(tmp_path):
         oscar_spectators.num_output_per_event(), np.array([[0, 20], [1, 22]])
     )
     assert np.array_equal(
-        oscar_empty.num_output_per_event(), np.array([[0, 0], [1, 0]])
+        oscar_empty.num_output_per_event(), np.array([])
     )
     assert np.array_equal(
         oscar_spectators_strange.num_output_per_event(),
@@ -680,7 +686,7 @@ def test_filter_in_oscar_constructor(tmp_path):
     )
     assert np.array_equal(
         oscar_participants_strange.num_output_per_event(),
-        np.array([[0, 10], [1, 0]]),
+        np.array([[0, 10]]),
     )
 
 

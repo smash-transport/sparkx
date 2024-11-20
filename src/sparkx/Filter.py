@@ -861,11 +861,12 @@ def multiplicity_cut(
     idx_keep_event = []
     for idx, event_particles in enumerate(particle_list):
         multiplicity = len(event_particles)
-        if multiplicity >= lower_cut and multiplicity < upper_cut:
+        if multiplicity >= lim_min and multiplicity < lim_max:
             idx_keep_event.append(idx)
 
     particle_list = [particle_list[idx] for idx in idx_keep_event]
-
+    if len(particle_list) == 0:
+        particle_list = [[]]
     return particle_list
 
 
