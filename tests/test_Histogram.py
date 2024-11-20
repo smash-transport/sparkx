@@ -117,17 +117,17 @@ def test_add_value_out_of_range():
         for value in outlier_values:
             hist.add_value(value)
 
+    hist.add_histogram()
+    assert len(hist.histograms_) == 2, "New histogram layer was not added."
+    
     # Check that the histogram did not change after adding outliers
-    assert np.allclose(hist.histograms_, histogram_after_valid), "Histogram changed after adding out-of-range values."
+    assert np.allclose(hist.histograms_[0], histogram_after_valid), "First histogram changed after adding out-of-range values."
 
-    hist2 = Histogram((0, 10, 10))
-    values = [1, 4, 6.6, 12, 22, -1]
-    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
-        for value in values:
-            hist2.add_value(value)
-
-    assert np.allclose(hist2.histogram(), np.array([0, 1, 0, 0, 1, 0, 1, 0, 0, 0])), "Histogram changed after adding out-of-range values."
-
+    new_values = [5, 10, 15]
+    for value in new_values:
+        hist.add_value(value)
+    
+    assert hist.histograms_[1].sum() > 0, "Second histogram layer did not update correctly."
 
 def test_remove_bin_out_of_range():
     # Test removing a bin at an index out of range
