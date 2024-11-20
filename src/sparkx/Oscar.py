@@ -388,7 +388,7 @@ class Oscar(BaseStorer):
                 raise ValueError("The number of output per event is empty.")
             if self.num_events_ is None:
                 raise ValueError("The number of events is empty.")
-            if self.num_events_ == 0:
+            if self.num_events_ == 1 and self.particle_list_ == [[]]:
                 warnings.warn("The number of events is zero.")
             elif self.num_events_ > 1:
                 for i in range(self.num_events_):

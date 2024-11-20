@@ -324,7 +324,7 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
     # In this test we test the integration of filters in the Jetscape constructor,
     # which are selected with keyword arguments while initializing the
     # Jetscape object.
-
+    print("Ahoi")
     pi0_y0 = (0, 111, 27, 0.138, 0.0, 0.0, 0.0)
     pi0_y1 = (1, 111, 27, 0.138, 0.0, 0.0, 0.10510)
 
@@ -360,16 +360,24 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
     )
 
 
-def test_filter_status_in_Jetscape_constructor(jetscape_file_path):
+def test_filter_in_Jetscape_constructor(jetscape_file_path):
     # Perform status filtering such that everything should be filtered out with
     # the given jetscape events in the file.
     jetscape1 = Jetscape(jetscape_file_path, filters={"particle_status": 1})
 
-    assert jetscape1.num_events() == 5
+    assert jetscape1.num_events() == 0
     assert np.array_equal(
         jetscape1.num_output_per_event(),
-        np.array([[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]),
+        np.array([]),
     )
+    jetscape_empty_multiplicity = Jetscape(
+        jetscape_file_path, filters={"multiplicity_cut": (99999999,None)}
+    )
+    print( jetscape_empty_multiplicity.num_output_per_event())
+    assert np.array_equal(
+        jetscape_empty_multiplicity.num_output_per_event(), np.array([])
+    )
+    del jetscape_empty_multiplicity, jetscape1
 
 
 @pytest.fixture
@@ -474,9 +482,7 @@ def test_Jetscape_print_with_empty_events(
 def test_Jetscape_print_with_no_events(
         jetscape_file_path, output_path
 ):
-    jetscape = Jetscape(jetscape_file_path)
-    jetscape.particle_list_ = [[], [], [], [], []]
-    jetscape.multiplicity_cut((100000000,None))
+    jetscape = Jetscape(jetscape_file_path).multiplicity_cut((100000000,None))
     with pytest.warns(UserWarning):
         jetscape.print_particle_lists_to_file(output_path)
     os.remove(output_path)
