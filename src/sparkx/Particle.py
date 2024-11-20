@@ -18,11 +18,12 @@ class Particle:
     """Defines a particle object.
 
     The member variables of the Particle class are the quantities in the
-    OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
-    they stay `np.nan` to throw an error if one tries to access a non existing
+    Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/
+    ASCIICustom or JETSCAPE hadron/parton output. If they are not set,
+    they stay :code:`np.nan` to throw an error if one tries to access a non existing
     quantity.
     If a particle with an unknown PDG is provided, a warning is thrown and and
-    `np.nan` is returned for charge, spin, and spin degeneracy.
+    :code:`np.nan` is returned for charge, spin, and spin degeneracy.
 
     Attributes
     ----------
@@ -225,8 +226,8 @@ class Particle:
     Notes
     -----
     If a member of the Particle class is not set or a quantity should be computed
-    and the needed member variables are not set, then `np.nan` is returned by default.
-    All quantities are saved in a numpy array member variable `data_`. The datatype
+    and the needed member variables are not set, then :code:`np.nan` is returned by default.
+    All quantities are saved in a numpy array member variable :code:`data_`. The datatype
     of this array is float, therefore casting is required when int or bool values are
     required.
 
@@ -939,7 +940,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if (
@@ -967,7 +968,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.E) or np.isnan(self.pz):
@@ -992,7 +993,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
@@ -1011,7 +1012,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.px) or np.isnan(self.py):
@@ -1030,7 +1031,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.px) or np.isnan(self.py):
@@ -1052,7 +1053,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
@@ -1074,7 +1075,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
@@ -1100,7 +1101,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.t) or np.isnan(self.z):
@@ -1122,7 +1123,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.t) or np.isnan(self.z):
@@ -1152,7 +1153,7 @@ class Particle:
         Notes
         -----
         If one of the needed particle quantities (four-momentum) is not given,
-        then `np.nan` is returned.
+        then :code:`np.nan` is returned.
         """
         # photons and gluons are massless, consider neutrinos as massless
         massless_pdg = [22, 21, 12, -12, 14, -14, 16, -16, 18, -18]
@@ -1188,7 +1189,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1205,7 +1206,7 @@ class Particle:
 
         Notes
         -----
-        If one of the needed particle quantities is not given, then `np.nan`
+        If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         """
         if np.isnan(self.E) or np.isnan(self.pz):
@@ -1230,7 +1231,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1247,7 +1248,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1264,7 +1265,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1281,7 +1282,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1298,7 +1299,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1315,7 +1316,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1339,7 +1340,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1356,7 +1357,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1373,7 +1374,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1390,7 +1391,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1407,7 +1408,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1424,7 +1425,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1441,7 +1442,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan
@@ -1458,7 +1459,7 @@ class Particle:
 
         Notes
         -----
-        If the PDG ID is not known by `PDGID`, then `np.nan` is returned.
+        If the PDG ID is not known by `PDGID`, then :code:`np.nan` is returned.
         """
         if not self.pdg_valid:
             return np.nan

@@ -23,8 +23,8 @@ class BaseStorer(ABC):
     ----------
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
-        event as num_output_per_event_[event i][num_output in event i] (updated
-        when filters are applied)
+        event as :code:`num_output_per_event_[event i][num_output in event i]` 
+        (updated when filters are applied)
     num_events_ : int
         Number of events contained in the Oscar object (updated when filters
         are applied)
@@ -53,7 +53,7 @@ class BaseStorer(ABC):
     spectators:
         Keep spectators only
     lower_event_energy_cut:
-        Filters out events with total energy lower than a threshold.
+        Filters out events with total energy lower than a threshold
     charged_particles:
         Keep charged particles only
     uncharged_particles:
@@ -72,7 +72,7 @@ class BaseStorer(ABC):
         Apply spacetime rapidity cut to all particles
     multiplicity_cut:
         Apply multiplicity cut to all particles
-     spacetime_cut:
+    spacetime_cut:
         Apply spacetime cut to all particles
     """
 
@@ -88,7 +88,7 @@ class BaseStorer(ABC):
             Number of events in the  data
         num_output_per_event : numpy.array
             Array containing the event number and the number of particles in this
-            event as num_output_per_event_[event i][num_output in event i]
+            event as :code:`num_output_per_event_[event i][num_output in event i]`
 
         Returns
         -------
@@ -233,8 +233,8 @@ class BaseStorer(ABC):
         Returns a nested python list containing all particles from
         the data as particle objects from :code:`Particle`:
 
-           | Single Event:    [particle_object]
-           | Multiple Events: [event][particle_object]
+           | Single Event:    :code:`[particle_object]`
+           | Multiple Events: :code:`[event][particle_object]`
 
         Returns
         -------
@@ -252,8 +252,8 @@ class BaseStorer(ABC):
         Returns a nested python list containing all quantities from the
         current data as numerical values with the following shape:
 
-            | Single Event:    [[output_line][particle_quantity]]
-            | Multiple Events: [event][output_line][particle_quantity]
+            | Single Event:    :code:`[[output_line][particle_quantity]]`
+            | Multiple Events: :code:`[event][output_line][particle_quantity]`
 
         Returns
         -------

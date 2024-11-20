@@ -67,12 +67,12 @@ class Jackknife:
     Raises
     ------
     ValueError
-        If delete_fraction is less than 0 or greater than or equal to 1.
-        If number_samples is less than 1.
+        If :code:`delete_fraction` is less than 0 or greater than or equal to 1.
+        If :code:`number_samples` is less than 1.
     TypeError
-        If delete_fraction is not a float.
-        If number_samples is not an integer.
-        If seed is not an integer.
+        If :code:`delete_fraction` is not a float.
+        If :code:`number_samples` is not an integer.
+        If :code:`seed` is not an integer.
 
     Examples
     --------
@@ -325,9 +325,10 @@ class Jackknife:
     ) -> float:
         """
         Compute the Jackknife uncertainty estimates for a function applied to
-        a data array. The default function is np.mean, but it can be changed to
-        any other function that accepts a numpy array as input. Multiple
-        other arguments can be passed to the function as args and kwargs.
+        a data array. The default function is :code:`np.mean`, but it can be 
+        changed to any other function that accepts a numpy array as input. 
+        Multiple other arguments can be passed to the function as args and 
+        kwargs.
 
         Parameters
         ----------
@@ -355,7 +356,7 @@ class Jackknife:
         Raises
         ------
         ValueError
-            If delete_n_points is less than 1 (delete_fraction too small).
+            If :code:`delete_n_points` is less than 1 (:code:`delete_fraction` too small).
         TypeError
             If data is not a numpy array or if function is not callable.
         TypeError

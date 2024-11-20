@@ -18,7 +18,7 @@ class Histogram:
     Defines a histogram object.
 
     The histograms can be initialized either with a tuple
-    (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin
+    :code:`(hist_min,hist_max,num_bins)` or a list/numpy.ndarray containing the bin
     boundaries, which allows for different bin widths.
     Multiple histograms can be added and averaged.
 
@@ -472,8 +472,8 @@ class Histogram:
         """
         Add value(s) to the latest histogram.
 
-        Different cases, if there is just one number added or a whole list/
-        array of numbers.
+        Different cases, if there is just one number added or a whole 
+        list/array of numbers.
 
         Parameters
         ----------
@@ -488,11 +488,11 @@ class Histogram:
         TypeError
             if the input is not a number or numpy.ndarray or list
         ValueError
-            if an input `value` is `np.nan`
+            if an input :code:`value` is :code:`np.nan`
         ValueError
-            if the input `weight` has not the same dimension as `value`
+            if the input :code:`weight` has not the same dimension as :code:`value`
         ValueError
-            if a `weight` value is `np.nan`
+            if a :code:`weight` value is :code:`np.nan`
         """
         if self.bin_edges_ is None:
             raise TypeError(

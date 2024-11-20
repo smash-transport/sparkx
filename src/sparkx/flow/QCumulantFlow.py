@@ -32,8 +32,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
     k : int, optional
         The order of the cumulant (2, 4, or 6) (default is 2).
     imaginary : str, optional
-        Specifies the treatment of imaginary roots. Options are 'zero',
-        'negative', or 'nan' (default is 'zero').
+        Specifies the treatment of imaginary roots. Options are :code:`zero`,
+        :code:`negative`, or :code:`nan` (default is :code:`zero`).
 
     Attributes
     ----------

@@ -16,12 +16,13 @@ from typing import List, Dict, Tuple, Optional, Union
 
 class ParticleObjectStorer(BaseStorer):
     """
-    Defines a ParticleObjectStorer object, which saves particle object lists.
+    Defines a :code:`ParticleObjectStorer` object, which saves particle object 
+    lists.
 
     This is a wrapper for a list of Particle objects. It's methods allow to
     directly act on all contained events as applying acceptance filters
-    (e.g. un/charged particles, spectators/participants) to keep/remove particles
-    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo/rapidity, pT).
+    (e.g. un-/charged particles, spectators/participants) to keep/remove particles
+    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo-/rapidity, pT).
     Once these filters are applied, the new data set can be accessed as a
 
     1) nested list containing all quantities
@@ -70,8 +71,8 @@ class ParticleObjectStorer(BaseStorer):
     ----------
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
-        event as num_output_per_event_[event i][num_output in event i] (updated
-        when filters are applied)
+        event as :code:`num_output_per_event_[event i][num_output in event i]`
+        (updated when filters are applied)
     num_events_ : int
         Number of events contained in the particle object list (updated when filters
         are applied)
@@ -112,9 +113,12 @@ class ParticleObjectStorer(BaseStorer):
         **kwargs: Dict[str, Optional[Tuple[int, int]]],
     ) -> None:
         """
-        Initializes a new instance of the DummyStorer class.
+        Initializes a new instance of the :code:`DummyStorer` class.
 
-        This method initializes a new instance of the DummyStorer class with the specified list of particle objects and optional arguments. It calls the superclass's constructor with the particle_object_list and kwargs parameters and then deletes the loader_ attribute.
+        This method initializes a new instance of the :code:`DummyStorer` class 
+        with the specified list of particle objects and optional arguments. 
+        It calls the superclass's constructor with the particle_object_list and 
+        kwargs parameters and then deletes the :code:`loader_` attribute.
 
         Parameters
         ----------
@@ -141,9 +145,11 @@ class ParticleObjectStorer(BaseStorer):
         self, particle_object_list: Union[str, List[List["Particle"]]]
     ) -> None:
         """
-        Creates a new ParticleObjectLoader object.
+        Creates a new :code:`ParticleObjectLoader` object.
 
-        This method creates a new ParticleObjectLoader object with the specified list of particle objects and assigns it to the ``loader_`` attribute.
+        This method creates a new :code:`ParticleObjectLoader` object with the 
+        specified list of particle objects and assigns it to the :code:`loader_`
+        attribute.
 
         Parameters
         ----------
@@ -162,14 +168,18 @@ class ParticleObjectStorer(BaseStorer):
 
     def _particle_as_list(self, particle: "Particle") -> List[float]:
         """
-        Converts a Particle object into a list.
+        Converts a :code:`Particle` object into a list.
 
-        This method takes a Particle object and converts it into a list of its attributes. The attributes are added to the list in the following order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll, form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll, pdg_mother1, pdg_mother2, baryon_number, strangeness, weight, status.
+        This method takes a :code:`Particle` object and converts it into a list 
+        of its attributes. The attributes are added to the list in the following 
+        order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll, 
+        form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll, 
+        pdg_mother1, pdg_mother2, baryon_number, strangeness, weight, status.
 
         Parameters
         ----------
         particle : Particle
-            The Particle object to convert into a list.
+            The :code:`Particle` object to convert into a list.
 
         Raises
         ------
