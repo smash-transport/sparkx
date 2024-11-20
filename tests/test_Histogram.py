@@ -103,6 +103,26 @@ def test_add_value_single_number_to_multiple_histograms():
         ),
     )
 
+def test_add_value_out_of_range():
+    # Test adding values inside and outside the histograms range 
+    hist = Histogram((0, 20, 20))
+    valid_values = [1, 2, 10, 18]
+    for value in valid_values:
+        hist.add_value(value)
+    
+    hist.add_histogram()
+    
+    # Testing the second layer
+    outlier_values = [-1, 21, 40, 20]
+    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
+        for value in outlier_values:
+            hist.add_value(value)  
+    
+    # Testing the first layer
+    hist1 = Histogram((0, 20, 20))
+    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
+        for value in outlier_values:
+            hist1.add_value(value)  
 
 def test_remove_bin_out_of_range():
     # Test removing a bin at an index out of range
