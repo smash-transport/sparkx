@@ -324,7 +324,6 @@ def test_filter_rapidity_in_Jetscape_constructor(tmp_path, jetscape_file_path):
     # In this test we test the integration of filters in the Jetscape constructor,
     # which are selected with keyword arguments while initializing the
     # Jetscape object.
-    print("Ahoi")
     pi0_y0 = (0, 111, 27, 0.138, 0.0, 0.0, 0.0)
     pi0_y1 = (1, 111, 27, 0.138, 0.0, 0.0, 0.10510)
 
