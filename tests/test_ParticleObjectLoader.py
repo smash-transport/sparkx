@@ -67,7 +67,6 @@ def test_load_with_filters():
     ]
     for res_event, exp_event in zip(result[0], expected_particles):
         for res_particle, exp_particle in zip(res_event, exp_event):
-
             assert res_particle.charge == exp_particle.charge
 
 

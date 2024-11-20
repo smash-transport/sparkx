@@ -418,17 +418,17 @@ class MultiParticlePtCorrelations:
             numerator_denominator_array = np.array(
                 [self.N_events[:, order], self.D_events[:, order]]
             ).T
-            mean_pT_correlations_store[order] = (
-                self._compute_mean_pT_correlations(numerator_denominator_array)
-            )
+            mean_pT_correlations_store[
+                order
+            ] = self._compute_mean_pT_correlations(numerator_denominator_array)
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                mean_pT_correlations_error_store[order] = (
-                    jackknife.compute_jackknife_estimates(
-                        numerator_denominator_array,
-                        function=self._compute_mean_pT_correlations,
-                    )
+                mean_pT_correlations_error_store[
+                    order
+                ] = jackknife.compute_jackknife_estimates(
+                    numerator_denominator_array,
+                    function=self._compute_mean_pT_correlations,
                 )
 
         self.mean_pT_correlation = mean_pT_correlations_store
@@ -653,12 +653,12 @@ class MultiParticlePtCorrelations:
 
             if compute_error:
                 jackknife = Jackknife(delete_fraction, number_samples, seed)
-                kappa_store_error[order] = (
-                    jackknife.compute_jackknife_estimates(
-                        combined_data,
-                        function=self._compute_mean_pT_cumulants,
-                        k=order,
-                    )
+                kappa_store_error[
+                    order
+                ] = jackknife.compute_jackknife_estimates(
+                    combined_data,
+                    function=self._compute_mean_pT_cumulants,
+                    k=order,
                 )
 
         self.kappa = kappa_store

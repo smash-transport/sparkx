@@ -179,15 +179,15 @@ class Oscar(BaseStorer):
     def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
         """
         Creates a new OscarLoader object.
-    
+
         This method initializes a new OscarLoader object with the specified OSCAR file
         and assigns it to the loader_ attribute.
-    
+
         Parameters
         ----------
         OSCAR_FILE : str
             The path to the OSCAR file to be loaded.
-    
+
         Returns
         -------
         None
@@ -270,9 +270,7 @@ class Oscar(BaseStorer):
         """
         header: List[str] = []
         format_oscar2013: str = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d"
-        format_oscar2013_extended: str = (
-            "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
-        )
+        format_oscar2013_extended: str = "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
 
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             counter_line = 0

@@ -1,11 +1,11 @@
-#===================================================
+# ===================================================
 #
 #    Copyright (c) 2023-2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
-#===================================================
+# ===================================================
 
 from sparkx.Particle import Particle
 from sparkx.BulkObservables import BulkObservables
@@ -14,6 +14,7 @@ from sparkx.Oscar import Oscar
 import os
 import numpy as np
 import pytest
+
 
 @pytest.fixture
 def oscar_extended_file_path():
@@ -53,23 +54,23 @@ def test_dNdy_invalid_input(oscar_extended_file_path):
 
 
 def test_dNdy_valid():
-    # store the y values and the counts in that bin in two events to create 
-    # particles accordingly    
+    # store the y values and the counts in that bin in two events to create
+    # particles accordingly
     y_bins_and_counts = [
         [[-1.9, 5], [-0.6, 4], [-0.1, 3], [1.4, 3]],
-        [[-1.7, 2], [0.4, 6],  [1.2, 5]],
-        [[-0.9, 7], [0.8, 2],  [1.6, 1]]
+        [[-1.7, 2], [0.4, 6], [1.2, 5]],
+        [[-0.9, 7], [0.8, 2], [1.6, 1]],
     ]
 
     dNdy_expected = [
-        7 / 3 / 0.5,   # Bin -2.0 to -1.5
-        0,             # Bin -1.5 to -1.0
+        7 / 3 / 0.5,  # Bin -2.0 to -1.5
+        0,  # Bin -1.5 to -1.0
         11 / 3 / 0.5,  # Bin -1.0 to -0.5
-        3 / 3 / 0.5,   # Bin -0.5 to 0.0
-        6 / 3 / 0.5,   # Bin 0.0 to 0.5
-        2 / 3 / 0.5,   # Bin 0.5 to 1.0
-        8 / 3 / 0.5,   # Bin 1.0 to 1.5
-        1 / 3 / 0.5    # Bin 1.5 to 2.0
+        3 / 3 / 0.5,  # Bin -0.5 to 0.0
+        6 / 3 / 0.5,  # Bin 0.0 to 0.5
+        2 / 3 / 0.5,  # Bin 0.5 to 1.0
+        8 / 3 / 0.5,  # Bin 1.0 to 1.5
+        1 / 3 / 0.5,  # Bin 1.5 to 2.0
     ]
 
     particle_objects_list = []
@@ -87,7 +88,7 @@ def test_dNdy_valid():
                 # Given a p_z, the energy that will result in a
                 # rapidity y, is given E = coth(y) * p_z
                 p_z = np.random.random() * 200 - 100
-                e = (1/np.tanh(y)) * p_z
+                e = (1 / np.tanh(y)) * p_z
 
                 p.E = e
                 p.pz = p_z
@@ -100,12 +101,12 @@ def test_dNdy_valid():
 
     # Call with tupel
     dNdy_tupel = bulk_obs.dNdy((-2, 2, 8)).histogram()[0]
-    assert dNdy_tupel  == pytest.approx(dNdy_expected, rel=1e-6)
-    
+    assert dNdy_tupel == pytest.approx(dNdy_expected, rel=1e-6)
+
     # Call with bin list
     bins = [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0]
     dNdy_list = bulk_obs.dNdy(bins).histogram()[0]
-    assert dNdy_list  == pytest.approx(dNdy_expected, rel=1e-6) 
+    assert dNdy_list == pytest.approx(dNdy_expected, rel=1e-6)
 
 
 def test_dNdpT_invalid_input(oscar_extended_file_path):
@@ -114,7 +115,9 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
 
     bulk_obs = BulkObservables(extended_particle_objects_list)
 
-    warn_msg = "Bins must be positive for dNdpT! All negative bins will be empty."
+    warn_msg = (
+        "Bins must be positive for dNdpT! All negative bins will be empty."
+    )
 
     with pytest.raises(TypeError):
         bulk_obs.dNdpT(1.2)
@@ -143,21 +146,21 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
 
 def test_dNdpT_valid():
     pT_bins_and_counts = [
-    [[0.1, 8], [0.3, 1], [0.6, 5], [1.1, 10], [1.8, 4]],     # Event 1
-    [[0.2, 6], [0.7, 2], [1.3, 7], [1.6, 3], [1.9, 9]],      # Event 2
-    [[0.15, 9], [0.55, 3], [0.9, 1], [1.45, 6], [1.74, 2]],  # Event 3
-    [[0.24, 4], [0.85, 5], [1.35, 8], [1.52, 2], [1.95, 6]]   # Event 4
+        [[0.1, 8], [0.3, 1], [0.6, 5], [1.1, 10], [1.8, 4]],  # Event 1
+        [[0.2, 6], [0.7, 2], [1.3, 7], [1.6, 3], [1.9, 9]],  # Event 2
+        [[0.15, 9], [0.55, 3], [0.9, 1], [1.45, 6], [1.74, 2]],  # Event 3
+        [[0.24, 4], [0.85, 5], [1.35, 8], [1.52, 2], [1.95, 6]],  # Event 4
     ]
 
     dNdpT_expected = [
-    (8 + 6 + 9 + 4) / 4 / 0.25,   # Bin 0.0 to 0.25
-    1 / 4 / 0.25,                 # Bin 0.25 to 0.5
-    (2 + 3 + 5) / 4 / 0.25,       # Bin 0.5 to 0.75
-    (5 + 1) / 4 / 0.25,           # Bin 0.75 to 1.0
-    10 / 4 / 0.25,                # Bin 1.0 to 1.25
-    (7 + 8 + 6) / 4 / 0.25,       # Bin 1.25 to 1.5
-    (3 + 2 + 2) / 4 / 0.25,       # Bin 1.5 to 1.75
-    (4 + 9 + 6) / 4 / 0.25        # Bin 1.75 to 2.0
+        (8 + 6 + 9 + 4) / 4 / 0.25,  # Bin 0.0 to 0.25
+        1 / 4 / 0.25,  # Bin 0.25 to 0.5
+        (2 + 3 + 5) / 4 / 0.25,  # Bin 0.5 to 0.75
+        (5 + 1) / 4 / 0.25,  # Bin 0.75 to 1.0
+        10 / 4 / 0.25,  # Bin 1.0 to 1.25
+        (7 + 8 + 6) / 4 / 0.25,  # Bin 1.25 to 1.5
+        (3 + 2 + 2) / 4 / 0.25,  # Bin 1.5 to 1.75
+        (4 + 9 + 6) / 4 / 0.25,  # Bin 1.75 to 2.0
     ]
 
     particle_objects_list = []
@@ -188,12 +191,13 @@ def test_dNdpT_valid():
 
     # Call with tupel
     dNdpT_tupel = bulk_obs.dNdpT((0, 2, 8)).histogram()[0]
-    assert dNdpT_tupel  == pytest.approx(dNdpT_expected, rel=1e-6)
+    assert dNdpT_tupel == pytest.approx(dNdpT_expected, rel=1e-6)
 
     # Call with bin list
     bins = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
     dNdpT_list = bulk_obs.dNdpT(bins).histogram()[0]
-    assert dNdpT_list  == pytest.approx(dNdpT_expected, rel=1e-6)
+    assert dNdpT_list == pytest.approx(dNdpT_expected, rel=1e-6)
+
 
 def test_dNdEta():
     # As al differential yields rely on the same function and the other
@@ -221,6 +225,7 @@ def test_dNdEta():
     # Check that not all bins are zero
     assert any(dNdEta_hist)
 
+
 def test_dNdmT():
     particles_list_singe_event = []
 
@@ -234,8 +239,8 @@ def test_dNdmT():
 
     particle_objects_list = [particles_list_singe_event]
 
-    # Create the BulkObservables object and call dNdmT 
-    bulk_obs = BulkObservables(particle_objects_list)  
+    # Create the BulkObservables object and call dNdmT
+    bulk_obs = BulkObservables(particle_objects_list)
     dNdmT_hist = bulk_obs.dNdmT((0.0, 10, 10)).histogram()[0]
 
     # Check that the bin for mT=3 is filled and all others are not

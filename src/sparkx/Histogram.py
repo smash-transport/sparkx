@@ -613,7 +613,7 @@ class Histogram:
         weights = 1 / self.error_**2
         average = np.average(self.histograms_, axis=0, weights=weights)
 
-         # Ensure the result is a 2D array
+        # Ensure the result is a 2D array
         if average.ndim == 1:
             average = average.reshape(1, -1)
 
@@ -706,7 +706,7 @@ class Histogram:
                     "The shape of the scaling factor array is not compatible with the histogram shape"
                 )
 
-            value_array=np.asarray(value)
+            value_array = np.asarray(value)
             self.histograms_[-1] *= value_array
             self.scaling_[-1] *= value_array
 
