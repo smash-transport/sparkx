@@ -583,7 +583,7 @@ class OscarLoader(BaseLoader):
                         "First line of the event is not a comment "
                         + 'line or does not contain "out"'
                     )
-                elif "event" in line and ("out" in line or "in " in line):
+                elif "event" in line and ("out" in line or "in "  in line or " start" in line):
                     continue
                 elif "#" in line and "end" in line:
                     if "filters" in self.optional_arguments_.keys():
@@ -682,10 +682,10 @@ class OscarLoader(BaseLoader):
                     line = oscar_file.readline()
                     if not line:
                         break
-                    elif "#" in line and " end " in line:
+                    elif "#" in line and " end" in line:
                         self.event_end_lines_.append(line)
                         event_output.append([event, line_counter - 1])
-                    elif "#" in line and " in " in line:
+                    elif "#" in line and ( " in " in line or " start" in line):
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         line_counter = 0
