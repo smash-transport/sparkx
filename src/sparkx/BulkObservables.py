@@ -11,6 +11,8 @@ from sparkx.Histogram import Histogram
 from sparkx.Particle import Particle
 from typing import List, Tuple, Union
 
+import warnings
+
 # This class ensures a list to be read-only
 class ReadOnlyList:
     def __init__(self, nested_list):
@@ -65,7 +67,7 @@ class BulkObservables:
     """
     def _differential_yield(self,
                             quantity: str,
-                            bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = (-4, 4, 21)) -> Histogram:
+                            bin_properties: Union[Tuple[Union[int, float], Union[int, float], int], List[Union[int, float]]] = (0, 4, 11)) -> Histogram:
 
         # Check if bin_properties is a tuple
         if isinstance(bin_properties, tuple):
@@ -140,6 +142,15 @@ class BulkObservables:
         - 1D histogram containing the event averaged particle counts per 
           transverse momentum bin.
         """
+
+        if isinstance(bin_properties, tuple) and (bin_properties[0] < 0 or bin_properties[1] < 0):
+            warn_msg = "Bins must be positive for dNdpT! All negative bins will be empty."
+            warnings.warn(warn_msg)
+
+        elif isinstance(bin_properties, list) and any(bin_edge < 0 for bin_edge in bin_properties):
+            warn_msg = "Bins must be positive for dNdpT! All negative bins will be empty."
+            warnings.warn(warn_msg)
+
         if bin_properties is None:
             return self._differential_yield("pT_abs")
         else:
@@ -178,6 +189,14 @@ class BulkObservables:
         - 1D histogram containing the event averaged particle counts per
           transverse mass bin.
         """
+        if isinstance(bin_properties, tuple) and (bin_properties[0] < 0 or bin_properties[1] < 0):
+            warn_msg = "Bins must be positive for dNdmT! All negative bins will be empty."
+            warnings.warn(warn_msg)
+
+        elif isinstance(bin_properties, list) and any(bin_edge < 0 for bin_edge in bin_properties):
+            warn_msg = "Bins must be positive for dNdmT! All negative bins will be empty."
+            warnings.warn(warn_msg)
+
         if bin_properties is None:
             return self._differential_yield("mT")
         else:
