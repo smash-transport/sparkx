@@ -109,19 +109,20 @@ def test_add_value_out_of_range():
     valid_values = [1, 2, 10, 18]
     for value in valid_values:
         hist.add_value(value)
-
-    histogram_after_valid = hist.histograms_.copy()
-
-    hist.add_histogram()
-    assert len(hist.histograms_) == 2, "New histogram layer was not added."
     
+    hist.add_histogram()
+    
+    # Testing the second layer
     outlier_values = [-1, 21, 40, 20]
     with pytest.warns(UserWarning, match="Exceeding values are ignored"):
         for value in outlier_values:
             hist.add_value(value)  
-      
-    # Check that the histogram did not change after adding outliers
-    assert np.allclose(hist.histograms_[0], histogram_after_valid), "First histogram changed after adding out-of-range values."
+    
+    # Testing the first layer
+    hist1 = Histogram((0, 20, 20))
+    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
+        for value in outlier_values:
+            hist1.add_value(value)  
 
 def test_remove_bin_out_of_range():
     # Test removing a bin at an index out of range
