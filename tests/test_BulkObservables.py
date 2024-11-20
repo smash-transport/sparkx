@@ -225,7 +225,6 @@ def test_dNdmT():
     particles_list_singe_event = []
 
     for i in range(30):
-        print(i)
         p = Particle()
         # set components such that mT=3
         p.E = 5
