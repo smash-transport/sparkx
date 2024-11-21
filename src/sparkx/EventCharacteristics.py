@@ -321,6 +321,7 @@ class EventCharacteristics:
         n_sigma_y: Union[float, int],
         n_sigma_z: Union[float, int],
         sigma_smear: Union[float, int],
+        kernel: str,
         eta_range: Union[List[Union[int, float]], Tuple[Union[float, int]]],
         output_filename: str,
         IC_info: Optional[str] = None,
@@ -334,19 +335,23 @@ class EventCharacteristics:
 
         Parameters
         ----------
-        x_min, x_max, y_min, y_max, z_min, z_max : float
+        x_min, x_max, y_min, y_max, z_min, z_max : float or int
             Minimum and maximum coordinates in the x, y, and z directions.
 
         Nx, Ny, Nz : int
             Number of grid points in the x, y, and z directions.
 
-        n_sigma_x, n_sigma_y, n_sigma_z : float
+        n_sigma_x, n_sigma_y, n_sigma_z : float or int
             Width of the smearing in the x, y, and z directions in units of
             sigma_smear.
 
-        sigma_smear : float
+        sigma_smear : float or int
             Smearing parameter for particle data.
 
+        kernel : str 
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'.
+            
         eta_range : list, tuple
             A list containing the minimum and maximum values of spacetime
             rapidity (eta) and the number of grid points.
@@ -400,6 +405,8 @@ class EventCharacteristics:
             )
         if not isinstance(self.event_data_, list):
             raise TypeError("The input is not a list.")
+        if not isinstance(kernel, str) or kernel not in {"gaussian", "covariant"}:
+            raise TypeError("Kernel must be a string and must be either 'covariant' or 'gaussian'.")
 
         energy_density = Lattice3D(
             x_min,
@@ -460,16 +467,16 @@ class EventCharacteristics:
 
         # smear the particles on the 3D lattice
         energy_density.add_particle_data(
-            self.event_data_, sigma_smear, "energy_density"
+            self.event_data_, sigma_smear, "energy_density", kernel
         )
         baryon_density.add_particle_data(
-            self.event_data_, sigma_smear, "baryon_density"
+            self.event_data_, sigma_smear, "baryon_density", kernel
         )
         charge_density.add_particle_data(
-            self.event_data_, sigma_smear, "charge_density"
+            self.event_data_, sigma_smear, "charge_density", kernel
         )
         strangeness_density.add_particle_data(
-            self.event_data_, sigma_smear, "strangeness_density"
+            self.event_data_, sigma_smear, "strangeness_density", kernel
         )
         # get the proper time of one of the particles from the iso-tau surface
         tau = self.event_data_[0].proper_time()
@@ -573,6 +580,7 @@ class EventCharacteristics:
         n_sigma_y: Union[float, int],
         n_sigma_z: Union[float, int],
         sigma_smear: Union[float, int],
+        kernel: str,
         output_filename: str,
         IC_info: Optional[str] = None,
     ) -> None:
@@ -585,18 +593,22 @@ class EventCharacteristics:
 
         Parameters
         ----------
-        x_min, x_max, y_min, y_max, z_min, z_max : float
+        x_min, x_max, y_min, y_max, z_min, z_max : float or int
             Minimum and maximum coordinates in the x, y, and z directions.
 
         Nx, Ny, Nz : int
             Number of grid points in the x, y, and z directions.
 
-        n_sigma_x, n_sigma_y, n_sigma_z : float
+        n_sigma_x, n_sigma_y, n_sigma_z : float or int
             Width of the smearing in the x, y, and z directions in units of
             sigma_smear.
 
-        sigma_smear : float
+        sigma_smear : float or int
             Smearing parameter for particle data.
+            
+        kernel : str 
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'.
 
         output_filename : str
             The name of the output file where the densities will be saved.
@@ -639,6 +651,8 @@ class EventCharacteristics:
             )
         if not isinstance(self.event_data_, list):
             raise TypeError("The input is not a list.")
+        if not isinstance(kernel, str) or kernel not in {"gaussian", "covariant"}:
+            raise TypeError("Kernel must be a string and must be either 'covariant' or 'gaussian'.")
 
         energy_density = Lattice3D(
             x_min,
@@ -699,16 +713,16 @@ class EventCharacteristics:
 
         # smear the particles on the 3D lattice
         energy_density.add_particle_data(
-            self.event_data_, sigma_smear, "energy_density"
+            self.event_data_, sigma_smear, "energy_density", kernel
         )
         baryon_density.add_particle_data(
-            self.event_data_, sigma_smear, "baryon_density"
+            self.event_data_, sigma_smear, "baryon_density", kernel
         )
         charge_density.add_particle_data(
-            self.event_data_, sigma_smear, "charge_density"
+            self.event_data_, sigma_smear, "charge_density", kernel
         )
         strangeness_density.add_particle_data(
-            self.event_data_, sigma_smear, "strangeness_density"
+            self.event_data_, sigma_smear, "strangeness_density", kernel
         )
 
         # get the proper time of one of the particles from the iso-tau surface
