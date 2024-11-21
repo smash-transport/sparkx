@@ -1400,7 +1400,7 @@ class Lattice3D:
         particle_data: List[Particle],
         sigma: float,
         quantity: str,
-        kernel: str,
+        kernel: str = "gaussian",
         add: bool = False,
     ) -> None:
         """
@@ -1419,7 +1419,7 @@ class Lattice3D:
             'baryon_density', and 'strangeness_density'.
         kernel : str
             The type of kernel to use for smearing the particle data. Supported
-            values are 'gaussian' and 'covariant'.
+            values are 'gaussian' and 'covariant'. The default is 'gaussian'.
         add : bool, optional
             Specifies whether to add the particle data to the existing lattice
             values or replace them. If True, the particle data will be added to

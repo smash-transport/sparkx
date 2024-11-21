@@ -321,9 +321,9 @@ class EventCharacteristics:
         n_sigma_y: Union[float, int],
         n_sigma_z: Union[float, int],
         sigma_smear: Union[float, int],
-        kernel: str,
         eta_range: Union[List[Union[int, float]], Tuple[Union[float, int]]],
         output_filename: str,
+        kernel: str = "gaussian",
         IC_info: Optional[str] = None,
     ) -> None:
         """
@@ -348,17 +348,17 @@ class EventCharacteristics:
         sigma_smear : float or int
             Smearing parameter for particle data.
 
-        kernel : str 
-            The type of kernel to use for smearing the particle data. Supported
-            values are 'gaussian' and 'covariant'.
-            
         eta_range : list, tuple
             A list containing the minimum and maximum values of spacetime
             rapidity (eta) and the number of grid points.
-
+            
         output_filename : str
             The name of the output file where the densities will be saved.
 
+        kernel : str 
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'. The default is "gaussian".
+            
         IC_info : str
             A string containing info about the initial condition, e.g.,
             collision energy or centrality.
@@ -580,8 +580,8 @@ class EventCharacteristics:
         n_sigma_y: Union[float, int],
         n_sigma_z: Union[float, int],
         sigma_smear: Union[float, int],
-        kernel: str,
         output_filename: str,
+        kernel: str = "gaussian",
         IC_info: Optional[str] = None,
     ) -> None:
         """
@@ -605,13 +605,13 @@ class EventCharacteristics:
 
         sigma_smear : float or int
             Smearing parameter for particle data.
-            
-        kernel : str 
-            The type of kernel to use for smearing the particle data. Supported
-            values are 'gaussian' and 'covariant'.
 
         output_filename : str
             The name of the output file where the densities will be saved.
+            
+        kernel : str 
+            The type of kernel to use for smearing the particle data. Supported
+            values are 'gaussian' and 'covariant'. The default is "gaussian".
 
         IC_info : str
             A string containing info about the initial condition, e.g.,
