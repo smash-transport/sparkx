@@ -379,8 +379,11 @@ class OscarLoader(BaseLoader):
 
         # update the list with the num_output_per_event_ for the case
         # that only certain events are loaded from the file
-        idx_list = self.num_output_per_event_[:, 0]
-        impact_parameters = [impact_parameters[i] for i in idx_list]
+        if self.num_output_per_event_.shape[0] == 0:
+            impact_parameters = []
+        else:
+            idx_list = self.num_output_per_event_[:, 0]
+            impact_parameters = [impact_parameters[i] for i in idx_list]
 
         return impact_parameters
 
