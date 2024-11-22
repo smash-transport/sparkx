@@ -9,53 +9,53 @@
 
 from sparkx.Histogram import Histogram
 from sparkx.Particle import Particle
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional, Iterator
 
 import warnings
 
 
 # This class ensures a list to be read-only
 class ReadOnlyList:
-    def __init__(self, nested_list):
+    def __init__(self, nested_list: List[List[Particle]]) -> None:
         self._nested_list = nested_list  # Store reference to the original list
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> List[Particle]:
         return self._nested_list[index]  # Allow read access to list items
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._nested_list)  # Allow getting the length of the list
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[List[Particle]]:
         return iter(self._nested_list)  # Allow iteration over the list
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self._nested_list)  # Allow printing the list
 
     # Prevent modification by raising exceptions
-    def __setitem__(self, index, value):
+    def __setitem__(self, index: int, value: List[Particle]) -> None:
         raise TypeError("This list is read-only.")
 
-    def append(self, value):
+    def append(self, value: List[Particle]) -> None:
         raise TypeError("This list is read-only.")
 
-    def extend(self, values):
+    def extend(self, values: List[List[Particle]]) -> None:
         raise TypeError("This list is read-only.")
 
-    def insert(self, index, value):
+    def insert(self, index: int, value: List[Particle]) -> None:
         raise TypeError("This list is read-only.")
 
-    def remove(self, value):
+    def remove(self, value: List[Particle]) -> None:
         raise TypeError("This list is read-only.")
 
-    def pop(self, index=-1):
+    def pop(self, index: int = -1) -> None:
         raise TypeError("This list is read-only.")
 
-    def clear(self):
+    def clear(self) -> None:
         raise TypeError("This list is read-only.")
 
 
 class BulkObservables:
-    def __init__(self, particle_objects_list: List[List[Particle]]):
+    def __init__(self, particle_objects_list: List[List[Particle]]) -> None:
         # Wrapping in ReadOnlyList prevents particles from being modified
         self.particle_objects = ReadOnlyList(particle_objects_list)
 
@@ -68,9 +68,11 @@ class BulkObservables:
     def _differential_yield(
         self,
         quantity: str,
-        bin_properties: Union[
-            Tuple[Union[int, float], Union[int, float], int],
-            List[Union[int, float]],
+        bin_properties: Optional[
+            Union[
+                Tuple[Union[int, float], Union[int, float], int],
+                List[Union[int, float]],
+            ]
         ] = (0, 4, 11),
     ) -> Histogram:
         # Check if bin_properties is a tuple
@@ -126,9 +128,11 @@ class BulkObservables:
     # PUBLIC CLASS METHODS
     def dNdy(
         self,
-        bin_properties: Union[
-            Tuple[Union[int, float], Union[int, float], int],
-            List[Union[int, float]],
+        bin_properties: Optional[
+            Union[
+                Tuple[Union[int, float], Union[int, float], int],
+                List[Union[int, float]],
+            ]
         ] = None,
     ) -> Histogram:
         """
@@ -149,9 +153,11 @@ class BulkObservables:
 
     def dNdpT(
         self,
-        bin_properties: Union[
-            Tuple[Union[int, float], Union[int, float], int],
-            List[Union[int, float]],
+        bin_properties: Optional[
+            Union[
+                Tuple[Union[int, float], Union[int, float], int],
+                List[Union[int, float]],
+            ]
         ] = None,
     ) -> Histogram:
         """
@@ -185,9 +191,11 @@ class BulkObservables:
 
     def dNdEta(
         self,
-        bin_properties: Union[
-            Tuple[Union[int, float], Union[int, float], int],
-            List[Union[int, float]],
+        bin_properties: Optional[
+            Union[
+                Tuple[Union[int, float], Union[int, float], int],
+                List[Union[int, float]],
+            ]
         ] = None,
     ) -> Histogram:
         """
@@ -208,9 +216,11 @@ class BulkObservables:
 
     def dNdmT(
         self,
-        bin_properties: Union[
-            Tuple[Union[int, float], Union[int, float], int],
-            List[Union[int, float]],
+        bin_properties: Optional[
+            Union[
+                Tuple[Union[int, float], Union[int, float], int],
+                List[Union[int, float]],
+            ]
         ] = None,
     ) -> Histogram:
         """
@@ -241,7 +251,7 @@ class BulkObservables:
         else:
             return self._differential_yield("mT", bin_properties)
 
-    def mid_rapidity_yield(self, y_width: Union[int, float] = 1.0) -> float:
+    def mid_rapidity_yield(self, y_width: float = 1.0) -> float:
         """
         Calculate the event-averaged particle yield at mid-rapidity.
 
@@ -274,7 +284,7 @@ class BulkObservables:
 
         return particle_counter / num_events
 
-    def mid_rapidity_mean_pT(self, y_width: Union[int, float] = 1.0) -> float:
+    def mid_rapidity_mean_pT(self, y_width: float = 1.0) -> float:
         """
         Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
 
@@ -298,20 +308,20 @@ class BulkObservables:
         if num_events == 0:
             return 0
 
-        pT_sum = 0
+        pT_sum = 0.
         particle_counter = 0
         # Fill histograms
         for event in self.particle_objects:
             for particle in event:
                 particle_counter += 1
                 if -y_width / 2 <= particle.rapidity() <= y_width / 2:
-                    pT_sum += particle.pT()
+                    pT_sum += particle.pT_abs()
             pT_sum /= particle_counter
             particle_counter = 0
 
         return pT_sum / num_events
 
-    def mid_rapidity_mean_mT(self, y_width: Union[int, float] = 1.0) -> float:
+    def mid_rapidity_mean_mT(self, y_width: float = 1.0) -> float:
         """
         Calculate the event-averaged mean transverse mass mT at mid-rapidity.
 
@@ -335,7 +345,7 @@ class BulkObservables:
         if num_events == 0:
             return 0
 
-        pT_sum = 0
+        pT_sum = 0.
         particle_counter = 0
         # Fill histograms
         for event in self.particle_objects:
