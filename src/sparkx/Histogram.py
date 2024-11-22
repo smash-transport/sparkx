@@ -735,7 +735,7 @@ class Histogram:
             average = average.reshape(1, -1)
 
         self.histograms_ = average
-        self.error_ = np.sqrt(variance)
+        self.error_ = np.sqrt(variance).reshape(1, -1)
         self.systematic_error_ = np.sqrt(
             np.average(self.systematic_error_**2.0, axis=0, weights=weights)
         )
