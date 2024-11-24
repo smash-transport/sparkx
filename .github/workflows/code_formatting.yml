@@ -25,17 +25,18 @@ jobs:
         pip install black==24.8.0
 
     - name: Check code formatting
+      id: black-check
       run: |
         black --check --line-length 80 src/sparkx tests/
-      continue-on-error: true  # Continue if this step fails to proceed to fixing
+      continue-on-error: true  # Allow the workflow to continue even if this step fails
 
     - name: Format code (if needed)
-      if: failure()  # Only format code if the previous step failed
+      if: steps.black-check.outcome == 'failure'  # Only run if the 'Check code formatting' step failed
       run: |
         black --line-length 80 src/sparkx tests/
 
     - name: Commit and push changes (if any)
-      if: failure()  # Only commit changes if formatting was needed
+      if: steps.black-check.outcome == 'failure'  # Only commit changes if formatting was needed
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
