@@ -42,7 +42,11 @@ jobs:
 
     - name: Push changes
       run: |
-        git push origin ${{ github.head_ref }}
+        branch_to_push=${{ github.head_ref }}
+        if ! git ls-remote --exit-code origin "${branch_to_push}"; then
+          branch_to_push=${{ github.base_ref }}
+        fi
+        git push origin $branch_to_push
 
     - name: Run format test again
       run: |
