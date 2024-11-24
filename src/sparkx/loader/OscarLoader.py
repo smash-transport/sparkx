@@ -49,6 +49,8 @@ class OscarLoader(BaseLoader):
         Determines and sets the format of the OSCAR data file.
     oscar_format()
         Returns the OSCAR format of the data file.
+    impact_parameter()
+        Returns the impact parameter of the events in the OSCAR data file.
     event_end_lines()
         Returns the event end lines in the OSCAR data file.
     __get_num_read_lines()
@@ -356,6 +358,35 @@ class OscarLoader(BaseLoader):
         """
         return self.event_end_lines_
 
+    def impact_parameter(self) -> List[float]:
+        """
+        Returns the impact parameter of the events.
+
+        This method extracts the impact parameter of the collision from the
+        last line of each event in the OSCAR data file.
+
+        Returns
+        -------
+        List[float]
+            The impact parameter of the collisions.
+        """
+        impact_parameters: List[float] = []
+        for line in self.event_end_lines_:
+            line_split = line.split(" ")
+            line_split = list(filter(None, line_split))
+            impact_parameter = float(line_split[-3])
+            impact_parameters.append(impact_parameter)
+
+        # update the list with the num_output_per_event_ for the case
+        # that only certain events are loaded from the file
+        if self.num_output_per_event_.shape[0] == 0:
+            impact_parameters = []
+        else:
+            idx_list = self.num_output_per_event_[:, 0]
+            impact_parameters = [impact_parameters[i] for i in idx_list]
+
+        return impact_parameters
+
     def __get_num_read_lines(self) -> int:
         """
         Calculates the number of lines to read from the OSCAR data file.
@@ -532,8 +563,6 @@ class OscarLoader(BaseLoader):
                 raise ValueError("The cut is unknown!")
 
         return event
-
-    # PUBLIC CLASS METHODS
 
     def set_particle_list(self, kwargs: Dict[str, Any]) -> List[List[Particle]]:
         """

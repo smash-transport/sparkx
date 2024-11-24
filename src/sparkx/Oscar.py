@@ -96,6 +96,8 @@ class Oscar(BaseStorer):
     -------
     oscar_format:
         Get Oscar format of the input files
+    impact_parameters:
+        Get impact parameters of the events
     print_particle_lists_to_file:
         Print current particle data to file with same format
 
@@ -178,6 +180,7 @@ class Oscar(BaseStorer):
             raise TypeError("The loader must be an instance of OscarLoader.")
         self.oscar_format_: Union[str, None] = self.loader_.oscar_format()
         self.event_end_lines_: List[str] = self.loader_.event_end_lines()
+        self.impact_parameters_: List[float] = self.loader_.impact_parameter()
         del self.loader_
 
     def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
@@ -315,6 +318,17 @@ class Oscar(BaseStorer):
 
         """
         return self.oscar_format_
+
+    def impact_parameters(self) -> List[float]:
+        """
+        Get the impact parameters for the loaded events.
+
+        Returns
+        -------
+        impact_parameters : List[float]
+            Impact parameters of the events
+        """
+        return self.impact_parameters_
 
     def print_particle_lists_to_file(self, output_file: str) -> None:
         """

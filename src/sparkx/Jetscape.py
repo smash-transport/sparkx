@@ -85,6 +85,12 @@ class Jetscape(BaseStorer):
     num_events_ : int
         Number of events contained in the Jetscape object (updated when filters
         are applied)
+    particle_type_ : str
+        The type of particles in the Jetscape file (e.g. 'hadron' or 'parton')
+    sigmaGen_ : Tuple[float, float] 
+        The value of sigmaGen and the uncertainty
+    last_line_: str
+        The last line of the Jetscape file
 
     Methods
     -------
