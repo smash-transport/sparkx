@@ -28,7 +28,7 @@ jobs:
       id: black-check
       run: |
         black --check --line-length 80 src/sparkx tests/
-      continue-on-error: true  # Allow the workflow to continue even if this step fails
+      continue-on-error: true
 
     - name: Format code (if needed)
       if: steps.black-check.outcome == 'failure'
@@ -61,14 +61,19 @@ jobs:
           This pull request contains automatic formatting fixes using Black.
         auto-approve: true
 
-    - name: Merge the pull request
+    - name: Extract pull request number
       if: steps.black-check.outcome == 'failure'
-      uses: actions-merge-dependabot/merge@v2
+      id: extract-pr-number
+      run: |
+        echo "PR_NUMBER=$(echo '${{ steps.create-pull-request.outputs.pull-request-url }}' | awk -F'/' '{print $NF}')" >> $GITHUB_ENV
+
+    - name: Enable auto-merge
+      if: steps.black-check.outcome == 'failure'
+      uses: peter-evans/enable-pull-request-automerge@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        pull-request-number: ${{ env.PR_NUMBER }}
         merge-method: squash
-        pull-request-title: "Code Formatting Fixes"
-        pull-request-body: "This PR contains automatic formatting fixes."
 
     - name: Delete format-fixes branch
       if: steps.black-check.outcome == 'failure'
