@@ -1,23 +1,18 @@
 name: Code Formatting Check and Fix
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-      - sparkx_devel
-    types:
-      - closed  # Trigger when the PR is closed (includes merging)
+      - sparkx_devel  # Run on any push to these branches
 
 jobs:
   code-formatting:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.sha }}  # Check out the exact commit of the merged PR
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -29,26 +24,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install black==24.8.0
 
-    - name: Format code
+    - name: Check code formatting
+      run: |
+        black --check --line-length 80 src/sparkx tests/
+      continue-on-error: true  # Continue if this step fails to proceed to fixing
+
+    - name: Format code (if needed)
+      if: failure()  # Only format code if the previous step failed
       run: |
         black --line-length 80 src/sparkx tests/
 
-    - name: Commit changes
+    - name: Commit and push changes (if any)
+      if: failure()  # Only commit changes if formatting was needed
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
         git add src/sparkx tests/
         git commit -m "Automatically format code using black" || echo "No changes to commit"
-
-    - name: Push changes
-      run: |
-        branch_to_push=${{ github.head_ref }}
-        if ! git ls-remote --exit-code origin "${branch_to_push}"; then
-          branch_to_push=${{ github.base_ref }}
-        fi
-        git push origin $branch_to_push
-
-    - name: Run format test again
-      run: |
-        # Add your test commands here
-        black --check --line-length 80 src/sparkx tests/
+        git push origin ${{ github.ref_name }}
