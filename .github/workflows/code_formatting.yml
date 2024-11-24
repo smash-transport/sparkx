@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - sparkx_devel  # Run on any push to these branches
+      - sparkx_devel
 
 jobs:
   code-formatting:
@@ -31,15 +31,49 @@ jobs:
       continue-on-error: true  # Allow the workflow to continue even if this step fails
 
     - name: Format code (if needed)
-      if: steps.black-check.outcome == 'failure'  # Only run if the 'Check code formatting' step failed
+      if: steps.black-check.outcome == 'failure'
       run: |
         black --line-length 80 src/sparkx tests/
 
-    - name: Commit and push changes (if any)
-      if: steps.black-check.outcome == 'failure'  # Only commit changes if formatting was needed
+    - name: Commit changes (if needed)
+      if: steps.black-check.outcome == 'failure'
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
+        git checkout -b format-fixes
         git add src/sparkx tests/
         git commit -m "Automatically format code using black" || echo "No changes to commit"
-        git push origin ${{ github.ref_name }}
+
+    - name: Push changes to new branch
+      if: steps.black-check.outcome == 'failure'
+      run: |
+        git push origin format-fixes
+
+    - name: Create and approve a pull request
+      if: steps.black-check.outcome == 'failure'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: format-fixes
+        base: ${{ github.ref_name }}
+        title: "Code Formatting Fixes"
+        body: |
+          This pull request contains automatic formatting fixes using Black.
+        auto-approve: true
+
+    - name: Merge the pull request
+      if: steps.black-check.outcome == 'failure'
+      uses: actions-merge-dependabot/merge@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        merge-method: squash
+        pull-request-title: "Code Formatting Fixes"
+        pull-request-body: "This PR contains automatic formatting fixes."
+
+    - name: Delete format-fixes branch
+      if: steps.black-check.outcome == 'failure'
+      run: |
+        curl -X DELETE \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/git/refs/heads/format-fixes
