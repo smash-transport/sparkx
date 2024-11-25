@@ -52,6 +52,7 @@ jobs:
     - name: Create and approve a pull request
       if: steps.black-check.outcome == 'failure'
       uses: peter-evans/create-pull-request@v5
+      id: create-pull-request
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: format-fixes
@@ -60,24 +61,7 @@ jobs:
         body: |
           This pull request contains automatic formatting fixes using Black.
         auto-approve: true
-      id: create-pull-request
 
     - name: Debug PR number
       run: echo "PR number: ${{ steps.create-pull-request.outputs.pull-request-number }}"
-      if: steps.black-check.outcome == 'failure'
-
-    - name: Enable auto-merge
-      if: steps.black-check.outcome == 'failure'
-      uses: peter-evans/enable-pull-request-automerge@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        pull-request-number: ${{ steps.create-pull-request.outputs.pull-request-number }}
-        merge-method: squash
-
-    - name: Delete format-fixes branch
-      if: always()
-      run: |
-        curl -X DELETE \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/git/refs/heads/format-fixes || echo "Branch not found, skipping deletion."
+      if: steps.b
