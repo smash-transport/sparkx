@@ -44,6 +44,16 @@ jobs:
         git add src/sparkx tests/
         git commit -m "Automatically format code using black" || echo "No changes to commit"
 
+    - name: Fetch latest changes from remote
+      if: steps.black-check.outcome == 'failure'
+      run: |
+        git fetch origin
+
+    - name: Merge changes (if needed)
+      if: steps.black-check.outcome == 'failure'
+      run: |
+        git merge origin/format-fixes || echo "No changes to merge"
+
     - name: Push changes to new branch
       if: steps.black-check.outcome == 'failure'
       run: |
