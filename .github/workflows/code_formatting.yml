@@ -63,9 +63,11 @@ jobs:
         auto-approve: true
 
     - name: Debug PR number
-      run: echo "PR number: ${{ steps.create-pull-request.outputs.pull-request-number }}"
       if: steps.black-check.outcome == 'failure'
-      
+      run: |
+        echo "Pull request URL: ${{ steps.create-pull-request.outputs.pull-request-url }}"
+        PR_NUMBER=$(echo "${{ steps.create-pull-request.outputs.pull-request-url }}" | awk -F'/' '{print $NF}')
+        echo "PR number: $PR_NUMBER"
 
     - name: Enable auto-merge
       if: steps.black-check.outcome == 'failure'
