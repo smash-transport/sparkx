@@ -75,6 +75,7 @@ jobs:
       if: steps.black-check.outcome == 'failure'
       id: extract-pr-number
       run: |
+        echo "Pull request URL: '${{ steps.create-pull-request.outputs.pull-request-url }}'"
         if [[ -z "${{ steps.create-pull-request.outputs.pull-request-url }}" ]]; then
           echo "No pull request URL found. Exiting."
           exit 1
