@@ -62,6 +62,10 @@ jobs:
         auto-approve: true
       id: create-pull-request
 
+    - name: Debug PR number
+      run: echo "PR number: ${{ steps.create-pull-request.outputs.pull-request-number }}"
+      if: steps.black-check.outcome == 'failure'
+
     - name: Enable auto-merge
       if: steps.black-check.outcome == 'failure'
       uses: peter-evans/enable-pull-request-automerge@v2
@@ -71,7 +75,7 @@ jobs:
         merge-method: squash
 
     - name: Delete format-fixes branch
-      if: always()  # Always attempt cleanup
+      if: always()
       run: |
         curl -X DELETE \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
