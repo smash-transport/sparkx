@@ -44,16 +44,6 @@ jobs:
         git add src/sparkx tests/
         git commit -m "Automatically format code using black" || echo "No changes to commit"
 
-    - name: Fetch latest changes from remote
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        git fetch origin
-
-    - name: Merge changes (if needed)
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        git merge origin/format-fixes || echo "No changes to merge"
-
     - name: Push changes to new branch
       if: steps.black-check.outcome == 'failure'
       run: |
@@ -70,25 +60,14 @@ jobs:
         body: |
           This pull request contains automatic formatting fixes using Black.
         auto-approve: true
-
-    - name: Extract pull request number
-      if: steps.black-check.outcome == 'failure'
-      id: extract-pr-number
-      run: |
-        echo "Pull request URL: '${{ steps.create-pull-request.outputs.pull-request-url }}'"
-        if [[ -z "${{ steps.create-pull-request.outputs.pull-request-url }}" ]]; then
-          echo "No pull request URL found. Exiting."
-          exit 1
-        fi
-        PR_NUMBER=$(echo '${{ steps.create-pull-request.outputs.pull-request-url }}' | awk -F'/' '{print $NF}')
-        echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+      id: create-pull-request
 
     - name: Enable auto-merge
       if: steps.black-check.outcome == 'failure'
       uses: peter-evans/enable-pull-request-automerge@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        pull-request-number: ${{ env.PR_NUMBER }}
+        pull-request-number: ${{ steps.create-pull-request.outputs.pull-request-number }}
         merge-method: squash
 
     - name: Delete format-fixes branch
