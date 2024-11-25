@@ -65,7 +65,12 @@ jobs:
       if: steps.black-check.outcome == 'failure'
       id: extract-pr-number
       run: |
-        echo "PR_NUMBER=$(echo '${{ steps.create-pull-request.outputs.pull-request-url }}' | awk -F'/' '{print $NF}')" >> $GITHUB_ENV
+        if [[ -z "${{ steps.create-pull-request.outputs.pull-request-url }}" ]]; then
+          echo "No pull request URL found. Exiting."
+          exit 1
+        fi
+        PR_NUMBER=$(echo '${{ steps.create-pull-request.outputs.pull-request-url }}' | awk -F'/' '{print $NF}')
+        echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
     - name: Enable auto-merge
       if: steps.black-check.outcome == 'failure'
@@ -76,9 +81,9 @@ jobs:
         merge-method: squash
 
     - name: Delete format-fixes branch
-      if: steps.black-check.outcome == 'failure'
+      if: always()  # Always attempt cleanup
       run: |
         curl -X DELETE \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/git/refs/heads/format-fixes
+          https://api.github.com/repos/${{ github.repository }}/git/refs/heads/format-fixes || echo "Branch not found, skipping deletion."
