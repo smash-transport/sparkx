@@ -1,7 +1,7 @@
 name: Code Formatting Check and Fix
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - sparkx_devel
@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
@@ -24,68 +24,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install black==24.8.0
 
-    - name: Check code formatting
+    - name: Run black to check formatting
       id: black-check
       run: |
         black --check --line-length 80 src/sparkx tests/
       continue-on-error: true
 
-    - name: Format code (if needed)
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        black --line-length 80 src/sparkx tests/
+    - name: Capture formatting status
+      if: ${{ steps.black-check.outcome == 'failure' }}
+      run: echo "needs_formatting=true" >> $GITHUB_ENV
 
-    - name: Commit changes (if needed)
-      if: steps.black-check.outcome == 'failure'
+    - name: Format code with black
+      if: env.needs_formatting == 'true'
+      run: black --line-length 80 src/sparkx tests/
+
+    - name: Push formatted changes
+      if: env.needs_formatting == 'true'
       run: |
-        git config --local user.name "GitHub Action"
-        git config --local user.email "action@github.com"
-        git checkout -b format-fixes
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout ${{ github.head_ref }}
         git add src/sparkx tests/
-        git commit -m "Automatically format code using black" || echo "No changes to commit"
+        git commit -m "Auto-format code with black"
+        git push origin ${{ github.head_ref }}
 
-    - name: Push changes to new branch
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        git push origin format-fixes
-
-    - name: Verify branch push
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        git branch -r
-        git ls-remote --heads origin
-
-    - name: Create and approve a pull request
-      if: steps.black-check.outcome == 'failure'
-      uses: peter-evans/create-pull-request@v5
-      id: create-pull-request
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: format-fixes
-        base: ${{ github.ref_name }}
-        title: "Code Formatting Fixes"
-        body: |
-          This pull request contains automatic formatting fixes using Black.
-        auto-approve: true
-
-    - name: Debug PR creation
-      if: steps.black-check.outcome == 'failure'
-      run: |
-        echo "Pull request URL: ${{ steps.create-pull-request.outputs.pull-request-url }}"
-        echo "Pull request number: ${{ steps.create-pull-request.outputs.pull-request-number }}"
-
-    - name: Enable auto-merge
-      if: steps.black-check.outcome == 'failure'
-      uses: peter-evans/enable-pull-request-automerge@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        pull-request-number: ${{ steps.create-pull-request.outputs.pull-request-number }}
-        merge-method: squash
-
-    - name: Delete format-fixes branch
-      if: always()
-      run: |
-        curl -X DELETE \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/git/refs/heads/format-fixes || echo "Branch not found, skipping deletion."
