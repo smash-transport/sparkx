@@ -62,12 +62,11 @@ jobs:
           This pull request contains automatic formatting fixes using Black.
         auto-approve: true
 
-    - name: Debug PR number
+    - name: Debug PR creation
       if: steps.black-check.outcome == 'failure'
       run: |
         echo "Pull request URL: ${{ steps.create-pull-request.outputs.pull-request-url }}"
-        PR_NUMBER=$(echo "${{ steps.create-pull-request.outputs.pull-request-url }}" | awk -F'/' '{print $NF}')
-        echo "PR number: $PR_NUMBER"
+        echo "Pull request number: ${{ steps.create-pull-request.outputs.pull-request-number }}"
 
     - name: Enable auto-merge
       if: steps.black-check.outcome == 'failure'
