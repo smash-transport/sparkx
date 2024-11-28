@@ -49,6 +49,12 @@ jobs:
       run: |
         git push origin format-fixes
 
+    - name: Verify branch push
+      if: steps.black-check.outcome == 'failure'
+      run: |
+        git branch -r
+        git ls-remote --heads origin
+
     - name: Create and approve a pull request
       if: steps.black-check.outcome == 'failure'
       uses: peter-evans/create-pull-request@v5
