@@ -144,7 +144,7 @@ class ParticleObjectLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
-            []
+            [],
         )
 
     def set_num_output_per_event(self) -> List[int]:

@@ -19,7 +19,7 @@ class CentralityClasses:
     .. note::
         It is the user's responsibility to ensure that the amount of events used
         to determine the centrality classes is sufficient to provide reliable
-        results. The recommended minimum number of events is at least a few 
+        results. The recommended minimum number of events is at least a few
         hundred.
 
     Parameters
@@ -33,7 +33,7 @@ class CentralityClasses:
     Raises
     ------
     TypeError
-        If :code:`events_multiplicity` or :code:`centrality_bins` is not a list 
+        If :code:`events_multiplicity` or :code:`centrality_bins` is not a list
         or :code:`numpy.ndarray`.
 
     Attributes
@@ -234,8 +234,8 @@ class CentralityClasses:
         multiplicity value based on the predefined centrality classes.
 
         In the case that the multiplicity input exceeds the largest or smallest
-        value of the multiplicity used to determine the centrality classes, the 
-        function returns the index of the most central or most peripheral bin, 
+        value of the multiplicity used to determine the centrality classes, the
+        function returns the index of the most central or most peripheral bin,
         respectively.
 
         Parameters

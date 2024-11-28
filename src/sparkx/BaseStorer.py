@@ -23,7 +23,7 @@ class BaseStorer(ABC):
     ----------
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
-        event as :code:`num_output_per_event_[event i][num_output in event i]` 
+        event as :code:`num_output_per_event_[event i][num_output in event i]`
         (updated when filters are applied)
     num_events_ : int
         Number of events contained in the Oscar object (updated when filters
@@ -105,11 +105,11 @@ class BaseStorer(ABC):
                 self.particle_list_,
                 self.num_events_,
                 self.num_output_per_event_,
-                self.custom_attr_list
+                self.custom_attr_list,
             ) = self.loader_.load(**kwargs)
         else:
             raise ValueError("Loader has not been created properly")
-        
+
     def __add__(self, other: "BaseStorer") -> "BaseStorer":
         """
         Adds two BaseStorer objects by combining their particle lists and updating num_output_per_event accordingly.
@@ -134,12 +134,14 @@ class BaseStorer(ABC):
         """
         if not isinstance(other, BaseStorer):
             raise TypeError("Can only add BaseStorer objects")
-        
+
         # Ensure that both instances are of the same class
         if type(self) is not type(other):
             raise TypeError("Can only add objects of the same class")
 
-        combined_particle_list: list = self.particle_list_ + other.particle_list_
+        combined_particle_list: list = (
+            self.particle_list_ + other.particle_list_
+        )
 
         # Ensure num_output_per_event_ is not None
         if self.num_output_per_event_ is None:
@@ -156,18 +158,22 @@ class BaseStorer(ABC):
         )
 
         # Adjust event_number for the parts that originally belonged to other
-        combined_num_output_per_event[self.num_events_:, 0] += self.num_events_
+        combined_num_output_per_event[self.num_events_ :, 0] += self.num_events_
 
         combined_storer: BaseStorer = self.__class__.__new__(self.__class__)
-        combined_storer.__dict__.update(self.__dict__)  # Inherit all properties from self
+        combined_storer.__dict__.update(
+            self.__dict__
+        )  # Inherit all properties from self
         combined_storer._update_after_merge(other)
         combined_storer.particle_list_ = combined_particle_list
         combined_storer.num_output_per_event_ = combined_num_output_per_event
         combined_storer.num_events_ = self.num_events_ + other.num_events_
-        combined_storer.loader_ = None  # Loader is not applicable for combined object
+        combined_storer.loader_ = (
+            None  # Loader is not applicable for combined object
+        )
 
         return combined_storer
-    
+
     @abstractmethod
     def _update_after_merge(self, other: "BaseStorer") -> None:
         """
@@ -203,7 +209,7 @@ class BaseStorer(ABC):
 
         :code:`num_output_per_event[event_n, number_of_particles_in_event_n]`
 
-        :code:`num_output_per_event` is updated with every manipulation e.g. 
+        :code:`num_output_per_event` is updated with every manipulation e.g.
         after applying cuts.
 
         Returns
@@ -336,7 +342,7 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only particle species specified by :code:`pdg_list` for 
+            Containing only particle species specified by :code:`pdg_list` for
             every event
         """
         self.particle_list_ = particle_species(self.particle_list_, pdg_list)
@@ -348,7 +354,7 @@ class BaseStorer(ABC):
         self, pdg_list: Union[int, Union[Tuple[int], List[int], np.ndarray]]
     ) -> "BaseStorer":
         """
-        Remove particle species from :code:`particle_list` by their PDG ID in 
+        Remove particle species from :code:`particle_list` by their PDG ID in
         every event.
 
         Parameters
@@ -409,7 +415,7 @@ class BaseStorer(ABC):
         Parameters
         ----------
         minimum_event_energy : int or float
-            The minimum event energy threshold. Should be a positive integer or 
+            The minimum event energy threshold. Should be a positive integer or
             float.
 
         Returns
@@ -421,10 +427,10 @@ class BaseStorer(ABC):
         Raises
         ------
         TypeError
-            If the :code:`minimum_event_energy` parameter is not an integer or 
+            If the :code:`minimum_event_energy` parameter is not an integer or
             float.
         ValueError
-            If the :code:`minimum_event_energy` parameter is less than or 
+            If the :code:`minimum_event_energy` parameter is less than or
             equal to 0.
         """
         self.particle_list_ = lower_event_energy_cut(
@@ -502,7 +508,7 @@ class BaseStorer(ABC):
         cut_value : float
             If a single value is passed, the cut is applied symmetrically
             around 0.
-            For example, if :code:`cut_value = 1`, only particles with rapidity 
+            For example, if :code:`cut_value = 1`, only particles with rapidity
             in :code:`[-1.0, 1.0]` are kept.
 
         cut_value : tuple
@@ -556,7 +562,7 @@ class BaseStorer(ABC):
     ) -> "BaseStorer":
         """
         Apply spacetime rapidity (space-time rapidity) cut to all events and
-        remove all particles with spacetime rapidity not complying with 
+        remove all particles with spacetime rapidity not complying with
         cut_value.
 
         Parameters
@@ -587,7 +593,7 @@ class BaseStorer(ABC):
 
     def multiplicity_cut(
         self, cut_value_tuple: Tuple[Union[float, None], Union[float, None]]
-        ) -> "BaseStorer":
+    ) -> "BaseStorer":
         """
         Apply multiplicity cut. Remove all events with a multiplicity not
         complying with cut_value.
@@ -596,7 +602,7 @@ class BaseStorer(ABC):
         ----------
         cut_value_tuple : tuple
             Upper and lower bound for multiplicity. If the multiplicity of an event is
-            not in this range, the event is discarded. The range is inclusive on the 
+            not in this range, the event is discarded. The range is inclusive on the
             lower bound and exclusive on the upper bound.
 
         Returns
@@ -634,7 +640,7 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only particles complying with the spacetime cut for all 
+            Containing only particles complying with the spacetime cut for all
             events
         """
         self.particle_list_ = spacetime_cut(
@@ -662,7 +668,7 @@ class BaseStorer(ABC):
         Returns
         -------
         self : BaseStorer object
-            Containing only hadrons with status specified by 
+            Containing only hadrons with status specified by
             :code:`status_list` for every event
         """
         self.particle_list_ = particle_status(self.particle_list_, status_list)
@@ -848,9 +854,13 @@ class BaseStorer(ABC):
             self.num_output_per_event_[1] = len(self.particle_list_[0])
         elif self.num_output_per_event_.ndim == 2:
             # Handle the case where num_output_per_event_ is a two-dimensional array
-            updated_num_output_per_event : np.ndarray = np.ndarray((len(self.particle_list_),2), dtype=int)
+            updated_num_output_per_event: np.ndarray = np.ndarray(
+                (len(self.particle_list_), 2), dtype=int
+            )
             for event in range(len(self.particle_list_)):
-                updated_num_output_per_event[event][0] = event + self.num_output_per_event_[0][0]
+                updated_num_output_per_event[event][0] = (
+                    event + self.num_output_per_event_[0][0]
+                )
                 updated_num_output_per_event[event][1] = len(
                     self.particle_list_[event]
                 )
@@ -869,7 +879,7 @@ class BaseStorer(ABC):
         Prints the particle lists to a specified file.
 
         This method should be implemented by subclasses to print the particle
-        lists to the specified output file. The method raises a 
+        lists to the specified output file. The method raises a
         :code:`NotImplementedError` if it is not overridden by a subclass.
 
         Parameters

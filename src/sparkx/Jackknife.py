@@ -325,9 +325,9 @@ class Jackknife:
     ) -> float:
         """
         Compute the Jackknife uncertainty estimates for a function applied to
-        a data array. The default function is :code:`np.mean`, but it can be 
-        changed to any other function that accepts a numpy array as input. 
-        Multiple other arguments can be passed to the function as args and 
+        a data array. The default function is :code:`np.mean`, but it can be
+        changed to any other function that accepts a numpy array as input.
+        Multiple other arguments can be passed to the function as args and
         kwargs.
 
         Parameters

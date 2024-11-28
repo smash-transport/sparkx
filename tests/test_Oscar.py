@@ -237,6 +237,7 @@ def test_oscar_format(tmp_path):
     oscar = Oscar(tmp_oscar_extended_file)
     assert oscar.oscar_format() == "Oscar2013Extended"
 
+
 def test_oscar_impact_parameter(oscar_extended_file_path):
     oscar = Oscar(oscar_extended_file_path)
     impact_parameters = oscar.impact_parameters()
@@ -250,11 +251,13 @@ def test_oscar_impact_parameter(oscar_extended_file_path):
     impact_parameters = oscar2.impact_parameters()
     assert impact_parameters == [1.0, 2.0]
 
-    oscar1 = Oscar(oscar_extended_file_path, 
-                   filters={'multiplicity_cut': (50, None)})
+    oscar1 = Oscar(
+        oscar_extended_file_path, filters={"multiplicity_cut": (50, None)}
+    )
     impact_parameters = oscar1.impact_parameters()
     # When all events are empty we obtain an empty list
     assert impact_parameters == []
+
 
 def test_num_output_per_event(tmp_path, oscar_old_extended_file_path):
     num_events = 7
@@ -617,7 +620,7 @@ def test_filter_in_oscar_constructor(tmp_path):
         oscar_file, filters={"uncharged_particles": True, "spectators": True}
     )
     oscar_empty_multiplicity = Oscar(
-        oscar_file, filters={"multiplicity_cut": (99999999,None)}
+        oscar_file, filters={"multiplicity_cut": (99999999, None)}
     )
 
     assert np.array_equal(
@@ -626,9 +629,7 @@ def test_filter_in_oscar_constructor(tmp_path):
     assert np.array_equal(
         oscar_uncharged.num_output_per_event(), np.array([[0, 18], [1, 20]])
     )
-    assert np.array_equal(
-        oscar_empty.num_output_per_event(), np.array([])
-    )
+    assert np.array_equal(oscar_empty.num_output_per_event(), np.array([]))
     assert np.array_equal(
         oscar_charged_participants.num_output_per_event(),
         np.array([[0, 12], [1, 10]]),
@@ -640,7 +641,14 @@ def test_filter_in_oscar_constructor(tmp_path):
     assert np.array_equal(
         oscar_empty_multiplicity.num_output_per_event(), np.array([])
     )
-    del oscar_file, oscar_charged, oscar_uncharged, oscar_empty, oscar_uncharged_spectators, oscar_empty_multiplicity
+    del (
+        oscar_file,
+        oscar_charged,
+        oscar_uncharged,
+        oscar_empty,
+        oscar_uncharged_spectators,
+        oscar_empty_multiplicity,
+    )
 
     # Create a particle list to be loaded into the Oscar object
     oscar_file = str(tmp_path / "particle_lists.oscar")
@@ -695,9 +703,7 @@ def test_filter_in_oscar_constructor(tmp_path):
     assert np.array_equal(
         oscar_spectators.num_output_per_event(), np.array([[0, 20], [1, 22]])
     )
-    assert np.array_equal(
-        oscar_empty.num_output_per_event(), np.array([])
-    )
+    assert np.array_equal(oscar_empty.num_output_per_event(), np.array([]))
     assert np.array_equal(
         oscar_spectators_strange.num_output_per_event(),
         np.array([[0, 15], [1, 22]]),
@@ -722,7 +728,7 @@ def test_empty_oscar_print(tmp_path, output_path):
     tmp_oscar_file = create_temporary_oscar_file(
         tmp_path, 5, "Oscar2013", [1, 7, 0, 36, 5]
     )
-    oscar = Oscar(tmp_oscar_file).multiplicity_cut((100000000,None))
+    oscar = Oscar(tmp_oscar_file).multiplicity_cut((100000000, None))
     with pytest.warns(UserWarning):
         oscar.print_particle_lists_to_file(output_path)
     os.remove(output_path)
@@ -746,11 +752,15 @@ def test_old_extended_oscar_print(oscar_old_extended_file_path, output_path):
 
 
 def test_custom_oscar_print(oscar_custom_file_path, output_path):
-    with pytest.warns(UserWarning, match="No PDG code given! All properties extracted from the PDG are set to default values."):
+    with pytest.warns(
+        UserWarning,
+        match="No PDG code given! All properties extracted from the PDG are set to default values.",
+    ):
         oscar = Oscar(oscar_custom_file_path)
     oscar.print_particle_lists_to_file(output_path)
     assert filecmp.cmp(oscar_custom_file_path, output_path)
     os.remove(output_path)
+
 
 def test_update_after_merge_warning(oscar_file_path):
     # Create two Oscar instances with different formats
@@ -763,9 +773,10 @@ def test_update_after_merge_warning(oscar_file_path):
     oscar2.event_end_lines_ = [40, 50, 60]
 
     # Check if a UserWarning is issued when merging
-    with pytest.warns(UserWarning, match="Oscar format of the merged instances do not match"):
+    with pytest.warns(
+        UserWarning, match="Oscar format of the merged instances do not match"
+    ):
         oscar1._update_after_merge(oscar2)
 
     # Check if the event_end_lines_ are updated correctly
     assert oscar1.event_end_lines_ == [10, 20, 30, 40, 50, 60]
-

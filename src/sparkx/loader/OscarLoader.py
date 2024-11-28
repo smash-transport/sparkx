@@ -169,7 +169,7 @@ class OscarLoader(BaseLoader):
             self.set_particle_list(kwargs),
             self.num_events_,
             self.num_output_per_event_,
-            self.custom_attr_list
+            self.custom_attr_list,
         )
 
     def _get_num_skip_lines(self) -> int:
@@ -249,28 +249,28 @@ class OscarLoader(BaseLoader):
     def _set_custom_attr_list(self, header_line: List[str]) -> List[str]:
         self.custom_attr_list = []
         attr_map = {
-            't': 't',
-            'x': 'x',
-            'y': 'y',
-            'z': 'z',
-            'mass': 'mass',
-            'p0': 'E',
-            'px': 'px',
-            'py': 'py',
-            'pz': 'pz',
-            'pdg': 'pdg',
-            'ID': 'ID',
-            'charge': 'charge',
-            'ncoll': 'ncoll',
-            'form_time': 'form_time',
-            'xsecfac': 'xsecfac',
-            'proc_id_origin': 'proc_id_origin',
-            'proc_type_origin': 'proc_type_origin',
-            'time_last_coll': 'time_last_coll',
-            'pdg_mother1': 'pdg_mother1',
-            'pdg_mother2': 'pdg_mother2',
-            'baryon_number': 'baryon_number',
-            'strangeness': 'strangeness'
+            "t": "t",
+            "x": "x",
+            "y": "y",
+            "z": "z",
+            "mass": "mass",
+            "p0": "E",
+            "px": "px",
+            "py": "py",
+            "pz": "pz",
+            "pdg": "pdg",
+            "ID": "ID",
+            "charge": "charge",
+            "ncoll": "ncoll",
+            "form_time": "form_time",
+            "xsecfac": "xsecfac",
+            "proc_id_origin": "proc_id_origin",
+            "proc_type_origin": "proc_type_origin",
+            "time_last_coll": "time_last_coll",
+            "pdg_mother1": "pdg_mother1",
+            "pdg_mother2": "pdg_mother2",
+            "baryon_number": "baryon_number",
+            "strangeness": "strangeness",
         }
         for i in range(0, len(header_line)):
             attr_name = attr_map.get(header_line[i])
@@ -318,11 +318,9 @@ class OscarLoader(BaseLoader):
             or first_line_list[0] == "#!OSCAR2013Extended"
         ):
             self.oscar_format_ = "Oscar2013Extended"
-        elif (
-            first_line_list[0] == "#!ASCIICustom"
-        ):
+        elif first_line_list[0] == "#!ASCIICustom":
             self.oscar_format_ = "ASCIICustom"
-            value_line=first_line_list[2:]
+            value_line = first_line_list[2:]
             self.custom_attr_list = self._set_custom_attr_list(value_line)
         else:
             raise TypeError(
@@ -600,7 +598,7 @@ class OscarLoader(BaseLoader):
         particle_list: List[List[Particle]] = []
         data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
-        cut_events=0
+        cut_events = 0
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             self._skip_lines(oscar_file)
             for i in range(0, num_read_lines):
@@ -616,26 +614,39 @@ class OscarLoader(BaseLoader):
                         "First line of the event is not a comment "
                         + 'line or does not contain "out"'
                     )
-                elif "event" in line and ("out" in line or "in "  in line or " start" in line):
+                elif "event" in line and (
+                    "out" in line or "in " in line or " start" in line
+                ):
                     continue
                 elif "#" in line and "end" in line:
-                    old_data_len=len(data)
+                    old_data_len = len(data)
                     if "filters" in self.optional_arguments_.keys():
                         data = self.__apply_kwargs_filters(
                             [data], kwargs["filters"]
                         )[0]
-                        if (len(data) != 0 or old_data_len==0):
+                        if len(data) != 0 or old_data_len == 0:
                             self.num_output_per_event_[len(particle_list)] = (
                                 len(particle_list),
                                 len(data),
                             )
                         else:
-                            self.num_output_per_event_ = np.atleast_2d(np.delete(self.num_output_per_event_, len(particle_list), axis=0))                
+                            self.num_output_per_event_ = np.atleast_2d(
+                                np.delete(
+                                    self.num_output_per_event_,
+                                    len(particle_list),
+                                    axis=0,
+                                )
+                            )
                             if self.num_output_per_event_.shape[0] == 0:
                                 self.num_output_per_event_ = np.array([])
-                            elif len(particle_list) < self.num_output_per_event_.shape[0]:
-                                self.num_output_per_event_[len(particle_list):, 0] -= 1
-                    if (len(data) != 0 or old_data_len==0 ):
+                            elif (
+                                len(particle_list)
+                                < self.num_output_per_event_.shape[0]
+                            ):
+                                self.num_output_per_event_[
+                                    len(particle_list) :, 0
+                                ] -= 1
+                    if len(data) != 0 or old_data_len == 0:
                         particle_list.append(data)
                     else:
                         cut_events = cut_events + 1
@@ -644,12 +655,14 @@ class OscarLoader(BaseLoader):
                     raise ValueError("Comment line unexpectedly found: " + line)
                 else:
                     line_list = np.asarray(line.replace("\n", "").split(" "))
-                    if(self.oscar_format_ == "ASCIICustom"):
-                        particle = Particle(self.oscar_format_, line_list, self.custom_attr_list)
+                    if self.oscar_format_ == "ASCIICustom":
+                        particle = Particle(
+                            self.oscar_format_, line_list, self.custom_attr_list
+                        )
                     else:
                         particle = Particle(self.oscar_format_, line_list)
                     data.append(particle)
-        self.num_events_=self.num_events_-cut_events
+        self.num_events_ = self.num_events_ - cut_events
         # Correct num_output_per_event and num_events
         if not kwargs or "events" not in self.optional_arguments_.keys():
             if len(particle_list) != self.num_events_:
@@ -732,7 +745,7 @@ class OscarLoader(BaseLoader):
                     elif "#" in line and " end" in line:
                         self.event_end_lines_.append(line)
                         event_output.append([event, line_counter - 1])
-                    elif "#" in line and ( " in " in line or " start" in line):
+                    elif "#" in line and (" in " in line or " start" in line):
                         line_str = line.replace("\n", "").split(" ")
                         event = int(line_str[2])
                         line_counter = 0

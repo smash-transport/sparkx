@@ -319,7 +319,7 @@ def lower_event_energy_cut(
         List with lists containing particle objects for the events
 
     minimum_event_energy : int or float
-        The minimum event energy threshold. Should be a positive integer or 
+        The minimum event energy threshold. Should be a positive integer or
         float.
 
     Returns
@@ -680,7 +680,7 @@ def pseudorapidity_cut(
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if :code:`cut_value = 1`, only particles with 
+        For example, if :code:`cut_value = 1`, only particles with
         pseudo-rapidity in [-1.0, 1.0] are kept.
 
     cut_value : tuple
@@ -752,7 +752,7 @@ def spacetime_rapidity_cut(
     cut_value : float
         If a single value is passed, the cut is applied symmetrically
         around 0.
-        For example, if :code:`cut_value = 1`, only particles with spacetime 
+        For example, if :code:`cut_value = 1`, only particles with spacetime
         rapidity in [-1.0, 1.0] are kept.
 
     cut_value : tuple
@@ -822,7 +822,7 @@ def multiplicity_cut(
 
     cut_value_tuple : tuple
         Upper and lower bound for multiplicity. If the multiplicity of an event is
-        not in this range, the event is discarded. The range is inclusive on the 
+        not in this range, the event is discarded. The range is inclusive on the
         lower bound and exclusive on the upper bound.
 
     Returns

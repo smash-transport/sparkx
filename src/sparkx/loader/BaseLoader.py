@@ -15,7 +15,7 @@ class BaseLoader(ABC):
     """
     Abstract base class for all loader classes.
 
-    This class provides a common interface for all loader classes. 
+    This class provides a common interface for all loader classes.
     Loader classes are responsible for loading data from a file.
 
     Attributes
