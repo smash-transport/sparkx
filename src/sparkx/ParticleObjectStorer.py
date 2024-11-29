@@ -16,7 +16,7 @@ from typing import List, Dict, Tuple, Optional, Union
 
 class ParticleObjectStorer(BaseStorer):
     """
-    Defines a :code:`ParticleObjectStorer` object, which saves particle object 
+    Defines a :code:`ParticleObjectStorer` object, which saves particle object
     lists.
 
     This is a wrapper for a list of Particle objects. It's methods allow to
@@ -115,9 +115,9 @@ class ParticleObjectStorer(BaseStorer):
         """
         Initializes a new instance of the :code:`DummyStorer` class.
 
-        This method initializes a new instance of the :code:`DummyStorer` class 
-        with the specified list of particle objects and optional arguments. 
-        It calls the superclass's constructor with the particle_object_list and 
+        This method initializes a new instance of the :code:`DummyStorer` class
+        with the specified list of particle objects and optional arguments.
+        It calls the superclass's constructor with the particle_object_list and
         kwargs parameters and then deletes the :code:`loader_` attribute.
 
         Parameters
@@ -147,7 +147,7 @@ class ParticleObjectStorer(BaseStorer):
         """
         Creates a new :code:`ParticleObjectLoader` object.
 
-        This method creates a new :code:`ParticleObjectLoader` object with the 
+        This method creates a new :code:`ParticleObjectLoader` object with the
         specified list of particle objects and assigns it to the :code:`loader_`
         attribute.
 
@@ -170,10 +170,10 @@ class ParticleObjectStorer(BaseStorer):
         """
         Converts a :code:`Particle` object into a list.
 
-        This method takes a :code:`Particle` object and converts it into a list 
-        of its attributes. The attributes are added to the list in the following 
-        order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll, 
-        form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll, 
+        This method takes a :code:`Particle` object and converts it into a list
+        of its attributes. The attributes are added to the list in the following
+        order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll,
+        form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll,
         pdg_mother1, pdg_mother2, baryon_number, strangeness, weight, status.
 
         Parameters

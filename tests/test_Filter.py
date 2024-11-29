@@ -171,7 +171,9 @@ def particle_list_hadrons_with_up_down_quarks():
     return [particle_list]
 
 
-def test_keep_up_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_up_down_quarks):
+def test_keep_up_quark_hadrons(
+    particle_nan_quantities, particle_list_hadrons_with_up_down_quarks
+):
     return_list = keep_up(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -179,7 +181,9 @@ def test_keep_up_quark_hadrons(particle_nan_quantities, particle_list_hadrons_wi
     assert len(return_list[0]) == 5
 
 
-def test_keep_down_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_up_down_quarks):
+def test_keep_down_quark_hadrons(
+    particle_nan_quantities, particle_list_hadrons_with_up_down_quarks
+):
     return_list = keep_down(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -201,12 +205,15 @@ def particle_list_hadrons_with_charm_quarks():
     return [particle_list]
 
 
-def test_keep_charm_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_charm_quarks):
+def test_keep_charm_quark_hadrons(
+    particle_nan_quantities, particle_list_hadrons_with_charm_quarks
+):
     return_list = keep_charm(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
     return_list = keep_charm(particle_list_hadrons_with_charm_quarks)
     assert len(return_list[0]) == 4
+
 
 @pytest.fixture
 def particle_list_hadrons_with_bottom_quarks():
@@ -222,7 +229,9 @@ def particle_list_hadrons_with_bottom_quarks():
     return [particle_list]
 
 
-def test_keep_bottom_quark_hadrons(particle_nan_quantities, particle_list_hadrons_with_bottom_quarks):
+def test_keep_bottom_quark_hadrons(
+    particle_nan_quantities, particle_list_hadrons_with_bottom_quarks
+):
     return_list = keep_bottom(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -230,7 +239,9 @@ def test_keep_bottom_quark_hadrons(particle_nan_quantities, particle_list_hadron
     assert len(return_list[0]) == 4
 
 
-def test_keep_top_quark(particle_nan_quantities, particle_list_hadrons_with_bottom_quarks):
+def test_keep_top_quark(
+    particle_nan_quantities, particle_list_hadrons_with_bottom_quarks
+):
     return_list = keep_top(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -252,7 +263,9 @@ def particle_list_hadrons_with_photons():
     return [particle_list]
 
 
-def test_remove_photons(particle_nan_quantities, particle_list_hadrons_with_photons):
+def test_remove_photons(
+    particle_nan_quantities, particle_list_hadrons_with_photons
+):
     return_list = remove_photons(particle_nan_quantities)
     assert len(return_list[0]) == 0
 
@@ -770,23 +783,24 @@ def particle_list_multiplicity():
 
 def test_multiplicity_cut(particle_list_multiplicity):
     # Test cases for valid input
-    assert multiplicity_cut(particle_list_multiplicity, (7,None)) == [
+    assert multiplicity_cut(particle_list_multiplicity, (7, None)) == [
         particle_list_multiplicity[1]
     ]
-    assert multiplicity_cut(particle_list_multiplicity, (5,10)) == [
+    assert multiplicity_cut(particle_list_multiplicity, (5, 10)) == [
         particle_list_multiplicity[0]
     ]
     assert multiplicity_cut(particle_list_multiplicity, (11, None)) == [[]]
 
-    assert multiplicity_cut(particle_list_multiplicity, (10, 5))== [
+    assert multiplicity_cut(particle_list_multiplicity, (10, 5)) == [
         particle_list_multiplicity[0]
     ]
     # Test cases for invalid input
     with pytest.raises(TypeError):
-        multiplicity_cut(particle_list_multiplicity, cut_value=(-3.5,4))
+        multiplicity_cut(particle_list_multiplicity, cut_value=(-3.5, 4))
 
     with pytest.raises(TypeError):
-        multiplicity_cut(particle_list_multiplicity, cut_value=(0,'a'))
+        multiplicity_cut(particle_list_multiplicity, cut_value=(0, "a"))
+
 
 @pytest.fixture
 def particle_list_status():

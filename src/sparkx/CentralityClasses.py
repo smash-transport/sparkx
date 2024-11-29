@@ -16,6 +16,12 @@ class CentralityClasses:
     """
     Class for defining centrality classes based on event multiplicity.
 
+    .. note::
+        It is the user's responsibility to ensure that the amount of events used
+        to determine the centrality classes is sufficient to provide reliable
+        results. The recommended minimum number of events is at least a few
+        hundred.
+
     Parameters
     ----------
     events_multiplicity : list or numpy.ndarray
@@ -27,7 +33,7 @@ class CentralityClasses:
     Raises
     ------
     TypeError
-        If :code:`events_multiplicity` or :code:`centrality_bins` is not a list 
+        If :code:`events_multiplicity` or :code:`centrality_bins` is not a list
         or :code:`numpy.ndarray`.
 
     Attributes
@@ -58,10 +64,17 @@ class CentralityClasses:
     .. code-block:: python
         :linenos:
 
-        >>> centrality_obj = CentralityClasses(events_multiplicity=[10, 15, 20, 25],
-        ...                                   centrality_bins=[0, 25, 50, 75, 100])
-        >>> centrality_obj.get_centrality_class(18)
-        1
+        >>> from sparkx import *
+        >>> import random as rd
+        >>> rd.seed(0)
+
+        >>> # generate 300 random event multiplicities between 50 and 1500
+        >>> events_multiplicity = [rd.randint(50, 1500) for _ in range(300)]
+        >>> centrality_bins = [0, 10, 30, 50, 70, 90, 100]
+        >>> centrality_obj = CentralityClasses(events_multiplicity=events_multiplicity,
+        ...                                   centrality_bins=centrality_bins)
+        >>> centrality_obj.get_centrality_class(1490)
+        0
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
 
@@ -220,6 +233,11 @@ class CentralityClasses:
         This function determines the index of the centrality bin for a given
         multiplicity value based on the predefined centrality classes.
 
+        In the case that the multiplicity input exceeds the largest or smallest
+        value of the multiplicity used to determine the centrality classes, the
+        function returns the index of the most central or most peripheral bin,
+        respectively.
+
         Parameters
         ----------
         dNchdEta : float
@@ -229,17 +247,6 @@ class CentralityClasses:
         -------
         int
             Index of the centrality bin.
-
-        Examples
-        --------
-        .. highlight:: python
-        .. code-block:: python
-            :linenos:
-
-            >>> centrality_obj = CentralityClasses(events_multiplicity=[10, 15, 20, 25],
-            ...                                   centrality_bins=[0, 25, 50, 75, 100])
-            >>> centrality_obj.get_centrality_class(18)
-            1
         """
         # check if the multiplicity is in the most central bin
         if dNchdEta >= self.dNchdetaMin_[0]:
@@ -270,16 +277,6 @@ class CentralityClasses:
         ------
         TypeError
             If :code:`fname` is not a string.
-
-        Examples
-        --------
-        .. highlight:: python
-        .. code-block:: python
-            :linenos:
-
-            >>> centrality_obj = CentralityClasses(events_multiplicity=[10, 15, 20, 25],
-            ...                                   centrality_bins=[0, 25, 50, 75, 100])
-            >>> centrality_obj.output_centrality_classes('centrality_output.txt')
 
         Notes
         -----

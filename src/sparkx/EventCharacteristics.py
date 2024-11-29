@@ -351,14 +351,14 @@ class EventCharacteristics:
         eta_range : list, tuple
             A list containing the minimum and maximum values of spacetime
             rapidity (eta) and the number of grid points.
-            
+
         output_filename : str
             The name of the output file where the densities will be saved.
 
-        kernel : str 
+        kernel : str
             The type of kernel to use for smearing the particle data. Supported
             values are 'gaussian' and 'covariant'. The default is "gaussian".
-            
+
         IC_info : str
             A string containing info about the initial condition, e.g.,
             collision energy or centrality.
@@ -405,8 +405,13 @@ class EventCharacteristics:
             )
         if not isinstance(self.event_data_, list):
             raise TypeError("The input is not a list.")
-        if not isinstance(kernel, str) or kernel not in {"gaussian", "covariant"}:
-            raise TypeError("Kernel must be a string and must be either 'covariant' or 'gaussian'.")
+        if not isinstance(kernel, str) or kernel not in {
+            "gaussian",
+            "covariant",
+        }:
+            raise TypeError(
+                "Kernel must be a string and must be either 'covariant' or 'gaussian'."
+            )
 
         energy_density = Lattice3D(
             x_min,
@@ -608,8 +613,8 @@ class EventCharacteristics:
 
         output_filename : str
             The name of the output file where the densities will be saved.
-            
-        kernel : str 
+
+        kernel : str
             The type of kernel to use for smearing the particle data. Supported
             values are 'gaussian' and 'covariant'. The default is "gaussian".
 
@@ -651,8 +656,13 @@ class EventCharacteristics:
             )
         if not isinstance(self.event_data_, list):
             raise TypeError("The input is not a list.")
-        if not isinstance(kernel, str) or kernel not in {"gaussian", "covariant"}:
-            raise TypeError("Kernel must be a string and must be either 'covariant' or 'gaussian'.")
+        if not isinstance(kernel, str) or kernel not in {
+            "gaussian",
+            "covariant",
+        }:
+            raise TypeError(
+                "Kernel must be a string and must be either 'covariant' or 'gaussian'."
+            )
 
         energy_density = Lattice3D(
             x_min,

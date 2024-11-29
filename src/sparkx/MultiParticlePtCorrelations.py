@@ -56,7 +56,7 @@ class MultiParticlePtCorrelations:
 
     Examples
     --------
-    A demonstration of how to use the :code:`MultiParticlePtCorrelations` class 
+    A demonstration of how to use the :code:`MultiParticlePtCorrelations` class
     to calculate transverse momentum correlations and cumulants.
 
     .. highlight:: python

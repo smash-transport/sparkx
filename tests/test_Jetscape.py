@@ -370,9 +370,9 @@ def test_filter_in_Jetscape_constructor(jetscape_file_path):
         np.array([]),
     )
     jetscape_empty_multiplicity = Jetscape(
-        jetscape_file_path, filters={"multiplicity_cut": (99999999,None)}
+        jetscape_file_path, filters={"multiplicity_cut": (99999999, None)}
     )
-    print( jetscape_empty_multiplicity.num_output_per_event())
+    print(jetscape_empty_multiplicity.num_output_per_event())
     assert np.array_equal(
         jetscape_empty_multiplicity.num_output_per_event(), np.array([])
     )
@@ -478,13 +478,13 @@ def test_Jetscape_print_with_empty_events(
     assert filecmp.cmp(jetscape_file_no_hadrons, output_path)
     os.remove(output_path)
 
-def test_Jetscape_print_with_no_events(
-        jetscape_file_path, output_path
-):
-    jetscape = Jetscape(jetscape_file_path).multiplicity_cut((100000000,None))
+
+def test_Jetscape_print_with_no_events(jetscape_file_path, output_path):
+    jetscape = Jetscape(jetscape_file_path).multiplicity_cut((100000000, None))
     with pytest.warns(UserWarning):
         jetscape.print_particle_lists_to_file(output_path)
     os.remove(output_path)
+
 
 def test_Jetscape_get_sigmaGen(jetscape_file_path):
     jetscape = Jetscape(jetscape_file_path)
@@ -514,17 +514,18 @@ def test_Jetscape_read_parton_file(jetscape_file_path_partons):
     with pytest.raises(TypeError):
         Jetscape(jetscape_file_path_partons, particletype=1)
 
+
 def test_update_after_merge_warning(jetscape_file_path):
     # Create two Jetscape instances with different particle types and defining strings
     jetscape1 = Jetscape(jetscape_file_path)
     jetscape1.particle_type_ = "parton"
     jetscape1.particle_type_defining_string_ = "parton"
-    jetscape1.sigmaGen_ = (1,2)
+    jetscape1.sigmaGen_ = (1, 2)
 
     jetscape2 = Jetscape(jetscape_file_path)
     jetscape2.particle_type_ = "hadron"
     jetscape2.particle_type_defining_string_ = "hadron"
-    jetscape2.sigmaGen_ = (2,2)
+    jetscape2.sigmaGen_ = (2, 2)
 
     # Check if a UserWarning is issued when merging
     with pytest.raises(TypeError):
@@ -538,4 +539,4 @@ def test_update_after_merge_warning(jetscape_file_path):
 
     jetscape1._update_after_merge(jetscape2)
 
-    assert jetscape1.sigmaGen_ == (1.5,np.sqrt(2))
+    assert jetscape1.sigmaGen_ == (1.5, np.sqrt(2))

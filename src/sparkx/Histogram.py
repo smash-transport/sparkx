@@ -472,7 +472,7 @@ class Histogram:
         """
         Add value(s) to the latest histogram.
 
-        Different cases, if there is just one number added or a whole 
+        Different cases, if there is just one number added or a whole
         list/array of numbers.
 
         Parameters
