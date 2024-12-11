@@ -7,6 +7,7 @@
 #
 # ===================================================
 
+from sparkx.BulkObservables import BulkObservables
 from sparkx.EventCharacteristics import EventCharacteristics
 from sparkx.flow.ReactionPlaneFlow import ReactionPlaneFlow
 from sparkx.flow.EventPlaneFlow import EventPlaneFlow

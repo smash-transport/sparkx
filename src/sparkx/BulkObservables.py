@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -55,6 +55,70 @@ class ReadOnlyList:
 
 
 class BulkObservables:
+    """
+    Class to calculate bulk observables from a list of Particle objects. It is 
+    assumed that all necessary cuts were performed to the particle list before.
+
+    Attributes
+    ----------
+    particle_objects: ReadOnlyList
+        A read-only list of lists of Particle objects.
+
+    Methods
+    -------
+    dNdy:
+        Calculate the event averaged yield dN/dy.
+    dNdpT:
+        Calculate the event averaged yield dN/dpT.
+    dNdEta:
+        Calculate the event averaged yield dN/dη.
+    dNdmT:
+        Calculate the event averaged yield dN/dmT.
+    mid_rapidity_yield:
+        Calculate the event-averaged particle yield at mid-rapidity.
+    mid_rapidity_mean_pT:
+        Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
+    mid_rapidity_mean_mT:
+        Calculate the event-averaged mean transverse mass mT at mid-rapidity.
+
+    Examples
+    --------
+
+    .. highlight:: python
+    .. code-block:: python
+        :linenos:
+        
+        >>> from sparkx.BulkObservables import BulkObservables
+
+        >>> # Initialize the BulkObservables class
+        >>> bulk_observables = BulkObservables(particle_objects_list)
+
+        >>> # Calculate dN/dy
+        >>> histogram_dNdy = bulk_observables.dNdy()
+
+        >>> # Calculate dN/dpT
+        >>> histogram_dNdpT = bulk_observables.dNdpT()
+
+        >>> # Calculate dN/dη
+        >>> histogram_dNdEta = bulk_observables.dNdEta()
+
+        >>> # Calculate dN/dmT
+        >>> histogram_dNdmT = bulk_observables.dNdmT()
+
+        >>> # Calculate mid-rapidity yield
+        >>> mid_rapidity_yield = bulk_observables.mid_rapidity_yield()
+        >>> print(mid_rapidity_yield)
+
+        >>> # Calculate mid-rapidity mean pT
+        >>> mid_rapidity_mean_pT = bulk_observables.mid_rapidity_mean_pT()
+        >>> print(mid_rapidity_mean_pT)
+
+        >>> # Calculate mid-rapidity mean mT
+        >>> mid_rapidity_mean_mT = bulk_observables.mid_rapidity_mean_mT()
+        >>> print(mid_rapidity_mean_mT)
+
+    """
+
     def __init__(self, particle_objects_list: List[List[Particle]]) -> None:
         # Wrapping in ReadOnlyList prevents particles from being modified
         self.particle_objects = ReadOnlyList(particle_objects_list)
@@ -68,13 +132,15 @@ class BulkObservables:
     def _differential_yield(
         self,
         quantity: str,
-        bin_properties: Optional[
-            Union[
-                Tuple[Union[int, float], Union[int, float], int],
-                List[Union[int, float]],
-            ]
-        ] = (0, 4, 11),
+        bin_properties: Union[
+            Tuple[Union[int, float], Union[int, float], int],
+            List[Union[int, float]],
+        ],
     ) -> Histogram:
+        if not isinstance(quantity, str):
+            raise TypeError("quantity must be of type str")
+        elif not isinstance(bin_properties, (tuple, list)):
+            raise TypeError("bin_properties must be of type tuple or list")
         # Check if bin_properties is a tuple
         if isinstance(bin_properties, tuple):
             if (
@@ -93,10 +159,6 @@ class BulkObservables:
                 raise ValueError(
                     "If bin_properties is a list, all elements must be of type int or float"
                 )
-
-        # Raise an error if bin_properties is neither a tuple nor a list
-        else:
-            raise TypeError("bin_properties must be either a tuple or a list.")
 
         hist = Histogram(bin_properties)
         num_events = len(self.particle_objects)
@@ -138,16 +200,20 @@ class BulkObservables:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dy}`
 
-        Args:
-        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
-          not given, the default of differential_yield() will be used
+        Parameters
+        ----------
+        bin_properties: tuple, list
+          Optional tuple (start, stop, num) for histogram binning. 
+          If not given, a default will be used
 
-        Returns:
-        - 1D histogram containing the event averaged particle counts per
+        Returns
+        -------
+        Histogram
+          1D histogram containing the event averaged particle counts per
           rapidity bin.
         """
         if bin_properties is None:
-            return self._differential_yield("rapidity")
+            return self._differential_yield("rapidity", (-2, 2, 11))
         else:
             return self._differential_yield("rapidity", bin_properties)
 
@@ -163,12 +229,16 @@ class BulkObservables:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`
 
-        Args:
-        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
-          not given, the default of differential_yield() will be used
+        Parameters
+        ----------
+        bin_properties: tuple, list
+          Optional tuple (start, stop, num) for histogram binning. 
+          If not given, a default will be used
 
-        Returns:
-        - 1D histogram containing the event averaged particle counts per
+        Returns
+        -------
+        Histogram
+          1D histogram containing the event averaged particle counts per
           transverse momentum bin.
         """
 
@@ -185,7 +255,7 @@ class BulkObservables:
             warnings.warn(warn_msg)
 
         if bin_properties is None:
-            return self._differential_yield("pT_abs")
+            return self._differential_yield("pT_abs", (0, 4, 11))
         else:
             return self._differential_yield("pT_abs", bin_properties)
 
@@ -201,16 +271,20 @@ class BulkObservables:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{d\\eta}`
 
-        Args:
-        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
-          not given, the default of differential_yield() will be used
+        Parameters
+        ----------
+        bin_properties: tuple, list
+          Optional tuple (start, stop, num) for histogram binning. 
+          If not given, a default will be used
 
-        Returns:
-        - 1D histogram containing the event averaged particle counts per
+        Returns
+        -------
+        Histogram
+          1D histogram containing the event averaged particle counts per
           pseudo-rapidity bin.
         """
         if bin_properties is None:
-            return self._differential_yield("pseudorapidity")
+            return self._differential_yield("pseudorapidity", (-2, 2, 11))
         else:
             return self._differential_yield("pseudorapidity", bin_properties)
 
@@ -226,12 +300,16 @@ class BulkObservables:
         """
         Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`
 
-        Args:
-        - bin_properties: Optional tuple (start, stop, num) for histogram binning. If
-          not given, the default of differential_yield() will be used
+        Parameters
+        ----------
+        bin_properties: tuple, list
+          Optional tuple (start, stop, num) for histogram binning. 
+          If not given, a default will be used
 
-        Returns:
-        - 1D histogram containing the event averaged particle counts per
+        Returns
+        -------
+        Histogram
+          1D histogram containing the event averaged particle counts per
           transverse mass bin.
         """
         if isinstance(bin_properties, tuple) and (
@@ -247,22 +325,31 @@ class BulkObservables:
             warnings.warn(warn_msg)
 
         if bin_properties is None:
-            return self._differential_yield("mT")
+            return self._differential_yield("mT", (0, 4, 11))
         else:
             return self._differential_yield("mT", bin_properties)
 
-    def mid_rapidity_yield(self, y_width: float = 1.0) -> float:
+    def mid_rapidity_yield(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
         """
         Calculate the event-averaged particle yield at mid-rapidity.
 
-        Args:
-        - y_width (float): The rapidity window width, centered at 0, within which
-        particles are counted. The default value is 1, meaning the function
-        will count particles with rapidity between -0.5 and 0.5.
+        Parameters
+        ----------
+        y_width: float
+          The rapidity window width, centered at 0, within which
+           particles are counted. The default value is 1, meaning the function
+           will count particles with rapidity between -0.5 and 0.5.
+        quantity: str
+            The quantity to be used for the rapidity calculation 
+            (rapidity, pseudorapidity, spacetime_rapidity).
 
-        Returns:
-        - float: The average number of particles per event that fall within the
-        specified rapidity range.
+        Returns
+        -------
+        particle_counter / num_events: float
+            The average number of particles per event that fall within the
+            specified rapidity range.
 
         """
         if not isinstance(y_width, (int, float)):
@@ -275,27 +362,43 @@ class BulkObservables:
         if num_events == 0:
             return 0
 
+        particle_method = getattr(self.particle_objects[0][0], quantity)
+        if not callable(particle_method):
+            raise AttributeError(
+                f"'{quantity}' is not a callable method of Particle"
+            )
+
         particle_counter = 0
         # Fill histograms
         for event in self.particle_objects:
             for particle in event:
-                if -y_width / 2 <= particle.rapidity() <= y_width / 2:
+                if -y_width / 2 <= particle_method() <= y_width / 2:
                     particle_counter += 1
 
         return particle_counter / num_events
 
-    def mid_rapidity_mean_pT(self, y_width: float = 1.0) -> float:
+    def mid_rapidity_mean_pT(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
         """
         Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
+        It is assumed that detector cuts have been performed on the particle list.
 
-        Args:
-        - y_width (float): The rapidity window width, centered at 0, within which
-        particles are counted. The default value is 1, meaning the function
-        will count particles with rapidity between -0.5 and 0.5.
+        Parameters
+        ----------
+        y_width: float
+          The rapidity window width, centered at 0, within which
+           particles are counted. The default value is 1, meaning the function
+           will count particles with rapidity between -0.5 and 0.5.
+        quantity: str
+            The quantity to be used for the rapidity calculation 
+            (rapidity, pseudorapidity, spacetime_rapidity).
 
-        Returns:
-        - float: The average pT of particles per event that fall within the
-        specified rapidity range.
+        Returns
+        -------
+        particle_counter / num_events: float
+            The average pT of particles per event that fall within the
+            specified rapidity range.
 
         """
         if not isinstance(y_width, (int, float)):
@@ -308,31 +411,47 @@ class BulkObservables:
         if num_events == 0:
             return 0
 
-        pT_sum = 0.
+        pT_sum = 0.0
         particle_counter = 0
+
+        particle_method = getattr(self.particle_objects[0][0], quantity)
+        if not callable(particle_method):
+            raise AttributeError(
+                f"'{quantity}' is not a callable method of Particle"
+            )
+
         # Fill histograms
         for event in self.particle_objects:
             for particle in event:
                 particle_counter += 1
-                if -y_width / 2 <= particle.rapidity() <= y_width / 2:
+                if -y_width / 2 <= particle_method() <= y_width / 2:
                     pT_sum += particle.pT_abs()
             pT_sum /= particle_counter
             particle_counter = 0
 
         return pT_sum / num_events
 
-    def mid_rapidity_mean_mT(self, y_width: float = 1.0) -> float:
+    def mid_rapidity_mean_mT(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
         """
         Calculate the event-averaged mean transverse mass mT at mid-rapidity.
 
-        Args:
-        - y_width (float): The rapidity window width, centered at 0, within which
-        particles are counted. The default value is 1, meaning the function
-        will count particles with rapidity between -0.5 and 0.5.
+        Parameters
+        ----------
+        y_width: float
+          The rapidity window width, centered at 0, within which
+           particles are counted. The default value is 1, meaning the function
+           will count particles with rapidity between -0.5 and 0.5.
+        quantity: str
+            The quantity to be used for the rapidity calculation
+            (rapidity, pseudorapidity, spacetime_rapidity).
 
-        Returns:
-        - float: The average mT of particles per event that fall within the
-        specified rapidity range.
+        Returns
+        -------
+        particle_counter / num_events: float
+            The average mT of particles per event that fall within the
+            specified rapidity range.
 
         """
         if not isinstance(y_width, (int, float)):
@@ -345,13 +464,20 @@ class BulkObservables:
         if num_events == 0:
             return 0
 
-        pT_sum = 0.
+        pT_sum = 0.0
         particle_counter = 0
+
+        particle_method = getattr(self.particle_objects[0][0], quantity)
+        if not callable(particle_method):
+            raise AttributeError(
+                f"'{quantity}' is not a callable method of Particle"
+            )
+
         # Fill histograms
         for event in self.particle_objects:
             for particle in event:
                 particle_counter += 1
-                if -y_width / 2 <= particle.rapidity() <= y_width / 2:
+                if -y_width / 2 <= particle_method() <= y_width / 2:
                     pT_sum += particle.mT()
             pT_sum /= particle_counter
             particle_counter = 0
