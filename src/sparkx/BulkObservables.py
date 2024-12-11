@@ -56,7 +56,7 @@ class ReadOnlyList:
 
 class BulkObservables:
     """
-    Class to calculate bulk observables from a list of Particle objects. It is 
+    Class to calculate bulk observables from a list of Particle objects. It is
     assumed that all necessary cuts were performed to the particle list before.
 
     Attributes
@@ -87,7 +87,7 @@ class BulkObservables:
     .. highlight:: python
     .. code-block:: python
         :linenos:
-        
+
         >>> from sparkx.BulkObservables import BulkObservables
 
         >>> # Initialize the BulkObservables class
@@ -203,7 +203,7 @@ class BulkObservables:
         Parameters
         ----------
         bin_properties: tuple, list
-          Optional tuple (start, stop, num) for histogram binning. 
+          Optional tuple (start, stop, num) for histogram binning.
           If not given, a default will be used
 
         Returns
@@ -232,7 +232,7 @@ class BulkObservables:
         Parameters
         ----------
         bin_properties: tuple, list
-          Optional tuple (start, stop, num) for histogram binning. 
+          Optional tuple (start, stop, num) for histogram binning.
           If not given, a default will be used
 
         Returns
@@ -274,7 +274,7 @@ class BulkObservables:
         Parameters
         ----------
         bin_properties: tuple, list
-          Optional tuple (start, stop, num) for histogram binning. 
+          Optional tuple (start, stop, num) for histogram binning.
           If not given, a default will be used
 
         Returns
@@ -303,7 +303,7 @@ class BulkObservables:
         Parameters
         ----------
         bin_properties: tuple, list
-          Optional tuple (start, stop, num) for histogram binning. 
+          Optional tuple (start, stop, num) for histogram binning.
           If not given, a default will be used
 
         Returns
@@ -342,7 +342,7 @@ class BulkObservables:
            particles are counted. The default value is 1, meaning the function
            will count particles with rapidity between -0.5 and 0.5.
         quantity: str
-            The quantity to be used for the rapidity calculation 
+            The quantity to be used for the rapidity calculation
             (rapidity, pseudorapidity, spacetime_rapidity).
 
         Returns
@@ -391,7 +391,7 @@ class BulkObservables:
            particles are counted. The default value is 1, meaning the function
            will count particles with rapidity between -0.5 and 0.5.
         quantity: str
-            The quantity to be used for the rapidity calculation 
+            The quantity to be used for the rapidity calculation
             (rapidity, pseudorapidity, spacetime_rapidity).
 
         Returns
