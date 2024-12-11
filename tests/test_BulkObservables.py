@@ -99,9 +99,9 @@ def test_dNdy_valid():
 
     bulk_obs = BulkObservables(particle_objects_list)
 
-    # Call with tupel
-    dNdy_tupel = bulk_obs.dNdy((-2, 2, 8)).histogram()[0]
-    assert dNdy_tupel == pytest.approx(dNdy_expected, rel=1e-6)
+    # Call with tuple
+    dNdy_tuple = bulk_obs.dNdy((-2, 2, 8)).histogram()[0]
+    assert dNdy_tuple == pytest.approx(dNdy_expected, rel=1e-6)
 
     # Call with bin list
     bins = [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0]
@@ -189,9 +189,9 @@ def test_dNdpT_valid():
 
     bulk_obs = BulkObservables(particle_objects_list)
 
-    # Call with tupel
-    dNdpT_tupel = bulk_obs.dNdpT((0, 2, 8)).histogram()[0]
-    assert dNdpT_tupel == pytest.approx(dNdpT_expected, rel=1e-6)
+    # Call with tuple
+    dNdpT_tuple = bulk_obs.dNdpT((0, 2, 8)).histogram()[0]
+    assert dNdpT_tuple == pytest.approx(dNdpT_expected, rel=1e-6)
 
     # Call with bin list
     bins = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
