@@ -205,7 +205,7 @@ def test_dNdEta():
     # function can be called and that the correct attribute was used. To
     # do that, we will simply check that the histogram is not empty
 
-    particles_list_singe_event = []
+    particles_list_single_event = []
 
     for i in range(30):
         p = Particle()
@@ -214,9 +214,9 @@ def test_dNdEta():
         p.py = (np.random.random() * 2) - 0.5
         p.pz = (np.random.random() * 2) - 0.5
 
-        particles_list_singe_event.append(p)
+        particles_list_single_event.append(p)
 
-    particle_objects_list = [particles_list_singe_event]
+    particle_objects_list = [particles_list_single_event]
 
     # Create the BulkObservables object and call dNdEta
     bulk_obs = BulkObservables(particle_objects_list)
@@ -227,7 +227,7 @@ def test_dNdEta():
 
 
 def test_dNdmT():
-    particles_list_singe_event = []
+    particles_list_single_event = []
 
     for i in range(30):
         p = Particle()
@@ -235,9 +235,9 @@ def test_dNdmT():
         p.E = 5
         p.pz = 4
 
-        particles_list_singe_event.append(p)
+        particles_list_single_event.append(p)
 
-    particle_objects_list = [particles_list_singe_event]
+    particle_objects_list = [particles_list_single_event]
 
     # Create the BulkObservables object and call dNdmT
     bulk_obs = BulkObservables(particle_objects_list)
