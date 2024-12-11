@@ -31,6 +31,7 @@ Date:
 * Added support for the SMASH 3.2 feature of custom output format
 * Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
 * BulkObservables: Add a class for calculating spectra and integrated yields
+* Oscar: Add function to extract the impact parameters
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:

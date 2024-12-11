@@ -177,7 +177,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
     n_sigma_x = n_sigma_y = n_sigma_z = 2
     sigma_smear = 0.3
     kernel = "covariant"
-    eta_range = [-1, 1, 10] 
+    eta_range = [-1, 1, 10]
     output_filename = os.path.join(
         tmp_path, "test_eBQS_densities_Milne_from_OSCAR_IC.dat"
     )
@@ -202,7 +202,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             eta_range,
             output_filename,
             kernel,
-            IC_info=1
+            IC_info=1,
         )
 
     # test error if class is initialized with lattice
@@ -224,7 +224,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if x_min, x_max, y_min, y_max, z_min, z_max are not floats
     with pytest.raises(TypeError):
@@ -245,7 +245,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if Nx, Ny, Nz are not positive integers
     with pytest.raises(TypeError):
@@ -266,7 +266,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -286,7 +286,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if n_sigma_x, n_sigma_y, n_sigma_z are not floats
     with pytest.raises(TypeError):
@@ -307,7 +307,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -327,7 +327,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if kernel is not a string 'covariant' or 'gaussian'
     with pytest.raises(TypeError):
@@ -348,8 +348,8 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            4
-        )  
+            4,
+        )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
         eve_char.generate_eBQS_densities_Milne_from_OSCAR_IC(
@@ -368,8 +368,8 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            "invalid"
-        )  
+            "invalid",
+        )
     # Check error if eta_range is not a list with 3 float entries
     with pytest.raises(ValueError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -389,7 +389,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             [1, 2],
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -409,7 +409,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             [1, "invalid", 2],
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -429,7 +429,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             3,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if output_filename is not a string
     with pytest.raises(TypeError):
@@ -450,7 +450,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             1,
-            kernel
+            kernel,
         )
 
     # Check error if not enough data for computing tau
@@ -472,7 +472,7 @@ def test_eBQS_densities_Milne_from_OSCAR_IC(
             sigma_smear,
             eta_range,
             output_filename,
-            kernel
+            kernel,
         )
 
     # Generate densities
@@ -576,7 +576,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             sigma_smear,
             output_filename,
             kernel,
-            IC_info=1
+            IC_info=1,
         )
     # test error if class is initialized with lattice
     with pytest.raises(TypeError):
@@ -596,7 +596,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if x_min, x_max, y_min, y_max, z_min, z_max are not floats
     with pytest.raises(TypeError):
@@ -616,7 +616,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if Nx, Ny, Nz are not positive integers
     with pytest.raises(TypeError):
@@ -636,7 +636,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -655,7 +655,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if n_sigma_x, n_sigma_y, n_sigma_z are not positive floats
     with pytest.raises(TypeError):
@@ -675,7 +675,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -694,7 +694,7 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            kernel
+            kernel,
         )
     # Check error if kernel is not a string 'covariant' or 'gaussian'
     with pytest.raises(TypeError):
@@ -714,8 +714,8 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            4
-        ) 
+            4,
+        )
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
         eve_char.generate_eBQS_densities_Minkowski_from_OSCAR_IC(
@@ -733,8 +733,8 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             output_filename,
-            "invalid"
-        ) 
+            "invalid",
+        )
     # Check error if output_filename is not a string
     with pytest.raises(TypeError):
         eve_char = EventCharacteristics(oscar_particle_objects_list)
@@ -753,5 +753,5 @@ def test_eBQS_densities_Minkowski_from_OSCAR_IC(
             n_sigma_z,
             sigma_smear,
             1,
-            kernel
+            kernel,
         )

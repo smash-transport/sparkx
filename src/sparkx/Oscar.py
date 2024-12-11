@@ -20,8 +20,8 @@ class Oscar(BaseStorer):
     Defines an Oscar object.
 
     The Oscar class contains a single .oscar file including all or only chosen
-    events in either the Oscar2013, Oscar2013Extended, Oscar2013Extended_IC, 
-    Oscar2013Extended_Photons or ASCIICustom format. It's methods
+    events in either the Oscar2013, Oscar2013Extended, Oscar2013Extended_IC,
+    Oscar2013Extended_Photons or ASCII format. It's methods
     allow to directly act on all contained events as applying acceptance filters
     (e.g. un-/charged particles, spectators/participants) to keep/remove particles
     by their PDG codes or to apply cuts (e.g. multiplicity, pseudo-/rapidity, pT).
@@ -77,9 +77,9 @@ class Oscar(BaseStorer):
     PATH_OSCAR_ : str
         Path to the Oscar file
     oscar_format_ : str
-        Input Oscar format "Oscar2013", "Oscar2013Extended", 
-        "Oscar2013Extended_IC", "Oscar2013Extended_Photons", 
-        "ASCIICustom" (set automatically)
+        Input Oscar format "Oscar2013", "Oscar2013Extended",
+        "Oscar2013Extended_IC", "Oscar2013Extended_Photons",
+        "ASCII" (set automatically)
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
         event as :code:`num_output_per_event_[event i][num_output in event i]`
@@ -96,6 +96,8 @@ class Oscar(BaseStorer):
     -------
     oscar_format:
         Get Oscar format of the input files
+    impact_parameters:
+        Get impact parameters of the events
     print_particle_lists_to_file:
         Print current particle data to file with same format
 
@@ -178,6 +180,7 @@ class Oscar(BaseStorer):
             raise TypeError("The loader must be an instance of OscarLoader.")
         self.oscar_format_: Union[str, None] = self.loader_.oscar_format()
         self.event_end_lines_: List[str] = self.loader_.event_end_lines()
+        self.impact_parameters_: List[float] = self.loader_.impact_parameter()
         del self.loader_
 
     def create_loader(self, OSCAR_FILE: str) -> None:  # type: ignore[override]
@@ -200,7 +203,7 @@ class Oscar(BaseStorer):
 
     def _particle_as_list(self, particle: Any) -> List[Union[float, int]]:
         particle_list = []
-        if self.oscar_format_ == 'ASCIICustom':
+        if self.oscar_format_ == "ASCII":
             for attr in self.custom_attr_list:
                 particle_list.append(getattr(particle, attr))
             return particle_list
@@ -218,7 +221,11 @@ class Oscar(BaseStorer):
             particle_list.append(int(particle.ID))
             particle_list.append(int(particle.charge))
 
-            if self.oscar_format_ == 'Oscar2013Extended'  or self.oscar_format_ == 'Oscar2013Extended_IC' or self.oscar_format_ == 'Oscar2013Extended_Photons':
+            if (
+                self.oscar_format_ == "Oscar2013Extended"
+                or self.oscar_format_ == "Oscar2013Extended_IC"
+                or self.oscar_format_ == "Oscar2013Extended_Photons"
+            ):
                 particle_list.append(int(particle.ncoll))
                 particle_list.append(float(particle.form_time))
                 particle_list.append(float(particle.xsecfac))
@@ -227,7 +234,7 @@ class Oscar(BaseStorer):
                 particle_list.append(float(particle.t_last_coll))
                 particle_list.append(int(particle.pdg_mother1))
                 particle_list.append(int(particle.pdg_mother2))
-                if self.oscar_format_ != 'Oscar2013Extended_Photons':
+                if self.oscar_format_ != "Oscar2013Extended_Photons":
                     if not np.isnan(particle.baryon_number):
                         particle_list.append(int(particle.baryon_number))
                     if not np.isnan(particle.strangeness):
@@ -236,8 +243,15 @@ class Oscar(BaseStorer):
                     if not np.isnan(particle.weight):
                         particle_list.append(int(particle.weight))
 
-            elif self.oscar_format_ != 'Oscar2013' and self.oscar_format_ != 'Oscar2013Extended' and self.oscar_format_ != 'Oscar2013Extended_IC' and self.oscar_format_ != 'Oscar2013Extended_Photons':
-                raise TypeError('Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format')
+            elif (
+                self.oscar_format_ != "Oscar2013"
+                and self.oscar_format_ != "Oscar2013Extended"
+                and self.oscar_format_ != "Oscar2013Extended_IC"
+                and self.oscar_format_ != "Oscar2013Extended_Photons"
+            ):
+                raise TypeError(
+                    "Input file not in OSCAR2013, OSCAR2013Extended or Oscar2013Extended_IC format"
+                )
 
             return particle_list
 
@@ -245,7 +259,7 @@ class Oscar(BaseStorer):
         self, status_list: Union[int, Tuple[int, ...], List[int], np.ndarray]
     ) -> "Oscar":
         """
-        Raises an error because the method is not implemented for the Oscar 
+        Raises an error because the method is not implemented for the Oscar
         class.
 
         Parameters
@@ -268,7 +282,7 @@ class Oscar(BaseStorer):
 
     def keep_quarks(self) -> "Oscar":
         """
-        Raises an error because the method is not implemented for the Oscar 
+        Raises an error because the method is not implemented for the Oscar
         class.
 
         Returns
@@ -279,7 +293,7 @@ class Oscar(BaseStorer):
         raise NotImplementedError(
             "keep_quarks is not implemented for the Oscar class."
         )
-    
+
     def _update_after_merge(self, other: BaseStorer) -> None:
         """
         Updates the current instance after merging with another Oscar instance.
@@ -300,7 +314,9 @@ class Oscar(BaseStorer):
         if not isinstance(other, Oscar):
             raise TypeError("Can only add Oscar objects to Oscar.")
         if self.oscar_format_ != other.oscar_format_:
-            warnings.warn("Oscar format of the merged instances do not match. Taking the left-hand side Oscar format.")
+            warnings.warn(
+                "Oscar format of the merged instances do not match. Taking the left-hand side Oscar format."
+            )
         self.event_end_lines_ = self.event_end_lines_ + other.event_end_lines_
 
     def oscar_format(self) -> Union[str, None]:
@@ -315,6 +331,17 @@ class Oscar(BaseStorer):
 
         """
         return self.oscar_format_
+
+    def impact_parameters(self) -> List[float]:
+        """
+        Get the impact parameters for the loaded events.
+
+        Returns
+        -------
+        impact_parameters : List[float]
+            Impact parameters of the events
+        """
+        return self.impact_parameters_
 
     def print_particle_lists_to_file(self, output_file: str) -> None:
         """
@@ -333,32 +360,34 @@ class Oscar(BaseStorer):
         format_oscar2013_extended: str = (
             "%g %g %g %g %g %.9g %.9g %.9g %.9g %d %d %d %d %g %g %d %d %g %d %d"
         )
-        format_map: Dict[str,str] = {
-            't': '%g',
-            'x': '%g',
-            'y': '%g',
-            'z': '%g',
-            'mass': '%g',
-            'p0': '%.9g',
-            'px': '%.9g',
-            'py': '%.9g',
-            'pz': '%.9g',
-            'pdg': '%d',
-            'ID': '%d',
-            'charge': '%d',
-            'ncoll': '%d',
-            'form_time': '%g',
-            'xsecfac': '%g',
-            'proc_id_origin': '%d',
-            'proc_type_origin': '%d',
-            'time_last_coll': '%g',
-            'pdg_mother1': '%g',
-            'pdg_mother2': '%g',
-            'baryon_number': '%g',
-            'strangeness': '%g'
+        format_map: Dict[str, str] = {
+            "t": "%g",
+            "x": "%g",
+            "y": "%g",
+            "z": "%g",
+            "mass": "%g",
+            "p0": "%.9g",
+            "px": "%.9g",
+            "py": "%.9g",
+            "pz": "%.9g",
+            "pdg": "%d",
+            "ID": "%d",
+            "charge": "%d",
+            "ncoll": "%d",
+            "form_time": "%g",
+            "xsecfac": "%g",
+            "proc_id_origin": "%d",
+            "proc_type_origin": "%d",
+            "time_last_coll": "%g",
+            "pdg_mother1": "%g",
+            "pdg_mother2": "%g",
+            "baryon_number": "%g",
+            "strangeness": "%g",
         }
-        if self.oscar_format_ == 'ASCIICustom':
-            format_custom = ' '.join([format_map[attr] for attr in self.custom_attr_list])
+        if self.oscar_format_ == "ASCII":
+            format_custom = " ".join(
+                [format_map[attr] for attr in self.custom_attr_list]
+            )
         with open(self.PATH_OSCAR_, "r") as oscar_file:
             counter_line = 0
             while True:
@@ -433,7 +462,7 @@ class Oscar(BaseStorer):
                             newline="\n",
                             fmt=format_oscar2013_extended,
                         )
-                    elif ( self.oscar_format_ == "ASCIICustom" ):
+                    elif self.oscar_format_ == "ASCII":
                         np.savetxt(
                             f_out,
                             particle_output,
@@ -453,9 +482,9 @@ class Oscar(BaseStorer):
                     f_out.write(self.event_end_lines_[event])
                     f_out.close()
                     return
-                elif (
-                    len(particle_output[0]) > 20
-                    and (self.oscar_format_ == "Oscar2013Extended" or self.oscar_format_ == "Oscar2013Extended_IC")
+                elif len(particle_output[0]) > 20 and (
+                    self.oscar_format_ == "Oscar2013Extended"
+                    or self.oscar_format_ == "Oscar2013Extended_IC"
                 ):
                     format_oscar2013_extended = (
                         format_oscar2013_extended
@@ -481,13 +510,13 @@ class Oscar(BaseStorer):
                         newline="\n",
                         fmt=format_oscar2013_extended,
                     )
-                elif ( self.oscar_format_ == "ASCIICustom" ):
-                        np.savetxt(
-                            f_out,
-                            particle_output,
-                            delimiter=" ",
-                            newline="\n",
-                            fmt=format_custom,
-                        )
+                elif self.oscar_format_ == "ASCII":
+                    np.savetxt(
+                        f_out,
+                        particle_output,
+                        delimiter=" ",
+                        newline="\n",
+                        fmt=format_custom,
+                    )
                 f_out.write(self.event_end_lines_[event])
         f_out.close()

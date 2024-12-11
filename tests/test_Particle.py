@@ -827,6 +827,7 @@ def test_is_quark_from_pdg_valid_values():
     assert result == expected_result
     assert result == True
 
+
 def test_is_quark_from_pdg_invalid_values():
     p = Particle()
     p.pdg_valid = False

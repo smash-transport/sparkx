@@ -85,6 +85,12 @@ class Jetscape(BaseStorer):
     num_events_ : int
         Number of events contained in the Jetscape object (updated when filters
         are applied)
+    particle_type_ : str
+        The type of particles in the Jetscape file (e.g. 'hadron' or 'parton')
+    sigmaGen_ : Tuple[float, float]
+        The value of sigmaGen and the uncertainty
+    last_line_: str
+        The last line of the Jetscape file
 
     Methods
     -------
@@ -222,7 +228,7 @@ class Jetscape(BaseStorer):
         particle_list[6] = float(particle.pz)
 
         return particle_list
-    
+
     def _update_after_merge(self, other: BaseStorer) -> None:
         """
         Updates the current instance after merging with another Jetscape instance.
@@ -245,16 +251,26 @@ class Jetscape(BaseStorer):
         if not isinstance(other, Jetscape):
             raise TypeError("Can only add Jetscape objects to Jetscape.")
         if self.particle_type_ != other.particle_type_:
-            raise TypeError("particle_types of the merged instances do not match.")
-        if self.particle_type_defining_string_ != other.particle_type_defining_string_:
-            raise TypeError("particle_type_defining_string of the merged instances do not match.")
-        
-        self.sigmaGen_ = ((self.sigmaGen_[0] + other.sigmaGen_[0])/2.0, 0.5*np.sqrt(self.sigmaGen_[1]**2 + other.sigmaGen_[1]**2))
-    
+            raise TypeError(
+                "particle_types of the merged instances do not match."
+            )
+        if (
+            self.particle_type_defining_string_
+            != other.particle_type_defining_string_
+        ):
+            raise TypeError(
+                "particle_type_defining_string of the merged instances do not match."
+            )
+
+        self.sigmaGen_ = (
+            (self.sigmaGen_[0] + other.sigmaGen_[0]) / 2.0,
+            0.5 * np.sqrt(self.sigmaGen_[1] ** 2 + other.sigmaGen_[1] ** 2),
+        )
+
     # PUBLIC CLASS METHODS
     def participants(self) -> "Jetscape":
         """
-        Raises an error because participants are not defined for Jetscape 
+        Raises an error because participants are not defined for Jetscape
         events.
 
         Returns
@@ -268,7 +284,7 @@ class Jetscape(BaseStorer):
 
     def spectators(self) -> "Jetscape":
         """
-        Raises an error because spectators are not defined for Jetscape 
+        Raises an error because spectators are not defined for Jetscape
         events.
 
         Returns
@@ -284,7 +300,7 @@ class Jetscape(BaseStorer):
         self, dim: str, cut_value_tuple: Tuple[float, float]
     ) -> "Jetscape":
         """
-        Raises an error because spacetime cuts are not possible for Jetscape 
+        Raises an error because spacetime cuts are not possible for Jetscape
         events.
 
         Parameters
@@ -307,7 +323,7 @@ class Jetscape(BaseStorer):
         self, cut_value: Union[float, Tuple[float, float]]
     ) -> "Jetscape":
         """
-        Raises an error because spacetime rapidity cuts are not possible for 
+        Raises an error because spacetime rapidity cuts are not possible for
         Jetscape events.
 
         Parameters
@@ -325,7 +341,7 @@ class Jetscape(BaseStorer):
         Raises
         ------
         NotImplementedError
-            Always, because spacetime rapidity cuts are not possible for 
+            Always, because spacetime rapidity cuts are not possible for
             Jetscape events.
         """
         raise NotImplementedError(
@@ -362,7 +378,7 @@ class Jetscape(BaseStorer):
         if self.num_output_per_event_ is None:
             raise ValueError("The number of output per event is empty.")
         if self.num_events_ == 1 and self.particle_list_ == [[]]:
-                warnings.warn("The number of events is zero.")
+            warnings.warn("The number of events is zero.")
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
