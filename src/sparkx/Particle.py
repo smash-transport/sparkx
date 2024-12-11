@@ -19,7 +19,7 @@ class Particle:
 
     The member variables of the Particle class are the quantities in the
     Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/
-    ASCIICustom or JETSCAPE hadron/parton output. If they are not set,
+    ASCII or JETSCAPE hadron/parton output. If they are not set,
     they stay :code:`np.nan` to throw an error if one tries to access a non existing
     quantity.
     If a particle with an unknown PDG is provided, a warning is thrown and and
@@ -212,7 +212,7 @@ class Particle:
 
     * "Oscar2013Extended_Photons"
 
-    * "ASCIICustom"
+    * "ASCII"
 
     * "JETSCAPE"
 
@@ -251,10 +251,10 @@ class Particle:
         ):
             raise ValueError("'input_format' or 'particle_array' not given")
 
-        if attribute_list is None and input_format == "ASCIICustom":
+        if attribute_list is None and input_format == "ASCII":
             raise ValueError("'attribute_list' not given")
 
-        if attribute_list != [] and input_format != "ASCIICustom":
+        if attribute_list != [] and input_format != "ASCII":
             raise ValueError(
                 "'OscarCustom' format requires 'attribute_list' to be given."
             )
@@ -281,7 +281,7 @@ class Particle:
             - "Oscar2013Extended"
             - "Oscar2013Extended_IC"
             - "Oscar2013Extended_Photons"
-            - "ASCIICustom"
+            - "ASCII"
             - "JETSCAPE"
 
         particle_array : numpy.ndarray
@@ -430,17 +430,17 @@ class Particle:
                 "pz_": [8, 6],
             },
         }
-        if input_format == "ASCIICustom":
+        if input_format == "ASCII":
             mapping_dict = {}
             for attr in attribute_list:
                 mapping_dict[attr] = [
                     attribute_mapping["Allfields"][attr][0],
                     list(attribute_list).index(attr),
                 ]
-            attribute_mapping["ASCIICustom"] = mapping_dict
-        if input_format in attribute_mapping or input_format == "ASCIICustom":
+            attribute_mapping["ASCII"] = mapping_dict
+        if input_format in attribute_mapping or input_format == "ASCII":
             if (
-                input_format == "ASCIICustom"
+                input_format == "ASCII"
                 or len(particle_array) == len(attribute_mapping[input_format])
                 or (
                     input_format
@@ -454,7 +454,7 @@ class Particle:
                 for attribute, index in attribute_mapping[input_format].items():
                     if len(particle_array) <= (index[1]):
                         continue
-                    if input_format == "ASCIICustom":
+                    if input_format == "ASCII":
                         attribute = attribute + "_"
                     # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
                     # to ensure similar behaving as if we were reading in data

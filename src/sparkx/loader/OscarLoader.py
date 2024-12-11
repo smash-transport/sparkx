@@ -318,14 +318,14 @@ class OscarLoader(BaseLoader):
             or first_line_list[0] == "#!OSCAR2013Extended"
         ):
             self.oscar_format_ = "Oscar2013Extended"
-        elif first_line_list[0] == "#!ASCIICustom":
-            self.oscar_format_ = "ASCIICustom"
+        elif first_line_list[0] == "#!ASCII":
+            self.oscar_format_ = "ASCII"
             value_line = first_line_list[2:]
             self.custom_attr_list = self._set_custom_attr_list(value_line)
         else:
             raise TypeError(
                 "Input file must follow the Oscar2013, "
-                + "Oscar2013Extended, Oscar2013Extended_IC, Oscar2013Extended_Photons or ASCIICustom format. "
+                + "Oscar2013Extended, Oscar2013Extended_IC, Oscar2013Extended_Photons or ASCII format. "
             )
 
     def oscar_format(self) -> Optional[str]:
@@ -655,7 +655,7 @@ class OscarLoader(BaseLoader):
                     raise ValueError("Comment line unexpectedly found: " + line)
                 else:
                     line_list = np.asarray(line.replace("\n", "").split(" "))
-                    if self.oscar_format_ == "ASCIICustom":
+                    if self.oscar_format_ == "ASCII":
                         particle = Particle(
                             self.oscar_format_, line_list, self.custom_attr_list
                         )

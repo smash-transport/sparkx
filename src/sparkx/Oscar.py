@@ -21,7 +21,7 @@ class Oscar(BaseStorer):
 
     The Oscar class contains a single .oscar file including all or only chosen
     events in either the Oscar2013, Oscar2013Extended, Oscar2013Extended_IC,
-    Oscar2013Extended_Photons or ASCIICustom format. It's methods
+    Oscar2013Extended_Photons or ASCII format. It's methods
     allow to directly act on all contained events as applying acceptance filters
     (e.g. un-/charged particles, spectators/participants) to keep/remove particles
     by their PDG codes or to apply cuts (e.g. multiplicity, pseudo-/rapidity, pT).
@@ -79,7 +79,7 @@ class Oscar(BaseStorer):
     oscar_format_ : str
         Input Oscar format "Oscar2013", "Oscar2013Extended",
         "Oscar2013Extended_IC", "Oscar2013Extended_Photons",
-        "ASCIICustom" (set automatically)
+        "ASCII" (set automatically)
     num_output_per_event_ : numpy.array
         Array containing the event number and the number of particles in this
         event as :code:`num_output_per_event_[event i][num_output in event i]`
@@ -203,7 +203,7 @@ class Oscar(BaseStorer):
 
     def _particle_as_list(self, particle: Any) -> List[Union[float, int]]:
         particle_list = []
-        if self.oscar_format_ == "ASCIICustom":
+        if self.oscar_format_ == "ASCII":
             for attr in self.custom_attr_list:
                 particle_list.append(getattr(particle, attr))
             return particle_list
@@ -384,7 +384,7 @@ class Oscar(BaseStorer):
             "baryon_number": "%g",
             "strangeness": "%g",
         }
-        if self.oscar_format_ == "ASCIICustom":
+        if self.oscar_format_ == "ASCII":
             format_custom = " ".join(
                 [format_map[attr] for attr in self.custom_attr_list]
             )
@@ -462,7 +462,7 @@ class Oscar(BaseStorer):
                             newline="\n",
                             fmt=format_oscar2013_extended,
                         )
-                    elif self.oscar_format_ == "ASCIICustom":
+                    elif self.oscar_format_ == "ASCII":
                         np.savetxt(
                             f_out,
                             particle_output,
@@ -510,7 +510,7 @@ class Oscar(BaseStorer):
                         newline="\n",
                         fmt=format_oscar2013_extended,
                     )
-                elif self.oscar_format_ == "ASCIICustom":
+                elif self.oscar_format_ == "ASCII":
                     np.savetxt(
                         f_out,
                         particle_output,
