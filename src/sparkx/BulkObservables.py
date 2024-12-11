@@ -67,19 +67,19 @@ class BulkObservables:
     Methods
     -------
     dNdy:
-        Calculate the event averaged yield dN/dy.
+        Calculate the event averaged yield :math:`\\frac{dN}{dy}`.
     dNdpT:
-        Calculate the event averaged yield dN/dpT.
+        Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`.
     dNdEta:
-        Calculate the event averaged yield dN/dη.
+        Calculate the event averaged yield :math:`\\frac{dN}{d\\eta}`
     dNdmT:
-        Calculate the event averaged yield dN/dmT.
+        Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`.
     mid_rapidity_yield:
         Calculate the event-averaged particle yield at mid-rapidity.
     mid_rapidity_mean_pT:
-        Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
+        Calculate the event-averaged mean transverse momentum :math:`p_T` at mid-rapidity.
     mid_rapidity_mean_mT:
-        Calculate the event-averaged mean transverse mass mT at mid-rapidity.
+        Calculate the event-averaged mean transverse mass :math:`m_T` at mid-rapidity.
 
     Examples
     --------

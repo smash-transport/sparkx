@@ -24,7 +24,7 @@ Event Analysis
 For more advanced analysis with individual particle objects, 
 SPARKX offers a range of classes for calculating centrality, flow, and more:
 
-* `BulkObservables <classes/BulkObservables/index.html>`_: Calculates bulk observables like dN/dy and midrapdity yields.
+* `BulkObservables <classes/BulkObservables/index.html>`_: Calculates bulk observables like :math:`\\frac{dN}{dy}` and midrapdity yields.
 * `CentralityClasses <classes/CentralityClasses/index.html>`_: Calculates centrality classes for a given set of events.
 * `EventCharacteristics <classes/EventCharacteristics/index.html>`_: Calculates event characteristics like eccentricities and energy densities, which can be used as input for hydrodynamical simulations.
 

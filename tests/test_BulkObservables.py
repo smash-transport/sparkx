@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2024
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -200,7 +200,7 @@ def test_dNdpT_valid():
 
 
 def test_dNdEta():
-    # As al differential yields rely on the same function and the other
+    # As all differential yields rely on the same function and the other
     # tests already capture all cases, we will just make sure that the
     # function can be called and that the correct attribute was used. To
     # do that, we will simply check that the histogram is not empty
