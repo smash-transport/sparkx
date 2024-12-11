@@ -15,8 +15,8 @@ The following classes will be useful for loading, filtering, and analyzing your 
 Data Loading and Filtering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* `Oscar <classes/Oscar/index.html>`_: Reads various Oscar data formats and provides particle filtering methods.
 * `Jetscape <classes/Jetscape/index.html>`_: Reads hadron or parton output from JETSCAPE/X-SCAPE and allows particle filtering.
+* `Oscar <classes/Oscar/index.html>`_: Reads various Oscar data formats and provides particle filtering methods.
 
 Event Analysis
 ~~~~~~~~~~~~~~
@@ -24,6 +24,7 @@ Event Analysis
 For more advanced analysis with individual particle objects, 
 SPARKX offers a range of classes for calculating centrality, flow, and more:
 
+* `BulkObservables <classes/BulkObservables/index.html>`_: Calculates bulk observables like dN/dy and midrapdity yields.
 * `CentralityClasses <classes/CentralityClasses/index.html>`_: Calculates centrality classes for a given set of events.
 * `EventCharacteristics <classes/EventCharacteristics/index.html>`_: Calculates event characteristics like eccentricities and energy densities, which can be used as input for hydrodynamical simulations.
 

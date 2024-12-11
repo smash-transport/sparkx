@@ -7,6 +7,7 @@ Classes
    :maxdepth: 2
 
    BaseStorer/index
+   BulkObservables/index
    CentralityClasses/index
    EventCharacteristics/index
    flow/index
