@@ -28,8 +28,9 @@ Date:
 * Jetscape: Add transverse mass cut to methods
 * Added ParticleObjectStorer to store generic particle lists
 * SPARKX checks now for static tying consistency
-* Added support for the SMASH 3.2 feature of ASCIICustom output format
+* Added support for the SMASH 3.2 feature of custom output format
 * Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
+* BulkObservables: Add a class for calculating spectra and integrated yields
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
