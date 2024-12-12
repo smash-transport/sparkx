@@ -436,7 +436,10 @@ class Oscar(BaseStorer):
                     elif (
                         i == 0
                         and len(particle_output[0]) > 20
-                        and ( self.oscar_format_ == "Oscar2013Extended" or self.oscar_format_ == "Oscar2013Extended_IC" )
+                        and (
+                            self.oscar_format_ == "Oscar2013Extended"
+                            or self.oscar_format_ == "Oscar2013Extended_IC"
+                        )
                     ):
                         format_oscar2013_extended = (
                             format_oscar2013_extended
