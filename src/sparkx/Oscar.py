@@ -379,10 +379,10 @@ class Oscar(BaseStorer):
             "proc_id_origin": "%d",
             "proc_type_origin": "%d",
             "time_last_coll": "%g",
-            "pdg_mother1": "%g",
-            "pdg_mother2": "%g",
-            "baryon_number": "%g",
-            "strangeness": "%g",
+            "pdg_mother1": "%d",
+            "pdg_mother2": "%d",
+            "baryon_number": "%d",
+            "strangeness": "%d",
         }
         if self.oscar_format_ == "ASCII":
             format_custom = " ".join(
@@ -436,7 +436,7 @@ class Oscar(BaseStorer):
                     elif (
                         i == 0
                         and len(particle_output[0]) > 20
-                        and self.oscar_format_ == "Oscar2013Extended"
+                        and ( self.oscar_format_ == "Oscar2013Extended" or self.oscar_format_ == "Oscar2013Extended_IC" )
                     ):
                         format_oscar2013_extended = (
                             format_oscar2013_extended
