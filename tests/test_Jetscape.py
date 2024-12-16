@@ -48,6 +48,7 @@ def jetscape_file_no_hadrons():
         os.path.dirname(__file__), "test_files", "test_jetscape_no_hadrons.dat"
     )
 
+
 @pytest.fixture
 def jetscape_file_corrupted():
     # Assuming your test file is in the same directory as test_files/
@@ -117,7 +118,9 @@ def create_temporary_jetscape_file(
     return str(jetscape_file)
 
 
-def test_constructor_invalid_initialization(jetscape_file_path, jetscape_file_corrupted):
+def test_constructor_invalid_initialization(
+    jetscape_file_path, jetscape_file_corrupted
+):
     # Initialization with invalid input file
     invalid_input_file = "./test_files/not_existing_file"
     with pytest.raises(FileNotFoundError):
