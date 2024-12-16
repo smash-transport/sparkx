@@ -22,7 +22,7 @@ class Jetscape(BaseStorer):
     The Jetscape class contains a single Jetscape hadron output file including
     all or only chosen events. It's methods allow to directly act on all
     contained events as applying acceptance filters (e.g. un-/charged particles)
-    to keep/romove particles by their PDG codes or to apply cuts
+    to keep/remove particles by their PDG codes or to apply cuts
     (e.g. multiplicity, pseudo-/rapidity, pT).
     Once these filters are applied, the new data set can be saved 1) as a nested
     list containing all quantities of the Jetscape format 2) as a list containing

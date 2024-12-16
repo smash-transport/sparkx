@@ -32,6 +32,7 @@ Date:
 * Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
 * BulkObservables: Add a class for calculating spectra and integrated yields
 * Oscar: Add function to extract the impact parameters
+* Jetscape: Test if input file is complete by checking for 'sigmaGen' string in last line
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:

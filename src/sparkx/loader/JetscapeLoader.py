@@ -53,7 +53,10 @@ class JetscapeLoader(BaseLoader):
 
         Raises
         ------
-        None
+        FileNotFoundError
+            If the file is not found or does not end with '.dat'.
+        ValueError
+            If the last line of the JETSCAPE file does not contain the string 'sigmaGen'.
 
         Returns
         -------
@@ -61,6 +64,11 @@ class JetscapeLoader(BaseLoader):
         """
         if not ".dat" in JETSCAPE_FILE:
             raise FileNotFoundError("File not found or does not end with .dat")
+        # Check that the last line contains the string 'sigmaGen'
+        if "sigmaGen" not in self.get_last_line(JETSCAPE_FILE):
+            raise ValueError(
+                "The last line of the Jetscape file does not contain the string 'sigmaGen'"
+            )
 
         self.PATH_JETSCAPE_ = JETSCAPE_FILE
         self.particle_type_ = "hadron"
