@@ -19,7 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v.2.0.0
-Date:
+Date: 2024-12-18
 
 ### Added
 * Particle: Add member functions mT, is_quark, is_lepton, has_up, has_down, has_strange, has_charm, has_bottom, has_top
@@ -32,6 +32,7 @@ Date:
 * Add option to add two Oscar/Jetscape/ParticleObjectStorer instances while preserving the event order
 * BulkObservables: Add a class for calculating spectra and integrated yields
 * Oscar: Add function to extract the impact parameters
+* Jetscape: Test if input file is complete by checking for 'sigmaGen' string in last line
 
 ### Changed
 * Particle: Rename several methods for a more intuitive naming scheme. Renamed methods are:
@@ -58,6 +59,8 @@ Date:
 * Oscar/Jetscape: Improve writing speed for large file outputs in writer functions
 * Histogram: Bugfix in the scaling function of Histogram
 * Oscar: Bugfix in comment line identification 
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v1.3.0...v2.0.0)
 
 
 ## v1.3.0-Newton
