@@ -20,7 +20,7 @@ SPARKX
    </a>
 
 This package is designed to assist users of the `SMASH <https://smash-transport.github.io/>`_ and `JETSCAPE/X-SCAPE <https://jetscape.org/>`_ codes to analyze the output of the simulation data.
-It contains multiple classes to read in the simulation outputs in Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/ASCIICustom format or the hadron/parton output of JETSCAPE/X-SCAPE.
+It contains multiple classes to read in the simulation outputs in Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/ASCII format or the hadron/parton output of JETSCAPE/X-SCAPE.
 
 .. toctree::
    :maxdepth: 2
