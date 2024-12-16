@@ -256,7 +256,7 @@ class Particle:
 
         if attribute_list != [] and input_format != "ASCII":
             raise ValueError(
-                "'OscarCustom' format requires 'attribute_list' to be given."
+                "'ASCII' format requires 'attribute_list' to be given."
             )
 
         if (input_format is not None) and (particle_array is not None):
@@ -271,7 +271,7 @@ class Particle:
         attribute_list: List[str],
     ) -> None:
         """
-        Initialize instance attributes based on the provided input format and array, and optionally an atttribute list.
+        Initialize instance attributes based on the provided input format and array, and optionally an attribute list.
 
         Parameters
         ----------
