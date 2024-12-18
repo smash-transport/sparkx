@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BulkObservables &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">BulkObservables</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for BulkObservables</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1"># ===================================================</span>
+
+<span class="kn">from</span> <span class="nn">sparkx.Histogram</span> <span class="kn">import</span> <span class="n">Histogram</span>
+<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterator</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="c1"># This class ensures a list to be read-only</span>
+<span class="k">class</span> <span class="nc">ReadOnlyList</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nested_list</span> <span class="o">=</span> <span class="n">nested_list</span>  <span class="c1"># Store reference to the original list</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nested_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>  <span class="c1"># Allow read access to list items</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nested_list</span><span class="p">)</span>  <span class="c1"># Allow getting the length of the list</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nested_list</span><span class="p">)</span>  <span class="c1"># Allow iteration over the list</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nested_list</span><span class="p">)</span>  <span class="c1"># Allow printing the list</span>
+
+    <span class="c1"># Prevent modification by raising exceptions</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;This list is read-only.&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BulkObservables">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables">[docs]</a>
+<span class="k">class</span> <span class="nc">BulkObservables</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to calculate bulk observables from a list of Particle objects. It is</span>
+<span class="sd">    assumed that all necessary cuts were performed to the particle list before.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    particle_objects: ReadOnlyList</span>
+<span class="sd">        A read-only list of lists of Particle objects.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    dNdy:</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dy}`.</span>
+<span class="sd">    dNdpT:</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`.</span>
+<span class="sd">    dNdEta:</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{d\\eta}`</span>
+<span class="sd">    dNdmT:</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`.</span>
+<span class="sd">    mid_rapidity_yield:</span>
+<span class="sd">        Calculate the event-averaged particle yield at mid-rapidity.</span>
+<span class="sd">    mid_rapidity_mean_pT:</span>
+<span class="sd">        Calculate the event-averaged mean transverse momentum :math:`p_T` at mid-rapidity.</span>
+<span class="sd">    mid_rapidity_mean_mT:</span>
+<span class="sd">        Calculate the event-averaged mean transverse mass :math:`m_T` at mid-rapidity.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; from sparkx.BulkObservables import BulkObservables</span>
+
+<span class="sd">        &gt;&gt;&gt; # Initialize the BulkObservables class</span>
+<span class="sd">        &gt;&gt;&gt; bulk_observables = BulkObservables(particle_objects_list)</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate dN/dy</span>
+<span class="sd">        &gt;&gt;&gt; histogram_dNdy = bulk_observables.dNdy()</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate dN/dpT</span>
+<span class="sd">        &gt;&gt;&gt; histogram_dNdpT = bulk_observables.dNdpT()</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate dN/dη</span>
+<span class="sd">        &gt;&gt;&gt; histogram_dNdEta = bulk_observables.dNdEta()</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate dN/dmT</span>
+<span class="sd">        &gt;&gt;&gt; histogram_dNdmT = bulk_observables.dNdmT()</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate mid-rapidity yield</span>
+<span class="sd">        &gt;&gt;&gt; mid_rapidity_yield = bulk_observables.mid_rapidity_yield()</span>
+<span class="sd">        &gt;&gt;&gt; print(mid_rapidity_yield)</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate mid-rapidity mean pT</span>
+<span class="sd">        &gt;&gt;&gt; mid_rapidity_mean_pT = bulk_observables.mid_rapidity_mean_pT()</span>
+<span class="sd">        &gt;&gt;&gt; print(mid_rapidity_mean_pT)</span>
+
+<span class="sd">        &gt;&gt;&gt; # Calculate mid-rapidity mean mT</span>
+<span class="sd">        &gt;&gt;&gt; mid_rapidity_mean_mT = bulk_observables.mid_rapidity_mean_mT()</span>
+<span class="sd">        &gt;&gt;&gt; print(mid_rapidity_mean_mT)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_objects_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Wrapping in ReadOnlyList prevents particles from being modified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span> <span class="o">=</span> <span class="n">ReadOnlyList</span><span class="p">(</span><span class="n">particle_objects_list</span><span class="p">)</span>
+
+    <span class="c1"># PRIVATE CLASS METHODS</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the base method for all differential yields. It is called by all </span>
+<span class="sd">    corresponding methods for each specific differential yield</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_differential_yield</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bin_properties</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+        <span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Histogram</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;quantity must be of type str&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bin_properties must be of type tuple or list&quot;</span><span class="p">)</span>
+        <span class="c1"># Check if bin_properties is a tuple</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;If bin_properties is a tuple, it must be of the form (int/float, int/float, int).&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Check if bin_properties is a list</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bin_properties</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;If bin_properties is a list, all elements must be of type int or float&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">)</span>
+        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
+        <span class="n">inverse_bin_width</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">hist</span><span class="o">.</span><span class="n">bin_width</span><span class="p">()</span>
+
+        <span class="c1"># Fill histograms</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_events</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="n">event</span><span class="p">]:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Call the corresponding method in Particle given by</span>
+<span class="sd">                &#39;quantity&#39; as string</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
+                    <span class="n">hist</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">particle_method</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># Do not add an empty histogram at the end</span>
+            <span class="k">if</span> <span class="n">num_events</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">event</span> <span class="o">==</span> <span class="p">(</span><span class="n">num_events</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">hist</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">()</span>
+
+        <span class="n">hist</span><span class="o">.</span><span class="n">average</span><span class="p">()</span>
+        <span class="n">hist</span><span class="o">.</span><span class="n">scale_histogram</span><span class="p">(</span><span class="n">inverse_bin_width</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hist</span>
+
+    <span class="c1"># PUBLIC CLASS METHODS</span>
+<div class="viewcode-block" id="BulkObservables.dNdy">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.dNdy">[docs]</a>
+    <span class="k">def</span> <span class="nf">dNdy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bin_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+                <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Histogram</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dy}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bin_properties: tuple, list</span>
+<span class="sd">          Optional tuple (start, stop, num) for histogram binning.</span>
+<span class="sd">          If not given, a default will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Histogram</span>
+<span class="sd">          1D histogram containing the event averaged particle counts per</span>
+<span class="sd">          rapidity bin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bin_properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="n">bin_properties</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.dNdpT">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.dNdpT">[docs]</a>
+    <span class="k">def</span> <span class="nf">dNdpT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bin_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+                <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Histogram</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dp_T}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bin_properties: tuple, list</span>
+<span class="sd">          Optional tuple (start, stop, num) for histogram binning.</span>
+<span class="sd">          If not given, a default will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Histogram</span>
+<span class="sd">          1D histogram containing the event averaged particle counts per</span>
+<span class="sd">          transverse momentum bin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">bin_properties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bin_properties</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Bins must be positive for dNdpT! All negative bins will be empty.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">bin_edge</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">bin_edge</span> <span class="ow">in</span> <span class="n">bin_properties</span>
+        <span class="p">):</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Bins must be positive for dNdpT! All negative bins will be empty.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bin_properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;pT_abs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;pT_abs&quot;</span><span class="p">,</span> <span class="n">bin_properties</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.dNdEta">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.dNdEta">[docs]</a>
+    <span class="k">def</span> <span class="nf">dNdEta</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bin_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+                <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Histogram</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{d\\eta}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bin_properties: tuple, list</span>
+<span class="sd">          Optional tuple (start, stop, num) for histogram binning.</span>
+<span class="sd">          If not given, a default will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Histogram</span>
+<span class="sd">          1D histogram containing the event averaged particle counts per</span>
+<span class="sd">          pseudo-rapidity bin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bin_properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;pseudorapidity&quot;</span><span class="p">,</span> <span class="n">bin_properties</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.dNdmT">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.dNdmT">[docs]</a>
+    <span class="k">def</span> <span class="nf">dNdmT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bin_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+                <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Histogram</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event averaged yield :math:`\\frac{dN}{dm_T}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bin_properties: tuple, list</span>
+<span class="sd">          Optional tuple (start, stop, num) for histogram binning.</span>
+<span class="sd">          If not given, a default will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Histogram</span>
+<span class="sd">          1D histogram containing the event averaged particle counts per</span>
+<span class="sd">          transverse mass bin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">bin_properties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bin_properties</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Bins must be positive for dNdmT! All negative bins will be empty.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_properties</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">bin_edge</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">bin_edge</span> <span class="ow">in</span> <span class="n">bin_properties</span>
+        <span class="p">):</span>
+            <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;Bins must be positive for dNdmT! All negative bins will be empty.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bin_properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="n">bin_properties</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.mid_rapidity_yield">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.mid_rapidity_yield">[docs]</a>
+    <span class="k">def</span> <span class="nf">mid_rapidity_yield</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event-averaged particle yield at mid-rapidity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_width: float</span>
+<span class="sd">          The rapidity window width, centered at 0, within which</span>
+<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
+<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
+<span class="sd">        quantity: str</span>
+<span class="sd">            The quantity to be used for the rapidity calculation</span>
+<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_counter / num_events: float</span>
+<span class="sd">            The average number of particles per event that fall within the</span>
+<span class="sd">            specified rapidity range.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_width must be a positive number.&quot;</span><span class="p">)</span>
+
+        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">quantity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Fill histograms</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">particle_method</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">particle_counter</span> <span class="o">/</span> <span class="n">num_events</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.mid_rapidity_mean_pT">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.mid_rapidity_mean_pT">[docs]</a>
+    <span class="k">def</span> <span class="nf">mid_rapidity_mean_pT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event-averaged mean transverse momentum :math:`p_T` at</span>
+<span class="sd">        mid-rapidity.</span>
+<span class="sd">        It is assumed that detector cuts have been performed on the particle</span>
+<span class="sd">        list.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_width: float</span>
+<span class="sd">          The rapidity window width, centered at 0, within which</span>
+<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
+<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
+<span class="sd">        quantity: str</span>
+<span class="sd">            The quantity to be used for the rapidity calculation</span>
+<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_counter / num_events: float</span>
+<span class="sd">            The average pT of particles per event that fall within the</span>
+<span class="sd">            specified rapidity range.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_width must be a positive number.&quot;</span><span class="p">)</span>
+
+        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">pT_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">quantity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Fill histograms</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+                <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">particle_method</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">pT_sum</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pT_abs</span><span class="p">()</span>
+            <span class="n">pT_sum</span> <span class="o">/=</span> <span class="n">particle_counter</span>
+            <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">pT_sum</span> <span class="o">/</span> <span class="n">num_events</span></div>
+
+
+<div class="viewcode-block" id="BulkObservables.mid_rapidity_mean_mT">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.mid_rapidity_mean_mT">[docs]</a>
+    <span class="k">def</span> <span class="nf">mid_rapidity_mean_mT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the event-averaged mean transverse mass :math:`m_T` at</span>
+<span class="sd">        mid-rapidity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_width: float</span>
+<span class="sd">          The rapidity window width, centered at 0, within which</span>
+<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
+<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
+<span class="sd">        quantity: str</span>
+<span class="sd">            The quantity to be used for the rapidity calculation</span>
+<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_counter / num_events: float</span>
+<span class="sd">            The average mT of particles per event that fall within the</span>
+<span class="sd">            specified rapidity range.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_width must be a positive number.&quot;</span><span class="p">)</span>
+
+        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">pT_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">quantity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Fill histograms</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+                <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">particle_method</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">pT_sum</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">mT</span><span class="p">()</span>
+            <span class="n">pT_sum</span> <span class="o">/=</span> <span class="n">particle_counter</span>
+            <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">pT_sum</span> <span class="o">/</span> <span class="n">num_events</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

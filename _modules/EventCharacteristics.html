@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventCharacteristics &mdash; sparkx 1.3.0 documentation</title>
+  <title>EventCharacteristics &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -88,7 +89,7 @@
 <span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span> <span class="nn">sparkx.Lattice3D</span> <span class="kn">import</span> <span class="n">Lattice3D</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <div class="viewcode-block" id="EventCharacteristics">
@@ -150,22 +151,28 @@
 <span class="sd">        &gt;&gt;&gt; eps2 = event_characterization.eccentricity(2, weight_quantity = &quot;number&quot;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">event_data_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Lattice3D</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span>
-                       <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]]]</span>
+
+    <span class="n">event_data_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">Lattice3D</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]]</span>
+    <span class="p">]</span>
     <span class="n">has_lattice_</span><span class="p">:</span> <span class="nb">bool</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span>
-                                         <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]],</span>
-                                         <span class="n">Lattice3D</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]],</span> <span class="n">Lattice3D</span>
+        <span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_event_data</span><span class="p">(</span><span class="n">event_data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="EventCharacteristics.set_event_data">
 <a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.set_event_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_event_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                       <span class="n">event_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span>
-                                         <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span>
-                                                    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]],</span>
-                                         <span class="n">Lattice3D</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_event_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">]],</span> <span class="n">Lattice3D</span>
+        <span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the event data.</span>
 
@@ -180,7 +187,7 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            If the input is not a list or numpy.ndarray when deriving</span>
 <span class="sd">            characteristics from particles.</span>
-<span class="sd">            If at least one element in the input is not of type Particle.</span>
+<span class="sd">            If at least one element in the input is not of type :code:`Particle`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check if the input is a Lattice3D object</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">Lattice3D</span><span class="p">):</span>
@@ -190,19 +197,23 @@
             <span class="c1"># check that the input is a list/numpy.ndarray containing Particle</span>
             <span class="c1"># objects</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a list nor a numpy.ndarray.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input is not a list nor a numpy.ndarray.&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event_data</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">Particle</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                        <span class="s1">&#39;At least one element in the input is not a &#39;</span> <span class="o">+</span>
-                        <span class="s1">&#39;Particle type.&#39;</span><span class="p">)</span>
+                        <span class="s2">&quot;At least one element in the input is not a &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;Particle type.&quot;</span>
+                    <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span> <span class="o">=</span> <span class="n">event_data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-    <span class="k">def</span> <span class="nf">eccentricity_from_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                    <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">weight_quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">eccentricity_from_particles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the spatial eccentricity from particles.</span>
 
@@ -228,23 +239,24 @@
 <span class="sd">            If the harmonic order is less than 1.</span>
 <span class="sd">            If the weight quantity is unknown.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">real_eps</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">imag_eps</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">real_eps</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">imag_eps</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m must be positive&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a list nor a numpy.ndarray.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input is not a list nor a numpy.ndarray.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">harmonic_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m or harmonic_n must be provided&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;energy&quot;</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">E</span>
             <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">:</span>
-                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">charge</span>
             <span class="k">elif</span> <span class="n">weight_quantity</span> <span class="o">==</span> <span class="s2">&quot;baryon&quot;</span><span class="p">:</span>
@@ -257,11 +269,11 @@
             <span class="n">y</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">y</span>
             <span class="c1"># Exception for dipole asymmetry</span>
             <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">harmonic_n</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_n</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">harmonic_n</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_m</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">harmonic_m</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m or harmonic_n must be provided&quot;</span><span class="p">)</span>
 
@@ -272,8 +284,9 @@
 
         <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">real_eps</span> <span class="o">/</span> <span class="n">norm</span> <span class="o">+</span> <span class="p">(</span><span class="n">imag_eps</span> <span class="o">/</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">eccentricity_from_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                  <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">eccentricity_from_lattice</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the spatial eccentricity from a 3D lattice. Takes all z-values</span>
 <span class="sd">        into account.</span>
@@ -295,27 +308,28 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If the harmonic order is less than 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">real_eps</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">imag_eps</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">real_eps</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">imag_eps</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Eccentricity is only defined for positive expansion orders.&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m must be positive&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a grid.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input is not a grid.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">harmonic_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m or harmonic_n must be provided&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="o">.</span><span class="n">grid_</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="c1"># Exception for dipole asymmetry</span>
             <span class="k">if</span> <span class="n">harmonic_n</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">harmonic_n</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_n</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">harmonic_n</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">harmonic_m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">harmonic_m</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">harmonic_m</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;harmonic_m or harmonic_n must be provided&quot;</span><span class="p">)</span>
 
@@ -329,9 +343,12 @@
 
 <div class="viewcode-block" id="EventCharacteristics.eccentricity">
 <a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.eccentricity">[docs]</a>
-    <span class="k">def</span> <span class="nf">eccentricity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                     <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">weight_quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">eccentricity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">harmonic_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">harmonic_m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">weight_quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the spatial eccentricity.</span>
 
@@ -339,7 +356,7 @@
 
 <span class="sd">            \\varepsilon_{m,n}e^{\\mathrm{i}n\\Phi_{m,n}} = -\\frac{\\lbrace{r^{m}e^{\\mathrm{i}n\\phi}\\rbrace}}{\\lbrace{r^{m}\\rbrace}}</span>
 
-<span class="sd">        For `harmonic_n=1`, :math:`n=3` is used. If `harmonic_m` is provided,</span>
+<span class="sd">        For :code:`harmonic_n=1`, :code:`n=3` is used. If :code:`harmonic_m` is provided,</span>
 <span class="sd">        then the given value is used as radial exponent.</span>
 
 <span class="sd">        Parameters</span>
@@ -365,34 +382,38 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_lattice</span><span class="p">(</span>
-                <span class="n">harmonic_n</span><span class="o">=</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">harmonic_m</span><span class="o">=</span><span class="n">harmonic_m</span><span class="p">)</span>
+                <span class="n">harmonic_n</span><span class="o">=</span><span class="n">harmonic_n</span><span class="p">,</span> <span class="n">harmonic_m</span><span class="o">=</span><span class="n">harmonic_m</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eccentricity_from_particles</span><span class="p">(</span>
                 <span class="n">harmonic_n</span><span class="o">=</span><span class="n">harmonic_n</span><span class="p">,</span>
                 <span class="n">harmonic_m</span><span class="o">=</span><span class="n">harmonic_m</span><span class="p">,</span>
-                <span class="n">weight_quantity</span><span class="o">=</span><span class="n">weight_quantity</span><span class="p">)</span></div>
+                <span class="n">weight_quantity</span><span class="o">=</span><span class="n">weight_quantity</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC">
 <a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Milne_from_OSCAR_IC">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_eBQS_densities_Milne_from_OSCAR_IC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                                    <span class="n">x_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">x_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">y_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">y_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">z_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">z_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">Nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                                    <span class="n">Ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                                    <span class="n">Nz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                                    <span class="n">n_sigma_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">n_sigma_y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">n_sigma_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">sigma_smear</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                                                    <span class="n">eta_range</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span>
-                                                                     <span class="nb">tuple</span><span class="p">],</span>
-                                                    <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                                    <span class="n">IC_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">generate_eBQS_densities_Milne_from_OSCAR_IC</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">y_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">y_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">z_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">z_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">Nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">Ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">Nz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">n_sigma_x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">n_sigma_y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">n_sigma_z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">sigma_smear</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">eta_range</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+        <span class="n">IC_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates energy, baryon, charge, and strangeness densities in Milne</span>
 <span class="sd">        coordinates from OSCAR initial conditions.</span>
@@ -402,17 +423,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float</span>
+<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float or int</span>
 <span class="sd">            Minimum and maximum coordinates in the x, y, and z directions.</span>
 
 <span class="sd">        Nx, Ny, Nz : int</span>
 <span class="sd">            Number of grid points in the x, y, and z directions.</span>
 
-<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float</span>
+<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float or int</span>
 <span class="sd">            Width of the smearing in the x, y, and z directions in units of</span>
 <span class="sd">            sigma_smear.</span>
 
-<span class="sd">        sigma_smear : float</span>
+<span class="sd">        sigma_smear : float or int</span>
 <span class="sd">            Smearing parameter for particle data.</span>
 
 <span class="sd">        eta_range : list, tuple</span>
@@ -422,6 +443,10 @@
 <span class="sd">        output_filename : str</span>
 <span class="sd">            The name of the output file where the densities will be saved.</span>
 
+<span class="sd">        kernel : str</span>
+<span class="sd">            The type of kernel to use for smearing the particle data. Supported</span>
+<span class="sd">            values are &#39;gaussian&#39; and &#39;covariant&#39;. The default is &quot;gaussian&quot;.</span>
+
 <span class="sd">        IC_info : str</span>
 <span class="sd">            A string containing info about the initial condition, e.g.,</span>
 <span class="sd">            collision energy or centrality.</span>
@@ -429,7 +454,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            If the given IC_info is not a string and if the class is initialized</span>
+<span class="sd">            If the given :code:`IC_info` is not a string and if the class is initialized</span>
 <span class="sd">            with a lattice.</span>
 
 <span class="sd">        Returns</span>
@@ -437,29 +462,25 @@
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">val</span><span class="p">,</span>
-                <span class="p">(</span><span class="nb">float</span><span class="p">,</span>
-                 <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="n">x_min</span><span class="p">,</span>
-                <span class="n">x_max</span><span class="p">,</span>
-                <span class="n">y_min</span><span class="p">,</span>
-                <span class="n">y_max</span><span class="p">,</span>
-                <span class="n">z_min</span><span class="p">,</span>
-                <span class="n">z_max</span><span class="p">,</span>
-                <span class="n">sigma_smear</span><span class="p">]):</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Coordinates and sigma_smear must be float or int&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nx, Ny, Nz must be positive integers&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-                   <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eta_range</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;eta_range must be a list or tuple&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eta_range</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;eta_range must contain min, max, and number of grid points&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;eta_range must contain min, max, and number of grid points&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">eta_range</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Values in eta_range must be float or int&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -468,9 +489,17 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The given IC_info is not a string&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;The smearing function only works with EventCharacteristics derived from particles.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a list nor a numpy.ndarray.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;The smearing function only works with EventCharacteristics derived from particles.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input is not a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kernel</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;covariant&quot;</span><span class="p">,</span>
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Kernel must be a string and must be either &#39;covariant&#39; or &#39;gaussian&#39;.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">energy_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
@@ -484,7 +513,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">baryon_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -497,7 +527,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">charge_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -510,7 +541,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">strangeness_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -523,31 +555,45 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># smear the particles on the 3D lattice</span>
         <span class="n">energy_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">baryon_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;baryon_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;baryon_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">charge_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">strangeness_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="c1"># get the proper time of one of the particles from the iso-tau surface</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">proper_time</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">tau</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The proper time is not defined for the given particles.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;The proper time is not defined for the given particles.&quot;</span>
+            <span class="p">)</span>
         <span class="c1"># take the x and y coordinates from the lattice and use the set eta</span>
         <span class="c1"># range</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">x_values_</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">y_values_</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">if</span> <span class="p">(</span><span class="mf">1.05</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
-                <span class="n">eta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]))</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">z_max</span> <span class="o">-</span> <span class="n">z_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">Nz</span><span class="p">):</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="mf">1.05</span>
+            <span class="o">*</span> <span class="n">tau</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)])</span>
+                <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+            <span class="p">)</span>
+            <span class="o">&lt;</span> <span class="p">(</span><span class="n">z_max</span> <span class="o">-</span> <span class="n">z_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">Nz</span>
+        <span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Warning: The grid for z is not fine enough for the requested eta-grid.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Warning: The grid for z is not fine enough for the requested eta-grid.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># generate the header for the output file</span>
         <span class="n">file_header</span> <span class="o">=</span> <span class="s2">&quot;# smeared density from SPARKX in Milne coordinates</span><span class="se">\n</span><span class="s2"># &quot;</span>
@@ -555,12 +601,21 @@
             <span class="n">file_header</span> <span class="o">+=</span> <span class="n">IC_info</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max</span><span class="se">\n</span><span class="s2"># &quot;</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">Nx</span><span class="p">,</span>
+            <span class="n">Ny</span><span class="p">,</span>
+            <span class="n">eta_range</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">x_min</span><span class="p">,</span>
+            <span class="n">x_max</span><span class="p">,</span>
+            <span class="n">y_min</span><span class="p">,</span>
+            <span class="n">y_max</span><span class="p">,</span>
+            <span class="n">eta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">eta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;# tau [fm], x [fm], y [fm], eta, energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="c1"># print the 3D lattice in Milne coordinates to a file</span>
         <span class="c1"># Open the output file for writing</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
             <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_header</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x_val</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">y_val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
@@ -568,44 +623,63 @@
                         <span class="n">z_val</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">eta_val</span><span class="p">)</span>
                         <span class="c1"># dz = tau * cosh(eta) * deta</span>
                         <span class="n">milne_conversion</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">eta_val</span><span class="p">)</span>
-                        <span class="n">value_energy_density</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
-                        <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="n">baryon_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
-                        <span class="n">value_charge_density</span> <span class="o">=</span> <span class="n">charge_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
-                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span> <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="n">value_energy_density</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">energy_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
+                                <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                            <span class="p">)</span>
+                            <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="p">)</span>
+                        <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">baryon_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
+                                <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                            <span class="p">)</span>
+                            <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="p">)</span>
+                        <span class="n">value_charge_density</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">charge_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
+                                <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                            <span class="p">)</span>
+                            <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="p">)</span>
+                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
+                                <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                            <span class="p">)</span>
+                            <span class="o">*</span> <span class="n">milne_conversion</span>
+                        <span class="p">)</span>
 
                         <span class="k">if</span> <span class="n">value_energy_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.0</span>
 
                         <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eta_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eta_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC">
 <a class="viewcode-back" href="../classes/EventCharacteristics/index.html#EventCharacteristics.EventCharacteristics.generate_eBQS_densities_Minkowski_from_OSCAR_IC">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_eBQS_densities_Minkowski_from_OSCAR_IC</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">x_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">x_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">y_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">y_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">z_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">z_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">Nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">Ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">Nz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">n_sigma_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">n_sigma_y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">sigma_smear</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">IC_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">x_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">y_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">y_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">z_min</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">z_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">Nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">Ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">Nz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">n_sigma_x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">n_sigma_y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">n_sigma_z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">sigma_smear</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+        <span class="n">IC_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates energy, baryon, charge, and strangeness densities in</span>
 <span class="sd">        Minkowski coordinates from OSCAR initial conditions.</span>
@@ -615,21 +689,25 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float</span>
+<span class="sd">        x_min, x_max, y_min, y_max, z_min, z_max : float or int</span>
 <span class="sd">            Minimum and maximum coordinates in the x, y, and z directions.</span>
 
 <span class="sd">        Nx, Ny, Nz : int</span>
 <span class="sd">            Number of grid points in the x, y, and z directions.</span>
 
-<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float</span>
+<span class="sd">        n_sigma_x, n_sigma_y, n_sigma_z : float or int</span>
 <span class="sd">            Width of the smearing in the x, y, and z directions in units of</span>
 <span class="sd">            sigma_smear.</span>
 
-<span class="sd">        sigma_smear : float</span>
+<span class="sd">        sigma_smear : float or int</span>
 <span class="sd">            Smearing parameter for particle data.</span>
 
 <span class="sd">        output_filename : str</span>
 <span class="sd">            The name of the output file where the densities will be saved.</span>
+
+<span class="sd">        kernel : str</span>
+<span class="sd">            The type of kernel to use for smearing the particle data. Supported</span>
+<span class="sd">            values are &#39;gaussian&#39; and &#39;covariant&#39;. The default is &quot;gaussian&quot;.</span>
 
 <span class="sd">        IC_info : str</span>
 <span class="sd">            A string containing info about the initial condition, e.g.,</span>
@@ -638,7 +716,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            If the given IC_info is not a string and if the class is initialized</span>
+<span class="sd">            If the given :code:`IC_info` is not a string and if the class is initialized</span>
 <span class="sd">            with a lattice.</span>
 
 <span class="sd">        Returns</span>
@@ -646,33 +724,36 @@
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">val</span><span class="p">,</span>
-                <span class="p">(</span><span class="nb">float</span><span class="p">,</span>
-                 <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="n">x_min</span><span class="p">,</span>
-                <span class="n">x_max</span><span class="p">,</span>
-                <span class="n">y_min</span><span class="p">,</span>
-                <span class="n">y_max</span><span class="p">,</span>
-                <span class="n">z_min</span><span class="p">,</span>
-                <span class="n">z_max</span><span class="p">,</span>
-                <span class="n">sigma_smear</span><span class="p">]):</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Coordinates and sigma_smear must be float or int&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nx, Ny, Nz must be positive integers&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-                   <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n_sigma_x</span><span class="p">,</span> <span class="n">n_sigma_y</span><span class="p">,</span> <span class="n">n_sigma_z</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;n_sigma_x, n_sigma_y, n_sigma_z must be positive float or int&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">IC_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IC_info</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The given IC_info is not a string&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The given IC_info is not a string&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;output_filename must be a string&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lattice_</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;The smearing function only works with EventCharacteristics derived from particles.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The input is not a list nor a numpy.ndarray.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;The smearing function only works with EventCharacteristics derived from particles.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input is not a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kernel</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;covariant&quot;</span><span class="p">,</span>
+        <span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Kernel must be a string and must be either &#39;covariant&#39; or &#39;gaussian&#39;.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">energy_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
@@ -686,7 +767,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">baryon_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -699,7 +781,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">charge_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -712,7 +795,8 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">strangeness_density</span> <span class="o">=</span> <span class="n">Lattice3D</span><span class="p">(</span>
             <span class="n">x_min</span><span class="p">,</span>
             <span class="n">x_max</span><span class="p">,</span>
@@ -725,17 +809,22 @@
             <span class="n">Nz</span><span class="p">,</span>
             <span class="n">n_sigma_x</span><span class="p">,</span>
             <span class="n">n_sigma_y</span><span class="p">,</span>
-            <span class="n">n_sigma_z</span><span class="p">)</span>
+            <span class="n">n_sigma_z</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># smear the particles on the 3D lattice</span>
         <span class="n">energy_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;energy_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">baryon_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;baryon_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;baryon_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">charge_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
         <span class="n">strangeness_density</span><span class="o">.</span><span class="n">add_particle_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">,</span> <span class="n">sigma_smear</span><span class="p">,</span> <span class="s2">&quot;strangeness_density&quot;</span><span class="p">,</span> <span class="n">kernel</span>
+        <span class="p">)</span>
 
         <span class="c1"># get the proper time of one of the particles from the iso-tau surface</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_data_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">proper_time</span><span class="p">()</span>
@@ -750,33 +839,49 @@
             <span class="n">file_header</span> <span class="o">+=</span> <span class="n">IC_info</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># grid info: n_x n_y n_eta x_min x_max y_min y_max eta_min eta_max</span><span class="se">\n</span><span class="s2"># &quot;</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="s2"> </span><span class="si">%g</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">)</span>
+            <span class="n">Nx</span><span class="p">,</span>
+            <span class="n">Ny</span><span class="p">,</span>
+            <span class="n">Nz</span><span class="p">,</span>
+            <span class="n">x_min</span><span class="p">,</span>
+            <span class="n">x_max</span><span class="p">,</span>
+            <span class="n">y_min</span><span class="p">,</span>
+            <span class="n">y_max</span><span class="p">,</span>
+            <span class="n">z_min</span><span class="p">,</span>
+            <span class="n">z_max</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">file_header</span> <span class="o">+=</span> <span class="s2">&quot;# tau [fm], x [fm], y [fm], z [fm], energy_density [GeV/fm^3], baryon_density [1/fm^3], charge density [1/fm^3], strangeness_density [1/fm^3]</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="c1"># print the 3D lattice in Minkowski coordinates to a file</span>
         <span class="c1"># Open the output file for writing</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
             <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_header</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x_val</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">y_val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">z_val</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
                         <span class="n">value_energy_density</span> <span class="o">=</span> <span class="n">energy_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span>
+                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                        <span class="p">)</span>
                         <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="n">baryon_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span>
+                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                        <span class="p">)</span>
                         <span class="n">value_charge_density</span> <span class="o">=</span> <span class="n">charge_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span>
-                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
-                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span><span class="p">)</span>
+                            <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                        <span class="p">)</span>
+                        <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">strangeness_density</span><span class="o">.</span><span class="n">interpolate_value</span><span class="p">(</span>
+                                <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">z_val</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
 
                         <span class="k">if</span> <span class="n">value_energy_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.</span>
-                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.</span>
+                            <span class="n">value_energy_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_baryon_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_charge_density</span> <span class="o">=</span> <span class="mf">0.0</span>
+                            <span class="n">value_strangeness_density</span> <span class="o">=</span> <span class="mf">0.0</span>
 
                         <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z_val</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_energy_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_baryon_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_charge_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_strangeness_density</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="p">)</span></div>
 </div>
 
 </pre></div>

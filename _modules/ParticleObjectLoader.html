@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParticleObjectLoader &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ParticleObjectLoader</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ParticleObjectLoader</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1"># ===================================================</span>
+
+<span class="kn">from</span> <span class="nn">sparkx.loader.BaseLoader</span> <span class="kn">import</span> <span class="n">BaseLoader</span>
+<span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="ParticleObjectLoader">
+<a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader">[docs]</a>
+<span class="k">class</span> <span class="nc">ParticleObjectLoader</span><span class="p">(</span><span class="n">BaseLoader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A loader class for handling particle objects.</span>
+
+<span class="sd">    The ParticleObjectLoader class is responsible for loading and filtering</span>
+<span class="sd">    particle objects from a specified list. It provides methods to initialize</span>
+<span class="sd">    the loader, apply filters, and set the particle list based on optional</span>
+<span class="sd">    arguments.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    particle_list_ : List[List[&quot;Particle&quot;]]</span>
+<span class="sd">        The list of particle objects to load.</span>
+<span class="sd">    optional_arguments_ : Dict[str, Any]</span>
+<span class="sd">        A dictionary of optional arguments for loading and filtering particles.</span>
+<span class="sd">    num_events_ : int</span>
+<span class="sd">        The number of events in the particle list.</span>
+<span class="sd">    num_output_per_event_ : List[int]</span>
+<span class="sd">        The number of output particles per event after filtering.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    load(**kwargs: Any) -&gt; Tuple[List[List[&quot;Particle&quot;]], int, List[int]]</span>
+<span class="sd">        Loads the data from the dummy input based on the specified optional arguments.</span>
+<span class="sd">    set_num_output_per_event() -&gt; List[int]</span>
+<span class="sd">        Sets the number of output particles per event based on the filters applied.</span>
+<span class="sd">    __apply_kwargs_filters(event: List[List[&quot;Particle&quot;]], filters_dict: Dict[str, Any]) -&gt; List[List[&quot;Particle&quot;]]</span>
+<span class="sd">        Applies the specified filters to the event.</span>
+<span class="sd">    set_particle_list(kwargs: Dict[str, Any]) -&gt; List[List[&quot;Particle&quot;]]</span>
+<span class="sd">        Sets the particle list based on the filters applied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new instance of the ParticelObjectLoader class.</span>
+
+<span class="sd">        This method initializes a new instance of the ParticelObjectLoader class</span>
+<span class="sd">        with the specified list of particles. It calls the superclass&#39;s</span>
+<span class="sd">        constructor with the particle_list parameter and then sets the</span>
+<span class="sd">        particle_list_ attribute to the particle_list parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_list : list of lists of Particle objects</span>
+<span class="sd">            The list of particles to load.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the particle_list parameter is not a list of lists of Particle objects.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">particle_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;The particle_list parameter must be a list of lists of Particle objects&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">particle_list</span>
+
+<div class="viewcode-block" id="ParticleObjectLoader.load">
+<a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the data from the dummy input based on the specified optional arguments.</span>
+
+<span class="sd">        This method reads the dummy input and applies any filters specified in</span>
+<span class="sd">        the &#39;filters&#39; key of the kwargs dictionary. It also adjusts the number</span>
+<span class="sd">        of events based on the &#39;events&#39; key in the kwargs dictionary. If any</span>
+<span class="sd">        other keys are specified in the kwargs dictionary, it raises a ValueError.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            A dictionary of optional arguments. The following keys are recognized:</span>
+
+<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</span>
+<span class="sd">            - &#39;filters&#39;: A list of filters to apply to the data.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If an unknown keyword argument is used, if the first value of the</span>
+<span class="sd">            &#39;events&#39; tuple is larger than the second value, if an event number</span>
+<span class="sd">            is negative.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the list of Particle objects loaded from the</span>
+<span class="sd">            dummy input, the number of events, and the number of output lines</span>
+<span class="sd">            per event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">keys</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">keys</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">,</span> <span class="s2">&quot;filters&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown keyword argument used in constructor&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_that_tuple_contains_integers_only</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;First value of event number tuple must be smaller than second value&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Event numbers must be non-negative&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Event number must be non-negative&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_output_per_event</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_particle_list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
+            <span class="p">[],</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ParticleObjectLoader.set_num_output_per_event">
+<a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.set_num_output_per_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the number of output particles per event based on the filters applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__apply_kwargs_filters</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]],</span> <span class="n">filters_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the specified filters to the event.</span>
+
+<span class="sd">        This method applies a series of filters to the event based on the keys</span>
+<span class="sd">        in the filters_dict dictionary. The filters include</span>
+<span class="sd">        &#39;charged_particles&#39;, &#39;uncharged_particles&#39;,</span>
+<span class="sd">        &#39;particle_species&#39;, &#39;remove_particle_species&#39;, &#39;participants&#39;,</span>
+<span class="sd">        &#39;spectators&#39;, &#39;lower_event_energy_cut&#39;, &#39;spacetime_cut&#39;, &#39;pT_cut&#39;,</span>
+<span class="sd">        &#39;mT_cut&#39;, &#39;rapidity_cut&#39;, &#39;pseudorapidity_cut&#39;,</span>
+<span class="sd">        &#39;spacetime_rapidity_cut&#39;, &#39;multiplicity_cut&#39;, &#39;particle_status&#39;,</span>
+<span class="sd">        &#39;keep_hadrons&#39;, &#39;keep_leptons&#39;, &#39;keep_quarks&#39;, &#39;keep_mesons&#39;,</span>
+<span class="sd">        &#39;keep_baryons&#39;, &#39;keep_up&#39;, &#39;keep_down&#39;, &#39;keep_strange&#39;, &#39;keep_charm&#39;,</span>
+<span class="sd">        &#39;keep_bottom&#39;, &#39;keep_top&#39; and &#39;remove_photons&#39;.</span>
+<span class="sd">        If a key in the filters_dict dictionary does not</span>
+<span class="sd">        match any of these filters, a ValueError is raised.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event : list</span>
+<span class="sd">            The event to which the filters are applied.</span>
+<span class="sd">        filters_dict : dict</span>
+<span class="sd">            A dictionary of filters to apply to the event. The keys are the</span>
+<span class="sd">            names of the filters and the values are the parameters for the</span>
+<span class="sd">            filters.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a key in the filters_dict dictionary does not match any of the</span>
+<span class="sd">            supported filters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        event : list</span>
+<span class="sd">            The event after the filters have been applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filters_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">event</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">filters_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;charged_particles&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;charged_particles&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">charged_particles</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;uncharged_particles&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;uncharged_particles&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">uncharged_particles</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;particle_species&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">particle_species</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;particle_species&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;remove_particle_species&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">remove_particle_species</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;remove_particle_species&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;participants&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;participants&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">participants</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;spectators&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;spectators&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">spectators</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;lower_event_energy_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">lower_event_energy_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;lower_event_energy_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;spacetime_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">spacetime_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span>
+                    <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;spacetime_cut&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;spacetime_cut&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;pT_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">pT_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;pT_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;mT_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">mT_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;mT_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;rapidity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">rapidity_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;rapidity_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">pseudorapidity_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;pseudorapidity_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;spacetime_rapidity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">spacetime_rapidity_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;spacetime_rapidity_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;multiplicity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">multiplicity_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;multiplicity_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;particle_status&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">particle_status</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;particle_status&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_hadrons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_hadrons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_hadrons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_leptons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_leptons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_leptons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_quarks&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_quarks&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_quarks</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_mesons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_mesons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_mesons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_baryons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_baryons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_baryons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_up&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_up&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_up</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_down&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_down&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_down</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_strange&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_strange&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_strange</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_charm&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_charm&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_charm</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_bottom&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_bottom&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_bottom</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_top&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_top&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_top</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;remove_photons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;remove_photons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">remove_photons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The cut is unknown!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">event</span>
+
+    <span class="c1"># PUBLIC CLASS METHODS</span>
+
+<div class="viewcode-block" id="ParticleObjectLoader.set_particle_list">
+<a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.set_particle_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_particle_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the particle list based on the filters applied.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Dictionary containing the filters to be applied. The following keys are recognized:</span>
+
+<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</span>
+<span class="sd">            - &#39;filters&#39;: A list of filters to apply to the data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            List of particle objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]]]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">event_start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">event_end</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">[</span>
+                    <span class="n">event_start</span> <span class="p">:</span> <span class="n">event_end</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">([</span><span class="n">event</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span>
+            <span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

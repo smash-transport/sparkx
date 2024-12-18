@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParticleObjectStorer &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ParticleObjectStorer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ParticleObjectStorer</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1"># ===================================================</span>
+
+<span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sparkx.loader.ParticleObjectLoader</span> <span class="kn">import</span> <span class="n">ParticleObjectLoader</span>
+<span class="kn">from</span> <span class="nn">sparkx.BaseStorer</span> <span class="kn">import</span> <span class="n">BaseStorer</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="ParticleObjectStorer">
+<a class="viewcode-back" href="../classes/ParticleObjectStorer/index.html#ParticleObjectStorer.ParticleObjectStorer">[docs]</a>
+<span class="k">class</span> <span class="nc">ParticleObjectStorer</span><span class="p">(</span><span class="n">BaseStorer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a :code:`ParticleObjectStorer` object, which saves particle object</span>
+<span class="sd">    lists.</span>
+
+<span class="sd">    This is a wrapper for a list of Particle objects. It&#39;s methods allow to</span>
+<span class="sd">    directly act on all contained events as applying acceptance filters</span>
+<span class="sd">    (e.g. un-/charged particles, spectators/participants) to keep/remove particles</span>
+<span class="sd">    by their PDG codes or to apply cuts (e.g. multiplicity, pseudo-/rapidity, pT).</span>
+<span class="sd">    Once these filters are applied, the new data set can be accessed as a</span>
+
+<span class="sd">    1) nested list containing all quantities</span>
+<span class="sd">    2) list containing Particle objects from the Particle class</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        If filters are applied, be aware that not all cuts commute.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    **kwargs : properties, optional</span>
+<span class="sd">        kwargs are used to specify optional properties like a chunk reading</span>
+<span class="sd">        and must be used like :code:`&#39;property&#39;=&#39;value&#39;` where the possible</span>
+<span class="sd">        properties are specified below.</span>
+
+<span class="sd">        .. list-table::</span>
+<span class="sd">            :header-rows: 1</span>
+<span class="sd">            :widths: 25 75</span>
+
+<span class="sd">            * - Property</span>
+<span class="sd">              - Description</span>
+<span class="sd">            * - :code:`events` (int)</span>
+<span class="sd">              - From the input particle object list load only a single event by |br|</span>
+<span class="sd">                specifying :code:`events=i` where i is event number i.</span>
+<span class="sd">            * - :code:`events` (tuple)</span>
+<span class="sd">              - From the input particle object list load only a range of events |br|</span>
+<span class="sd">                given by the tuple :code:`(first_event, last_event)` |br|</span>
+<span class="sd">                by specifying :code:`events=(first_event, last_event)` |br|</span>
+<span class="sd">                where last_event is included.</span>
+<span class="sd">            * - :code:`filters` (dict)</span>
+<span class="sd">              - Apply filters on an event-by-event basis to directly filter the |br|</span>
+<span class="sd">                particles after the read in of one event. This method saves |br|</span>
+<span class="sd">                memory. The names of the filters are the same as the names of |br|</span>
+<span class="sd">                the filter methods. All filters are applied in the order in |br|</span>
+<span class="sd">                which they appear in the dictionary.</span>
+
+<span class="sd">        .. |br| raw:: html</span>
+
+<span class="sd">           &lt;br /&gt;</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_output_per_event_ : numpy.array</span>
+<span class="sd">        Array containing the event number and the number of particles in this</span>
+<span class="sd">        event as :code:`num_output_per_event_[event i][num_output in event i]`</span>
+<span class="sd">        (updated when filters are applied)</span>
+<span class="sd">    num_events_ : int</span>
+<span class="sd">        Number of events contained in the particle object list (updated when filters</span>
+<span class="sd">        are applied)</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    particle_status:</span>
+<span class="sd">        Keep only particles with a given status flag</span>
+<span class="sd">    print_particle_lists_to_file:</span>
+<span class="sd">        Print current particle data to file with same format</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create a Dummy object and access particle data as a nested list</span>
+
+<span class="sd">    &gt;&gt;&gt; from sparkx.Particle import Particle</span>
+<span class="sd">    &gt;&gt;&gt; particle1 = Particle()</span>
+<span class="sd">    &gt;&gt;&gt; particle1.t = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; ...</span>
+<span class="sd">    &gt;&gt;&gt; particle2 = Particle()</span>
+<span class="sd">    &gt;&gt;&gt; particle2.t = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; ...</span>
+<span class="sd">    &gt;&gt;&gt; particles = [particle1, particle2]</span>
+<span class="sd">    &gt;&gt;&gt; dummy = DummyStorer(particles)</span>
+<span class="sd">    &gt;&gt;&gt; nested_list = dummy.particle_list()</span>
+<span class="sd">    &gt;&gt;&gt; print(nested_list)</span>
+<span class="sd">    [[[1.0,...],[1.0,...]]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">num_output_per_event_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">num_events_</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">particle_object_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new instance of the :code:`DummyStorer` class.</span>
+
+<span class="sd">        This method initializes a new instance of the :code:`DummyStorer` class</span>
+<span class="sd">        with the specified list of particle objects and optional arguments.</span>
+<span class="sd">        It calls the superclass&#39;s constructor with the particle_object_list and</span>
+<span class="sd">        kwargs parameters and then deletes the :code:`loader_` attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_object_list : list of Particle objects</span>
+<span class="sd">            The list of particle objects to store.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            A dictionary of optional arguments.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">particle_object_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span>
+
+    <span class="k">def</span> <span class="nf">_update_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BaseStorer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ParticleObjectStorer.create_loader">
+<a class="viewcode-back" href="../classes/ParticleObjectStorer/index.html#ParticleObjectStorer.ParticleObjectStorer.create_loader">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_loader</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">particle_object_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new :code:`ParticleObjectLoader` object.</span>
+
+<span class="sd">        This method creates a new :code:`ParticleObjectLoader` object with the</span>
+<span class="sd">        specified list of particle objects and assigns it to the :code:`loader_`</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle_object_list : list of Particle objects</span>
+<span class="sd">            The list of particle objects to load.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span> <span class="o">=</span> <span class="n">ParticleObjectLoader</span><span class="p">(</span><span class="n">particle_object_list</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_particle_as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle</span><span class="p">:</span> <span class="s2">&quot;Particle&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a :code:`Particle` object into a list.</span>
+
+<span class="sd">        This method takes a :code:`Particle` object and converts it into a list</span>
+<span class="sd">        of its attributes. The attributes are added to the list in the following</span>
+<span class="sd">        order: t, x, y, z, mass, E, px, py, pz, pdg, ID, charge, ncoll,</span>
+<span class="sd">        form_time, xsecfac, proc_id_origin, proc_type_origin, t_last_coll,</span>
+<span class="sd">        pdg_mother1, pdg_mother2, baryon_number, strangeness, weight, status.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        particle : Particle</span>
+<span class="sd">            The :code:`Particle` object to convert into a list.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_list : list</span>
+<span class="sd">            A list of the attributes of the Particle object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">t</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">E</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">ncoll</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">form_time</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">xsecfac</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">proc_id_origin</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">proc_type_origin</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">t_last_coll</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother1</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother2</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">strangeness</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">particle_list</span>
+
+<div class="viewcode-block" id="ParticleObjectStorer.print_particle_lists_to_file">
+<a class="viewcode-back" href="../classes/ParticleObjectStorer/index.html#ParticleObjectStorer.ParticleObjectStorer.print_particle_lists_to_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">print_particle_lists_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the current particle data to a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The name of the file to write to.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;The particle_list must be a list of lists of Particle objects&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+                    <span class="c1"># Extract the attributes from the particle object</span>
+                    <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">t</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">E</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">px</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">pdg</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">ncoll</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">form_time</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">xsecfac</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">proc_id_origin</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">proc_type_origin</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">t_last_coll</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother1</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">pdg_mother2</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                        <span class="n">particle</span><span class="o">.</span><span class="n">baryon_number</span><span class="p">,</span>
+                    <span class="p">]</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ParticleObjectStorer.particle_status">
+<a class="viewcode-back" href="../classes/ParticleObjectStorer/index.html#ParticleObjectStorer.ParticleObjectStorer.particle_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">particle_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">status_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParticleObjectStorer&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Keep only particles with a given particle status</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        status_list : int</span>
+<span class="sd">            To keep a particles with a single status only, pass a single status</span>
+
+<span class="sd">        status_list : tuple/list/array</span>
+<span class="sd">            To keep hadrons with different hadron status, pass a tuple or list</span>
+<span class="sd">            or array</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : ParticleObjectStorer object</span>
+<span class="sd">            Containing only hadrons with status specified by status_list for</span>
+<span class="sd">            every event</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">=</span> <span class="n">particle_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span><span class="p">,</span> <span class="n">status_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_num_output_per_event_after_filter</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

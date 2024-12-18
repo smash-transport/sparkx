@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PCAFlow &mdash; sparkx 1.3.0 documentation</title>
+  <title>PCAFlow &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -47,7 +47,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../BulkObservables/index.html">BulkObservables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
@@ -68,9 +71,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../loader/index.html">Loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -108,7 +113,7 @@
 <span id="pca-flow"></span><h1>PCAFlow<a class="headerlink" href="#pcaflow" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="PCAFlow.PCAFlow">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">PCAFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_subcalc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">PCAFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_subcalc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements the flow analysis with Principal Component
 Analysis (PCA).</p>
 <p>PCAFlow is designed for analyzing anisotropic flow in high-energy nuclear
@@ -138,10 +143,10 @@ Must be an integer greater than or equal to 2. Default is 4.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>TypeError</dt><dd><p>If n, alpha, or number_subcalc is not an integer.</p>
+<dt>TypeError</dt><dd><p>If <code class="code docutils literal notranslate"><span class="pre">n</span></code>, <code class="code docutils literal notranslate"><span class="pre">alpha</span></code>, or <code class="code docutils literal notranslate"><span class="pre">number_subcalc</span></code> is not an integer.</p>
 </dd>
-<dt>ValueError</dt><dd><p>If n is not a positive integer, alpha is less than 1,
-or number_subcalc is less than 2.</p>
+<dt>ValueError</dt><dd><p>If <code class="code docutils literal notranslate"><span class="pre">n</span></code> is not a positive integer, alpha is less than 1,
+or <code class="code docutils literal notranslate"><span class="pre">number_subcalc</span></code> is less than 2.</p>
 </dd>
 </dl>
 </dd>
@@ -206,7 +211,7 @@ sub-calculation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="PCAFlow.PCAFlow.differential_flow">
-<span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow.differential_flow" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow.differential_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the differential flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -215,7 +220,7 @@ sub-calculation.</p>
 </dd>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
-<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pt”, “rapidity”
+<dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated (“pT”, “rapidity”
 or “pseudorapidity”).</p>
 </dd>
 </dl>
@@ -234,14 +239,14 @@ Each array in the list corresponds:</p>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>The flow or the uncertainty can be accessed by: <cite>function_return[bin][alpha]</cite></p></li>
-<li><p>If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to <cite>np.nan</cite>.</p></li>
+<li><p>The flow or the uncertainty can be accessed by: <code class="code docutils literal notranslate"><span class="pre">function_return[bin][alpha]</span></code></p></li>
+<li><p>If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="PCAFlow.PCAFlow.Pearson_correlation">
-<span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">Pearson_correlation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow.Pearson_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow.Pearson_correlation" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">PCAFlow.</span></span><span class="sig-name descname"><span class="pre">Pearson_correlation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/PCAFlow.html#PCAFlow.Pearson_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PCAFlow.PCAFlow.Pearson_correlation" title="Link to this definition"></a></dt>
 <dd><p>Retrieve the Pearson correlation coefficient and its uncertainty
 (Eq. (12), Ref. [1]).</p>
 <dl class="field-list simple">

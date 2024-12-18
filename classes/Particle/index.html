@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 1.3.0 documentation</title>
+  <title>Particle &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,14 +16,14 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Utilities" href="../../utilities/index.html" />
+    <link rel="next" title="ParticleObjectStorer" href="../ParticleObjectStorer/index.html" />
     <link rel="prev" title="Oscar" href="../Oscar/index.html" /> 
 </head>
 
@@ -48,7 +48,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BulkObservables/index.html">BulkObservables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
@@ -57,33 +60,43 @@
 <li class="toctree-l2"><a class="reference internal" href="../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../loader/index.html">Loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Particle</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Particle.Particle"><code class="docutils literal notranslate"><span class="pre">Particle</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.print_particle"><code class="docutils literal notranslate"><span class="pre">Particle.print_particle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.angular_momentum"><code class="docutils literal notranslate"><span class="pre">Particle.angular_momentum()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.momentum_rapidity_Y"><code class="docutils literal notranslate"><span class="pre">Particle.momentum_rapidity_Y()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.rapidity"><code class="docutils literal notranslate"><span class="pre">Particle.rapidity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.p_abs"><code class="docutils literal notranslate"><span class="pre">Particle.p_abs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.pt_abs"><code class="docutils literal notranslate"><span class="pre">Particle.pt_abs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.pT_abs"><code class="docutils literal notranslate"><span class="pre">Particle.pT_abs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.phi"><code class="docutils literal notranslate"><span class="pre">Particle.phi()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.theta"><code class="docutils literal notranslate"><span class="pre">Particle.theta()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.pseudorapidity"><code class="docutils literal notranslate"><span class="pre">Particle.pseudorapidity()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.spatial_rapidity"><code class="docutils literal notranslate"><span class="pre">Particle.spatial_rapidity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.spacetime_rapidity"><code class="docutils literal notranslate"><span class="pre">Particle.spacetime_rapidity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.proper_time"><code class="docutils literal notranslate"><span class="pre">Particle.proper_time()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.compute_mass_from_energy_momentum"><code class="docutils literal notranslate"><span class="pre">Particle.compute_mass_from_energy_momentum()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.compute_charge_from_pdg"><code class="docutils literal notranslate"><span class="pre">Particle.compute_charge_from_pdg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.mass_from_energy_momentum"><code class="docutils literal notranslate"><span class="pre">Particle.mass_from_energy_momentum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.charge_from_pdg"><code class="docutils literal notranslate"><span class="pre">Particle.charge_from_pdg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.mT"><code class="docutils literal notranslate"><span class="pre">Particle.mT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_quark"><code class="docutils literal notranslate"><span class="pre">Particle.is_quark()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_lepton"><code class="docutils literal notranslate"><span class="pre">Particle.is_lepton()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_meson"><code class="docutils literal notranslate"><span class="pre">Particle.is_meson()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_baryon"><code class="docutils literal notranslate"><span class="pre">Particle.is_baryon()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_hadron"><code class="docutils literal notranslate"><span class="pre">Particle.is_hadron()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_strange"><code class="docutils literal notranslate"><span class="pre">Particle.is_strange()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.is_heavy_flavor"><code class="docutils literal notranslate"><span class="pre">Particle.is_heavy_flavor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_down"><code class="docutils literal notranslate"><span class="pre">Particle.has_down()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_up"><code class="docutils literal notranslate"><span class="pre">Particle.has_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_strange"><code class="docutils literal notranslate"><span class="pre">Particle.has_strange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_charm"><code class="docutils literal notranslate"><span class="pre">Particle.has_charm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_bottom"><code class="docutils literal notranslate"><span class="pre">Particle.has_bottom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.has_top"><code class="docutils literal notranslate"><span class="pre">Particle.has_top()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.spin"><code class="docutils literal notranslate"><span class="pre">Particle.spin()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Particle.Particle.spin_degeneracy"><code class="docutils literal notranslate"><span class="pre">Particle.spin_degeneracy()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -120,24 +133,23 @@
 <span id="id1"></span><h1>Particle<a class="headerlink" href="#particle" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="Particle.Particle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">Particle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">Particle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle" title="Link to this definition"></a></dt>
 <dd><p>Defines a particle object.</p>
 <p>The member variables of the Particle class are the quantities in the
-OSCAR2013/OSCAR2013Extended or JETSCAPE hadron output. If they are not set,
-they stay <cite>np.nan</cite> to throw an error if one tries to access a non existing
+Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/
+ASCII or JETSCAPE hadron/parton output. If they are not set,
+they stay <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> to throw an error if one tries to access a non existing
 quantity.
 If a particle with an unknown PDG is provided, a warning is thrown and and
-<cite>np.nan</cite> is returned for charge, spin, and spin degeneracy.</p>
+<code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned for charge, spin, and spin degeneracy.</p>
 <p class="rubric">Notes</p>
 <p>If a member of the Particle class is not set or a quantity should be computed
-and the needed member variables are not set, then <cite>np.nan</cite> is returned by default.
-All quantities are saved in a numpy array member variable <cite>data_</cite>. The datatype
+and the needed member variables are not set, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned by default.
+All quantities are saved in a numpy array member variable <code class="code docutils literal notranslate"><span class="pre">data_</span></code>. The datatype
 of this array is float, therefore casting is required when int or bool values are
 required.</p>
 <p>When JETSCAPE creates particle objects, which are partons, the charge is multiplied
-by 3 to make it an integer.
-The functions <cite>is_strange()</cite> and <cite>is_heavy_flavor()</cite> should not be used in this
-case.</p>
+by 3 to make it an integer.</p>
 <p class="rubric">Examples</p>
 <p>To use the particle class a particle has to be created and the attributes
 can be set or obtained with the corresponding functions.</p>
@@ -156,6 +168,7 @@ Supported formats include:</p>
 <li><p>“Oscar2013Extended”</p></li>
 <li><p>“Oscar2013Extended_IC”</p></li>
 <li><p>“Oscar2013Extended_Photons”</p></li>
+<li><p>“ASCII”</p></li>
 <li><p>“JETSCAPE”</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">particle_quantity_JETSCAPE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2114</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mf">2.01351754</span><span class="p">,</span><span class="mf">1.30688601</span><span class="p">,</span><span class="o">-</span><span class="mf">0.422958786</span><span class="p">,</span><span class="o">-</span><span class="mf">0.512249773</span><span class="p">])</span>
@@ -296,13 +309,13 @@ Supported formats include:</p>
 <tr class="row-odd"><td><p><strong>angular_momentum:</strong></p></td>
 <td><p>Compute angular momentum</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>momentum_rapidity_Y:</strong></p></td>
+<tr class="row-even"><td><p><strong>rapidity:</strong></p></td>
 <td><p>Compute momentum rapidity</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>p_abs:</strong></p></td>
 <td><p>Compute absolute momentum</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>pt_abs:</strong></p></td>
+<tr class="row-even"><td><p><strong>pT_abs:</strong></p></td>
 <td><p>Compute absolute value of transverse momentum</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>phi:</strong></p></td>
@@ -314,32 +327,56 @@ Supported formats include:</p>
 <tr class="row-odd"><td><p><strong>pseudorapidity:</strong></p></td>
 <td><p>Compute pseudorapidity</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>spatial_rapidity:</strong></p></td>
-<td><p>Compute spatial rapidity</p></td>
+<tr class="row-even"><td><p><strong>spacetime_rapidity:</strong></p></td>
+<td><p>Compute space-time rapidity</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>proper_time:</strong></p></td>
 <td><p>Compute proper time</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>compute_mass_from_energy_momentum:</strong></p></td>
+<tr class="row-even"><td><p><strong>mass_from_energy_momentum:</strong></p></td>
 <td><p>Compute mass from energy momentum relation</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>compute_charge_from_pdg:</strong></p></td>
+<tr class="row-odd"><td><p><strong>charge_from_pdg:</strong></p></td>
 <td><p>Compute charge from PDG code</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>is_meson:</strong></p></td>
+<tr class="row-even"><td><p><strong>mT:</strong></p></td>
+<td><p>Compute transverse mass</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>is_quark:</strong></p></td>
+<td><p>Is the particle a quark?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>is_lepton:</strong></p></td>
+<td><p>Is the particle a lepton?</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>is_meson:</strong></p></td>
 <td><p>Is the particle a meson?</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>is_baryon:</strong></p></td>
+<tr class="row-even"><td><p><strong>is_baryon:</strong></p></td>
 <td><p>Is the particle a baryon?</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>is_hadron:</strong></p></td>
+<tr class="row-odd"><td><p><strong>is_hadron:</strong></p></td>
 <td><p>Is the particle a hadron?</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>is_strange:</strong></p></td>
-<td><p>Is the particle a strange particle?</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>is_heavy_flavor:</strong></p></td>
 <td><p>Is the particle a heavy flavor particle?</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>has_down:</strong></p></td>
+<td><p>Does the particle have a down quark?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>has_up:</strong></p></td>
+<td><p>Does the particle have an up quark?</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>has_strange:</strong></p></td>
+<td><p>Does the particle have a strange quark?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>has_charm:</strong></p></td>
+<td><p>Does the particle have a charm quark?</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>has_bottom:</strong></p></td>
+<td><p>Does the particle have a bottom quark?</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>has_top:</strong></p></td>
+<td><p>Does the particle have a top quark?</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>weight:</strong></p></td>
 <td><p>What is the weight of the particle?</p></td>
@@ -356,7 +393,7 @@ Supported formats include:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.print_particle">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">print_particle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.print_particle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.print_particle" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">print_particle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.print_particle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.print_particle" title="Link to this definition"></a></dt>
 <dd><p>Print the whole particle information as csv string.</p>
 <p>This function prints a header line with the different quantities.
 All particle quantities are then printed in the next line separated by
@@ -365,7 +402,7 @@ a comma.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.angular_momentum">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">angular_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.angular_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.angular_momentum" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">angular_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.angular_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.angular_momentum" title="Link to this definition"></a></dt>
 <dd><p>Compute the angular momentum <span class="math notranslate nohighlight">\(\vec{L}=\vec{r} \times \vec{p}\)</span> of a particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -377,13 +414,13 @@ angular momentum as <span class="math notranslate nohighlight">\([L_x, L_y, L_z]
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.momentum_rapidity_Y">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">momentum_rapidity_Y</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.momentum_rapidity_Y"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.momentum_rapidity_Y" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Particle.Particle.rapidity">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">rapidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.rapidity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.rapidity" title="Link to this definition"></a></dt>
 <dd><p>Compute the momentum rapidity <span class="math notranslate nohighlight">\(Y=\frac{1}{2}\ln\left(\frac{E+p_z}{E-p_z}\right)\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -394,13 +431,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.p_abs">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">p_abs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.p_abs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.p_abs" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">p_abs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.p_abs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.p_abs" title="Link to this definition"></a></dt>
 <dd><p>Compute the absolute momentum <span class="math notranslate nohighlight">\(|\vec{p}|=\sqrt{p_x^2+p_y^2+p_z^2}\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -411,13 +448,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.pt_abs">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">pt_abs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.pt_abs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.pt_abs" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Particle.Particle.pT_abs">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">pT_abs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.pT_abs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.pT_abs" title="Link to this definition"></a></dt>
 <dd><p>Compute the absolute transverse momentum <span class="math notranslate nohighlight">\(|\vec{p}_{\mathrm{T}}|=\sqrt{p_x^2+p_y^2}\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -428,13 +465,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.phi">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.phi" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.phi" title="Link to this definition"></a></dt>
 <dd><p>Compute the azimuthal angle of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -445,13 +482,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.theta">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">theta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.theta" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">theta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.theta" title="Link to this definition"></a></dt>
 <dd><p>Compute the polar angle of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -462,13 +499,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.pseudorapidity">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">pseudorapidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.pseudorapidity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.pseudorapidity" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">pseudorapidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.pseudorapidity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.pseudorapidity" title="Link to this definition"></a></dt>
 <dd><p>Compute the pseudorapidity <span class="math notranslate nohighlight">\(\eta=\frac{1}{2}\ln\left(\frac{|\vec{p}|+p_z}{|\vec{p}|-p_z}\right)\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -479,30 +516,30 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.spatial_rapidity">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spatial_rapidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.spatial_rapidity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spatial_rapidity" title="Link to this definition"></a></dt>
-<dd><p>Compute the spatial rapidity <span class="math notranslate nohighlight">\(y=\frac{1}{2}\ln\left(\frac{t+z}{t-z}\right)\)</span> of the particle.</p>
+<dt class="sig sig-object py" id="Particle.Particle.spacetime_rapidity">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spacetime_rapidity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.spacetime_rapidity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spacetime_rapidity" title="Link to this definition"></a></dt>
+<dd><p>Compute the space-time rapidity <span class="math notranslate nohighlight">\(\eta_s=\frac{1}{2}\ln\left(\frac{t+z}{t-z}\right)\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt>float</dt><dd><p>spatial rapidity</p>
+<dt>float</dt><dd><p>space-time rapidity</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.proper_time">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">proper_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.proper_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.proper_time" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">proper_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.proper_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.proper_time" title="Link to this definition"></a></dt>
 <dd><p>Compute the proper time <span class="math notranslate nohighlight">\(\tau=\sqrt{t^2-z^2}\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -513,15 +550,19 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
 is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.compute_mass_from_energy_momentum">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">compute_mass_from_energy_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.compute_mass_from_energy_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.compute_mass_from_energy_momentum" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Particle.Particle.mass_from_energy_momentum">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">mass_from_energy_momentum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.mass_from_energy_momentum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.mass_from_energy_momentum" title="Link to this definition"></a></dt>
 <dd><p>Compute the mass from the energy momentum relation.</p>
 <p>This function is called automatically if a JETSCAPE file is read in.</p>
+<p>We consider particles with the following PDG codes as massless:
+photons (22), gluons (21), e-neutrinos (12, -12),
+mu-neutrinos (14, -14), tau-neutrinos (16, -16),
+tau-prime-neutrinos (18, -18).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -531,13 +572,13 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If one of the needed particle quantities is not given, then <cite>np.nan</cite>
-is returned.</p>
+<p>If one of the needed particle quantities (four-momentum) is not given,
+then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.compute_charge_from_pdg">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">compute_charge_from_pdg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.compute_charge_from_pdg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.compute_charge_from_pdg" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="Particle.Particle.charge_from_pdg">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">charge_from_pdg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.charge_from_pdg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.charge_from_pdg" title="Link to this definition"></a></dt>
 <dd><p>Compute the charge from the PDG code.</p>
 <p>This function is called automatically if a JETSCAPE file is read in.</p>
 <dl class="field-list simple">
@@ -549,12 +590,61 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.mT">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">mT</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.mT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.mT" title="Link to this definition"></a></dt>
+<dd><p>Compute the transverse mass <span class="math notranslate nohighlight">\(m_{T}=\sqrt{E^2-p_z^2}\)</span> of the particle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>float</dt><dd><p>transverse mass</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
+is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.is_quark">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_quark</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_quark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_quark" title="Link to this definition"></a></dt>
+<dd><p>Is the particle a quark?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.is_lepton">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_lepton</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_lepton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_lepton" title="Link to this definition"></a></dt>
+<dd><p>Is the particle a lepton?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.is_meson">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_meson</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_meson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_meson" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_meson</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_meson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_meson" title="Link to this definition"></a></dt>
 <dd><p>Is the particle a meson?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -565,12 +655,12 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.is_baryon">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_baryon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_baryon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_baryon" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_baryon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_baryon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_baryon" title="Link to this definition"></a></dt>
 <dd><p>Is the particle a baryon?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -581,12 +671,12 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.is_hadron">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_hadron</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_hadron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_hadron" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_hadron</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_hadron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_hadron" title="Link to this definition"></a></dt>
 <dd><p>Is the particle a hadron?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -597,28 +687,12 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="Particle.Particle.is_strange">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_strange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_strange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_strange" title="Link to this definition"></a></dt>
-<dd><p>Does the particle contain strangeness?</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>bool</dt><dd><p>True, False</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.is_heavy_flavor">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_heavy_flavor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_heavy_flavor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_heavy_flavor" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">is_heavy_flavor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.is_heavy_flavor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.is_heavy_flavor" title="Link to this definition"></a></dt>
 <dd><p>Is the particle a heavy flavor hadron?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -629,12 +703,108 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_down">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_down" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain a down quark? Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_up">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_up" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain an up quark?  Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_strange">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_strange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_strange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_strange" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain a strange quark?  Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_charm">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_charm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_charm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_charm" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain a charm quark?  Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_bottom">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_bottom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_bottom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_bottom" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain a bottom quark?  Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Particle.Particle.has_top">
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">has_top</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.has_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.has_top" title="Link to this definition"></a></dt>
+<dd><p>Does the particle contain a top quark?  Does not work with partons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.spin">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.spin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spin" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.spin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spin" title="Link to this definition"></a></dt>
 <dd><p>Get the total spin <span class="math notranslate nohighlight">\(J\)</span> of the particle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -645,12 +815,12 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Particle.Particle.spin_degeneracy">
-<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spin_degeneracy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/Particle.html#Particle.spin_degeneracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spin_degeneracy" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Particle.</span></span><span class="sig-name descname"><span class="pre">spin_degeneracy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/Particle.html#Particle.spin_degeneracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Particle.Particle.spin_degeneracy" title="Link to this definition"></a></dt>
 <dd><p>Get the number of all possible spin projections (<span class="math notranslate nohighlight">\(2J + 1\)</span>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -661,7 +831,7 @@ is returned.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>If the PDG ID is not known by <cite>PDGID</cite>, then <cite>np.nan</cite> is returned.</p>
+<p>If the PDG ID is not known by <cite>PDGID</cite>, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned.</p>
 </dd></dl>
 
 </section>
@@ -671,7 +841,7 @@ is returned.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../Oscar/index.html" class="btn btn-neutral float-left" title="Oscar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../utilities/index.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../ParticleObjectStorer/index.html" class="btn btn-neutral float-right" title="ParticleObjectStorer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

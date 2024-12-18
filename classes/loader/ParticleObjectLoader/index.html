@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParticleObjectLoader &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="JetscapeLoader" href="../JetscapeLoader/index.html" />
+    <link rel="prev" title="BaseLoader" href="../BaseLoader/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../BulkObservables/index.html">BulkObservables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Loader</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../BaseLoader/index.html">BaseLoader</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ParticleObjectLoader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ParticleObjectLoader.ParticleObjectLoader"><code class="docutils literal notranslate"><span class="pre">ParticleObjectLoader</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../JetscapeLoader/index.html">JetscapeLoader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../OscarLoader/index.html">OscarLoader</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Classes</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Loader</a></li>
+      <li class="breadcrumb-item active">ParticleObjectLoader</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/loader/ParticleObjectLoader/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="particleobjectloader">
+<span id="particleobject-loader"></span><h1>ParticleObjectLoader<a class="headerlink" href="#particleobjectloader" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ParticleObjectLoader.ParticleObjectLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ParticleObjectLoader.</span></span><span class="sig-name descname"><span class="pre">ParticleObjectLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ParticleObjectLoader.html#ParticleObjectLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ParticleObjectLoader.ParticleObjectLoader" title="Link to this definition"></a></dt>
+<dd><p>A loader class for handling particle objects.</p>
+<p>The ParticleObjectLoader class is responsible for loading and filtering
+particle objects from a specified list. It provides methods to initialize
+the loader, apply filters, and set the particle list based on optional
+arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>particle_list_</strong><span class="classifier">List[List[“Particle”]]</span></dt><dd><p>The list of particle objects to load.</p>
+</dd>
+<dt><strong>optional_arguments_</strong><span class="classifier">Dict[str, Any]</span></dt><dd><p>A dictionary of optional arguments for loading and filtering particles.</p>
+</dd>
+<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>The number of events in the particle list.</p>
+</dd>
+<dt><strong>num_output_per_event_</strong><span class="classifier">List[int]</span></dt><dd><p>The number of output particles per event after filtering.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>load(**kwargs: Any) -&gt; Tuple[List[List[“Particle”]], int, List[int]]</strong></p></td>
+<td><p>Loads the data from the dummy input based on the specified optional arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_num_output_per_event() -&gt; List[int]</strong></p></td>
+<td><p>Sets the number of output particles per event based on the filters applied.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>__apply_kwargs_filters(event: List[List[“Particle”]], filters_dict: Dict[str, Any]) -&gt; List[List[“Particle”]]</strong></p></td>
+<td><p>Applies the specified filters to the event.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_particle_list(kwargs: Dict[str, Any]) -&gt; List[List[“Particle”]]</strong></p></td>
+<td><p>Sets the particle list based on the filters applied.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleObjectLoader.ParticleObjectLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ParticleObjectLoader.html#ParticleObjectLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ParticleObjectLoader.ParticleObjectLoader.load" title="Link to this definition"></a></dt>
+<dd><p>Loads the data from the dummy input based on the specified optional arguments.</p>
+<p>This method reads the dummy input and applies any filters specified in
+the ‘filters’ key of the kwargs dictionary. It also adjusts the number
+of events based on the ‘events’ key in the kwargs dictionary. If any
+other keys are specified in the kwargs dictionary, it raises a ValueError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of optional arguments. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the list of Particle objects loaded from the
+dummy input, the number of events, and the number of output lines
+per event.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If an unknown keyword argument is used, if the first value of the
+‘events’ tuple is larger than the second value, if an event number
+is negative.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleObjectLoader.ParticleObjectLoader.set_num_output_per_event">
+<span class="sig-name descname"><span class="pre">set_num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ParticleObjectLoader.html#ParticleObjectLoader.set_num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ParticleObjectLoader.ParticleObjectLoader.set_num_output_per_event" title="Link to this definition"></a></dt>
+<dd><p>Set the number of output particles per event based on the filters applied.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleObjectLoader.ParticleObjectLoader.set_particle_list">
+<span class="sig-name descname"><span class="pre">set_particle_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ParticleObjectLoader.html#ParticleObjectLoader.set_particle_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ParticleObjectLoader.ParticleObjectLoader.set_particle_list" title="Link to this definition"></a></dt>
+<dd><p>Set the particle list based on the filters applied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the filters to be applied. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>List of particle objects.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../BaseLoader/index.html" class="btn btn-neutral float-left" title="BaseLoader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../JetscapeLoader/index.html" class="btn btn-neutral float-right" title="JetscapeLoader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

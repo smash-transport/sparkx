@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JetscapeLoader &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="OscarLoader" href="../OscarLoader/index.html" />
+    <link rel="prev" title="ParticleObjectLoader" href="../ParticleObjectLoader/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../BulkObservables/index.html">BulkObservables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Loader</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../BaseLoader/index.html">BaseLoader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ParticleObjectLoader/index.html">ParticleObjectLoader</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">JetscapeLoader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#JetscapeLoader.JetscapeLoader"><code class="docutils literal notranslate"><span class="pre">JetscapeLoader</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../OscarLoader/index.html">OscarLoader</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Classes</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Loader</a></li>
+      <li class="breadcrumb-item active">JetscapeLoader</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/loader/JetscapeLoader/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jetscapeloader">
+<span id="jetscape-loader"></span><h1>JetscapeLoader<a class="headerlink" href="#jetscapeloader" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">JetscapeLoader.</span></span><span class="sig-name descname"><span class="pre">JetscapeLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">JETSCAPE_FILE</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader" title="Link to this definition"></a></dt>
+<dd><p>A class to load and process JETSCAPE data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>PATH_JETSCAPE_</strong><span class="classifier">str</span></dt><dd><p>The path to the JETSCAPE data file.</p>
+</dd>
+<dt><strong>particle_type_</strong><span class="classifier">str</span></dt><dd><p>The type of particles to load (‘hadron’ or ‘parton’).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>load(**kwargs)</strong></p></td>
+<td><p>Loads the data from the JETSCAPE file based on the specified optional arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_particle_list(kwargs)</strong></p></td>
+<td><p>Sets the list of particles based on the specified optional arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_num_output_per_event()</strong></p></td>
+<td><p>Sets the number of output lines per event in the JETSCAPE data file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_last_line(file_path)</strong></p></td>
+<td><p>Returns the last line of a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_sigmaGen()</strong></p></td>
+<td><p>Retrieves the sigmaGen values with error from the last line of a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_particle_type_defining_string()</strong></p></td>
+<td><p>Returns the string which defines the particle type in the JETSCAPE file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_particle_type()</strong></p></td>
+<td><p>Returns the particle type of the JETSCAPE file.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.event_end_lines">
+<span class="sig-name descname"><span class="pre">event_end_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.event_end_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.event_end_lines" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of event end lines.</p>
+<p>This method returns the list of strings that mark the end of events
+in the Jetscape data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[str]</dt><dd><p>A list of strings that mark the end of events in the Jetscape data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.get_last_line">
+<span class="sig-name descname"><span class="pre">get_last_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.get_last_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.get_last_line" title="Link to this definition"></a></dt>
+<dd><p>Returns the last line of a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>The path to the file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The last line of the file, stripped of leading and trailing whitespace.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.get_particle_type">
+<span class="sig-name descname"><span class="pre">get_particle_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.get_particle_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.get_particle_type" title="Link to this definition"></a></dt>
+<dd><p>Returns the particle type of the Jetscape file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>string</dt><dd><p>The particle type.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.get_particle_type_defining_string">
+<span class="sig-name descname"><span class="pre">get_particle_type_defining_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.get_particle_type_defining_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.get_particle_type_defining_string" title="Link to this definition"></a></dt>
+<dd><p>Returns the string which defines the particle type in the Jetscape file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>string</dt><dd><p>The particle type defining string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.get_sigmaGen">
+<span class="sig-name descname"><span class="pre">get_sigmaGen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.get_sigmaGen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.get_sigmaGen" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the sigmaGen values with error from the last line of a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the first and second sigmaGen values as floats.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.load" title="Link to this definition"></a></dt>
+<dd><p>Loads the data from the JETSCAPE file based on the specified optional arguments.</p>
+<p>This method reads the JETSCAPE data file and applies any filters specified in the ‘filters’ key of the kwargs dictionary. It also adjusts the number of events and the number of output lines per event based on the ‘events’ key in the kwargs dictionary. If the ‘particletype’ key is specified, it sets the particle type to either ‘hadron’ or ‘parton’. If any other keys are specified in the kwargs dictionary, it raises a ValueError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of optional arguments. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+<li><p>‘particletype’: A string specifying the type of particles to load (‘hadron’ or ‘parton’).</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the list of Particle objects loaded from the JETSCAPE data file, the number of events, and the number of output lines per event.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If an unknown keyword argument is used, if the first value of the ‘events’ tuple is larger than the second value, if an event number is negative, or if the ‘particletype’ is not ‘hadron’ or ‘parton’.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If the ‘events’ key is not a tuple or an integer, or if the ‘particletype’ key is not a string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.set_num_output_per_event">
+<span class="sig-name descname"><span class="pre">set_num_output_per_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.set_num_output_per_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.set_num_output_per_event" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of output lines per event in the JETSCAPE data file.</p>
+<p>This method reads the JETSCAPE data file line by line and determines
+the number of output lines for each event. It does this by looking for
+lines that contain a ‘#’ and the <code class="docutils literal notranslate"><span class="pre">particle_type_defining_string_</span></code>.
+For each such line, it extracts the event number and the number of
+output lines from the line and appends them to a list.
+After reading the entire file, it converts the list to a numpy array
+and stores it in the <code class="docutils literal notranslate"><span class="pre">num_output_per_event_</span></code> attribute. It also sets
+the <code class="docutils literal notranslate"><span class="pre">num_events_</span></code> attribute to the length of the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>None</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="JetscapeLoader.JetscapeLoader.set_particle_list">
+<span class="sig-name descname"><span class="pre">set_particle_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/JetscapeLoader.html#JetscapeLoader.set_particle_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetscapeLoader.JetscapeLoader.set_particle_list" title="Link to this definition"></a></dt>
+<dd><p>Sets the list of particles based on the specified optional arguments.</p>
+<p>This method reads the JETSCAPE data file and creates a list of Particle
+objects based on the data in the file. It applies any filters specified
+in the ‘filters’ key of the kwargs dictionary. It also adjusts the
+number of events and the number of output lines per event based on the
+‘events’ key in the kwargs dictionary. If any other keys are specified
+in the kwargs dictionary, it raises a ValueError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of optional arguments. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>particle_list</strong><span class="classifier">list</span></dt><dd><p>A list of Particle objects loaded from the JETSCAPE data file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>IndexError</dt><dd><p>If the end of the JETSCAPE file is reached before the specified
+number of lines is read, or if the number of events in the JETSCAPE
+file does not match the number of events specified by the comments
+in the file.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the first line of the event is not a comment line or does not
+contain “weight”, or if an unknown keyword argument is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../ParticleObjectLoader/index.html" class="btn btn-neutral float-left" title="ParticleObjectLoader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../OscarLoader/index.html" class="btn btn-neutral float-right" title="OscarLoader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

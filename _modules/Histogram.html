@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Histogram &mdash; sparkx 1.3.0 documentation</title>
+  <title>Histogram &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -87,6 +88,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
 
 
 <div class="viewcode-block" id="Histogram">
@@ -96,7 +98,7 @@
 <span class="sd">    Defines a histogram object.</span>
 
 <span class="sd">    The histograms can be initialized either with a tuple</span>
-<span class="sd">    (hist_min,hist_max,num_bins) or a list/numpy.ndarray containing the bin</span>
+<span class="sd">    :code:`(hist_min,hist_max,num_bins)` or a list/numpy.ndarray containing the bin</span>
 <span class="sd">    boundaries, which allows for different bin widths.</span>
 <span class="sd">    Multiple histograms can be added and averaged.</span>
 
@@ -215,15 +217,20 @@
 <span class="sd">        &gt;&gt;&gt; hist = histObj.histogram()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bin_boundaries</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bin_boundaries</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">hist_min</span> <span class="o">=</span> <span class="n">bin_boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -231,10 +238,10 @@
             <span class="n">num_bins</span> <span class="o">=</span> <span class="n">bin_boundaries</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">hist_min</span> <span class="o">&gt;</span> <span class="n">hist_max</span> <span class="ow">or</span> <span class="n">hist_min</span> <span class="o">==</span> <span class="n">hist_max</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hist_min must be smaller than hist_max&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;hist_min must be smaller than hist_max&quot;</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num_bins</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of bins must be a positive integer&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of bins must be a positive integer&quot;</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="o">=</span> <span class="n">num_bins</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">hist_min</span><span class="p">,</span> <span class="n">hist_max</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -245,25 +252,27 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_bins</span><span class="p">)])</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)])</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)]</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)])</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)]</span>
+            <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s1">&#39;Input must be a tuple (hist_min, hist_max, num_bins) &#39;</span> <span class="o">+</span>
-                <span class="s1">&#39;or a list/numpy.ndarray containing the bin edges!&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;Input must be a tuple (hist_min, hist_max, num_bins) &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;or a list/numpy.ndarray containing the bin edges!&quot;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="Histogram.histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the current histogram(s).</span>
 
@@ -272,12 +281,17 @@
 <span class="sd">        `histograms_`: numpy.ndarray</span>
 <span class="sd">            Array containing the histogram(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span></div>
 
 
 <div class="viewcode-block" id="Histogram.histogram_raw_counts">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.histogram_raw_counts">[docs]</a>
-    <span class="k">def</span> <span class="nf">histogram_raw_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">histogram_raw_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the raw bin counts of the histogram(s), even after the original</span>
 <span class="sd">        histograms are scaled or averaged. If weights are used, then they</span>
@@ -288,12 +302,17 @@
 <span class="sd">        `histograms_raw_count_`: numpy.ndarray</span>
 <span class="sd">            Array containing the raw counts of the histogram(s)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;histogram_raw_counts&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span></div>
 
 
 <div class="viewcode-block" id="Histogram.number_of_histograms">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.number_of_histograms">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">number_of_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the number of current histograms.</span>
 
@@ -307,7 +326,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_centers">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_centers">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bin_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin centers.</span>
 
@@ -316,12 +335,17 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the bin centers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;bin_centers&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span></div>
 
 
 <div class="viewcode-block" id="Histogram.bin_width">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_width">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin widths.</span>
 
@@ -330,12 +354,17 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the bin widths.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;bin_width&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Histogram.bin_bounds_left">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_bounds_left">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_bounds_left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bin_bounds_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract the lower bounds of the individual bins.</span>
 
@@ -344,12 +373,17 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the lower bin boundaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;bin_bounds_left&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Histogram.bin_bounds_right">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_bounds_right">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_bounds_right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bin_bounds_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract the upper bounds of the individual bins.</span>
 
@@ -358,12 +392,17 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the upper bin boundaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;bin_bounds_right&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
 
 
 <div class="viewcode-block" id="Histogram.bin_boundaries">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_boundaries">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bin_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin boundaries.</span>
 
@@ -372,10 +411,15 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the bin boundaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;bin_boundaries&#39; function.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span></div>
 
 
-    <span class="k">def</span> <span class="nf">remove_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">remove_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a bin from all histograms, starting from the 0th bin.</span>
 
@@ -389,12 +433,36 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If `index` is out of range.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the&#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;remove_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bin number in remove_bin is NaN.&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bin number in remove_bin is out of range.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Bin number in remove_bin must be an integer.&quot;</span><span class="p">)</span>
@@ -402,20 +470,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-                <span class="n">raw_count</span><span class="p">,</span>
-                <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">raw_count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-                <span class="n">sys_err</span><span class="p">,</span>
-                <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">sys_err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">raw_count</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">raw_count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">sys_err</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">sys_err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">add_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bin_edge</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bin_edge</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a bin to all histograms at the specified index.</span>
 <span class="sd">        Attention: If values were added to bins before inserting a new bin, the information about its value is lost.</span>
@@ -437,11 +508,35 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If `index` is out of range or the bin edges are not monotonically increasing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Index in add_bin must be an integer.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_edge</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Bin edge in add_bin must be a float or int.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;add_bin&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Index in add_bin is out of range.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">bin_edge</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -453,24 +548,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bin_edge</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                                 <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-            <span class="n">raw_count</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">raw_count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">])</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">raw_count</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">raw_count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">sys_err</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">sys_err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">])</span>
+            <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">sys_err</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">sys_err</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="Histogram.add_value">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.add_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_value</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add value(s) to the latest histogram.</span>
 
-<span class="sd">        Different cases, if there is just one number added or a whole list/</span>
-<span class="sd">        array of numbers.</span>
+<span class="sd">        Different cases, if there is just one number added or a whole</span>
+<span class="sd">        list/array of numbers.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -485,27 +594,47 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            if the input is not a number or numpy.ndarray or list</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            if an input `value` is `np.nan`</span>
+<span class="sd">            if an input :code:`value` is :code:`np.nan`</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            if the input `weight` has not the same dimension as `value`</span>
+<span class="sd">            if the input :code:`weight` has not the same dimension as :code:`value`</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            if a `weight` value is `np.nan`</span>
+<span class="sd">            if a :code:`weight` value is :code:`np.nan`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;add_value&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the &#39;add_value&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;add_value&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;add_value&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="c1"># Check if weight has the same length as value</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Value must be numeric when weight is scalar.&quot;</span><span class="p">)</span>
+                        <span class="s2">&quot;Value must be numeric when weight is scalar.&quot;</span>
+                    <span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">weight</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Value cannot be NaN when weight is scalar.&quot;</span><span class="p">)</span>
+                        <span class="s2">&quot;Value cannot be NaN when weight is scalar.&quot;</span>
+                    <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Weight must have the same length as value.&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Value cannot contain NaN when weight is not scalar.&quot;</span><span class="p">)</span>
+                        <span class="s2">&quot;Value cannot contain NaN when weight is not scalar.&quot;</span>
+                    <span class="p">)</span>
 
         <span class="c1"># Case 1.1: value is a single number</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
@@ -513,11 +642,17 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input value in add_value is NaN.&quot;</span><span class="p">)</span>
 
             <span class="n">counter_warnings</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span>
-                    <span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="n">counter_warnings</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;One or more values lie outside the histogram &#39;</span> <span class="o">+</span>\
-                    <span class="s1">&#39;range [&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span>\
-                    <span class="s1">&#39;]. Exceeding values are ignored. Increase histogram range!&#39;</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span> <span class="ow">and</span> <span class="n">counter_warnings</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warn_msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;One or more values lie outside the histogram &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;range [&quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="o">+</span> <span class="s2">&quot;]. Exceeding values are ignored. Increase histogram range!&quot;</span>
+                <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
 
             <span class="n">bin_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">)</span>
@@ -535,24 +670,31 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;At least one input value in add_value is NaN.&quot;</span><span class="p">)</span>
+                    <span class="s2">&quot;At least one input value in add_value is NaN.&quot;</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
         <span class="c1"># Case 1.3: value has an invalid input type</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid input type! Input value must have one of the &#39;</span> <span class="o">+</span>\
-                      <span class="s1">&#39;following types: (int, float, np.number, list, np.ndarray)&#39;</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Invalid input type! Input value must have one of the &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;following types: (int, float, np.number, list, np.ndarray)&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Histogram.make_density">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.make_density">[docs]</a>
-    <span class="k">def</span> <span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make a probability density from the last histogram.</span>
 <span class="sd">        The result represents the probability density function in a given bin.</span>
@@ -566,6 +708,11 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            if the integral over the histogram is zero</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;make_density&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No histograms available to compute density.&quot;</span><span class="p">)</span>
 
@@ -576,7 +723,7 @@
         <span class="n">integral</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">density</span> <span class="o">*</span> <span class="n">bin_widths</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">integral</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Integral over the histogram is zero.&quot;</span><span class="p">)</span>
-        <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">integral</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">integral</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">statistical_error</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_histogram</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">)</span></div>
@@ -584,22 +731,50 @@
 
 <div class="viewcode-block" id="Histogram.add_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.add_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new histogram to the Histogram class instance.</span>
 
 <span class="sd">        If new values are added to the histogram afterwards, these are added</span>
 <span class="sd">        to the last histogram.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;scaling_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;add_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">empty_histogram</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">,</span> <span class="n">empty_histogram</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">,</span> <span class="n">empty_histogram</span><span class="p">))</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">,</span> <span class="n">empty_histogram</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)))</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">)))</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -607,7 +782,7 @@
 
 <div class="viewcode-block" id="Histogram.average">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.average">[docs]</a>
-    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Average over all histograms.</span>
 
@@ -630,7 +805,7 @@
 
 <div class="viewcode-block" id="Histogram.average_weighted">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.average_weighted">[docs]</a>
-    <span class="k">def</span> <span class="nf">average_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">average_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Weighted average over all histograms.</span>
 
@@ -652,28 +827,48 @@
 <span class="sd">            Returns a Histogram object.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;scaling_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">average</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">-</span> <span class="n">average</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="p">,</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">-</span> <span class="n">average</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span>
+        <span class="p">)</span>
+        <span class="c1"># Ensure the result is a 2D array</span>
+        <span class="k">if</span> <span class="n">average</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">average</span> <span class="o">=</span> <span class="n">average</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">average</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mf">2.</span><span class="p">,</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">))</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">histogram_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-    <span class="k">def</span> <span class="nf">average_weighted_by_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">average_weighted_by_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Weighted average over all histograms, where each entry is weighted by its associated error.</span>
 
@@ -694,22 +889,51 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            if the error is zero for any entry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_raw_count_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;scaling_&#39; is None. It must be initialized before calling the &#39;average_weighted&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Error cannot be zero for any entry when averaging by error.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Error cannot be zero for any entry when averaging by error.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">average</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
 
+        <span class="c1"># Ensure the result is a 2D array</span>
+        <span class="k">if</span> <span class="n">average</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">average</span> <span class="o">=</span> <span class="n">average</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="n">average</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mf">2.</span><span class="p">,</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">))</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">histogram_raw_count_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -717,7 +941,7 @@
 
 <div class="viewcode-block" id="Histogram.standard_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.standard_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">standard_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">standard_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the standard deviation over all histogram counts for each bin.</span>
 
@@ -726,12 +950,17 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            Array containing the standard deviation for each bin.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;standard_error&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span></div>
 
 
 <div class="viewcode-block" id="Histogram.statistical_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.statistical_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">statistical_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">statistical_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the statistical error of all histogram bins for all histograms.</span>
 <span class="sd">        This assumes Poisson distributed counts in each bin and independent draws.</span>
@@ -742,6 +971,11 @@
 <span class="sd">            2D Array containing the statistical error (standard deviation) for</span>
 <span class="sd">            each bin and histogram.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;statistical_error&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">counter_histogram</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">histogram</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="n">counter_histogram</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">histogram</span><span class="p">)</span>
@@ -751,7 +985,9 @@
 
 <div class="viewcode-block" id="Histogram.scale_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.scale_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">scale_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">scale_histogram</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Scale the latest histogram by a factor.</span>
 
@@ -765,15 +1001,37 @@
 <span class="sd">        value: int, float, np.number, list, numpy.ndarray</span>
 <span class="sd">            Scaling factor for the histogram.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;scale_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;scaling_&#39; is None. It must be initialized before calling the &#39;scale_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;scale_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">))</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The scaling factor of the histogram cannot be negative&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="s2">&quot;The scaling factor of the histogram cannot be negative&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The scaling factor of the histogram cannot be negative&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">:</span>
+                <span class="s2">&quot;The scaling factor of the histogram cannot be negative&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The length of list/array not compatible with number_of_bins_ of the histogram&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;The length of list/array not compatible with number_of_bins_ of the histogram&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">value</span>
@@ -781,14 +1039,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">value</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The shape of the scaling factor array is not compatible with the histogram shape&quot;</span>
+                <span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scaling_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Histogram.set_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.set_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the histogram error by hand. This is helpful for weighted</span>
 <span class="sd">        histograms where the weight has also an uncertainty.</span>
@@ -801,17 +1064,27 @@
 <span class="sd">        value: list, numpy.ndarray</span>
 <span class="sd">            Values for the uncertainties of the individual bins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">own_error</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">or</span>\
-                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">own_error</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;The input error has a different length than the&quot;</span>\
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">own_error</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">own_error</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;The input error has a different length than the&quot;</span>
                 <span class="o">+</span> <span class="s2">&quot; number of histogram bins or it is not a list/numpy.ndarray&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;set_error&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">own_error</span></div>
 
 
 <div class="viewcode-block" id="Histogram.set_systematic_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.set_systematic_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_systematic_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_systematic_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the systematic histogram error of the last created histogram by hand.</span>
 
@@ -820,31 +1093,63 @@
 <span class="sd">        value: list, numpy.ndarray</span>
 <span class="sd">            Values for the systematic uncertainties of the individual bins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">own_error</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">or</span>\
-                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">own_error</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;The input error has a different length than the&quot;</span>\
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">own_error</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">own_error</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;The input error has a different length than the&quot;</span>
                 <span class="o">+</span> <span class="s2">&quot; number of histogram bins or it is not a list/numpy.ndarray&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;set_systematic_error&#39; function.&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">own_error</span></div>
 
 
 <div class="viewcode-block" id="Histogram.print_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.print_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">print_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the histograms to the terminal.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_histograms_&#39; is None. It must be initialized before calling the &#39;print_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the &#39;print_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_edges_&#39; is None. It must be initialized before calling the &#39;print_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;print_histogram&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bin_low,bin_high,bin_value&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hist</span><span class="si">}</span><span class="s2">. histogram:&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">):</span><span class="se">\</span>
-<span class="s1">                          </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="n">hist</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="nb">bin</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">):</span><span class="se">\</span>
+<span class="s2">                          </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span><span class="p">[</span><span class="n">hist</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Histogram.write_to_file">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.write_to_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">hist_labels</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">hist_labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write multiple histograms to a CSV file along with their headers.</span>
 
@@ -900,57 +1205,75 @@
 <span class="sd">            is greater than 1 and the number of provided dictionaries is 1.</span>
 <span class="sd">            Then the same dictionary is used for all histograms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">hist_labels</span><span class="p">,</span>
-                <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">hist_label</span><span class="p">,</span>
-                <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist_label</span> <span class="ow">in</span> <span class="n">hist_labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">hist_label</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">hist_label</span> <span class="ow">in</span> <span class="n">hist_labels</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;hist_labels must be a list of dictionaries&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">columns</span><span class="p">,</span>
-                <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">col</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)):</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;columns must be a list of strings&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_of_bins_&#39; is None. It must be initialized before calling the &#39;write_to_file&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;histograms_&#39; is None. It must be initialized before calling the &#39;write_to_file&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;error_&#39; is None. It must be initialized before calling the &#39;write_to_file&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;systematic_error_&#39; is None. It must be initialized before calling the &#39;write_to_file&#39; function.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-                <span class="n">col</span> <span class="ow">in</span> <span class="n">hist_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
+            <span class="n">col</span> <span class="ow">in</span> <span class="n">hist_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;columns must contain only keys present in hist_labels&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;columns must contain only keys present in hist_labels&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;Print multiple histograms to file, only one header&quot;</span>\
-                            <span class="o">+</span> <span class="s2">&quot; provided. Use the header for all histograms.&quot;</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Print multiple histograms to file, only one header&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; provided. Use the header for all histograms.&quot;</span>
+            <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist_labels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Print multiple histograms to file, more than one,&quot;</span> <span class="o">+</span>
-                <span class="s2">&quot; but less than number of histograms headers provided.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Print multiple histograms to file, more than one,&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; but less than number of histograms headers provided.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s1">&#39;bin_center&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;bin_low&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;bin_high&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;distribution&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;stat_err+&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;stat_err-&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;sys_err+&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;sys_err-&#39;</span><span class="p">]</span>
+                <span class="s2">&quot;bin_center&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bin_low&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bin_high&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stat_err+&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stat_err-&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sys_err+&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sys_err-&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">comment</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comment</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span><span class="p">):</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="n">hist_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
-                    <span class="n">hist_labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">hist_labels</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="n">hist_labels</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
                 <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">):</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
@@ -961,10 +1284,11 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                    <span class="p">]</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">col</span><span class="p">)]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
                     <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

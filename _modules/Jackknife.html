@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jackknife &mdash; sparkx 1.3.0 documentation</title>
+  <title>Jackknife &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -146,12 +147,12 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If delete_fraction is less than 0 or greater than or equal to 1.</span>
-<span class="sd">        If number_samples is less than 1.</span>
+<span class="sd">        If :code:`delete_fraction` is less than 0 or greater than or equal to 1.</span>
+<span class="sd">        If :code:`number_samples` is less than 1.</span>
 <span class="sd">    TypeError</span>
-<span class="sd">        If delete_fraction is not a float.</span>
-<span class="sd">        If number_samples is not an integer.</span>
-<span class="sd">        If seed is not an integer.</span>
+<span class="sd">        If :code:`delete_fraction` is not a float.</span>
+<span class="sd">        If :code:`number_samples` is not an integer.</span>
+<span class="sd">        If :code:`seed` is not an integer.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -170,10 +171,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">delete_fraction</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">number_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">delete_fraction</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">number_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be a float.&quot;</span><span class="p">)</span>
@@ -182,15 +181,21 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;seed must be an integer.&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delete_fraction</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be a float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;number_samples must be an integer.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;seed must be an integer.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">delete_fraction</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">delete_fraction</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;delete_fraction must be between 0 and 1.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">number_samples</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number_samples must be greater than 0.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">delete_fraction</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">number_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">number_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_fraction</span> <span class="o">=</span> <span class="n">delete_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_samples</span> <span class="o">=</span> <span class="n">number_samples</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_random</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_init_random</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -215,17 +220,19 @@
 <span class="sd">            The remaining data after randomly deleting a fraction of it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">delete_indices</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span>
-                                   <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_fraction</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+        <span class="n">delete_indices</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_fraction</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delete_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_apply_function_to_reduced_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                        <span class="n">reduced_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                                        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
-                                                           <span class="n">Any</span><span class="p">],</span>
-                                        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_function_to_reduced_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">reduced_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply a function to the reduced data.</span>
 
@@ -249,7 +256,12 @@
         <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_compute_one_jackknife_sample</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute one Jackknife sample.</span>
 
@@ -272,16 +284,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reduced_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_randomly_delete_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_function_to_reduced_data</span><span class="p">(</span>
-            <span class="n">reduced_data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">reduced_data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_helper_unpack</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span>
-                       <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                       <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                       <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
-                                          <span class="n">Any</span><span class="p">],</span>
-                       <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-                       <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_helper_unpack</span><span class="p">(</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="s2">&quot;Jackknife&quot;</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper function to unpack the arguments for parallel processing.</span>
 
@@ -308,7 +322,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">seed</span> <span class="o">+</span> <span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">_compute_one_jackknife_sample</span><span class="p">(</span>
-            <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_random_subprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -325,13 +340,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_jackknife_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                   <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                                   <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
-                                                      <span class="n">Any</span><span class="p">],</span>
-                                   <span class="n">num_cores</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                   <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_compute_jackknife_samples</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">num_cores</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute all Jackknife samples.</span>
 
@@ -365,27 +381,36 @@
         <span class="k">if</span> <span class="n">num_cores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">num_cores</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 
-        <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">num_cores</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_random_subprocess</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,))</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helper_unpack</span><span class="p">,</span>
-                                   <span class="p">[(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-                                    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_samples</span><span class="p">)]</span>
-                                   <span class="p">)</span>
+        <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span>
+            <span class="n">num_cores</span><span class="p">,</span>
+            <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_random_subprocess</span><span class="p">,</span>
+            <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,),</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_helper_unpack</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_samples</span><span class="p">)</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Jackknife.compute_jackknife_estimates">
 <a class="viewcode-back" href="../classes/Jackknife/index.html#Jackknife.Jackknife.compute_jackknife_estimates">[docs]</a>
-    <span class="k">def</span> <span class="nf">compute_jackknife_estimates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                                    <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
-                                                       <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
-                                    <span class="n">num_cores</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">compute_jackknife_estimates</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+        <span class="n">num_cores</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Jackknife uncertainty estimates for a function applied to</span>
-<span class="sd">        a data array. The default function is np.mean, but it can be changed to</span>
-<span class="sd">        any other function that accepts a numpy array as input. Multiple</span>
-<span class="sd">        other arguments can be passed to the function as args and kwargs.</span>
+<span class="sd">        a data array. The default function is :code:`np.mean`, but it can be</span>
+<span class="sd">        changed to any other function that accepts a numpy array as input.</span>
+<span class="sd">        Multiple other arguments can be passed to the function as args and</span>
+<span class="sd">        kwargs.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -413,7 +438,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If delete_n_points is less than 1 (delete_fraction too small).</span>
+<span class="sd">            If :code:`delete_n_points` is less than 1 (:code:`delete_fraction` too small).</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            If data is not a numpy array or if function is not callable.</span>
 <span class="sd">        TypeError</span>
@@ -428,26 +453,31 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;function must be a callable object.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Check if the function returns a single number</span>
-        <span class="n">test_result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span><span class="p">)],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">test_result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[:</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span><span class="p">)],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_result</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;function must return a single number.&quot;</span><span class="p">)</span>
 
         <span class="n">jackknife_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_jackknife_samples</span><span class="p">(</span>
-            <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
 
         <span class="c1"># mean of jackknife samples</span>
         <span class="n">mean_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">)</span>
         <span class="c1"># variance of the jackknife samples</span>
         <span class="n">variance_samples</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">)):</span>
-            <span class="n">variance_samples</span> <span class="o">=</span> <span class="p">(</span><span class="n">jackknife_samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_samples</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span>
+            <span class="n">variance_samples</span> <span class="o">=</span> <span class="p">(</span><span class="n">jackknife_samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_samples</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
 
         <span class="k">if</span> <span class="n">delete_n_points</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">variance_samples</span> <span class="o">*=</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">)</span> <span class="o">-</span>
-                                 <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">))</span>
+            <span class="n">variance_samples</span> <span class="o">*=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">jackknife_samples</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">variance_samples</span> <span class="o">*=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">delete_n_points</span><span class="p">)</span> <span class="o">/</span> \
-                <span class="p">(</span><span class="n">delete_n_points</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">))</span>
+            <span class="n">variance_samples</span> <span class="o">*=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">delete_n_points</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">delete_n_points</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">jackknife_samples</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance_samples</span><span class="p">)</span></div>
 </div>

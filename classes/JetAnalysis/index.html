@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetAnalysis &mdash; sparkx 1.3.0 documentation</title>
+  <title>JetAnalysis &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -48,7 +48,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../BulkObservables/index.html">BulkObservables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flow/index.html">Flow</a></li>
@@ -68,9 +71,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../loader/index.html">Loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -174,7 +179,7 @@ jet finding.</p>
 <span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span> <span class="o">=</span> <span class="n">JetAnalysis</span><span class="p">()</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform the jet analysis</span>
-<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">perform_jet_finding</span><span class="p">(</span><span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">),</span> <span class="n">jet_pt_range</span><span class="o">=</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">output_filename</span><span class="o">=</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
+<span class="linenos">7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">jet_analysis</span><span class="o">.</span><span class="n">perform_jet_finding</span><span class="p">(</span><span class="n">hadron_data</span><span class="p">,</span> <span class="n">jet_R</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">jet_eta_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">),</span> <span class="n">jet_pT_range</span><span class="o">=</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">output_filename</span><span class="o">=</span><span class="n">JET_ANALYSIS_OUTPUT_PATH</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you want to analyze the jets further, you have to read in the jet data
@@ -200,7 +205,7 @@ from the file like:</p>
 </dd>
 <dt><strong>jet_eta_range_: tuple</strong></dt><dd><p>Minimum and maximum pseudorapidity for jet selection.</p>
 </dd>
-<dt><strong>jet_pt_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse
+<dt><strong>jet_pT_range_: tuple</strong></dt><dd><p>Minimum transverse momentum for jet selection and maximum transverse
 momentum to write out the jet.</p>
 </dd>
 <dt><strong>jet_data_: list</strong></dt><dd><p>List containing the jet data after <code class="code docutils literal notranslate"><span class="pre">read_jet_data</span></code> is used.</p>
@@ -238,7 +243,7 @@ momentum to write out the jet.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.perform_jet_finding">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hadron_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_eta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_pt_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assoc_only_charged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jet_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">hadron_data:</span> <span class="pre">~typing.List[~typing.List[~sparkx.Particle.Particle]],</span> <span class="pre">jet_R:</span> <span class="pre">float,</span> <span class="pre">jet_eta_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">jet_pT_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">output_filename:</span> <span class="pre">str,</span> <span class="pre">assoc_only_charged:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">jet_algorithm:</span> <span class="pre">&lt;module</span> <span class="pre">'fastjet'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.9.20/x64/lib/python3.9/site-packages/fastjet/__init__.py'&gt;</span> <span class="pre">=</span> <span class="pre">2</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
 <dd><p>Perform the jet analysis for multiple events. The function generates a
 file containing the jets consisting of a leading particle and associated
 hadrons in the jet cone.</p>
@@ -255,7 +260,7 @@ a <code class="code docutils literal notranslate"><span class="pre">particle_obj
 <code class="code docutils literal notranslate"><span class="pre">None</span></code> values are allowed and are exchanged
 by <span class="math notranslate nohighlight">\(-\infty\)</span> or <span class="math notranslate nohighlight">\(+\infty\)</span> automatically.</p>
 </dd>
-<dt><strong>jet_pt_range: tuple</strong></dt><dd><p>Minimum transverse momentum for jet finding algorithm and maximum
+<dt><strong>jet_pT_range: tuple</strong></dt><dd><p>Minimum transverse momentum for jet finding algorithm and maximum
 transverse momentum to write out the jet to a file.
 Values can be <code class="code docutils literal notranslate"><span class="pre">None</span></code>, then the lower bound is set to zero
 and the upper one to <span class="math notranslate nohighlight">\(+\infty\)</span>.</p>
@@ -278,7 +283,7 @@ package is fixed here.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.read_jet_data">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">read_jet_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.read_jet_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.read_jet_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">read_jet_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.read_jet_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.read_jet_data" title="Link to this definition"></a></dt>
 <dd><p>Read the jet data from a CSV file and store it in the
 <code class="code docutils literal notranslate"><span class="pre">JetAnalysis</span></code> object.</p>
 <dl class="field-list simple">
@@ -293,7 +298,7 @@ package is fixed here.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.get_jets">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_jets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_jets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_jets" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_jets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_jets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_jets" title="Link to this definition"></a></dt>
 <dd><p>Get a list of jets from the jet data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -308,7 +313,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.get_associated_particles">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_associated_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_associated_particles" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">get_associated_particles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.get_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.get_associated_particles" title="Link to this definition"></a></dt>
 <dd><p>Get a list of associated particles for all jets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -323,7 +328,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.create_fastjet_PseudoJets">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">create_fastjet_PseudoJets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_hadrons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.create_fastjet_PseudoJets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.create_fastjet_PseudoJets" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">create_fastjet_PseudoJets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_hadrons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">PseudoJet</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.create_fastjet_PseudoJets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.create_fastjet_PseudoJets" title="Link to this definition"></a></dt>
 <dd><p>Convert hadron data to a list of fastjet.PseudoJet objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -343,7 +348,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.fill_associated_particles">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">fill_associated_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_charged</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.fill_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.fill_associated_particles" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">fill_associated_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PseudoJet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_charged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.fill_associated_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.fill_associated_particles" title="Link to this definition"></a></dt>
 <dd><p>Select particles in the jet cone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

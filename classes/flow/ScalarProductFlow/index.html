@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScalarProductFlow &mdash; sparkx 1.3.0 documentation</title>
+  <title>ScalarProductFlow &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -48,7 +48,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../BulkObservables/index.html">BulkObservables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Flow</a><ul class="current">
@@ -69,9 +72,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../loader/index.html">Loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -109,7 +114,7 @@
 <span id="scalar-product-flow"></span><h1>ScalarProductFlow<a class="headerlink" href="#scalarproductflow" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="ScalarProductFlow.ScalarProductFlow">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">ScalarProductFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">ScalarProductFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pt2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudorapidity_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow" title="Link to this definition"></a></dt>
 <dd><p>This class implements a scalar product flow analysis algorithm
 <a class="reference external" href="https://journals.aps.org/prc/pdf/10.1103/PhysRevC.66.034904?casa_token=lQ6DZfopfxgAAAAA%3ANYaROBYUxtCjJ_2xHDHWLx4tfi9LE6SC92EcH-8Cm0GFhXn-RzpyPIYAyIedFaweDvYjkhSEeaK1K8A">Adler, C., et al. “Elliptic flow from two-and four-particle correlations in Au+ Au collisions at s NN= 130 GeV.” Physical Review C 66.3 (2002): 034904</a>.</p>
 <p>For this method, the flow is calculated by correlating the event
@@ -127,7 +132,7 @@ will not be sufficient.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>n</strong><span class="classifier">int, optional</span></dt><dd><p>The value of the harmonic. Default is 2.</p>
 </dd>
-<dt><strong>weight</strong><span class="classifier">str, optional</span></dt><dd><p>The weight used for calculating the flow. Default is “pt2”.</p>
+<dt><strong>weight</strong><span class="classifier">str, optional</span></dt><dd><p>The weight used for calculating the flow. Default is <code class="code docutils literal notranslate"><span class="pre">pt2</span></code>.</p>
 </dd>
 <dt><strong>pseudorapidity_gap</strong><span class="classifier">float, optional</span></dt><dd><p>The pseudorapidity gap used for dividing the particles into sub-events.
 Default is 0.0.</p>
@@ -176,7 +181,7 @@ the flow.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ScalarProductFlow.ScalarProductFlow.integrated_flow">
-<span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow.integrated_flow" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">integrated_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow.integrated_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow.integrated_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the integrated flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -202,7 +207,7 @@ uncertainty.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ScalarProductFlow.ScalarProductFlow.differential_flow">
-<span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow.differential_flow" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ScalarProductFlow.</span></span><span class="sig-name descname"><span class="pre">differential_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_as_function_of</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_data_event_plane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_corr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/ScalarProductFlow.html#ScalarProductFlow.differential_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ScalarProductFlow.ScalarProductFlow.differential_flow" title="Link to this definition"></a></dt>
 <dd><p>Compute the differential flow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -212,7 +217,7 @@ uncertainty.</p>
 <dt><strong>bins</strong><span class="classifier">list or np.ndarray</span></dt><dd><p>Bins used for the differential flow calculation.</p>
 </dd>
 <dt><strong>flow_as_function_of</strong><span class="classifier">str</span></dt><dd><p>Variable on which the flow is calculated
-(“pt”, “rapidity”, or “pseudorapidity”).</p>
+(“pT”, “rapidity”, or “pseudorapidity”).</p>
 </dd>
 <dt><strong>particle_data_event_plane</strong><span class="classifier">list</span></dt><dd><p>List of particle data for the event plane calculation.</p>
 </dd>

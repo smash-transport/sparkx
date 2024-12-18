@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JetscapeLoader &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">JetscapeLoader</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for JetscapeLoader</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ===================================================</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#      SPARKX Team</span>
+<span class="c1">#</span>
+<span class="c1">#    GNU General Public License (GPLv3 or later)</span>
+<span class="c1">#</span>
+<span class="c1"># ===================================================</span>
+
+<span class="kn">from</span> <span class="nn">sparkx.loader.BaseLoader</span> <span class="kn">import</span> <span class="n">BaseLoader</span>
+<span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="JetscapeLoader">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader">[docs]</a>
+<span class="k">class</span> <span class="nc">JetscapeLoader</span><span class="p">(</span><span class="n">BaseLoader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to load and process JETSCAPE data files.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    PATH_JETSCAPE_ : str</span>
+<span class="sd">        The path to the JETSCAPE data file.</span>
+<span class="sd">    particle_type_ : str</span>
+<span class="sd">        The type of particles to load (&#39;hadron&#39; or &#39;parton&#39;).</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    load(**kwargs)</span>
+<span class="sd">        Loads the data from the JETSCAPE file based on the specified optional arguments.</span>
+<span class="sd">    set_particle_list(kwargs)</span>
+<span class="sd">        Sets the list of particles based on the specified optional arguments.</span>
+<span class="sd">    set_num_output_per_event()</span>
+<span class="sd">        Sets the number of output lines per event in the JETSCAPE data file.</span>
+<span class="sd">    get_last_line(file_path)</span>
+<span class="sd">        Returns the last line of a file.</span>
+<span class="sd">    get_sigmaGen()</span>
+<span class="sd">        Retrieves the sigmaGen values with error from the last line of a file.</span>
+<span class="sd">    get_particle_type_defining_string()</span>
+<span class="sd">        Returns the string which defines the particle type in the JETSCAPE file.</span>
+<span class="sd">    get_particle_type()</span>
+<span class="sd">        Returns the particle type of the JETSCAPE file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the number of output lines per event and the event footers in the OSCAR data file.</span>
+
+<span class="sd">        This method reads the OSCAR data file line by line and determines the number of output lines for each event and the event footers. The method behaves differently depending on the OSCAR format of the data file. If the format is &#39;Oscar2013Extended_IC&#39; or &#39;Oscar2013Extended_Photons&#39;, it counts the number of lines between &#39;in&#39; and &#39;end&#39; lines. Otherwise, it counts the number of lines between &#39;out&#39; and &#39;end&#39; lines.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        FileNotFoundError</span>
+<span class="sd">            If the file is not found or does not end with &#39;.dat&#39;.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the last line of the JETSCAPE file does not contain the string &#39;sigmaGen&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;.dat&quot;</span> <span class="ow">in</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;File not found or does not end with .dat&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that the last line contains the string &#39;sigmaGen&#39;</span>
+        <span class="k">if</span> <span class="s2">&quot;sigmaGen&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_last_line</span><span class="p">(</span><span class="n">JETSCAPE_FILE</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The last line of the Jetscape file does not contain the string &#39;sigmaGen&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span> <span class="o">=</span> <span class="n">JETSCAPE_FILE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_</span> <span class="o">=</span> <span class="s2">&quot;hadron&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="o">=</span> <span class="s2">&quot;N_hadrons&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="JetscapeLoader.load">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the data from the JETSCAPE file based on the specified optional arguments.</span>
+
+<span class="sd">        This method reads the JETSCAPE data file and applies any filters specified in the &#39;filters&#39; key of the kwargs dictionary. It also adjusts the number of events and the number of output lines per event based on the &#39;events&#39; key in the kwargs dictionary. If the &#39;particletype&#39; key is specified, it sets the particle type to either &#39;hadron&#39; or &#39;parton&#39;. If any other keys are specified in the kwargs dictionary, it raises a ValueError.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            A dictionary of optional arguments. The following keys are recognized:</span>
+
+<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</span>
+<span class="sd">            - &#39;filters&#39;: A list of filters to apply to the data.</span>
+<span class="sd">            - &#39;particletype&#39;: A string specifying the type of particles to load (&#39;hadron&#39; or &#39;parton&#39;).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If an unknown keyword argument is used, if the first value of the &#39;events&#39; tuple is larger than the second value, if an event number is negative, or if the &#39;particletype&#39; is not &#39;hadron&#39; or &#39;parton&#39;.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the &#39;events&#39; key is not a tuple or an integer, or if the &#39;particletype&#39; key is not a string.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the list of Particle objects loaded from the JETSCAPE data file, the number of events, and the number of output lines per event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">keys</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">keys</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">,</span> <span class="s2">&quot;filters&quot;</span><span class="p">,</span> <span class="s2">&quot;particletype&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown keyword argument used in constructor&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_that_tuple_contains_integers_only</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;First value of event number tuple must be smaller than second value&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Event numbers must be non-negative&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Event number must be non-negative&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;particletype&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">],</span> <span class="nb">str</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hadron&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;parton&quot;</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;particletype&#39; has to be &#39;hadron&#39; or &#39;parton&#39;&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="s2">&quot;particletype&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;particletype&#39; is not given as a string value&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_</span> <span class="o">==</span> <span class="s2">&quot;hadron&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="o">=</span> <span class="s2">&quot;N_hadrons&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="o">=</span> <span class="s2">&quot;N_partons&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_output_per_event</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_particle_list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
+            <span class="p">[],</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># PRIVATE CLASS METHODS</span>
+    <span class="k">def</span> <span class="nf">_get_num_skip_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get number of initial lines in Jetscape file that are header or comment</span>
+<span class="sd">        lines and need to be skipped in order to read the particle output.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        skip_lines : int</span>
+<span class="sd">            Number of initial lines before data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span>
+            <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]):</span>
+                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">line_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">line_start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">line_start</span><span class="p">):</span>
+                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Value given as flag &quot;events&quot; is not of type &#39;</span>
+                <span class="o">+</span> <span class="s2">&quot;int or a tuple of two int values&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">skip_lines</span>
+
+<div class="viewcode-block" id="JetscapeLoader.event_end_lines">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.event_end_lines">[docs]</a>
+    <span class="k">def</span> <span class="nf">event_end_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of event end lines.</span>
+
+<span class="sd">        This method returns the list of strings that mark the end of events</span>
+<span class="sd">        in the Jetscape data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            A list of strings that mark the end of events in the Jetscape data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__get_num_read_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the number of lines to read from the JETSCAPE data file.</span>
+
+<span class="sd">        This method calculates the number of lines to read from the JETSCAPE data file based on the &#39;events&#39; key in the optional_arguments_ dictionary. If the &#39;events&#39; key is not specified, it sums up the number of output lines for all events and adds the number of comment lines. If the &#39;events&#39; key is an integer, it gets the number of output lines for the specified event. If the &#39;events&#39; key is a tuple, it sums up the number of output lines for the range of events specified by the tuple. If the &#39;events&#39; key is not an integer or a tuple, it raises a TypeError.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the &#39;events&#39; key in the optional_arguments_ dictionary is not an integer or a tuple.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cumulated_lines : int</span>
+<span class="sd">            The number of lines to read from the JETSCAPE data file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span>
+            <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># add number of comments</span>
+            <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">read_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">read_event</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">event_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">event_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_start</span><span class="p">,</span> <span class="n">event_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Value given as flag events is not of type int or a tuple&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># +1 for the end line in Jetscape format</span>
+        <span class="k">return</span> <span class="n">cumulated_lines</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">__apply_kwargs_filters</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="n">filters_dict</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the specified filters to the event.</span>
+
+<span class="sd">        This method applies a series of filters to the event based on the keys</span>
+<span class="sd">        in the filters_dict dictionary. The filters include</span>
+<span class="sd">        &#39;charged_particles&#39;, &#39;uncharged_particles&#39;,</span>
+<span class="sd">        &#39;particle_species&#39;, &#39;remove_particle_species&#39;,</span>
+<span class="sd">        &#39;lower_event_energy_cut&#39;, &#39;pT_cut&#39;, &#39;mT_cut&#39;, &#39;rapidity_cut&#39;,</span>
+<span class="sd">        &#39;pseudorapidity_cut&#39;, &#39;multiplicity_cut&#39;,</span>
+<span class="sd">        &#39;particle_status&#39;, &#39;keep_hadrons&#39;, &#39;keep_leptons&#39;, &#39;keep_quarks&#39;,</span>
+<span class="sd">        &#39;keep_mesons&#39;, &#39;keep_baryons&#39;, &#39;keep_up&#39;, &#39;keep_down&#39;, &#39;keep_strange&#39;,</span>
+<span class="sd">        &#39;keep_charm&#39;, &#39;keep_bottom&#39;, &#39;keep_top&#39; and &#39;remove_photons&#39;.</span>
+<span class="sd">        If a key in the filters_dict dictionary does not</span>
+<span class="sd">        match any of these filters, a ValueError is raised.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event : list</span>
+<span class="sd">            The event to which the filters are applied.</span>
+<span class="sd">        filters_dict : dict</span>
+<span class="sd">            A dictionary of filters to apply to the event.</span>
+<span class="sd">            The keys are the names of the filters and the values are the</span>
+<span class="sd">            parameters for the filters.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a key in the filters_dict dictionary does not match any of the</span>
+<span class="sd">            supported filters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        event : list</span>
+<span class="sd">            The event after the filters have been applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filters_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">event</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">filters_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;charged_particles&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;charged_particles&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">charged_particles</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;uncharged_particles&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;uncharged_particles&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">uncharged_particles</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;particle_species&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">particle_species</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;particle_species&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;remove_particle_species&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">remove_particle_species</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;remove_particle_species&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;lower_event_energy_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">lower_event_energy_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;lower_event_energy_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;pT_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">pT_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;pT_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;mT_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">mT_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;mT_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;rapidity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">rapidity_cut</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;rapidity_cut&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">pseudorapidity_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;pseudorapidity_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;multiplicity_cut&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">multiplicity_cut</span><span class="p">(</span>
+                    <span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;multiplicity_cut&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;particle_status&quot;</span><span class="p">:</span>
+                <span class="n">event</span> <span class="o">=</span> <span class="n">particle_status</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;particle_status&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_hadrons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_hadrons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_hadrons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_leptons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_leptons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_leptons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_quarks&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_quarks&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_quarks</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_mesons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_mesons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_mesons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_baryons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_baryons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_baryons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_up&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_up&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_up</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_down&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_down&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_down</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_strange&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_strange&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_strange</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_charm&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_charm&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_charm</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_bottom&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_bottom&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_bottom</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;keep_top&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;keep_top&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">keep_top</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="s2">&quot;remove_photons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">filters_dict</span><span class="p">[</span><span class="s2">&quot;remove_photons&quot;</span><span class="p">]:</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">remove_photons</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The cut is unknown!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">event</span>
+
+    <span class="c1"># PUBLIC CLASS METHODS</span>
+
+<div class="viewcode-block" id="JetscapeLoader.set_particle_list">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.set_particle_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_particle_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]]</span>
+        <span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the list of particles based on the specified optional arguments.</span>
+
+<span class="sd">        This method reads the JETSCAPE data file and creates a list of Particle</span>
+<span class="sd">        objects based on the data in the file. It applies any filters specified</span>
+<span class="sd">        in the &#39;filters&#39; key of the kwargs dictionary. It also adjusts the</span>
+<span class="sd">        number of events and the number of output lines per event based on the</span>
+<span class="sd">        &#39;events&#39; key in the kwargs dictionary. If any other keys are specified</span>
+<span class="sd">        in the kwargs dictionary, it raises a ValueError.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            A dictionary of optional arguments. The following keys are recognized:</span>
+
+<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</span>
+<span class="sd">            - &#39;filters&#39;: A list of filters to apply to the data.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        IndexError</span>
+<span class="sd">            If the end of the JETSCAPE file is reached before the specified</span>
+<span class="sd">            number of lines is read, or if the number of events in the JETSCAPE</span>
+<span class="sd">            file does not match the number of events specified by the comments</span>
+<span class="sd">            in the file.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the first line of the event is not a comment line or does not</span>
+<span class="sd">            contain &quot;weight&quot;, or if an unknown keyword argument is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        particle_list : list</span>
+<span class="sd">            A list of Particle objects loaded from the JETSCAPE data file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num_read_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_num_read_lines</span><span class="p">()</span>
+        <span class="n">cut_events</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jetscape_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_lines</span><span class="p">(</span><span class="n">jetscape_file</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_read_lines</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">jetscape_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index out of range of JETSCAPE file&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;sigmaGen&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">old_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
+                        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">),</span>
+                                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+                            <span class="k">elif</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
+                                <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="p">:,</span> <span class="mi">0</span>
+                                <span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cut_events</span> <span class="o">=</span> <span class="n">cut_events</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;#&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;First line of the event is not a comment &quot;</span>
+                        <span class="o">+</span> <span class="s1">&#39;line or does not contain &quot;weight&quot;&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;Event&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">line_list</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">first_event_header</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                            <span class="n">first_event_header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                                <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span>
+                                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+                            <span class="p">):</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                    <span class="s2">&quot;Events should be an integer or tuple of two integers&quot;</span>
+                                <span class="p">)</span>
+                            <span class="n">first_event_header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">line_list</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">first_event_header</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">old_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">(</span>
+                                <span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
+                            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
+                                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+                                <span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
+                                        <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">),</span>
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                    <span class="p">)</span>
+                                <span class="p">)</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+                                <span class="k">elif</span> <span class="p">(</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
+                                    <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="p">):</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
+                                        <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="p">:,</span> <span class="mi">0</span>
+                                    <span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">cut_events</span> <span class="o">=</span> <span class="n">cut_events</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">line_list</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="s2">&quot;JETSCAPE&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">line_list</span><span class="p">))</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">-</span> <span class="n">cut_events</span>
+        <span class="c1"># Correct num_output_per_event and num_events</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                    <span class="s2">&quot;Number of events in Jetscape file does not match the &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;number of events specified by the comments in the &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;Jetscape file!&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">event_start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">event_end</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">event_start</span> <span class="p">:</span> <span class="n">event_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">update</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_end</span> <span class="o">-</span> <span class="n">event_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">particle_list</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">particle_list</span> <span class="o">=</span> <span class="p">[[]]</span>
+
+        <span class="k">return</span> <span class="n">particle_list</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.set_num_output_per_event">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.set_num_output_per_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the number of output lines per event in the JETSCAPE data file.</span>
+
+<span class="sd">        This method reads the JETSCAPE data file line by line and determines</span>
+<span class="sd">        the number of output lines for each event. It does this by looking for</span>
+<span class="sd">        lines that contain a &#39;#&#39; and the ``particle_type_defining_string_``.</span>
+<span class="sd">        For each such line, it extracts the event number and the number of</span>
+<span class="sd">        output lines from the line and appends them to a list.</span>
+<span class="sd">        After reading the entire file, it converts the list to a numpy array</span>
+<span class="sd">        and stores it in the ``num_output_per_event_`` attribute. It also sets</span>
+<span class="sd">        the ``num_events_`` attribute to the length of the list.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jetscape_file</span><span class="p">:</span>
+            <span class="n">event_output</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">jetscape_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="ow">in</span> <span class="n">line</span>
+                <span class="p">):</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">num_output</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+                    <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event</span><span class="p">,</span> <span class="n">num_output</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_output</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.get_last_line">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_last_line">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_last_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the last line of a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_path : str</span>
+<span class="sd">            The path to the file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The last line of the file, stripped of leading and trailing whitespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">last_line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">last_line</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.get_sigmaGen">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_sigmaGen">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sigmaGen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the sigmaGen values with error from the last line of a file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the first and second sigmaGen values as floats.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">last_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_last_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">last_line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="n">numbers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.get_particle_type_defining_string">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_particle_type_defining_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_particle_type_defining_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the string which defines the particle type in the Jetscape file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string</span>
+<span class="sd">            The particle type defining string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.get_particle_type">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_particle_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_particle_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the particle type of the Jetscape file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string</span>
+<span class="sd">            The particle type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

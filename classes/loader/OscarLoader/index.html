@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OscarLoader &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="MultiParticlePtCorrelations" href="../../MultiParticlePtCorrelations/index.html" />
+    <link rel="prev" title="JetscapeLoader" href="../JetscapeLoader/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../BulkObservables/index.html">BulkObservables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../CentralityClasses/index.html">CentralityClasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../EventCharacteristics/index.html">EventCharacteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flow/index.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Histogram/index.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jackknife/index.html">Jackknife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../JetAnalysis/index.html">JetAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Jetscape/index.html">Jetscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Loader</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../BaseLoader/index.html">BaseLoader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ParticleObjectLoader/index.html">ParticleObjectLoader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../JetscapeLoader/index.html">JetscapeLoader</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">OscarLoader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#OscarLoader.OscarLoader"><code class="docutils literal notranslate"><span class="pre">OscarLoader</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Oscar/index.html">Oscar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Classes</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Loader</a></li>
+      <li class="breadcrumb-item active">OscarLoader</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/loader/OscarLoader/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="oscarloader">
+<span id="oscar-loader"></span><h1>OscarLoader<a class="headerlink" href="#oscarloader" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">OscarLoader.</span></span><span class="sig-name descname"><span class="pre">OscarLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OSCAR_FILE</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader" title="Link to this definition"></a></dt>
+<dd><p>OscarLoader is a class for loading and processing OSCAR format data files.</p>
+<p>This class extends the BaseLoader and provides functionality to load, filter, and process data from files in the OSCAR format. It supports different versions of the OSCAR format and allows for event-based data loading with optional filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>PATH_OSCAR_</strong><span class="classifier">str</span></dt><dd><p>The path to the OSCAR data file.</p>
+</dd>
+<dt><strong>oscar_format_</strong><span class="classifier">str</span></dt><dd><p>The format of the OSCAR data file.</p>
+</dd>
+<dt><strong>optional_arguments_</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of optional arguments passed to the load method.</p>
+</dd>
+<dt><strong>event_end_lines_</strong><span class="classifier">list</span></dt><dd><p>A list to store the end lines of events in the OSCAR data file.</p>
+</dd>
+<dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>The number of events in the OSCAR data file.</p>
+</dd>
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>An array containing the number of particles per event in the OSCAR data file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>__init__(OSCAR_FILE)</strong></p></td>
+<td><p>Initializes the OscarLoader with the provided OSCAR file path.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>load(**kwargs)</strong></p></td>
+<td><p>Loads the OSCAR data with optional event ranges and filters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>_get_num_skip_lines()</strong></p></td>
+<td><p>Calculates the number of initial lines to skip in the OSCAR file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_num_events()</strong></p></td>
+<td><p>Sets the number of events in the OSCAR data file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_oscar_format()</strong></p></td>
+<td><p>Determines and sets the format of the OSCAR data file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>oscar_format()</strong></p></td>
+<td><p>Returns the OSCAR format of the data file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>impact_parameter()</strong></p></td>
+<td><p>Returns the impact parameter of the events in the OSCAR data file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>event_end_lines()</strong></p></td>
+<td><p>Returns the event end lines in the OSCAR data file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>__get_num_read_lines()</strong></p></td>
+<td><p>Calculates the number of lines to read based on the specified events.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>__apply_kwargs_filters(event, filters_dict)</strong></p></td>
+<td><p>Applies filters to the event data based on the provided filter dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_particle_list(kwargs)</strong></p></td>
+<td><p>Sets the list of particles from the OSCAR data file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_num_output_per_event_and_event_footers()</strong></p></td>
+<td><p>Determines the number of output lines per event and the event footers in the OSCAR data file.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.event_end_lines">
+<span class="sig-name descname"><span class="pre">event_end_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.event_end_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.event_end_lines" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of event end lines.</p>
+<p>This method returns the list of strings that mark the end of events
+in the OSCAR data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[str]</dt><dd><p>A list of strings that mark the end of events in the OSCAR data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.impact_parameter">
+<span class="sig-name descname"><span class="pre">impact_parameter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.impact_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.impact_parameter" title="Link to this definition"></a></dt>
+<dd><p>Returns the impact parameter of the events.</p>
+<p>This method extracts the impact parameter of the collision from the
+last line of each event in the OSCAR data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[float]</dt><dd><p>The impact parameter of the collisions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.load" title="Link to this definition"></a></dt>
+<dd><p>Loads the OSCAR data from the specified file.</p>
+<p>This method accepts optional arguments that specify which events to load and any filters to apply. The ‘events’ argument can be either a tuple specifying a range of events or an integer specifying a single event. If the ‘events’ argument is provided and is not a tuple or an integer, or if any of the event numbers are negative, a ValueError is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>A dictionary of optional arguments. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the following elements:</p>
+<ul class="simple">
+<li><p>A list of particles loaded from the OSCAR data.</p></li>
+<li><p>The number of events in the OSCAR data.</p></li>
+<li><p>The number of particles in each event in the OSCAR data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If an unrecognized keyword argument is used in the constructor, or if the ‘events’ argument is not a tuple or an integer, or if any of the event numbers are negative.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.oscar_format">
+<span class="sig-name descname"><span class="pre">oscar_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.oscar_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.oscar_format" title="Link to this definition"></a></dt>
+<dd><p>Returns the OSCAR format string.</p>
+<p>This method returns the OSCAR format string that specifies the format
+of the OSCAR data being loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Optional[str]</dt><dd><p>The OSCAR format string, or None if the format is not set.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.set_num_events">
+<span class="sig-name descname"><span class="pre">set_num_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.set_num_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.set_num_events" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of events in the OSCAR data file.</p>
+<p>This method reads the file in binary mode to search for the last line. This approach avoids the need to loop through the entire file, which can be time-consuming for large files. It then checks if the last line starts with a ‘#’ and contains the word ‘event’. If it does, it sets the number of events to the integer value in the third position of the last line. If the last line does not meet these conditions, it raises a TypeError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>None</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the last line of the file does not start with a ‘#’ and contain the word ‘event’.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.set_num_output_per_event_and_event_footers">
+<span class="sig-name descname"><span class="pre">set_num_output_per_event_and_event_footers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.set_num_output_per_event_and_event_footers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.set_num_output_per_event_and_event_footers" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of output lines per event and the event footers in the
+OSCAR data file.</p>
+<p>This method reads the OSCAR data file line by line and determines the
+number of output lines for each event and the event footers. The method
+behaves differently depending on the OSCAR format of the data file.
+If the format is ‘Oscar2013Extended_IC’ or ‘Oscar2013Extended_Photons’,
+it counts the number of lines between ‘in’ and ‘end’ lines. Otherwise,
+it counts the number of lines between ‘out’ and ‘end’ lines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>None</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.set_oscar_format">
+<span class="sig-name descname"><span class="pre">set_oscar_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.set_oscar_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.set_oscar_format" title="Link to this definition"></a></dt>
+<dd><p>Sets the number of events in the OSCAR data file.</p>
+<p>This method reads the file in binary mode to search for the last line. This approach avoids the need to loop through the entire file, which can be time-consuming for large files. It then checks if the last line starts with a ‘#’ and contains the word ‘event’. If it does, it sets the number of events to the integer value in the third position of the last line. If the last line does not meet these conditions, it raises a TypeError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>None</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the last line of the file does not start with a ‘#’ and contain the word ‘event’.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="OscarLoader.OscarLoader.set_particle_list">
+<span class="sig-name descname"><span class="pre">set_particle_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Particle</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/OscarLoader.html#OscarLoader.set_particle_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#OscarLoader.OscarLoader.set_particle_list" title="Link to this definition"></a></dt>
+<dd><p>Sets the list of particles from the OSCAR data file.</p>
+<p>This method reads the OSCAR data file line by line and creates a list
+of Particle objects. It also applies any filters specified in the
+‘filters’ key of the kwargs dictionary. If the ‘events’ key is
+specified in the kwargs dictionary, it adjusts the number of events and
+the number of output lines per event accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of optional arguments. The following keys are recognized:</p>
+<ul class="simple">
+<li><p>‘events’: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</p></li>
+<li><p>‘filters’: A list of filters to apply to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>particle_list</strong><span class="classifier">list</span></dt><dd><p>A list of Particle objects loaded from the OSCAR data file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>IndexError</dt><dd><p>If the number of events in the OSCAR file does not match the number
+of events specified by the comments in the OSCAR file, or if the
+index is out of range of the OSCAR file.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the first line of the event is not a comment line or does not
+contain “out”, or if a comment line is unexpectedly found.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../JetscapeLoader/index.html" class="btn btn-neutral float-left" title="JetscapeLoader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../MultiParticlePtCorrelations/index.html" class="btn btn-neutral float-right" title="MultiParticlePtCorrelations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PCAFlow &mdash; sparkx 1.3.0 documentation</title>
+  <title>PCAFlow &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes/index.html">Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
@@ -85,9 +86,11 @@
 <span class="c1"># ===================================================</span>
 
 <span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
+<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
@@ -178,75 +181,83 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    TypeError</span>
-<span class="sd">        If n, alpha, or number_subcalc is not an integer.</span>
+<span class="sd">        If :code:`n`, :code:`alpha`, or :code:`number_subcalc` is not an integer.</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If n is not a positive integer, alpha is less than 1,</span>
-<span class="sd">        or number_subcalc is less than 2.</span>
+<span class="sd">        If :code:`n` is not a positive integer, alpha is less than 1,</span>
+<span class="sd">        or :code:`number_subcalc` is less than 2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">number_subcalc</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">number_subcalc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># flow harmonic to compute</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;n has to be int&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;n has to be int&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;n-th harmonic with value n&lt;=0 can not be computed&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;n-th harmonic with value n&lt;=0 can not be computed&quot;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">=</span> <span class="n">n</span>
 
         <span class="c1"># order in sub-leading flow up to which the flow is computed</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;alpha has to be int&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;alpha has to be int&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;alpha has to be &gt;= 1&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;alpha has to be &gt;= 1&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span> <span class="o">=</span> <span class="n">alpha</span>
 
         <span class="c1"># number of sub-calculations to estimate the error of the flow</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number_subcalc</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;number_subcalc has to be int&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;number_subcalc has to be int&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">number_subcalc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;number_subcalc has to be &gt;= 2&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number_subcalc has to be &gt;= 2&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">=</span> <span class="n">number_subcalc</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">Pearson_r_</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Pearson_r_uncertainty_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pearson_r_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pearson_r_uncertainty_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Integrated flow is not supported for PCAFlow&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__compute_normalization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_normalization</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">bin_widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
         <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">bin_widths</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span><span class="o">**</span><span class="mf">2.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">bin_widths</span><span class="p">[</span><span class="nb">bin</span><span class="p">])</span> <span class="o">**</span> <span class="mf">2.0</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__update_event</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">event_data</span><span class="p">,</span>
-            <span class="n">bins</span><span class="p">,</span>
-            <span class="n">flow_as_function_of</span><span class="p">,</span>
-            <span class="n">event_number</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span>
+        <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">flow_as_function_of</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">event_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the anisotropic flow calculations based on particle data from</span>
 <span class="sd">        a single event.</span>
@@ -258,7 +269,7 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated (&quot;pt&quot;, &quot;rapidity&quot;</span>
+<span class="sd">            Variable on which the flow is calculated (&quot;pT&quot;, &quot;rapidity&quot;</span>
 <span class="sd">            or &quot;pseudorapidity&quot;).</span>
 <span class="sd">        event_number : int</span>
 <span class="sd">            Index of the current event.</span>
@@ -267,6 +278,47 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;normalization_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_multiplicity_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;sigma_multiplicity_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_events_subcalc_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;QnRe_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;QnIm_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaQnReSub_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaQnImSub_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;VnDelta_total_&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaVnDelta&#39; is None. It must be initialized before calling the &#39;__update_event&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">number_bins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">bin_multiplicity_event</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">number_bins</span><span class="p">)</span>
         <span class="n">QnRe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">number_bins</span><span class="p">)</span>
@@ -275,7 +327,8 @@
         <span class="n">SigmaQnImSubTot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">))</span>
         <span class="n">VnDelta_event</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">))</span>
         <span class="n">SigmaVnDelta_event</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">))</span>
+            <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">event_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">number_bins</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
@@ -284,27 +337,34 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">number_bins</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">number_bins</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">))</span>
+                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">))</span>
+                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">))</span>
+                <span class="p">(</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># update the sub-calculation counter if needed</span>
-        <span class="n">number_events_subcalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">event_number</span> <span class="o">%</span> <span class="n">number_events_subcalc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">event_number</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">number_events_subcalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">event_number</span> <span class="o">%</span> <span class="n">number_events_subcalc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">event_number</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="n">random_reaction_plane</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">random_reaction_plane</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="c1"># loop over all event particles and compute the flow vectors in the bins</span>
         <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event_data</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pt&quot;</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pt_abs</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pT&quot;</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pT_abs</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">momentum_rapidity_Y</span><span class="p">()</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">rapidity</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">flow_as_function_of</span> <span class="o">==</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pseudorapidity</span><span class="p">()</span>
 
@@ -316,33 +376,44 @@
 
             <span class="n">phi</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">phi</span><span class="p">()</span> <span class="o">+</span> <span class="n">random_reaction_plane</span>
 
-            <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.</span>
+            <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
             <span class="n">QnRe</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
             <span class="n">QnIm</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
 
             <span class="n">SigmaQnReSubTot</span><span class="p">[</span><span class="n">bin_index</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span>
+            <span class="p">)</span>
             <span class="n">SigmaQnImSubTot</span><span class="p">[</span><span class="n">bin_index</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_</span> <span class="o">*</span> <span class="n">phi</span>
+            <span class="p">)</span>
 
         <span class="c1"># compute the covariance matrix</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>  <span class="c1"># correct with multiplicity term</span>
-                    <span class="n">VnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span>
-                                            <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">a</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                    <span class="n">VnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                        <span class="o">-</span> <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
                     <span class="n">SigmaVnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">a</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                        <span class="o">-</span> <span class="n">bin_multiplicity_event</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">VnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span>
-                                            <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                    <span class="n">VnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
                     <span class="n">SigmaVnDelta_event</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                        <span class="n">QnRe</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnRe</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="n">QnIm</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
 
         <span class="c1"># update the class members</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span> <span class="o">+=</span> <span class="n">bin_multiplicity_event</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="n">bin_multiplicity_event</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span>
+        <span class="p">]</span> <span class="o">+=</span> <span class="n">bin_multiplicity_event</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">subcalc_counter_</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span> <span class="o">+=</span> <span class="n">QnRe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span> <span class="o">+=</span> <span class="n">QnIm</span>
@@ -351,7 +422,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="o">+=</span> <span class="n">VnDelta_event</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="o">+=</span> <span class="n">SigmaVnDelta_event</span>
 
-    <span class="k">def</span> <span class="nf">__compute_flow_PCA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_flow_PCA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform Principal Component Analysis (PCA) to compute the anisotropic</span>
 <span class="sd">        flow.</span>
@@ -365,23 +436,75 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;VnDelta_total_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;QnRe_total_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;QnIm_total_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaVnDelta_total_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_events_subcalc_&#39; is None. It must be initialize before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaQnReSub_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaQnImSub_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;number_events_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;bin_multiplicity_total_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;normalization_&#39; is None. It must be initialized before calling the &#39;__compute_flow_PCA&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">number_bins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span><span class="p">[</span>
-                                              <span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span><span class="p">[</span><span class="n">b</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span><span class="o">**</span><span class="mf">2.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnRe_total_</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">QnIm_total_</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span><span class="o">**</span><span class="mf">2.0</span>
 
                 <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span>
-                        <span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span><span class="p">[</span>
-                                                            <span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span>
+                        <span class="n">sub</span>
+                    <span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnReSub_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaQnImSub_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                    <span class="p">)</span>
 
         <span class="c1"># perform sub calculations for error estimation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">))</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
             <span class="n">VnDelta_local</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
@@ -399,11 +522,16 @@
                 <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">):</span>
                     <span class="nb">eval</span> <span class="o">=</span> <span class="n">sorted_eigenvalues</span><span class="p">[</span><span class="n">alpha</span><span class="p">]</span>
                     <span class="n">evec</span> <span class="o">=</span> <span class="n">sorted_eigenvectors</span><span class="p">[</span><span class="n">alpha</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="nb">eval</span> <span class="o">&gt;=</span> <span class="mf">0.</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">eval</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+                    <span class="p">):</span>
                         <span class="c1"># compute the flow here for the subcalc</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                            <span class="nb">eval</span><span class="p">)</span> <span class="o">*</span> <span class="n">evec</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">eval</span><span class="p">)</span>
+                            <span class="o">*</span> <span class="n">evec</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span>
+                            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_subcalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span>
+                            <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_multiplicity_total_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">]</span>
+                        <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -425,13 +553,19 @@
             <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">):</span>
                 <span class="nb">eval</span> <span class="o">=</span> <span class="n">sorted_eigenvalues</span><span class="p">[</span><span class="n">alpha</span><span class="p">]</span>
                 <span class="n">evec</span> <span class="o">=</span> <span class="n">sorted_eigenvectors</span><span class="p">[</span><span class="n">alpha</span><span class="p">]</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nb">eval</span> <span class="o">&gt;=</span> <span class="mf">0.</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                        <span class="nb">eval</span><span class="p">)</span> <span class="o">*</span> <span class="n">evec</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">eval</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">eval</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">evec</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span>
+                        <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_multiplicity_total_</span><span class="p">[</span><span class="nb">bin</span><span class="p">]</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__compute_uncertainty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_uncertainty</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the uncertainty of the anisotropic flow for each bin and</span>
 <span class="sd">        order alpha.</span>
@@ -445,6 +579,15 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;FlowSubCalc_&#39; is None. It must be initialized before calling the &#39;__compute_uncertainty&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;Flow_&#39; is None. It must be initialized before calling the &#39;__compute_uncertainty&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="n">number_bins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">))</span>
 
@@ -452,14 +595,17 @@
         <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
             <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span>
-                                                          <span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">])</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">FlowSubCalc_</span><span class="p">[</span><span class="n">sub</span><span class="p">][</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># take the sqrt to obtain the standard deviation</span>
         <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span>
+                <span class="p">)</span>
 
         <span class="c1"># Conservative ansatz: If the error cannot be computed</span>
         <span class="c1"># (e.g., negative eigenvalue), set the flow magnitude to NaN</span>
@@ -468,7 +614,9 @@
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FlowUncertainty_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">Flow_</span><span class="p">[</span><span class="nb">bin</span><span class="p">][</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
-    <span class="k">def</span> <span class="nf">__compute_factorization_breaking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__compute_factorization_breaking</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the factorization breaking using the Pearson correlation</span>
 <span class="sd">        coefficient Eq. (12), Ref. [1].</span>
@@ -482,13 +630,23 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;VnDelta_total_&#39; is None. It must be initialized before calling the &#39;__compute_factorization_breaking&#39; function.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;SigmaVnDelta_total_&#39; is None. It must be initialized before calling the &#39;__compute_factorization_breaking&#39; function.&quot;</span>
+            <span class="p">)</span>
+
         <span class="c1"># compute the Pearson coefficient Eq. (12), Ref. [1]</span>
         <span class="n">number_bins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
-                <span class="n">r</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">/</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">b</span><span class="p">])</span>
+                <span class="n">r</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">VnDelta_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">b</span><span class="p">]</span>
+                <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Pearson_r_</span> <span class="o">=</span> <span class="n">r</span>
 
@@ -497,16 +655,21 @@
         <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
-                    <span class="n">r_sub</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">])</span>
+                    <span class="n">r_sub</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span>
+                        <span class="n">sub</span>
+                    <span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">a</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SigmaVnDelta_total_</span><span class="p">[</span><span class="n">b</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span>
+                    <span class="p">)</span>
 
         <span class="n">r_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_bins</span><span class="p">,</span> <span class="n">number_bins</span><span class="p">))</span>
         <span class="c1"># sum the squared deviation from the mean</span>
         <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
-                    <span class="n">r_err</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">r_sub</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span>
-                                    <span class="p">)</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">r_err</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">r_sub</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">][</span><span class="n">sub</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">])</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">number_subcalc_</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="p">)</span>
 
         <span class="c1"># take the sqrt to obtain the standard deviation</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_bins</span><span class="p">):</span>
@@ -517,7 +680,12 @@
 
 <div class="viewcode-block" id="PCAFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/PCAFlow/index.html#PCAFlow.PCAFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">flow_as_function_of</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
+        <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">flow_as_function_of</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the differential flow.</span>
 
@@ -528,7 +696,7 @@
 <span class="sd">        bins : list or np.ndarray</span>
 <span class="sd">            Bins used for the differential flow calculation.</span>
 <span class="sd">        flow_as_function_of : str</span>
-<span class="sd">            Variable on which the flow is calculated (&quot;pt&quot;, &quot;rapidity&quot;</span>
+<span class="sd">            Variable on which the flow is calculated (&quot;pT&quot;, &quot;rapidity&quot;</span>
 <span class="sd">            or &quot;pseudorapidity&quot;).</span>
 
 <span class="sd">        Returns</span>
@@ -542,26 +710,25 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        - The flow or the uncertainty can be accessed by: `function_return[bin][alpha]`</span>
-<span class="sd">        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to `np.nan`.</span>
+<span class="sd">        - The flow or the uncertainty can be accessed by: :code:`function_return[bin][alpha]`</span>
+<span class="sd">        - If a bin has no events or the uncertainty could not be computed, the corresponding element in the result list is set to :code:`np.nan`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bins has to be list or np.ndarray&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bins has to be list or np.ndarray&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flow_as_function_of</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;flow_as_function_of is not a string&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;flow_as_function_of is not a string&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">flow_as_function_of</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;rapidity&quot;</span><span class="p">,</span> <span class="s2">&quot;pseudorapidity&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;flow_as_function_of must be either &#39;pt&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;flow_as_function_of must be either &#39;pT&#39;, &#39;rapidity&#39;, &#39;pseudorapidity&#39;&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__compute_normalization</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_data</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_events_</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__update_event</span><span class="p">(</span>
-                <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">],</span>
-                <span class="n">bins</span><span class="p">,</span>
-                <span class="n">flow_as_function_of</span><span class="p">,</span>
-                <span class="n">event</span><span class="p">)</span>
+                <span class="n">particle_data</span><span class="p">[</span><span class="n">event</span><span class="p">],</span> <span class="n">bins</span><span class="p">,</span> <span class="n">flow_as_function_of</span><span class="p">,</span> <span class="n">event</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__compute_flow_PCA</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__compute_uncertainty</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
@@ -572,7 +739,7 @@
 
 <div class="viewcode-block" id="PCAFlow.Pearson_correlation">
 <a class="viewcode-back" href="../classes/flow/PCAFlow/index.html#PCAFlow.PCAFlow.Pearson_correlation">[docs]</a>
-    <span class="k">def</span> <span class="nf">Pearson_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Pearson_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve the Pearson correlation coefficient and its uncertainty</span>
 <span class="sd">        (Eq. (12), Ref. [1]).</span>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; sparkx 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=51b770b3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Classes" href="classes/index.html" />
+    <link rel="prev" title="Install" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sparkx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-components-of-sparkx">Key Components of SPARKX</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-loading-and-filtering">Data Loading and Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#event-analysis">Event Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flow-calculations">Flow Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-tools">Additional Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage-example">Basic Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classes/index.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sparkx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart">
+<span id="id1"></span><h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
+<p>This guide will get you started with SPARKX quickly.
+SPARKX is designed to help users of <a class="reference external" href="https://smash-transport.github.io/">SMASH</a>
+and <a class="reference external" href="https://jetscape.org/">JETSCAPE/X-SCAPE</a> codes analyze output simulation data with ease.</p>
+<section id="key-components-of-sparkx">
+<h2>Key Components of SPARKX<a class="headerlink" href="#key-components-of-sparkx" title="Link to this heading"></a></h2>
+<p>The following classes will be useful for loading, filtering, and analyzing your SMASH or JETSCAPE/X-SCAPE data:</p>
+<section id="data-loading-and-filtering">
+<h3>Data Loading and Filtering<a class="headerlink" href="#data-loading-and-filtering" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="classes/Jetscape/index.html">Jetscape</a>: Reads hadron or parton output from JETSCAPE/X-SCAPE and allows particle filtering.</p></li>
+<li><p><a class="reference external" href="classes/Oscar/index.html">Oscar</a>: Reads various Oscar data formats and provides particle filtering methods.</p></li>
+</ul>
+</section>
+<section id="event-analysis">
+<h3>Event Analysis<a class="headerlink" href="#event-analysis" title="Link to this heading"></a></h3>
+<p>For more advanced analysis with individual particle objects,
+SPARKX offers a range of classes for calculating centrality, flow, and more:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="classes/BulkObservables/index.html">BulkObservables</a>: Calculates bulk observables like <span class="math notranslate nohighlight">\(\frac{dN}{dy}\)</span> and midrapdity yields.</p></li>
+<li><p><a class="reference external" href="classes/CentralityClasses/index.html">CentralityClasses</a>: Calculates centrality classes for a given set of events.</p></li>
+<li><p><a class="reference external" href="classes/EventCharacteristics/index.html">EventCharacteristics</a>: Calculates event characteristics like eccentricities and energy densities, which can be used as input for hydrodynamical simulations.</p></li>
+<li><p><a class="reference external" href="classes/JetAnalysis/index.html">JetAnalysis</a>: Finds jets in the events using <a class="reference external" href="https://github.com/scikit-hep/fastjet">FastJet</a>.</p></li>
+<li><p><a class="reference external" href="classes/MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a>: Calculates multi-particle transverse momentum correlations.</p></li>
+</ul>
+</section>
+<section id="flow-calculations">
+<h3>Flow Calculations<a class="headerlink" href="#flow-calculations" title="Link to this heading"></a></h3>
+<p>SPARKX provides several classes for calculating anisotropic flow:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="classes/flow/EventPlaneFlow/index.html">EventPlaneFlow</a>: Calculates event plane flow.</p></li>
+<li><p><a class="reference external" href="classes/flow/LeeYangZeroFlow/index.html">LeeYangZeroFlow</a>: Calculates the Lee-Yang zero flow.</p></li>
+<li><p><a class="reference external" href="classes/flow/PCAFlow/index.html">PCAFlow</a>: Calculates flow using principal component analysis.</p></li>
+<li><p><a class="reference external" href="classes/flow/QCumulantFlow/index.html">QCumulantFlow</a>: Calculates flow using Q-cumulants.</p></li>
+<li><p><a class="reference external" href="classes/flow/ReactionPlaneFlow/index.html">ReactionPlaneFlow</a>: Calculates flow using the reaction plane method.</p></li>
+<li><p><a class="reference external" href="classes/flow/ScalarProductFlow/index.html">ScalarProductFlow</a>: Calculates flow using the scalar product method.</p></li>
+</ul>
+</section>
+<section id="additional-tools">
+<h3>Additional Tools<a class="headerlink" href="#additional-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="classes/Histogram/index.html">Histogram</a>: Creates histograms.</p></li>
+<li><p><a class="reference external" href="classes/Jackknife/index.html">Jackknife</a>: Calculates delete-d jackknife errors.</p></li>
+<li><p><a class="reference external" href="classes/Lattice3D/index.html">Lattice3D</a>: Handles 3D lattices.</p></li>
+<li><p><a class="reference external" href="classes/Particle/index.html">Particle</a>: Handles individual particle (hadron or parton) objects.</p></li>
+</ul>
+<p>For detailed information on these classes and their methods, see the <a class="reference external" href="classes/index.html">classes documentation</a>.</p>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>For information on how to install the package, please refer to the <a class="reference external" href="install.html">installation documentation</a>.</p>
+</section>
+<section id="basic-usage-example">
+<h2>Basic Usage Example<a class="headerlink" href="#basic-usage-example" title="Link to this heading"></a></h2>
+<p>Once installed, here’s a simple example to load data and perform some basic filtering and analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sparkx</span> <span class="kn">import</span> <span class="n">Oscar</span>
+<span class="kn">from</span> <span class="nn">sparkx</span> <span class="kn">import</span> <span class="n">Histogram</span>
+
+<span class="c1"># Load data using the Oscar class and apply some filters, return Particle objects</span>
+<span class="n">all_filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;charged_particles&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;pT_cut&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="s1">&#39;pseudorapidity_cut&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="s2">&quot;./particle_lists.oscar&quot;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">all_filters</span><span class="p">)</span><span class="o">.</span><span class="n">particle_objects_list</span><span class="p">()</span>
+
+<span class="c1"># data contains now the lists of Particle objects for each event that passed the filters</span>
+<span class="c1"># assume that we want to create a charged hadron transverse momentum histogram</span>
+<span class="c1"># extract the transverse momentum of each particle for all events</span>
+<span class="n">pT</span> <span class="o">=</span> <span class="p">[</span><span class="n">particle</span><span class="o">.</span><span class="n">pT_abs</span><span class="p">()</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">]</span>
+
+<span class="c1"># create a histogram of the transverse momentum with 10 bins between 0.15 and 3.5 GeV</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="o">=</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">hist</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">pT</span><span class="p">)</span> <span class="c1"># add the data to the histogram</span>
+<span class="n">hist</span><span class="o">.</span><span class="n">statistical_error</span><span class="p">()</span> <span class="c1"># calculate the statistical errors assuming Poisson statistics</span>
+<span class="n">hist</span><span class="o">.</span><span class="n">scale_histogram</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="c1"># normalize the histogram to the number of events</span>
+
+<span class="c1"># define the names of the columns in the output file</span>
+<span class="n">column_labels</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;bin_center&#39;</span><span class="p">:</span> <span class="s1">&#39;pT [GeV]&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;bin_low&#39;</span><span class="p">:</span> <span class="s1">&#39;pT_low [GeV]&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;bin_high&#39;</span><span class="p">:</span> <span class="s1">&#39;pT_high [GeV]&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;distribution&#39;</span><span class="p">:</span> <span class="s1">&#39;dN/dpT [1/GeV]&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;stat_err+&#39;</span><span class="p">:</span> <span class="s1">&#39;stat_err+&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;stat_err-&#39;</span><span class="p">:</span> <span class="s1">&#39;stat_err-&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;sys_err+&#39;</span><span class="p">:</span> <span class="s1">&#39;sys_err+&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;sys_err-&#39;</span><span class="p">:</span> <span class="s1">&#39;sys_err-&#39;</span><span class="p">}]</span>
+<span class="c1"># write the histogram to a file</span>
+<span class="n">hist</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">(</span><span class="s1">&#39;pT_histogram.dat&#39;</span><span class="p">,</span> <span class="n">hist_labels</span><span class="o">=</span><span class="n">column_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can find more examples in the documentation for the individual classes.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>If you encounter issues:</p>
+<ul class="simple">
+<li><p>Ensure all dependencies are installed with the correct versions.</p></li>
+<li><p>Check the <a class="reference external" href="https://github.com/smash-transport/sparkx/issues">GitHub repository</a> to report bugs or view open issues.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Install" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classes/index.html" class="btn btn-neutral float-right" title="Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

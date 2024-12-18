@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Classes &mdash; sparkx 1.3.0 documentation</title>
+  <title>Classes &mdash; sparkx 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -16,14 +16,14 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CentralityClasses" href="CentralityClasses/index.html" />
-    <link rel="prev" title="Install" href="../install.html" /> 
+    <link rel="next" title="BaseStorer" href="BaseStorer/index.html" />
+    <link rel="prev" title="Quickstart" href="../quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,7 +47,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="BaseStorer/index.html">BaseStorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BulkObservables/index.html">BulkObservables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CentralityClasses/index.html">CentralityClasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="EventCharacteristics/index.html">EventCharacteristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flow/index.html">Flow</a></li>
@@ -56,9 +59,11 @@
 <li class="toctree-l2"><a class="reference internal" href="JetAnalysis/index.html">JetAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Jetscape/index.html">Jetscape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Lattice3D/index.html">Lattice3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loader/index.html">Loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Oscar/index.html">Oscar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Particle/index.html">Particle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ParticleObjectStorer/index.html">ParticleObjectStorer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
@@ -94,6 +99,14 @@
 <span id="id1"></span><h1>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="BaseStorer/index.html">BaseStorer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="BaseStorer/index.html#BaseStorer.BaseStorer"><code class="docutils literal notranslate"><span class="pre">BaseStorer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="BulkObservables/index.html">BulkObservables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="BulkObservables/index.html#BulkObservables.BulkObservables"><code class="docutils literal notranslate"><span class="pre">BulkObservables</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="CentralityClasses/index.html">CentralityClasses</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CentralityClasses/index.html#CentralityClasses.CentralityClasses"><code class="docutils literal notranslate"><span class="pre">CentralityClasses</span></code></a></li>
 </ul>
@@ -132,6 +145,13 @@
 <li class="toctree-l2"><a class="reference internal" href="Lattice3D/index.html#Lattice3D.Lattice3D"><code class="docutils literal notranslate"><span class="pre">Lattice3D</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="loader/index.html">Loader</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="loader/BaseLoader/index.html">BaseLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loader/ParticleObjectLoader/index.html">ParticleObjectLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loader/JetscapeLoader/index.html">JetscapeLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loader/OscarLoader/index.html">OscarLoader</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="MultiParticlePtCorrelations/index.html">MultiParticlePtCorrelations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations"><code class="docutils literal notranslate"><span class="pre">MultiParticlePtCorrelations</span></code></a></li>
 </ul>
@@ -144,6 +164,10 @@
 <li class="toctree-l2"><a class="reference internal" href="Particle/index.html#Particle.Particle"><code class="docutils literal notranslate"><span class="pre">Particle</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ParticleObjectStorer/index.html">ParticleObjectStorer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ParticleObjectStorer/index.html#ParticleObjectStorer.ParticleObjectStorer"><code class="docutils literal notranslate"><span class="pre">ParticleObjectStorer</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -152,8 +176,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../install.html" class="btn btn-neutral float-left" title="Install" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="CentralityClasses/index.html" class="btn btn-neutral float-right" title="CentralityClasses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="BaseStorer/index.html" class="btn btn-neutral float-right" title="BaseStorer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
