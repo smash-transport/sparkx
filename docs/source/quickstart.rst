@@ -24,9 +24,11 @@ Event Analysis
 For more advanced analysis with individual particle objects, 
 SPARKX offers a range of classes for calculating centrality, flow, and more:
 
-* `BulkObservables <classes/BulkObservables/index.html>`_: Calculates bulk observables like :math:`\\frac{dN}{dy}` and midrapdity yields.
+* `BulkObservables <classes/BulkObservables/index.html>`_: Calculates bulk observables like :math:`\frac{dN}{dy}` and midrapdity yields.
 * `CentralityClasses <classes/CentralityClasses/index.html>`_: Calculates centrality classes for a given set of events.
 * `EventCharacteristics <classes/EventCharacteristics/index.html>`_: Calculates event characteristics like eccentricities and energy densities, which can be used as input for hydrodynamical simulations.
+* `JetAnalysis <classes/JetAnalysis/index.html>`_: Finds jets in the events using `FastJet <https://github.com/scikit-hep/fastjet>`_.
+* `MultiParticlePtCorrelations <classes/MultiParticlePtCorrelations/index.html>`_: Calculates multi-particle transverse momentum correlations.
 
 Flow Calculations
 ~~~~~~~~~~~~~~~~~
@@ -45,9 +47,7 @@ Additional Tools
 
 * `Histogram <classes/Histogram/index.html>`_: Creates histograms.
 * `Jackknife <classes/Jackknife/index.html>`_: Calculates delete-d jackknife errors.
-* `JetAnalysis <classes/JetAnalysis/index.html>`_: Finds jets in the events.
 * `Lattice3D <classes/Lattice3D/index.html>`_: Handles 3D lattices.
-* `MultiParticlePtCorrelations <classes/MultiParticlePtCorrelations/index.html>`_: Calculates multi-particle transverse momentum correlations.
 * `Particle <classes/Particle/index.html>`_: Handles individual particle (hadron or parton) objects.
 
 For detailed information on these classes and their methods, see the `classes documentation <classes/index.html>`_.

@@ -381,8 +381,10 @@ class BulkObservables:
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
         """
-        Calculate the event-averaged mean transverse momentum pT at mid-rapidity.
-        It is assumed that detector cuts have been performed on the particle list.
+        Calculate the event-averaged mean transverse momentum :math:`p_T` at
+        mid-rapidity.
+        It is assumed that detector cuts have been performed on the particle
+        list.
 
         Parameters
         ----------
@@ -435,7 +437,8 @@ class BulkObservables:
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
         """
-        Calculate the event-averaged mean transverse mass mT at mid-rapidity.
+        Calculate the event-averaged mean transverse mass :math:`m_T` at
+        mid-rapidity.
 
         Parameters
         ----------
