@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../../src/sparkx/loader'))
 
 project = 'sparkx'
 copyright = '2024, SPARKX Collaboration'
-author = 'Niklas Götz, Renata Krupczak, Hendrik Roch, Nils Sass'
+author = 'Nils Sass, Hendrik Roch, Niklas Götz, Renata Krupczak, Lucas Constantin'
 release = '2.0.0'
 
 # -- General configuration ---------------------------------------------------
