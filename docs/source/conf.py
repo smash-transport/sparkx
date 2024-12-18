@@ -13,14 +13,15 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src/sparkx'))
 sys.path.insert(0, os.path.abspath('../../src/sparkx/flow'))
+sys.path.insert(0, os.path.abspath('../../src/sparkx/loader'))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'sparkx'
 copyright = '2024, SPARKX Collaboration'
-author = 'Hendrik Roch, Nils Sass, Niklas Götz'
-release = '1.3.0'
+author = 'Nils Sass, Hendrik Roch, Niklas Götz, Renata Krupczak, Lucas Constantin'
+release = '2.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -1,4 +1,4 @@
-name: Code Formatting Check
+name: Code Formatting Check and Fix
 
 on:
   pull_request:
@@ -11,19 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - name: Checkout PR branch
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0  # Ensures full history is available
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install autopep8
+        pip install black==24.8.0
 
-    - name: Check code formatting
+    - name: Run black to check formatting
+      id: black-check
       run: |
-        autopep8 --diff --recursive --max-line-length 80 --aggressive --ignore-local-config src/sparkx tests/
+        black --check --line-length 80 src/sparkx tests/
+      continue-on-error: true
+
+    - name: Capture formatting status
+      if: ${{ steps.black-check.outcome == 'failure' }}
+      run: echo "needs_formatting=true" >> $GITHUB_ENV
+
+    - name: Format code with black
+      if: env.needs_formatting == 'true'
+      run: black --line-length 80 src/sparkx tests/
+
+    - name: Push formatted changes
+      if: env.needs_formatting == 'true'
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add src/sparkx tests/
+        git commit -m "Auto-format code with black"
+        git push origin ${{ github.head_ref }}
