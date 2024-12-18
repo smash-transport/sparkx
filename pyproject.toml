@@ -6,12 +6,11 @@ build-backend = "setuptools.build_meta"
 name = "sparkx"
 version = "2.0.0"
 authors = [
-    { name="Lucas Constantin", email="constantin@itp.uni-frankfurt.de"},
+    { name="Nils Sass", email="nsass@itp.uni-frankfurt.de" },
+    { name="Hendrik Roch", email="hroch@wayne.edu" },
     { name="Niklas Götz", email="goetz@itp.uni-frankfurt.de"},
     { name="Renata Krupczak", email="rkrupczak@physik.uni-bielefeld.de"},
-    { name="Hendrik Roch", email="hroch@wayne.edu" },
-    { name="Carl Rosenkvist", email="rosenkvist@itp.uni-frankfurt.de"},
-    { name="Nils Sass", email="nsass@itp.uni-frankfurt.de" }
+    { name="Lucas Constantin", email="constantin@itp.uni-frankfurt.de"}
 ]
 description = "Software Package for Analyzing Relativistic Kinematics in Collision eXperiments"
 readme = "README.md"
