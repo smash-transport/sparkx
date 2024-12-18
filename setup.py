@@ -15,7 +15,7 @@ setup(
     description='Software Package for Analyzing Relativistic Kinematics in Collision eXperiments',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author='Nils Sass,  Hendrik Roch, Niklas Götz,  Renata Krupczak, Lucas Constantin',
+    author='Nils Sass, Hendrik Roch, Niklas Götz, Renata Krupczak, Lucas Constantin',
     author_email="nsass@itp.uni-frankfurt.de, hroch@wayne.edu, goetz@itp.uni-frankfurt.de, rkrupczak@physik.uni-bielefeld.de, constantin@itp.uni-frankfurt.de",
     url="https://smash-transport.github.io/sparkx/",
     download_url="https://github.com/smash-transport/sparkx",
