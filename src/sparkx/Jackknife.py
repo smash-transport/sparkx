@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2024
+#    Copyright (c) 2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -386,7 +386,7 @@ class Jackknife:
         # variance of the jackknife samples
         variance_samples = 0.0
         for i in range(len(jackknife_samples)):
-            variance_samples = (jackknife_samples[i] - mean_samples) ** 2.0
+            variance_samples += (jackknife_samples[i] - mean_samples) ** 2.0
 
         if delete_n_points == 1:
             variance_samples *= (len(jackknife_samples) - 1) / len(
