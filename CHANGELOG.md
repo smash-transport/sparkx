@@ -18,6 +18,14 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v.2.0.1
+Date: 2025-02-26
+
+### Fixed
+* Jackknife: Fix bug in the calculation of the jackknife error
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.0...v2.0.1)
+
 ## v.2.0.0
 Date: 2024-12-18
 
