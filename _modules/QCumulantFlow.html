@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QCumulantFlow &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>QCumulantFlow &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,18 +85,18 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
-<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowInterface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="QCumulantFlow">
 <a class="viewcode-back" href="../classes/flow/QCumulantFlow/index.html#QCumulantFlow.QCumulantFlow">[docs]</a>
-<span class="k">class</span> <span class="nc">QCumulantFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QCumulantFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class implements the Q-Cumulant method for anisotropic flow analysis.</span>
 
@@ -148,7 +148,7 @@
 <span class="sd">        &gt;&gt;&gt; result = flow_instance.integrated_flow(particle_data)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">imaginary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zero&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">imaginary</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zero&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;n has to be int&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -180,7 +180,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rand_reaction_planes_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__Qn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__Qn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Q_n vector for each event based on azimuthal angles.</span>
 
@@ -206,7 +206,7 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Q_vector</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__calculate_corr</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calculate_corr</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -404,7 +404,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> particle cumulant is not implemented, choose from [2,4,6]&quot;</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__cov</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__cov</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">wy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -467,7 +467,7 @@
 
         <span class="k">return</span> <span class="n">cov</span>
 
-    <span class="k">def</span> <span class="nf">__cov_term</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__cov_term</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">k2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -533,7 +533,7 @@
 
         <span class="k">return</span> <span class="n">cov_term</span>
 
-    <span class="k">def</span> <span class="nf">__cov_term_differential</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__cov_term_differential</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">w_corr1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">w_corr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -588,7 +588,7 @@
 
         <span class="k">return</span> <span class="n">cov_term</span>
 
-    <span class="k">def</span> <span class="nf">__flow_from_cumulant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnk</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__flow_from_cumulant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnk</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the flow magnitude from a cumulant value.</span>
 
@@ -621,7 +621,7 @@
             <span class="n">vnk</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vnk</span>
 
-    <span class="k">def</span> <span class="nf">__flow_from_cumulant_differential</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__flow_from_cumulant_differential</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cnk</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dnk</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -672,7 +672,7 @@
                 <span class="n">vnk</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">return</span> <span class="n">vnk</span>
 
-    <span class="k">def</span> <span class="nf">__cumulant_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__cumulant_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the flow magnitude and its uncertainty from cumulant values.</span>
 
@@ -792,7 +792,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="si">}</span><span class="s2"> particle cumulant is not implemented, choose from [2,4,6]&quot;</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__sample_random_reaction_planes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sample_random_reaction_planes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample random reaction planes for a specified number of events.</span>
 
@@ -811,7 +811,7 @@
 
 <div class="viewcode-block" id="QCumulantFlow.integrated_flow">
 <a class="viewcode-back" href="../classes/flow/QCumulantFlow/index.html#QCumulantFlow.QCumulantFlow.integrated_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrated_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -845,7 +845,7 @@
         <span class="k">return</span> <span class="n">vnk</span><span class="p">,</span> <span class="n">vnk_err</span></div>
 
 
-    <span class="k">def</span> <span class="nf">__compute_differential_flow_bin</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_differential_flow_bin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">full_event_quantities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">phi_bin</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -1010,7 +1010,7 @@
 
 <div class="viewcode-block" id="QCumulantFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/QCumulantFlow/index.html#QCumulantFlow.QCumulantFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">differential_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -1154,7 +1154,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

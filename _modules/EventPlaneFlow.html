@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventPlaneFlow &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>EventPlaneFlow &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,18 +85,18 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span>  <span class="c1"># type: ignore</span>
-<span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">optimize</span>  <span class="c1"># type: ignore</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowInterface</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">special</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optimize</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 
 <div class="viewcode-block" id="EventPlaneFlow">
 <a class="viewcode-back" href="../classes/flow/EventPlaneFlow/index.html#EventPlaneFlow.EventPlaneFlow">[docs]</a>
-<span class="k">class</span> <span class="nc">EventPlaneFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventPlaneFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class implements a event plane flow analysis algorithm</span>
 <span class="sd">    `Poskanzer, Arthur M., and Sergei A. Voloshin. &quot;Methods for analyzing anisotropic flow in relativistic nuclear collisions.&quot; Physical Review C 58.3 (1998): 1671. &lt;https://link.aps.org/pdf/10.1103/PhysRevC.58.1671?casa_token=rinfpV-zLrYAAAAA:Mv0gWZZBE8I9zpBPLog8myr7uKzLHO1TelYz0BN7boUORUWnP3Fyybuc0OKNKK5YH5ceNy5qVNO8rws&gt;`__.</span>
@@ -179,7 +179,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pT2&quot;</span><span class="p">,</span> <span class="n">pseudorapidity_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -221,7 +221,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pseudorapidity_gap_</span> <span class="o">=</span> <span class="n">pseudorapidity_gap</span>
 
-    <span class="k">def</span> <span class="nf">__compute_particle_weights</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_particle_weights</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
         <span class="n">event_weights</span> <span class="o">=</span> <span class="p">[]</span>
@@ -243,7 +243,7 @@
             <span class="n">event_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle_weights</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">event_weights</span>
 
-    <span class="k">def</span> <span class="nf">__compute_flow_vectors</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_flow_vectors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="n">weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
         <span class="c1"># Q vector whole event</span>
@@ -258,7 +258,7 @@
 
         <span class="k">return</span> <span class="n">Q_vector</span>
 
-    <span class="k">def</span> <span class="nf">__sum_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sum_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="n">sum_weights</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">:</span>
             <span class="n">weight_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">event</span><span class="p">))</span>
@@ -266,7 +266,7 @@
 
         <span class="k">return</span> <span class="n">sum_weights</span>
 
-    <span class="k">def</span> <span class="nf">__compute_event_angles_sub_events</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_event_angles_sub_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="n">weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
         <span class="c1"># Q vector sub-event A</span>
@@ -339,7 +339,7 @@
 
         <span class="k">return</span> <span class="n">Psi_A</span><span class="p">,</span> <span class="n">Psi_B</span>
 
-    <span class="k">def</span> <span class="nf">__compute_u_vectors</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_u_vectors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">complex</span><span class="p">]]:</span>
         <span class="n">u_vectors</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># [event][particle]</span>
@@ -353,7 +353,7 @@
 
         <span class="k">return</span> <span class="n">u_vectors</span>
 
-    <span class="k">def</span> <span class="nf">__compute_event_plane_resolution</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_event_plane_resolution</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">Psi_A</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Psi_B</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="n">RnSquared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
@@ -369,7 +369,7 @@
         <span class="c1"># x_new = sqrt(2) * x</span>
         <span class="c1"># alternative: if Rn &lt; 0.5: R = Rn * sqrt(2), we don&#39;t do that</span>
         <span class="c1"># implements: arXiv:0809.2949</span>
-        <span class="k">def</span> <span class="nf">resolution</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">resolution</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="n">R</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
                 <span class="o">*</span> <span class="n">x</span>
@@ -378,10 +378,10 @@
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">R</span>
 
-        <span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Rn</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">f1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Rn</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">resolution</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">Rn</span>
 
-        <span class="k">def</span> <span class="nf">f1_wrapper</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">f1_wrapper</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">f1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Rn</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -397,7 +397,7 @@
         <span class="n">xi_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">xi</span>
         <span class="k">return</span> <span class="n">resolution</span><span class="p">(</span><span class="n">xi_new</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__compute_flow_particles</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_flow_particles</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">weights</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -434,7 +434,7 @@
             <span class="n">psi_values</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">psi_values_event</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">flow_values</span><span class="p">,</span> <span class="n">psi_values</span>
 
-    <span class="k">def</span> <span class="nf">__calculate_reference</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calculate_reference</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data_event_plane</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">complex</span><span class="p">]]:</span>
         <span class="n">event_weights_event_plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__compute_particle_weights</span><span class="p">(</span>
@@ -450,7 +450,7 @@
 
         <span class="k">return</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">Q_vector</span>
 
-    <span class="k">def</span> <span class="nf">__calculate_particle_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calculate_particle_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -470,7 +470,7 @@
 
         <span class="k">return</span> <span class="n">flow_values</span><span class="p">,</span> <span class="n">psi_values</span>
 
-    <span class="k">def</span> <span class="nf">__calculate_flow_event_average</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calculate_flow_event_average</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">flow_particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -522,7 +522,7 @@
 
 <div class="viewcode-block" id="EventPlaneFlow.integrated_flow">
 <a class="viewcode-back" href="../classes/flow/EventPlaneFlow/index.html#EventPlaneFlow.EventPlaneFlow.integrated_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrated_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">particle_data_event_plane</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
@@ -563,7 +563,7 @@
 
 <div class="viewcode-block" id="EventPlaneFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/EventPlaneFlow/index.html#EventPlaneFlow.EventPlaneFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">differential_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -652,7 +652,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

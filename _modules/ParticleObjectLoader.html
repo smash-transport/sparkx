@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ParticleObjectLoader &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>ParticleObjectLoader &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,14 +85,14 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">from</span> <span class="nn">sparkx.loader.BaseLoader</span> <span class="kn">import</span> <span class="n">BaseLoader</span>
-<span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.loader.BaseLoader</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Filter</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
 
 
 <div class="viewcode-block" id="ParticleObjectLoader">
 <a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader">[docs]</a>
-<span class="k">class</span> <span class="nc">ParticleObjectLoader</span><span class="p">(</span><span class="n">BaseLoader</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParticleObjectLoader</span><span class="p">(</span><span class="n">BaseLoader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A loader class for handling particle objects.</span>
 
@@ -124,7 +124,7 @@
 <span class="sd">        Sets the particle list based on the filters applied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -157,7 +157,7 @@
 
 <div class="viewcode-block" id="ParticleObjectLoader.load">
 <a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.load">[docs]</a>
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -232,7 +232,7 @@
 
 <div class="viewcode-block" id="ParticleObjectLoader.set_num_output_per_event">
 <a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.set_num_output_per_event">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the number of output particles per event based on the filters applied.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -242,7 +242,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span></div>
 
 
-    <span class="k">def</span> <span class="nf">__apply_kwargs_filters</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__apply_kwargs_filters</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]],</span> <span class="n">filters_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -379,7 +379,7 @@
 
 <div class="viewcode-block" id="ParticleObjectLoader.set_particle_list">
 <a class="viewcode-back" href="../classes/loader/ParticleObjectLoader/index.html#ParticleObjectLoader.ParticleObjectLoader.set_particle_list">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_particle_list</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_particle_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -426,7 +426,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

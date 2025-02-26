@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Histogram &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>Histogram &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,15 +85,15 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">csv</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
 
 
 <div class="viewcode-block" id="Histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram">[docs]</a>
-<span class="k">class</span> <span class="nc">Histogram</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Histogram</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines a histogram object.</span>
 
@@ -217,7 +217,7 @@
 <span class="sd">        &gt;&gt;&gt; hist = histObj.histogram()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bin_boundaries</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
             <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
@@ -272,7 +272,7 @@
 
 <div class="viewcode-block" id="Histogram.histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the current histogram(s).</span>
 
@@ -291,7 +291,7 @@
 
 <div class="viewcode-block" id="Histogram.histogram_raw_counts">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.histogram_raw_counts">[docs]</a>
-    <span class="k">def</span> <span class="nf">histogram_raw_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">histogram_raw_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the raw bin counts of the histogram(s), even after the original</span>
 <span class="sd">        histograms are scaled or averaged. If weights are used, then they</span>
@@ -312,7 +312,7 @@
 
 <div class="viewcode-block" id="Histogram.number_of_histograms">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.number_of_histograms">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the number of current histograms.</span>
 
@@ -326,7 +326,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_centers">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_centers">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin centers.</span>
 
@@ -345,7 +345,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_width">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_width">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin widths.</span>
 
@@ -364,7 +364,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_bounds_left">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_bounds_left">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_bounds_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_bounds_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract the lower bounds of the individual bins.</span>
 
@@ -383,7 +383,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_bounds_right">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_bounds_right">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_bounds_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_bounds_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract the upper bounds of the individual bins.</span>
 
@@ -402,7 +402,7 @@
 
 <div class="viewcode-block" id="Histogram.bin_boundaries">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.bin_boundaries">[docs]</a>
-    <span class="k">def</span> <span class="nf">bin_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bin_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the bin boundaries.</span>
 
@@ -419,7 +419,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span></div>
 
 
-    <span class="k">def</span> <span class="nf">remove_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a bin from all histograms, starting from the 0th bin.</span>
 
@@ -486,7 +486,7 @@
 
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">add_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bin_edge</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bin_edge</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a bin to all histograms at the specified index.</span>
 <span class="sd">        Attention: If values were added to bins before inserting a new bin, the information about its value is lost.</span>
@@ -570,7 +570,7 @@
 
 <div class="viewcode-block" id="Histogram.add_value">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.add_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_value</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_value</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -694,7 +694,7 @@
 
 <div class="viewcode-block" id="Histogram.make_density">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.make_density">[docs]</a>
-    <span class="k">def</span> <span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make a probability density from the last histogram.</span>
 <span class="sd">        The result represents the probability density function in a given bin.</span>
@@ -731,7 +731,7 @@
 
 <div class="viewcode-block" id="Histogram.add_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.add_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new histogram to the Histogram class instance.</span>
 
@@ -782,7 +782,7 @@
 
 <div class="viewcode-block" id="Histogram.average">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.average">[docs]</a>
-    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Average over all histograms.</span>
 
@@ -805,7 +805,7 @@
 
 <div class="viewcode-block" id="Histogram.average_weighted">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.average_weighted">[docs]</a>
-    <span class="k">def</span> <span class="nf">average_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Weighted average over all histograms.</span>
 
@@ -868,7 +868,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-    <span class="k">def</span> <span class="nf">average_weighted_by_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average_weighted_by_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Weighted average over all histograms, where each entry is weighted by its associated error.</span>
 
@@ -941,7 +941,7 @@
 
 <div class="viewcode-block" id="Histogram.standard_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.standard_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">standard_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">standard_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the standard deviation over all histogram counts for each bin.</span>
 
@@ -960,7 +960,7 @@
 
 <div class="viewcode-block" id="Histogram.statistical_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.statistical_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">statistical_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">statistical_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the statistical error of all histogram bins for all histograms.</span>
 <span class="sd">        This assumes Poisson distributed counts in each bin and independent draws.</span>
@@ -985,7 +985,7 @@
 
 <div class="viewcode-block" id="Histogram.scale_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.scale_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">scale_histogram</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale_histogram</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1051,7 +1051,7 @@
 
 <div class="viewcode-block" id="Histogram.set_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.set_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the histogram error by hand. This is helpful for weighted</span>
 <span class="sd">        histograms where the weight has also an uncertainty.</span>
@@ -1082,7 +1082,7 @@
 
 <div class="viewcode-block" id="Histogram.set_systematic_error">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.set_systematic_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_systematic_error</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_systematic_error</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">own_error</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1111,7 +1111,7 @@
 
 <div class="viewcode-block" id="Histogram.print_histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.print_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the histograms to the terminal.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -1143,7 +1143,7 @@
 
 <div class="viewcode-block" id="Histogram.write_to_file">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.write_to_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_to_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">hist_labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
@@ -1300,7 +1300,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

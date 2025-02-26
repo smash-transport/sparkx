@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GenerateFlow &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>GenerateFlow &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,14 +85,14 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="GenerateFlow">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow">[docs]</a>
-<span class="k">class</span> <span class="nc">GenerateFlow</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GenerateFlow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate particle data with anisotropic flow for testing.</span>
 
@@ -174,7 +174,7 @@
 <span class="sd">    `event generator &lt;https://www.physik.uni-bielefeld.de/~borghini/Software/flow_analysis_codes/generator.cc&gt;`__.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">vn</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">vn_kwargs</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">vn</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">vn_kwargs</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vn_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 
@@ -208,7 +208,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">py_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__distribution_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the distribution function value for a given angle.</span>
 
@@ -235,7 +235,7 @@
 
         <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">f_harmonic</span>
 
-    <span class="k">def</span> <span class="nf">__sample_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sample_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample angles for a given multiplicity according to a given distribution.</span>
 
@@ -260,7 +260,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">phi_</span> <span class="o">=</span> <span class="n">phi</span>
 
-    <span class="k">def</span> <span class="nf">__thermal_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mass</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__thermal_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mass</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the momentum magnitude from a thermal distribution.</span>
 
@@ -321,7 +321,7 @@
 
         <span class="k">return</span> <span class="n">momentum_radial</span>
 
-    <span class="k">def</span> <span class="nf">__sample_momenta_thermal</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sample_momenta_thermal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mass</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -366,7 +366,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">py_</span> <span class="o">=</span> <span class="n">py</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span> <span class="o">=</span> <span class="n">pz</span>
 
-    <span class="k">def</span> <span class="nf">__artificial_pT_distribution</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__artificial_pT_distribution</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pTmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pT0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pT1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">T0</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -411,7 +411,7 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">pT1</span> <span class="o">-</span> <span class="n">pT0</span><span class="p">)</span> <span class="o">/</span> <span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pT1</span> <span class="o">/</span> <span class="n">pT</span><span class="p">)</span> <span class="o">**</span> <span class="mi">7</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">__artificial_flow_pT_shape</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__artificial_flow_pT_shape</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pT0_bis</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pT_sat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vn_sat</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -458,7 +458,7 @@
 
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">__distribution_function_pT_differential</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__distribution_function_pT_differential</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vn_pT_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -485,7 +485,7 @@
 
         <span class="k">return</span> <span class="n">f_harmonic</span> <span class="o">/</span> <span class="n">f_norm</span>
 
-    <span class="k">def</span> <span class="nf">__create_k_particle_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__create_k_particle_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">k_particle_correlation</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -530,7 +530,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">py_</span> <span class="o">=</span> <span class="n">py</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pz_</span> <span class="o">=</span> <span class="n">pz</span>
 
-    <span class="k">def</span> <span class="nf">__generate_flow_realistic_pT_distribution</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__generate_flow_realistic_pT_distribution</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reaction_plane_angle</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pTmax</span> <span class="o">=</span> <span class="mf">4.5</span>
@@ -583,7 +583,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_JETSCAPE_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -668,7 +668,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pT_shape">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pT_shape">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_realistic_pT_shape</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_JETSCAPE_file_realistic_pT_shape</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -763,7 +763,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_multi_particle_correlations">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_multi_particle_correlations">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_multi_particle_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_JETSCAPE_file_multi_particle_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -870,7 +870,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_JETSCAPE_file_realistic_pT_shape_multi_particle_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -983,7 +983,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_OSCAR_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1077,7 +1077,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_realistic_pT_shape">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_realistic_pT_shape">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_realistic_pT_shape</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_OSCAR_file_realistic_pT_shape</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1181,7 +1181,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_multi_particle_correlations">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_multi_particle_correlations">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_multi_particle_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_OSCAR_file_multi_particle_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1297,7 +1297,7 @@
 
 <div class="viewcode-block" id="GenerateFlow.generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations">
 <a class="viewcode-back" href="../classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow.generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_dummy_OSCAR_file_realistic_pT_shape_multi_particle_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">number_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1426,7 +1426,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,8 +4,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Quickstart &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=51b770b3"></script>
+        <script src="_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -148,8 +148,8 @@ SPARKX offers a range of classes for calculating centrality, flow, and more:</p>
 <section id="basic-usage-example">
 <h2>Basic Usage Example<a class="headerlink" href="#basic-usage-example" title="Link to this heading"></a></h2>
 <p>Once installed, here’s a simple example to load data and perform some basic filtering and analysis:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sparkx</span> <span class="kn">import</span> <span class="n">Oscar</span>
-<span class="kn">from</span> <span class="nn">sparkx</span> <span class="kn">import</span> <span class="n">Histogram</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Oscar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Histogram</span>
 
 <span class="c1"># Load data using the Oscar class and apply some filters, return Particle objects</span>
 <span class="n">all_filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;charged_particles&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;pT_cut&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="s1">&#39;pseudorapidity_cut&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
@@ -164,13 +164,13 @@ SPARKX offers a range of classes for calculating centrality, flow, and more:</p>
 <span class="n">hist</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="o">=</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">hist</span><span class="o">.</span><span class="n">add_value</span><span class="p">(</span><span class="n">pT</span><span class="p">)</span> <span class="c1"># add the data to the histogram</span>
 <span class="n">hist</span><span class="o">.</span><span class="n">statistical_error</span><span class="p">()</span> <span class="c1"># calculate the statistical errors assuming Poisson statistics</span>
-<span class="n">hist</span><span class="o">.</span><span class="n">scale_histogram</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="c1"># normalize the histogram to the number of events</span>
+<span class="n">hist</span><span class="o">.</span><span class="n">scale_histogram</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">*</span><span class="n">hist</span><span class="o">.</span><span class="n">bin_width</span><span class="p">()))</span> <span class="c1"># normalize the histogram to the number of events and divide by the bin width</span>
 
 <span class="c1"># define the names of the columns in the output file</span>
 <span class="n">column_labels</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;bin_center&#39;</span><span class="p">:</span> <span class="s1">&#39;pT [GeV]&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;bin_low&#39;</span><span class="p">:</span> <span class="s1">&#39;pT_low [GeV]&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;bin_high&#39;</span><span class="p">:</span> <span class="s1">&#39;pT_high [GeV]&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;distribution&#39;</span><span class="p">:</span> <span class="s1">&#39;dN/dpT [1/GeV]&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;distribution&#39;</span><span class="p">:</span> <span class="s1">&#39;1/N_ev * dN/dpT [1/GeV]&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;stat_err+&#39;</span><span class="p">:</span> <span class="s1">&#39;stat_err+&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;stat_err-&#39;</span><span class="p">:</span> <span class="s1">&#39;stat_err-&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;sys_err+&#39;</span><span class="p">:</span> <span class="s1">&#39;sys_err+&#39;</span><span class="p">,</span>
@@ -202,7 +202,7 @@ SPARKX offers a range of classes for calculating centrality, flow, and more:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

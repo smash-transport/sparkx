@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BaseStorer &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>BaseStorer &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,17 +85,17 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">from</span> <span class="nn">sparkx.Filter</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">sparkx.loader.BaseLoader</span> <span class="kn">import</span> <span class="n">BaseLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Filter</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.loader.BaseLoader</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseLoader</span>
 
 
 <div class="viewcode-block" id="BaseStorer">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseStorer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseStorer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines a generic BaseStorer object.</span>
 
@@ -156,7 +156,7 @@
 <span class="sd">        Apply spacetime cut to all particles</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -190,7 +190,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Loader has not been created properly&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds two BaseStorer objects by combining their particle lists and updating num_output_per_event accordingly.</span>
 
@@ -255,7 +255,7 @@
         <span class="k">return</span> <span class="n">combined_storer</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_update_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the attributes of the current instance after merging with another BaseStorer object.</span>
 
@@ -279,12 +279,12 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method is not implemented yet&quot;</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">create_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;Particle&quot;</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method is not implemented yet&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseStorer.num_output_per_event">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.num_output_per_event">[docs]</a>
-    <span class="k">def</span> <span class="nf">num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a numpy array containing the event number (starting with 1)</span>
 <span class="sd">        and the corresponding number of particles created in this event as</span>
@@ -305,7 +305,7 @@
 
 <div class="viewcode-block" id="BaseStorer.num_events">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.num_events">[docs]</a>
-    <span class="k">def</span> <span class="nf">num_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of events in :code:`particle_list`.</span>
 
@@ -322,7 +322,7 @@
 
 <div class="viewcode-block" id="BaseStorer.particle_objects_list">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.particle_objects_list">[docs]</a>
-    <span class="k">def</span> <span class="nf">particle_objects_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">particle_objects_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a nested python list containing all particles from</span>
 <span class="sd">        the data as particle objects from :code:`Particle`:</span>
@@ -341,13 +341,13 @@
 <div class="viewcode-block" id="BaseStorer._particle_as_list">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer._particle_as_list">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_particle_as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle</span><span class="p">:</span> <span class="s2">&quot;Particle&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_particle_as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particle</span><span class="p">:</span> <span class="s2">&quot;Particle&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method is not implemented yet&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseStorer.particle_list">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.particle_list">[docs]</a>
-    <span class="k">def</span> <span class="nf">particle_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">particle_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a nested python list containing all quantities from the</span>
 <span class="sd">        current data as numerical values with the following shape:</span>
@@ -393,7 +393,7 @@
 
 <div class="viewcode-block" id="BaseStorer.charged_particles">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.charged_particles">[docs]</a>
-    <span class="k">def</span> <span class="nf">charged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">charged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only charged particles in :code:`particle_list`.</span>
 
@@ -410,7 +410,7 @@
 
 <div class="viewcode-block" id="BaseStorer.uncharged_particles">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.uncharged_particles">[docs]</a>
-    <span class="k">def</span> <span class="nf">uncharged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uncharged_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only uncharged particles in :code:`particle_list`.</span>
 
@@ -427,7 +427,7 @@
 
 <div class="viewcode-block" id="BaseStorer.particle_species">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.particle_species">[docs]</a>
-    <span class="k">def</span> <span class="nf">particle_species</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">particle_species</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pdg_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -456,7 +456,7 @@
 
 <div class="viewcode-block" id="BaseStorer.remove_particle_species">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.remove_particle_species">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_particle_species</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_particle_species</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pdg_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -487,7 +487,7 @@
 
 <div class="viewcode-block" id="BaseStorer.participants">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.participants">[docs]</a>
-    <span class="k">def</span> <span class="nf">participants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">participants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only participants in :code:`particle_list`.</span>
 
@@ -504,7 +504,7 @@
 
 <div class="viewcode-block" id="BaseStorer.spectators">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.spectators">[docs]</a>
-    <span class="k">def</span> <span class="nf">spectators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spectators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only spectators in :code:`particle_list`.</span>
 
@@ -521,7 +521,7 @@
 
 <div class="viewcode-block" id="BaseStorer.lower_event_energy_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.lower_event_energy_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">lower_event_energy_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lower_event_energy_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">minimum_event_energy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -558,7 +558,7 @@
 
 <div class="viewcode-block" id="BaseStorer.pT_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.pT_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">pT_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pT_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -589,7 +589,7 @@
 
 <div class="viewcode-block" id="BaseStorer.mT_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.mT_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">mT_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mT_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -620,7 +620,7 @@
 
 <div class="viewcode-block" id="BaseStorer.rapidity_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.rapidity_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">rapidity_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rapidity_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -653,7 +653,7 @@
 
 <div class="viewcode-block" id="BaseStorer.pseudorapidity_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.pseudorapidity_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">pseudorapidity_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudorapidity_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -687,7 +687,7 @@
 
 <div class="viewcode-block" id="BaseStorer.spacetime_rapidity_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.spacetime_rapidity_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">spacetime_rapidity_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spacetime_rapidity_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -724,7 +724,7 @@
 
 <div class="viewcode-block" id="BaseStorer.multiplicity_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.multiplicity_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">multiplicity_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">multiplicity_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -754,7 +754,7 @@
 
 <div class="viewcode-block" id="BaseStorer.spacetime_cut">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.spacetime_cut">[docs]</a>
-    <span class="k">def</span> <span class="nf">spacetime_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spacetime_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cut_value_tuple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -789,7 +789,7 @@
 
 <div class="viewcode-block" id="BaseStorer.particle_status">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.particle_status">[docs]</a>
-    <span class="k">def</span> <span class="nf">particle_status</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">particle_status</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">status_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -818,7 +818,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_hadrons">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_hadrons">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_hadrons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_hadrons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons in :code:`particle_list`.</span>
 
@@ -835,7 +835,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_leptons">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_leptons">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_leptons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_leptons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only leptons in :code:`particle_list`.</span>
 
@@ -852,7 +852,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_quarks">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_quarks">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_quarks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_quarks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only quarks in the :code:`particle_list`.</span>
 
@@ -869,7 +869,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_mesons">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_mesons">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_mesons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_mesons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only mesons in :code:`particle_list`.</span>
 
@@ -886,7 +886,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_baryons">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_baryons">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_baryons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_baryons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only baryons in :code:`particle_list`.</span>
 
@@ -903,7 +903,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_up">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_up">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing up quarks in :code:`particle_list`.</span>
 
@@ -920,7 +920,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_down">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_down">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_down</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_down</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing down quarks in :code:`particle_list`.</span>
 
@@ -937,7 +937,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_strange">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_strange">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_strange</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_strange</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing strange quarks in :code:`particle_list`.</span>
 
@@ -954,7 +954,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_charm">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_charm">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_charm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_charm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing charm quarks in :code:`particle_list`.</span>
 
@@ -971,7 +971,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_bottom">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_bottom">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing bottom quarks in :code:`particle_list`.</span>
 
@@ -988,7 +988,7 @@
 
 <div class="viewcode-block" id="BaseStorer.keep_top">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.keep_top">[docs]</a>
-    <span class="k">def</span> <span class="nf">keep_top</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keep_top</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Keep only hadrons containing top quarks in :code:`particle_list`.</span>
 
@@ -1005,7 +1005,7 @@
 
 <div class="viewcode-block" id="BaseStorer.remove_photons">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.remove_photons">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_photons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_photons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseStorer&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove photons from :code:`particle_list`.</span>
 
@@ -1020,7 +1020,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_update_num_output_per_event_after_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_num_output_per_event_after_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;num_output_per_event_ is not set&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1052,7 +1052,7 @@
 <div class="viewcode-block" id="BaseStorer.print_particle_lists_to_file">
 <a class="viewcode-back" href="../classes/BaseStorer/index.html#BaseStorer.BaseStorer.print_particle_lists_to_file">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">print_particle_lists_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_particle_lists_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prints the particle lists to a specified file.</span>
 
@@ -1086,7 +1086,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

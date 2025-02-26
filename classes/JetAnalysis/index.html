@@ -4,8 +4,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetAnalysis &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+  <title>JetAnalysis &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -162,8 +162,8 @@ jet finding.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>First import your hadron data and maybe perform some cuts:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.Jetscape</span> <span class="kn">import</span> <span class="n">Jetscape</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sparkx.JetAnalysis</span> <span class="kn">import</span> <span class="n">JetAnalysis</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Jetscape</span><span class="w"> </span><span class="kn">import</span> <span class="n">Jetscape</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.JetAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">JetAnalysis</span>
 <span class="linenos">3</span><span class="gp">&gt;&gt;&gt;</span>
 <span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">JETSCAPE_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Jetscape_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">dat</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt;</span>
@@ -243,7 +243,7 @@ momentum to write out the jet.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="JetAnalysis.JetAnalysis.perform_jet_finding">
-<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">hadron_data:</span> <span class="pre">~typing.List[~typing.List[~sparkx.Particle.Particle]],</span> <span class="pre">jet_R:</span> <span class="pre">float,</span> <span class="pre">jet_eta_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">jet_pT_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">output_filename:</span> <span class="pre">str,</span> <span class="pre">assoc_only_charged:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">jet_algorithm:</span> <span class="pre">&lt;module</span> <span class="pre">'fastjet'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.9.20/x64/lib/python3.9/site-packages/fastjet/__init__.py'&gt;</span> <span class="pre">=</span> <span class="pre">2</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">JetAnalysis.</span></span><span class="sig-name descname"><span class="pre">perform_jet_finding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">hadron_data:</span> <span class="pre">~typing.List[~typing.List[~sparkx.Particle.Particle]],</span> <span class="pre">jet_R:</span> <span class="pre">float,</span> <span class="pre">jet_eta_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">jet_pT_range:</span> <span class="pre">~typing.Tuple[float</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None],</span> <span class="pre">output_filename:</span> <span class="pre">str,</span> <span class="pre">assoc_only_charged:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">jet_algorithm:</span> <span class="pre">&lt;module</span> <span class="pre">'fastjet'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.9.21/x64/lib/python3.9/site-packages/fastjet/__init__.py'&gt;</span> <span class="pre">=</span> <span class="pre">2</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/JetAnalysis.html#JetAnalysis.perform_jet_finding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#JetAnalysis.JetAnalysis.perform_jet_finding" title="Link to this definition"></a></dt>
 <dd><p>Perform the jet analysis for multiple events. The function generates a
 file containing the jets consisting of a leading particle and associated
 hadrons in the jet cone.</p>
@@ -386,7 +386,7 @@ element of the list (<code class="code docutils literal notranslate"><span class
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

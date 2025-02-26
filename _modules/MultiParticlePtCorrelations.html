@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MultiParticlePtCorrelations &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>MultiParticlePtCorrelations &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,15 +85,15 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sparkx.Jackknife</span> <span class="kn">import</span> <span class="n">Jackknife</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Jackknife</span><span class="w"> </span><span class="kn">import</span> <span class="n">Jackknife</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
 
 
 <div class="viewcode-block" id="MultiParticlePtCorrelations">
 <a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations">[docs]</a>
-<span class="k">class</span> <span class="nc">MultiParticlePtCorrelations</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiParticlePtCorrelations</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute multi-particle transverse momentum correlations and cumulants up</span>
 <span class="sd">    to the 8th order. This class is based on the following paper:</span>
@@ -162,7 +162,7 @@
 <span class="sd">        &gt;&gt;&gt; print(mean_pT_cumulants)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">=</span> <span class="n">max_order</span>
         <span class="c1"># Check that max_order is greater than 0 and less than 9</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_order</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
@@ -175,7 +175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_P_W_k</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_P_W_k</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -205,7 +205,7 @@
                 <span class="n">Wk</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">weight</span> <span class="o">**</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">Pk</span><span class="p">,</span> <span class="n">Wk</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_transverse_momentum_correlations_event_num_denom</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transverse_momentum_correlations_event_num_denom</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -386,7 +386,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">N_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_numerator_denominator_all_events</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_numerator_denominator_all_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -400,7 +400,7 @@
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">particle_list_all_events</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_transverse_momentum_correlations_event_num_denom</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_mean_pT_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_mean_pT_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">numerator_denominator_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -427,7 +427,7 @@
 
 <div class="viewcode-block" id="MultiParticlePtCorrelations.mean_pT_correlations">
 <a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pT_correlations">[docs]</a>
-    <span class="k">def</span> <span class="nf">mean_pT_correlations</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean_pT_correlations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">compute_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -521,7 +521,7 @@
             <span class="k">return</span> <span class="n">mean_pT_correlations_store</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_kappa_cumulant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_kappa_cumulant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute cumulant kappa from correlations C up to order k</span>
 <span class="sd">        (Eqns. B9-B16 in [1]).</span>
@@ -623,7 +623,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid order k for cumulant calculation&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kappa</span>
 
-    <span class="k">def</span> <span class="nf">_compute_mean_pT_cumulants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_mean_pT_cumulants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute mean transverse momentum cumulants from data at order k.</span>
 
@@ -655,7 +655,7 @@
 
 <div class="viewcode-block" id="MultiParticlePtCorrelations.mean_pT_cumulants">
 <a class="viewcode-back" href="../classes/MultiParticlePtCorrelations/index.html#MultiParticlePtCorrelations.MultiParticlePtCorrelations.mean_pT_cumulants">[docs]</a>
-    <span class="k">def</span> <span class="nf">mean_pT_cumulants</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean_pT_cumulants</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_list_all_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">compute_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -760,7 +760,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

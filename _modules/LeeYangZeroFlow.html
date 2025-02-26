@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LeeYangZeroFlow &mdash; sparkx 2.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+  <title>LeeYangZeroFlow &mdash; sparkx 2.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -85,19 +85,19 @@
 <span class="c1">#</span>
 <span class="c1"># ===================================================</span>
 
-<span class="kn">from</span> <span class="nn">sparkx.flow</span> <span class="kn">import</span> <span class="n">FlowInterface</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rd</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">sparkx.Particle</span> <span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowInterface</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="LeeYangZeroFlow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow">[docs]</a>
-<span class="k">class</span> <span class="nc">LeeYangZeroFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LeeYangZeroFlow</span><span class="p">(</span><span class="n">FlowInterface</span><span class="o">.</span><span class="n">FlowInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute integrated and differential anisotropic flow using the Lee-Yang</span>
 <span class="sd">    zero method from</span>
@@ -163,7 +163,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vmax</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vstep</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -204,7 +204,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerator_event_avg_diff_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__g_theta</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__g_theta</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -254,7 +254,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">g_theta</span>
 
-    <span class="k">def</span> <span class="nf">__Q_x</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__Q_x</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">weight_j</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -294,7 +294,7 @@
             <span class="n">Q_x</span> <span class="o">+=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">Q_x</span>
 
-    <span class="k">def</span> <span class="nf">__Q_y</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__Q_y</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">weight_j</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -334,7 +334,7 @@
             <span class="n">Q_y</span> <span class="o">+=</span> <span class="n">weight_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">phi_j</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">Q_y</span>
 
-    <span class="k">def</span> <span class="nf">__sigma</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sigma</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">QxSqPQySq</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Qx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Qy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">VnInfty</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -359,7 +359,7 @@
         <span class="c1"># Eq. 7 in Ref. [3]</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">QxSqPQySq</span> <span class="o">-</span> <span class="n">Qx</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">Qy</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">VnInfty</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VnInfty</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VnInfty</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the resolution parameter :math:`\\chi` based on the</span>
 <span class="sd">        given parameters.</span>
@@ -378,7 +378,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">VnInfty</span> <span class="o">/</span> <span class="n">sigma</span>
 
-    <span class="k">def</span> <span class="nf">__relative_Vn_fluctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NEvents</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">chi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__relative_Vn_fluctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NEvents</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">chi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the relative flow fluctuation based on the given parameters.</span>
 <span class="sd">        This is based on Eq. (8) in Ref. [3].</span>
@@ -402,7 +402,7 @@
             <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">j01_</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">chi</span><span class="o">**</span><span class="mf">2.0</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.2375362</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__sample_random_reaction_planes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sample_random_reaction_planes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample random reaction planes for a specified number of events.</span>
 
@@ -421,7 +421,7 @@
 
 <div class="viewcode-block" id="LeeYangZeroFlow.integrated_flow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow.integrated_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">integrated_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrated_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -549,7 +549,7 @@
             <span class="p">]</span></div>
 
 
-    <span class="k">def</span> <span class="nf">__compute_reference_differential_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_reference_differential_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -604,7 +604,7 @@
         <span class="n">denominator_event_avg</span> <span class="o">/=</span> <span class="n">number_events</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">denominator_event_avg_diff_</span> <span class="o">=</span> <span class="n">denominator_event_avg</span>
 
-    <span class="k">def</span> <span class="nf">__vn_differential_uncertainty</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__vn_differential_uncertainty</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">number_particles_tot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -631,7 +631,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">err_sq</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__compute_differential_flow_bin</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_differential_flow_bin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">particle_data_bin</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -731,7 +731,7 @@
 
 <div class="viewcode-block" id="LeeYangZeroFlow.differential_flow">
 <a class="viewcode-back" href="../classes/flow/LeeYangZeroFlow/index.html#LeeYangZeroFlow.LeeYangZeroFlow.differential_flow">[docs]</a>
-    <span class="k">def</span> <span class="nf">differential_flow</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">differential_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">particle_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
         <span class="n">bins</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -833,7 +833,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
