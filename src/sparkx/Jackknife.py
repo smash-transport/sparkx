@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2025
+#    Copyright (c) 2024-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
