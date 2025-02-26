@@ -79,13 +79,13 @@ Once installed, here's a simple example to load data and perform some basic filt
     hist = Histogram(bin_boundaries=(0.15, 3.5, 10))
     hist.add_value(pT) # add the data to the histogram
     hist.statistical_error() # calculate the statistical errors assuming Poisson statistics
-    hist.scale_histogram(1./len(data)) # normalize the histogram to the number of events
+    hist.scale_histogram(1./(len(data)*hist.bin_width())) # normalize the histogram to the number of events and divide by the bin width
 
     # define the names of the columns in the output file
     column_labels = [{'bin_center': 'pT [GeV]',
                     'bin_low': 'pT_low [GeV]',
                     'bin_high': 'pT_high [GeV]',
-                    'distribution': 'dN/dpT [1/GeV]',
+                    'distribution': '1/N_ev * dN/dpT [1/GeV]',
                     'stat_err+': 'stat_err+',
                     'stat_err-': 'stat_err-',
                     'sys_err+': 'sys_err+',
