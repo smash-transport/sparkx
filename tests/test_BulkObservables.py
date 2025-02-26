@@ -247,8 +247,12 @@ def test_dNdmT():
     assert dNdmT_hist[3] == 30
     assert all(value == 0 for i, value in enumerate(dNdmT_hist) if i != 3)
 
+<<<<<<< Updated upstream
 
 def test_midrap():
+=======
+def test_midrapidity():
+>>>>>>> Stashed changes
     particles_list_single_event = []
 
     for i in range(30):
@@ -266,9 +270,14 @@ def test_midrap():
 
     particle_objects_list = [particles_list_single_event]
 
-    # Create the BulkObservables object and call dNdmT
+    # Create the BulkObservables object and call midrapidity_yield
     bulk_obs = BulkObservables(particle_objects_list)
     dNdy_0 = bulk_obs.mid_rapidity_yield()
 
+<<<<<<< Updated upstream
     # Check that the bin for mT=3 is filled and all others are not
     assert dNdy_0 == 30
+=======
+    # Check that 30 particles are at midrapidity
+    assert dNdy_0 == 30
+>>>>>>> Stashed changes
