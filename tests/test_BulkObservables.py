@@ -247,19 +247,20 @@ def test_dNdmT():
     assert dNdmT_hist[3] == 30
     assert all(value == 0 for i, value in enumerate(dNdmT_hist) if i != 3)
 
+
 def test_midrap():
     particles_list_single_event = []
 
     for i in range(30):
         p = Particle()
         p.E = 1
-        p.pz=0.2
+        p.pz = 0.2
 
         particles_list_single_event.append(p)
     for i in range(30):
         p = Particle()
         p.E = 1
-        p.pz=1
+        p.pz = 1
 
         particles_list_single_event.append(p)
 
