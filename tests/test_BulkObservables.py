@@ -247,6 +247,7 @@ def test_dNdmT():
     assert dNdmT_hist[3] == 30
     assert all(value == 0 for i, value in enumerate(dNdmT_hist) if i != 3)
 
+
 def test_midrapidity():
     particles_list_single_event = []
 
