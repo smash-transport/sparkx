@@ -23,6 +23,8 @@ Date: 2025-02-26
 
 ### Fixed
 * Jackknife: Fix bug in the calculation of the jackknife error
+* BulkObservables: Fix bug in the calculation of the integrated yields
+* Documentation: Fix quickstart example
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.0...v2.0.1)
 
