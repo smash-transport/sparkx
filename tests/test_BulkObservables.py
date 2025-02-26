@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2024
+#    Copyright (c) 2024-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -246,3 +246,29 @@ def test_dNdmT():
     # Check that the bin for mT=3 is filled and all others are not
     assert dNdmT_hist[3] == 30
     assert all(value == 0 for i, value in enumerate(dNdmT_hist) if i != 3)
+
+
+def test_midrapidity():
+    particles_list_single_event = []
+
+    for i in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 0.2
+
+        particles_list_single_event.append(p)
+    for i in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 1
+
+        particles_list_single_event.append(p)
+
+    particle_objects_list = [particles_list_single_event]
+
+    # Create the BulkObservables object and call midrapidity_yield
+    bulk_obs = BulkObservables(particle_objects_list)
+    dNdy_0 = bulk_obs.mid_rapidity_yield()
+
+    # Check that 30 particles are at midrapidity
+    assert dNdy_0 == 30

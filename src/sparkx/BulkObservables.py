@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2024
+#    Copyright (c) 2024-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -372,7 +372,7 @@ class BulkObservables:
         # Fill histograms
         for event in self.particle_objects:
             for particle in event:
-                if -y_width / 2 <= particle_method() <= y_width / 2:
+                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
                     particle_counter += 1
 
         return particle_counter / num_events
@@ -426,7 +426,7 @@ class BulkObservables:
         for event in self.particle_objects:
             for particle in event:
                 particle_counter += 1
-                if -y_width / 2 <= particle_method() <= y_width / 2:
+                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
                     pT_sum += particle.pT_abs()
             pT_sum /= particle_counter
             particle_counter = 0
@@ -480,7 +480,7 @@ class BulkObservables:
         for event in self.particle_objects:
             for particle in event:
                 particle_counter += 1
-                if -y_width / 2 <= particle_method() <= y_width / 2:
+                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
                     pT_sum += particle.mT()
             pT_sum /= particle_counter
             particle_counter = 0
