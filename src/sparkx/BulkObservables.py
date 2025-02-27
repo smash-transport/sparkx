@@ -362,22 +362,30 @@ class BulkObservables:
 
         particle_method = getattr(self.particle_objects[0][0], quantity)
         if not callable(particle_method):
-            raise AttributeError(f"'{quantity}' is not a callable method of Particle")
+            raise AttributeError(
+                f"'{quantity}' is not a callable method of Particle"
+            )
 
-        
-        value = 0 
+        value = 0
         for event in self.particle_objects:
             for particle in event:
                 if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
                     value += property_func(particle)
         return value / num_events
 
-
-    def mid_rapidity_yield(self, y_width: float = 1.0, quantity: str = "rapidity") -> float:
+    def mid_rapidity_yield(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
         return self._compute_mid_rapidity(y_width, quantity, lambda p: 1)
 
-    def mid_rapidity_mean_pT(self, y_width: float = 1.0, quantity: str = "rapidity") -> float:
-        return self._compute_mid_rapidity(y_width, quantity, lambda p: p.pT_abs())
+    def mid_rapidity_mean_pT(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
+        return self._compute_mid_rapidity(
+            y_width, quantity, lambda p: p.pT_abs()
+        )
 
-    def mid_rapidity_mean_mT(self, y_width: float = 1.0, quantity: str = "rapidity") -> float:
+    def mid_rapidity_mean_mT(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
         return self._compute_mid_rapidity(y_width, quantity, lambda p: p.mT())
