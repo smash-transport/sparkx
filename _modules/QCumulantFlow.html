@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QCumulantFlow &mdash; sparkx 2.0.1 documentation</title>
+  <title>QCumulantFlow &mdash; sparkx 2.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
+        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -78,7 +78,7 @@
   <h1>Source code for QCumulantFlow</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#    Copyright (c) 2023-2025</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -852,7 +852,7 @@
         <span class="n">phi_bin_poi</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="c1"># full_event_quantities = Qn,M,n2_corr,n2_corr_err,ebe_2p_corr,Q2n,n4_corr,n4_corr_err,ebe_4p_corr</span>
-        <span class="n">pn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_bin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
+        <span class="n">pn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Qn</span><span class="p">(</span><span class="n">phi_bin_poi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">)</span>
         <span class="n">mp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phi_bin_poi</span><span class="p">])</span>
         <span class="n">mq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">phi_bin</span><span class="p">])</span>
         <span class="n">Qn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">full_event_quantities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
