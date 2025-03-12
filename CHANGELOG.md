@@ -24,6 +24,8 @@ Date: 2025-03-12
 ### Fixed
 * QCumulantFlow: Fix bug in differential identified hadron flow
 
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.1...v2.0.2)
+
 ## v2.0.1-Chatelet
 Date: 2025-02-26
 
