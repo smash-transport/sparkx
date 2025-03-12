@@ -769,7 +769,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         phi_bin_poi: List[List[float]],
     ) -> List[float]:
         # full_event_quantities = Qn,M,n2_corr,n2_corr_err,ebe_2p_corr,Q2n,n4_corr,n4_corr_err,ebe_4p_corr
-        pn = self.__Qn(phi_bin, self.n_)
+        pn = self.__Qn(phi_bin_poi, self.n_)
         mp = np.array([len(i) for i in phi_bin_poi])
         mq = np.array([len(i) for i in phi_bin])
         Qn = np.array(full_event_quantities[0])

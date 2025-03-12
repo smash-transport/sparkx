@@ -18,7 +18,13 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
-## v.2.0.1
+## v2.0.2-Chatelet
+Date: 2025-03-12
+
+### Fixed
+* QCumulantFlow: Fix bug in differential identified hadron flow
+
+## v2.0.1-Chatelet
 Date: 2025-02-26
 
 ### Fixed
@@ -28,7 +34,7 @@ Date: 2025-02-26
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.0...v2.0.1)
 
-## v.2.0.0
+## v2.0.0-Chatelet
 Date: 2024-12-18
 
 ### Added
