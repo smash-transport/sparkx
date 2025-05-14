@@ -42,6 +42,14 @@ def oscar_extended_file_path():
 
 
 @pytest.fixture
+def oscar_format2025_file_path():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(
+        os.path.dirname(__file__), "test_files", "particle_lists_format2025.oscar"
+    )
+
+
+@pytest.fixture
 def oscar_old_extended_file_path():
     # Assuming your test file is in the same directory as test_files/
     return os.path.join(
@@ -180,11 +188,13 @@ def test_oscar_initialization(oscar_file_path):
     oscar = Oscar(oscar_file_path)
     assert oscar is not None
 
-
 def test_oscar_extended_initialization(oscar_extended_file_path):
     oscar_extended = Oscar(oscar_extended_file_path)
     assert oscar_extended is not None
 
+def test_oscar_format2025_initialization(oscar_format2025_file_path):
+    oscar_format2025 = Oscar(oscar_format2025_file_path)
+    assert oscar_format2025 is not None
 
 def test_oscar_old_extended_initialization(oscar_old_extended_file_path):
     oscar_old_extended = Oscar(oscar_old_extended_file_path)
@@ -257,6 +267,13 @@ def test_oscar_impact_parameter(oscar_extended_file_path):
     impact_parameters = oscar1.impact_parameters()
     # When all events are empty we obtain an empty list
     assert impact_parameters == []
+
+
+def test_oscar_format2025(oscar_format2025_file_path):
+    oscar = Oscar(oscar_format2025_file_path)
+    event_sizes = oscar.num_output_per_event()
+    expected_result = [[0, 28], [1, 29], [2, 30], [3, 31], [4, 32]]
+    assert (event_sizes == expected_result).all()
 
 
 def test_num_output_per_event(tmp_path, oscar_old_extended_file_path):

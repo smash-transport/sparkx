@@ -150,4 +150,3 @@ class BaseLoader(ABC):
 
         # Keyword not found at all
         raise ValueError(f"Keyword '{keyword}' not found in tokens: {tokens}")
-
