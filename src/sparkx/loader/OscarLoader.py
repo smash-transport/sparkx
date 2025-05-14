@@ -238,7 +238,8 @@ class OscarLoader(BaseLoader):
                 file.seek(-2, os.SEEK_CUR)
             last_line = file.readline().decode().split(" ")
         if last_line[0] == "#" and "event" in last_line:
-            self.num_events_ = int(last_line[2]) + 1
+            self.num_events_ = BaseLoader._extract_integer_after_keyword(last_line, 'event') + 1
+            #self.num_events_ = int(last_line[2]) + 1
         else:
             raise TypeError(
                 "Input file does not end with a comment line "

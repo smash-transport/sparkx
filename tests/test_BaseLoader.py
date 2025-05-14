@@ -64,3 +64,45 @@ def test_skip_lines(concrete_loader):
 def test_get_num_skip_lines(concrete_loader):
     # This will test the dummy implementation of _get_num_skip_lines
     assert concrete_loader._get_num_skip_lines() == 3
+    
+# Test: Correct usage → returns integer
+def test_extract_integer_success():
+    tokens = "# event 42 ensembles 6".split()
+    result = BaseLoader._extract_integer_after_keyword(tokens, "event")
+    assert result == 42
+
+# Test: Correct usage with negative number → returns integer
+def test_extract_integer_negative_number():
+    tokens = "# event -17".split()
+    result = BaseLoader._extract_integer_after_keyword(tokens, "event")
+    assert result == -17
+
+# Test: Keyword found but not followed by a number → raises ValueError
+def test_extract_integer_invalid_number():
+    tokens = "# event not_a_number".split()
+    with pytest.raises(ValueError, match="Keyword 'event' found but not followed by an integer: 'not_a_number'"):
+        BaseLoader._extract_integer_after_keyword(tokens, "event")
+
+# Test: Keyword not found in line → raises ValueError
+def test_extract_integer_keyword_not_found():
+    tokens = "# otherkey 42".split()
+    with pytest.raises(ValueError, match="Keyword 'event' not found in tokens: .*"):
+        BaseLoader._extract_integer_after_keyword(tokens, "event")
+
+# Test: Line does not start with '#' → raises ValueError
+def test_extract_integer_line_not_comment():
+    tokens = "event 42".split()
+    with pytest.raises(ValueError, match="Expected first token to be '#', got: 'event'"):
+        BaseLoader._extract_integer_after_keyword(tokens, "event")
+
+# Test: Line with multiple keywords → should pick correct one
+def test_extract_integer_multiple_keywords():
+    tokens = "# run 5 event 99".split()
+    result = BaseLoader._extract_integer_after_keyword(tokens, "event")
+    assert result == 99
+
+# Test: Keyword at the end without following number → raises ValueError
+def test_extract_integer_keyword_at_end():
+    tokens = "# run 5 event".split()
+    with pytest.raises(ValueError, match="Keyword 'event' not found in tokens: .*"):
+        BaseLoader._extract_integer_after_keyword(tokens, "event")
