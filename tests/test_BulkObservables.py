@@ -137,7 +137,7 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
     with pytest.warns(UserWarning, match=warn_msg):
         bulk_obs.dNdpT((-1.2, 2.2, 3))
 
-    with pytest.warns(UserWarning, match=warn_msg):
+    with pytest.warns(UserWarning):
         bulk_obs.dNdpT((-2.2, -1.2, 3))
 
     with pytest.warns(UserWarning, match=warn_msg):

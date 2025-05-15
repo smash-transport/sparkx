@@ -135,9 +135,11 @@ class BaseLoader(ABC):
         ------
         ValueError
             If the keyword is not found, or if it is found but not followed by a valid integer.
-            """
+        """
         if not tokens or tokens[0] != "#":
-            raise ValueError(f"Expected first token to be '#', got: '{tokens[0] if tokens else None}'")
+            raise ValueError(
+                f"Expected first token to be '#', got: '{tokens[0] if tokens else None}'"
+            )
 
         for i in range(len(tokens) - 1):
             if tokens[i] == keyword:
@@ -146,7 +148,7 @@ class BaseLoader(ABC):
                 except ValueError:
                     raise ValueError(
                         f"Keyword '{keyword}' found but not followed by an integer: '{tokens[i + 1]}'"
-                        )
+                    )
 
         # Keyword not found at all
         raise ValueError(f"Keyword '{keyword}' not found in tokens: {tokens}")

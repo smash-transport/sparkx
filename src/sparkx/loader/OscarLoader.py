@@ -238,7 +238,10 @@ class OscarLoader(BaseLoader):
                 file.seek(-2, os.SEEK_CUR)
             last_line = file.readline().decode().split(" ")
         if last_line[0] == "#" and "event" in last_line:
-            self.num_events_ = BaseLoader._extract_integer_after_keyword(last_line, 'event') + 1
+            self.num_events_ = (
+                BaseLoader._extract_integer_after_keyword(last_line, "event")
+                + 1
+            )
         else:
             raise TypeError(
                 "Input file does not end with a comment line "
@@ -729,8 +732,14 @@ class OscarLoader(BaseLoader):
                         self.event_end_lines_.append(line)
                     elif "#" in line and " out " in line:
                         line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(line_str, 'event')
-                        num_output: int = BaseLoader._extract_integer_after_keyword(line_str, 'out')
+                        event = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
+                        num_output: int = (
+                            BaseLoader._extract_integer_after_keyword(
+                                line_str, "out"
+                            )
+                        )
                         event_output.append([event, num_output])
                     else:
                         continue
@@ -747,7 +756,9 @@ class OscarLoader(BaseLoader):
                         event_output.append([event, line_counter - 1])
                     elif "#" in line and (" in " in line or " start" in line):
                         line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(line_str, 'event')
+                        event = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
                         line_counter = 0
                     else:
                         continue
@@ -767,7 +778,9 @@ class OscarLoader(BaseLoader):
                             continue
                         self.event_end_lines_.append(line)
                         line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(line_str, 'event')
+                        event = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
                         event_output.append([event, line_counter - 1])
                     elif "#" in line and " out " in line:
                         line_counter = 0
