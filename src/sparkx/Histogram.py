@@ -535,20 +535,6 @@ class Histogram:
             if np.isnan(value):
                 raise ValueError("Input value in add_value is NaN.")
 
-            counter_warnings = 0
-            if (
-                value < self.bin_edges_[0] or value > self.bin_edges_[-1]
-            ) and counter_warnings == 0:
-                warn_msg = (
-                    "One or more values lie outside the histogram "
-                    + "range ["
-                    + str(self.bin_edges_[0])
-                    + ","
-                    + str(self.bin_edges_[-1])
-                    + "]. Exceeding values are ignored. Increase histogram range!"
-                )
-                warnings.warn(warn_msg)
-
             bin_index = np.digitize(value, self.bin_edges_)
             if bin_index == 0 or bin_index > self.number_of_bins_:
                 pass
