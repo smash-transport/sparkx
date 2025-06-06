@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../../src/sparkx/loader'))
 project = 'sparkx'
 copyright = '2025, SPARKX Collaboration'
 author = 'Nils Sass, Hendrik Roch, Niklas Götz, Renata Krupczak, Lucas Constantin'
-release = '2.0.2'
+release = '2.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
