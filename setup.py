@@ -5,7 +5,7 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     install_requires=[
-        "particle>=0.23.0",
+        "particle>=0.25.4",
         "numpy>=1.23.5",
         "scipy>=1.10.1",
         "fastjet>=3.4.2.1",
