@@ -19,13 +19,19 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## Unpublished
-Date: ---
+Date: 2025-06-XX
 
 ### Fixed
 * Oscar: Replace hardcoded comment line parsing with `_extract_integer_after_keyword` to support updated output format with ensemble info.
 
 ### Added
 * Tests: Unit tests for the new comment parsing logic, including a test file in the updated Oscar format.
+
+### Changed
+* Particle: The rapidity is now calculated with an `arcsinh` function to avoid numerical issues. If this is not possible, it falls back to the old method using the `log` function.
+* Tests: Test BulkObservables rapidity distribution with massive particles in a more realistic way.
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.2...v2.1.0)
 
 ## v2.0.2-Chatelet
 Date: 2025-03-12
