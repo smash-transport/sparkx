@@ -18,6 +18,15 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## Unpublished
+Date: ---
+
+### Fixed
+* Oscar: Replace hardcoded comment line parsing with `_extract_integer_after_keyword` to support updated output format with ensemble info.
+
+### Added
+* Tests: Unit tests for the new comment parsing logic, including a test file in the updated Oscar format.
+
 ## v2.0.2-Chatelet
 Date: 2025-03-12
 

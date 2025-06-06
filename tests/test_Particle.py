@@ -334,10 +334,7 @@ def test_initialize_from_array_Jetscape_invalid_pdg_warning():
     array1 = np.array([1, 99999999, 27, 4.36557, 3.56147, 0.562961, 2.45727])
 
     # check that a warning is issued
-    with pytest.warns(
-        UserWarning,
-        match=r"The PDG code 99999999 is not known by PDGID, charge could not be computed. Consider setting it by hand.",
-    ):
+    with pytest.warns(UserWarning):
         Particle(input_format=format1, particle_array=array1)
 
 

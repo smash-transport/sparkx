@@ -8,7 +8,7 @@
 # ===================================================
 
 from abc import ABC, abstractmethod
-from typing import Dict, Tuple, Any, TextIO
+from typing import Dict, Tuple, Any, TextIO, List
 
 
 class BaseLoader(ABC):
@@ -111,3 +111,44 @@ class BaseLoader(ABC):
         num_skip = self._get_num_skip_lines()
         for i in range(0, num_skip):
             fname.readline()
+
+    @staticmethod
+    def _extract_integer_after_keyword(tokens: List[str], keyword: str) -> int:
+        """
+        Extracts the integer that follows the given keyword in a tokenized comment line.
+
+        Expected format: tokens = ["#", "keyword", "<number>", ...]
+
+        Parameters
+        ----------
+        tokens : List[str]
+            The tokenized line to parse (already split).
+            keyword : str
+            The keyword to look for.
+
+        Returns
+        -------
+        int
+            The integer found after the keyword.
+
+        Raises
+        ------
+        ValueError
+            If the keyword is not found, or if it is found but not followed by a valid integer.
+        """
+        if not tokens or tokens[0] != "#":
+            raise ValueError(
+                f"Expected first token to be '#', got: '{tokens[0] if tokens else None}'"
+            )
+
+        for i in range(len(tokens) - 1):
+            if tokens[i] == keyword:
+                try:
+                    return int(tokens[i + 1])
+                except ValueError:
+                    raise ValueError(
+                        f"Keyword '{keyword}' found but not followed by an integer: '{tokens[i + 1]}'"
+                    )
+
+        # Keyword not found at all
+        raise ValueError(f"Keyword '{keyword}' not found in tokens: {tokens}")
