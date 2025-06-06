@@ -9,7 +9,7 @@
 
 from sparkx.Histogram import Histogram
 from sparkx.Particle import Particle
-from typing import List, Tuple, Union, Optional, Iterator
+from typing import List, Tuple, Union, Optional, Iterator, Callable
 
 import warnings
 
@@ -330,7 +330,10 @@ class BulkObservables:
             return self._differential_yield("mT", bin_properties)
 
     def _compute_mid_rapidity(
-        self, y_width: float, quantity: str, property_func=None
+        self,
+        y_width: float,
+        quantity: str,
+        property_func: Callable[[Particle], float],
     ) -> float:
         """
         Generalized function to compute mid-rapidity yields and averages.
@@ -366,7 +369,7 @@ class BulkObservables:
                 f"'{quantity}' is not a callable method of Particle"
             )
 
-        value = 0
+        value = 0.0
         for event in self.particle_objects:
             for particle in event:
                 if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
@@ -376,7 +379,7 @@ class BulkObservables:
     def mid_rapidity_yield(
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
-        return self._compute_mid_rapidity(y_width, quantity, lambda p: 1)
+        return self._compute_mid_rapidity(y_width, quantity, lambda p: 1.0)
 
     def mid_rapidity_mean_pT(
         self, y_width: float = 1.0, quantity: str = "rapidity"
