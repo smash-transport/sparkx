@@ -17,6 +17,7 @@ import pytest
 
 rng = np.random.default_rng(seed=42)
 
+
 @pytest.fixture
 def oscar_extended_file_path():
     # Assuming your test file is in the same directory as test_files/
@@ -91,7 +92,7 @@ def test_dNdy_valid():
 
                 pT2 = p.px**2 + p.py**2
                 mT = np.sqrt(mass**2 + pT2)
-                
+
                 # Assign target rapidity
                 p.pz = mT * np.sinh(y)
                 p.E = mT * np.cosh(y)

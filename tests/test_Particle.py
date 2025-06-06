@@ -447,7 +447,7 @@ def test_rapidity_valid_values():
 def test_rapidity_zero_denominator():
     p = Particle()
     p.E = 5.0000001
-    p.pz = 5.0 # E ~ pz
+    p.pz = 5.0  # E ~ pz
 
     result = p.rapidity()
     expected_result = np.arcsinh(5.0 / p.mT())
@@ -462,6 +462,7 @@ def test_rapidity_missing_values():
     result = p.rapidity()
 
     assert np.isnan(result)
+
 
 def test_p_abs_valid_values():
     p = Particle()
