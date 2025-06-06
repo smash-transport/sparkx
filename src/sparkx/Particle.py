@@ -1198,7 +1198,7 @@ class Particle:
         elif self.pdg in massless_pdg:
             return 0.0
         else:
-            mass_squared = self.E**2.0 - self.p_abs() ** 2.0
+            mass_squared = self.E**2.0 - self.p_abs()**2.0
             if mass_squared >= 0:
                 return np.sqrt(mass_squared)
             elif abs(mass_squared) < 1e-16:
