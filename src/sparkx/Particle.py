@@ -990,7 +990,7 @@ class Particle:
         If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
         For numerical stability, we compute the rapidity as follows: :math:`\\sinh^{-1}\\left(\\frac{p_z}{m_T}\\right)`
-        This is equivalent to the above formula, but avoids numerical issues when :math:`E \approx p_z`.
+        This is equivalent to the above formula, but avoids numerical issues when :math:`E \\approx p_z`.
         If the transverse mass :math:`m_T` is close to zero, we fall back to the original formula.
         """
         mT = self.mT()
