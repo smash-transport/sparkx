@@ -186,6 +186,9 @@ class Jetscape(BaseStorer):
         self.particle_type_defining_string_: str = (
             self.loader_.get_particle_type_defining_string()
         )
+        self.event_header_information_: List[Dict[str, float]] = (
+            self.loader_.get_event_header_information()
+        )
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
 
@@ -266,6 +269,7 @@ class Jetscape(BaseStorer):
             (self.sigmaGen_[0] + other.sigmaGen_[0]) / 2.0,
             0.5 * np.sqrt(self.sigmaGen_[1] ** 2 + other.sigmaGen_[1] ** 2),
         )
+        self.event_header_information_.extend(other.event_header_information_)
 
     # PUBLIC CLASS METHODS
     def participants(self) -> "Jetscape":
@@ -358,6 +362,17 @@ class Jetscape(BaseStorer):
             The value of sigmaGen.
         """
         return self.sigmaGen_
+
+    def get_event_header_information(self) -> List[Dict[str, float]]:
+        """
+        Returns the event header information for all events.
+
+        Returns
+        -------
+        List[Dict[str, float]]
+            A list of dictionaries containing the event header information for all events.
+        """
+        return self.event_header_information_
 
     def print_particle_lists_to_file(self, output_file: str) -> None:
         """

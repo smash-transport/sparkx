@@ -554,3 +554,13 @@ def test_update_after_merge_warning(jetscape_file_path):
     jetscape1._update_after_merge(jetscape2)
 
     assert jetscape1.sigmaGen_ == (1.5, np.sqrt(2))
+
+def test_jetscape_event_headers(jetscape_file_path):
+    jetscape = Jetscape(jetscape_file_path)
+    header_info = jetscape.get_event_header_information()
+    assert len(header_info) == 5
+    # loop through all events and check if the the 'weight' is always 1 
+    # and 'EPangle' is always 0
+    for event in header_info:
+        assert event["weight"] == 1
+        assert event["EPangle"] == 0
