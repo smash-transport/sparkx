@@ -18,7 +18,7 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
-## Unpublished
+## v2.1.0-Chatelet
 Date: 2025-06-XX
 
 ### Fixed
