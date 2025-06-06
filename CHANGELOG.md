@@ -26,6 +26,7 @@ Date: 2025-06-XX
 
 ### Added
 * Tests: Unit tests for the new comment parsing logic, including a test file in the updated Oscar format.
+* Histogram: Add `+` operator for two `Histogram` instances with identical binning.
 
 ### Changed
 * Particle: The rapidity is now calculated with an `arcsinh` function to avoid numerical issues. If this is not possible, it falls back to the old method using the `log` function.
