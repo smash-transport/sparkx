@@ -9,7 +9,7 @@
 
 from sparkx.Histogram import Histogram
 from sparkx.Particle import Particle
-from typing import List, Tuple, Union, Optional, Iterator
+from typing import List, Tuple, Union, Optional, Iterator, Callable
 
 import warnings
 
@@ -329,28 +329,29 @@ class BulkObservables:
         else:
             return self._differential_yield("mT", bin_properties)
 
-    def mid_rapidity_yield(
-        self, y_width: float = 1.0, quantity: str = "rapidity"
+    def _compute_mid_rapidity(
+        self,
+        y_width: float,
+        quantity: str,
+        property_func: Callable[[Particle], float],
     ) -> float:
         """
-        Calculate the event-averaged particle yield at mid-rapidity.
+        Generalized function to compute mid-rapidity yields and averages.
 
         Parameters
         ----------
-        y_width: float
-          The rapidity window width, centered at 0, within which
-           particles are counted. The default value is 1, meaning the function
-           will count particles with rapidity between -0.5 and 0.5.
-        quantity: str
-            The quantity to be used for the rapidity calculation
-            (rapidity, pseudorapidity, spacetime_rapidity).
+        y_width : float
+            The rapidity window width, centered at 0.
+        quantity : str
+            The rapidity-related method name (rapidity, pseudorapidity, etc.).
+        property_func : callable, optional
+            Function to apply to each selected particle.
+            If None, counts particles instead.
 
         Returns
         -------
-        particle_counter / num_events: float
-            The average number of particles per event that fall within the
-            specified rapidity range.
-
+        float
+            Event-averaged particle yield or mean property.
         """
         if not isinstance(y_width, (int, float)):
             raise TypeError("y_width must be of type int or float")
@@ -368,121 +369,26 @@ class BulkObservables:
                 f"'{quantity}' is not a callable method of Particle"
             )
 
-        particle_counter = 0
-        # Fill histograms
+        value = 0.0
         for event in self.particle_objects:
             for particle in event:
                 if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
-                    particle_counter += 1
+                    value += property_func(particle)
+        return value / num_events
 
-        return particle_counter / num_events
+    def mid_rapidity_yield(
+        self, y_width: float = 1.0, quantity: str = "rapidity"
+    ) -> float:
+        return self._compute_mid_rapidity(y_width, quantity, lambda p: 1.0)
 
     def mid_rapidity_mean_pT(
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
-        """
-        Calculate the event-averaged mean transverse momentum :math:`p_T` at
-        mid-rapidity.
-        It is assumed that detector cuts have been performed on the particle
-        list.
-
-        Parameters
-        ----------
-        y_width: float
-          The rapidity window width, centered at 0, within which
-           particles are counted. The default value is 1, meaning the function
-           will count particles with rapidity between -0.5 and 0.5.
-        quantity: str
-            The quantity to be used for the rapidity calculation
-            (rapidity, pseudorapidity, spacetime_rapidity).
-
-        Returns
-        -------
-        particle_counter / num_events: float
-            The average pT of particles per event that fall within the
-            specified rapidity range.
-
-        """
-        if not isinstance(y_width, (int, float)):
-            raise TypeError("y_width must be of type int or float")
-
-        if y_width <= 0:
-            raise ValueError("y_width must be a positive number.")
-
-        num_events = len(self.particle_objects)
-        if num_events == 0:
-            return 0
-
-        pT_sum = 0.0
-        particle_counter = 0
-
-        particle_method = getattr(self.particle_objects[0][0], quantity)
-        if not callable(particle_method):
-            raise AttributeError(
-                f"'{quantity}' is not a callable method of Particle"
-            )
-
-        # Fill histograms
-        for event in self.particle_objects:
-            for particle in event:
-                particle_counter += 1
-                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
-                    pT_sum += particle.pT_abs()
-            pT_sum /= particle_counter
-            particle_counter = 0
-
-        return pT_sum / num_events
+        return self._compute_mid_rapidity(
+            y_width, quantity, lambda p: p.pT_abs()
+        )
 
     def mid_rapidity_mean_mT(
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
-        """
-        Calculate the event-averaged mean transverse mass :math:`m_T` at
-        mid-rapidity.
-
-        Parameters
-        ----------
-        y_width: float
-          The rapidity window width, centered at 0, within which
-           particles are counted. The default value is 1, meaning the function
-           will count particles with rapidity between -0.5 and 0.5.
-        quantity: str
-            The quantity to be used for the rapidity calculation
-            (rapidity, pseudorapidity, spacetime_rapidity).
-
-        Returns
-        -------
-        particle_counter / num_events: float
-            The average mT of particles per event that fall within the
-            specified rapidity range.
-
-        """
-        if not isinstance(y_width, (int, float)):
-            raise TypeError("y_width must be of type int or float")
-
-        if y_width <= 0:
-            raise ValueError("y_width must be a positive number.")
-
-        num_events = len(self.particle_objects)
-        if num_events == 0:
-            return 0
-
-        pT_sum = 0.0
-        particle_counter = 0
-
-        particle_method = getattr(self.particle_objects[0][0], quantity)
-        if not callable(particle_method):
-            raise AttributeError(
-                f"'{quantity}' is not a callable method of Particle"
-            )
-
-        # Fill histograms
-        for event in self.particle_objects:
-            for particle in event:
-                particle_counter += 1
-                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
-                    pT_sum += particle.mT()
-            pT_sum /= particle_counter
-            particle_counter = 0
-
-        return pT_sum / num_events
+        return self._compute_mid_rapidity(y_width, quantity, lambda p: p.mT())
