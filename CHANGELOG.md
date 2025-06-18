@@ -19,7 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v2.1.0-Chatelet
-Date: 2025-06-XX
+Date: 2025-06-19
 
 ### Fixed
 * Oscar: Replace hardcoded comment line parsing with `_extract_integer_after_keyword` to support updated output format with ensemble info.
@@ -28,6 +28,7 @@ Date: 2025-06-XX
 * Tests: Unit tests for the new comment parsing logic, including a test file in the updated Oscar format.
 * Histogram: Add `+` operator for two `Histogram` instances with identical binning.
 * Jetscape: Add support for reading different header formats in JETSCAPE/X-SCAPE output files.
+* Jetscape: Event header information can be extracted as a dictionary using the `get_event_header_information` method.
 
 ### Changed
 * Particle: The rapidity is now calculated with an `arcsinh` function to avoid numerical issues. If this is not possible, it falls back to the old method using the `log` function.

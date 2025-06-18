@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -12,7 +12,7 @@ import numpy as np
 from sparkx.loader.JetscapeLoader import JetscapeLoader
 from sparkx.Particle import Particle
 from sparkx.BaseStorer import BaseStorer
-from typing import List, Tuple, Union, Dict, Optional
+from typing import List, Tuple, Union, Dict, cast
 
 
 class Jetscape(BaseStorer):
@@ -192,6 +192,53 @@ class Jetscape(BaseStorer):
         self.last_line_: str = self.loader_.get_last_line(JETSCAPE_FILE)
         del self.loader_
 
+    def _update_event_header_information_after_filtering(self) -> None:
+        if (
+            self.num_output_per_event_ is None
+            or self.num_output_per_event_.size == 0
+        ):
+            # If no events survived filtering, clear the event header info
+            self.event_header_information_ = []
+            return
+        # go through the 'Event' key in the event header information
+        # if the value of the key is not in the first column of
+        # num_output_per_event_, remove the event header information
+        if self.num_output_per_event_.ndim == 1:
+            event_numbers = np.array(self.num_output_per_event_[0], dtype=int)
+        else:
+            event_numbers = np.array(
+                [
+                    self.num_output_per_event_[i][0]
+                    for i in range(self.num_output_per_event_.shape[0])
+                ],
+                dtype=int,
+            )
+        self.event_header_information_ = [
+            event_info
+            for event_info in self.event_header_information_
+            if int(event_info["Event"]) in event_numbers
+        ]
+        # Update also the self.particle_type_defining_string_ entry with the second column of num_output_per_event_
+        if self.num_output_per_event_.ndim == 1:
+            particle_numbers = np.array(
+                self.num_output_per_event_[1], dtype=int
+            )
+        else:
+            particle_numbers = np.array(
+                [
+                    self.num_output_per_event_[i][1]
+                    for i in range(self.num_output_per_event_.shape[0])
+                ],
+                dtype=int,
+            )
+        # Update the key self.particle_type_defining_string_ in the event header information with the particle numbers
+        for i, event_info in enumerate(self.event_header_information_):
+            keys = list(event_info.keys())
+            if self.particle_type_defining_string_ in keys:
+                event_info[self.particle_type_defining_string_] = (
+                    particle_numbers[i]
+                )
+
     def create_loader(
         self, JETSCAPE_FILE: Union[str, List[List[Particle]]]
     ) -> None:
@@ -269,6 +316,22 @@ class Jetscape(BaseStorer):
             (self.sigmaGen_[0] + other.sigmaGen_[0]) / 2.0,
             0.5 * np.sqrt(self.sigmaGen_[1] ** 2 + other.sigmaGen_[1] ** 2),
         )
+        # get the number of events from self and update the 'Event' key in the
+        # event header information by adding the number of events to the
+        # 'Event' key in the other instance
+        num_events_self = cast(int, self.num_events_)
+        for event_info in other.event_header_information_:
+            if "Event" in event_info:
+                event_value = event_info["Event"]
+                if isinstance(event_value, int):
+                    event_info["Event"] = (
+                        cast(int, event_value) + num_events_self
+                    )
+                else:
+                    raise TypeError(
+                        f"Expected int for 'Event', got {type(event_value).__name__}"
+                    )
+        # update the event header information
         self.event_header_information_.extend(other.event_header_information_)
 
     # PUBLIC CLASS METHODS
@@ -372,6 +435,7 @@ class Jetscape(BaseStorer):
         List[Dict[str, float]]
             A list of dictionaries containing the event header information for all events.
         """
+        self._update_event_header_information_after_filtering()
         return self.event_header_information_
 
     def print_particle_lists_to_file(self, output_file: str) -> None:
@@ -394,6 +458,12 @@ class Jetscape(BaseStorer):
             raise ValueError("The number of output per event is empty.")
         if self.num_events_ == 1 and self.particle_list_ == [[]]:
             warnings.warn("The number of events is zero.")
+
+        # Get the header from the Jetscape file, for that we call the
+        # _update_event_header_information_after_filtering method to ensure
+        # that the event header information is up to date
+        self._update_event_header_information_after_filtering()
+
         # Open the output file with buffered writing (25 MB)
         with open(output_file, "w", buffering=25 * 1024 * 1024) as f_out:
             f_out.write(header_file)
@@ -406,12 +476,21 @@ class Jetscape(BaseStorer):
             elif self.num_events_ > 1:
                 for i in range(self.num_events_):
                     event = self.num_output_per_event_[i, 0]
-                    num_out = self.num_output_per_event_[i, 1]
                     particle_output = np.asarray(list_of_particles[i])
 
-                    # Header for each event
-                    header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
-                    f_out.write(header)
+                    event_header_info = self.event_header_information_[i]
+                    # Create the event header string by looping through the keys and values
+                    event_header_string = (
+                        "#\t"
+                        + "\t".join(
+                            [
+                                f"{key}\t{value}"
+                                for key, value in event_header_info.items()
+                            ]
+                        )
+                        + "\n"
+                    )
+                    f_out.write(event_header_string)
 
                     # Write the particle data to the file
                     if particle_output.shape[0] != 0:
@@ -420,12 +499,21 @@ class Jetscape(BaseStorer):
                         )
             else:
                 event = 0
-                num_out = self.num_output_per_event_[0][1]
                 particle_output = np.asarray(list_of_particles)
 
-                # Header for each event
-                header = f"#\tEvent\t{event}\tweight\t1\tEPangle\t0\t{self.particle_type_defining_string_}\t{num_out}\n"
-                f_out.write(header)
+                event_header_info = self.event_header_information_[0]
+                # Create the event header string by looping through the keys and values
+                event_header_string = (
+                    "#\t"
+                    + "\t".join(
+                        [
+                            f"{key}\t{value}"
+                            for key, value in event_header_info.items()
+                        ]
+                    )
+                    + "\n"
+                )
+                f_out.write(event_header_string)
 
                 # Write the particle data to the file
                 if particle_output.shape[0] != 0:

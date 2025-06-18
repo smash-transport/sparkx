@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2024
+#    Copyright (c) 2024-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -39,6 +39,8 @@ class JetscapeLoader(BaseLoader):
         Returns the string which defines the particle type in the JETSCAPE file.
     get_particle_type()
         Returns the particle type of the JETSCAPE file.
+    get_event_header_information()
+        Returns the event header information of the JETSCAPE file.
     """
 
     def __init__(self, JETSCAPE_FILE: str):
@@ -76,7 +78,7 @@ class JetscapeLoader(BaseLoader):
         self.optional_arguments_: Any = {}
         self.event_end_lines_: List[str] = []
         self.num_output_per_event_: np.ndarray = np.array([])
-        self.event_header_information_: List[Dict[str, float]] = []
+        self.event_header_information_: List[Dict[str, Union[int, float]]] = []
         self.num_events_: int = 0
 
     def load(
@@ -593,7 +595,7 @@ class JetscapeLoader(BaseLoader):
         """
         with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             event_output = []
-            event_header_information = []
+            event_header_information: List[Dict[str, Union[int, float]]] = []
 
             while True:
                 line = jetscape_file.readline()
@@ -606,19 +608,24 @@ class JetscapeLoader(BaseLoader):
                         line.replace("\n", "").replace("\t", " ").split(" ")
                     )
                     line_str = line_str[1:]  # ignore the first '#'
-                    event_header_data = {}
+                    event_header_data: Dict[str, Union[int, float]] = {}
                     for i in range(0, len(line_str), 2):
-                        event_header_data[line_str[i]] = float(line_str[i + 1])
+                        if (line_str[i] == "Event") or (
+                            line_str[i] == self.particle_type_defining_string_
+                        ):
+                            event_header_data[line_str[i]] = int(
+                                line_str[i + 1]
+                            )
+                        else:
+                            event_header_data[line_str[i]] = float(
+                                line_str[i + 1]
+                            )
                     # event number is always the first entry
                     event = int(event_header_data["Event"])
                     # num_output is given by particle_type_defining_string_
                     num_output = int(
                         event_header_data[self.particle_type_defining_string_]
                     )
-                    # remove the "Event" and "N_hadrons" or "N_partons" entries
-                    # from the dictionary
-                    del event_header_data["Event"]
-                    del event_header_data[self.particle_type_defining_string_]
                     event_output.append([event, num_output])
                     event_header_information.append(event_header_data)
                 else:
@@ -684,7 +691,9 @@ class JetscapeLoader(BaseLoader):
         """
         return self.particle_type_defining_string_
 
-    def get_event_header_information(self) -> List[Dict[str, float]]:
+    def get_event_header_information(
+        self,
+    ) -> List[Dict[str, Union[int, float]]]:
         """
         Returns the event header information of the Jetscape file. They are read
         as a list of dictionaries from event header lines of the file.
