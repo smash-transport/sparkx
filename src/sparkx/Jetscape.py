@@ -426,13 +426,15 @@ class Jetscape(BaseStorer):
         """
         return self.sigmaGen_
 
-    def get_event_header_information(self) -> List[Dict[str, float]]:
+    def get_event_header_information(
+        self,
+    ) -> List[Dict[str, Union[int, float]]]:
         """
         Returns the event header information for all events.
 
         Returns
         -------
-        List[Dict[str, float]]
+        List[Dict[str, Union[int, float]]]
             A list of dictionaries containing the event header information for all events.
         """
         self._update_event_header_information_after_filtering()
