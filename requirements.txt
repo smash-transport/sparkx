@@ -11,6 +11,7 @@ numpydoc==1.6.0
 myst-parser==2.0.0
 sphinx-rtd-theme==2.0.0
 setuptools>=68.0.0
+sphinxcontrib-mermaid>=1.0.0
 
 # Development and testing dependencies
 pytest>=7.4.3
