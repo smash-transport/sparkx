@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BulkObservables &mdash; sparkx 2.0.2 documentation</title>
+  <title>BulkObservables &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../_static/documentation_options.js?v=20623aea"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -87,7 +95,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Histogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Histogram</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -168,7 +176,26 @@
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        :linenos:</span>
 
+<span class="sd">        &gt;&gt;&gt; from sparkx.Oscar import Oscar</span>
 <span class="sd">        &gt;&gt;&gt; from sparkx.BulkObservables import BulkObservables</span>
+
+<span class="sd">        &gt;&gt;&gt; # ============================================================</span>
+<span class="sd">        &gt;&gt;&gt; # 1. Load and filter input particles from simulation output</span>
+<span class="sd">        &gt;&gt;&gt; # ============================================================</span>
+
+<span class="sd">        &gt;&gt;&gt; # You can obtain a list of Particle objects using either the</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar or Jetscape classes. Alternatively, you may use a</span>
+<span class="sd">        &gt;&gt;&gt; # custom user-defined list of Particle objects.</span>
+<span class="sd">        &gt;&gt;&gt; #</span>
+<span class="sd">        &gt;&gt;&gt; # In this example, we use the Oscar class and filter the output</span>
+<span class="sd">        &gt;&gt;&gt; # to include only charged particles.</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar</span>
+<span class="sd">        &gt;&gt;&gt; particle_objects_list = Oscar(OSCAR_FILE_PATH, filters={&#39;charged_particles&#39;: True}).particle_objects_list()</span>
+
+<span class="sd">        &gt;&gt;&gt; # =====================================</span>
+<span class="sd">        &gt;&gt;&gt; # 2. Calculate bulk observables</span>
+<span class="sd">        &gt;&gt;&gt; # =====================================</span>
 
 <span class="sd">        &gt;&gt;&gt; # Initialize the BulkObservables class</span>
 <span class="sd">        &gt;&gt;&gt; bulk_observables = BulkObservables(particle_objects_list)</span>
@@ -421,30 +448,29 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_differential_yield</span><span class="p">(</span><span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="n">bin_properties</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BulkObservables.mid_rapidity_yield">
-<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.mid_rapidity_yield">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mid_rapidity_yield</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_mid_rapidity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">property_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Particle</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the event-averaged particle yield at mid-rapidity.</span>
+<span class="sd">        Generalized function to compute mid-rapidity yields and averages.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        y_width: float</span>
-<span class="sd">          The rapidity window width, centered at 0, within which</span>
-<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
-<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
-<span class="sd">        quantity: str</span>
-<span class="sd">            The quantity to be used for the rapidity calculation</span>
-<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
+<span class="sd">        y_width : float</span>
+<span class="sd">            The rapidity window width, centered at 0.</span>
+<span class="sd">        quantity : str</span>
+<span class="sd">            The rapidity-related method name (rapidity, pseudorapidity, etc.).</span>
+<span class="sd">        property_func : callable, optional</span>
+<span class="sd">            Function to apply to each selected particle.</span>
+<span class="sd">            If None, counts particles instead.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        particle_counter / num_events: float</span>
-<span class="sd">            The average number of particles per event that fall within the</span>
-<span class="sd">            specified rapidity range.</span>
-
+<span class="sd">        float</span>
+<span class="sd">            Event-averaged particle yield or mean property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
@@ -462,14 +488,19 @@
                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Fill histograms</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
                 <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">value</span> <span class="o">+=</span> <span class="n">property_func</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="o">/</span> <span class="n">num_events</span>
 
-        <span class="k">return</span> <span class="n">particle_counter</span> <span class="o">/</span> <span class="n">num_events</span></div>
+<div class="viewcode-block" id="BulkObservables.mid_rapidity_yield">
+<a class="viewcode-back" href="../classes/BulkObservables/index.html#BulkObservables.BulkObservables.mid_rapidity_yield">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mid_rapidity_yield</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mid_rapidity</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BulkObservables.mid_rapidity_mean_pT">
@@ -477,58 +508,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">mid_rapidity_mean_pT</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the event-averaged mean transverse momentum :math:`p_T` at</span>
-<span class="sd">        mid-rapidity.</span>
-<span class="sd">        It is assumed that detector cuts have been performed on the particle</span>
-<span class="sd">        list.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        y_width: float</span>
-<span class="sd">          The rapidity window width, centered at 0, within which</span>
-<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
-<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
-<span class="sd">        quantity: str</span>
-<span class="sd">            The quantity to be used for the rapidity calculation</span>
-<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        particle_counter / num_events: float</span>
-<span class="sd">            The average pT of particles per event that fall within the</span>
-<span class="sd">            specified rapidity range.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">y_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_width must be a positive number.&quot;</span><span class="p">)</span>
-
-        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">num_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="n">pT_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">quantity</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># Fill histograms</span>
-        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
-                <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">pT_sum</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">pT_abs</span><span class="p">()</span>
-            <span class="n">pT_sum</span> <span class="o">/=</span> <span class="n">particle_counter</span>
-            <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="n">pT_sum</span> <span class="o">/</span> <span class="n">num_events</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mid_rapidity</span><span class="p">(</span>
+            <span class="n">y_width</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">pT_abs</span><span class="p">()</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BulkObservables.mid_rapidity_mean_mT">
@@ -536,56 +518,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">mid_rapidity_mean_mT</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">y_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rapidity&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the event-averaged mean transverse mass :math:`m_T` at</span>
-<span class="sd">        mid-rapidity.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        y_width: float</span>
-<span class="sd">          The rapidity window width, centered at 0, within which</span>
-<span class="sd">           particles are counted. The default value is 1, meaning the function</span>
-<span class="sd">           will count particles with rapidity between -0.5 and 0.5.</span>
-<span class="sd">        quantity: str</span>
-<span class="sd">            The quantity to be used for the rapidity calculation</span>
-<span class="sd">            (rapidity, pseudorapidity, spacetime_rapidity).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        particle_counter / num_events: float</span>
-<span class="sd">            The average mT of particles per event that fall within the</span>
-<span class="sd">            specified rapidity range.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;y_width must be of type int or float&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">y_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_width must be a positive number.&quot;</span><span class="p">)</span>
-
-        <span class="n">num_events</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">num_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="n">pT_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">particle_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">quantity</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">particle_method</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&#39; is not a callable method of Particle&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># Fill histograms</span>
-        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_objects</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
-                <span class="n">particle_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="o">-</span><span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)()</span> <span class="o">&lt;=</span> <span class="n">y_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">pT_sum</span> <span class="o">+=</span> <span class="n">particle</span><span class="o">.</span><span class="n">mT</span><span class="p">()</span>
-            <span class="n">pT_sum</span> <span class="o">/=</span> <span class="n">particle_counter</span>
-            <span class="n">particle_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="n">pT_sum</span> <span class="o">/</span> <span class="n">num_events</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mid_rapidity</span><span class="p">(</span><span class="n">y_width</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">mT</span><span class="p">())</span></div>
 </div>
 
 </pre></div>

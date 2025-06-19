@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 2.0.2 documentation</title>
+  <title>Particle &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../../_static/documentation_options.js?v=20623aea"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -432,7 +432,10 @@ is returned.</p>
 </dl>
 <p class="rubric">Notes</p>
 <p>If one of the needed particle quantities is not given, then <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code>
-is returned.</p>
+is returned.
+For numerical stability, we compute the rapidity as follows: <span class="math notranslate nohighlight">\(\sinh^{-1}\left(\frac{p_z}{m_T}\right)\)</span>
+This is equivalent to the above formula, but avoids numerical issues when <span class="math notranslate nohighlight">\(E \approx p_z\)</span>.
+If the transverse mass <span class="math notranslate nohighlight">\(m_T\)</span> is close to zero, we fall back to the original formula.</p>
 </dd></dl>
 
 <dl class="py method">

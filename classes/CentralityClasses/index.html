@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CentralityClasses &mdash; sparkx 2.0.2 documentation</title>
+  <title>CentralityClasses &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../../_static/documentation_options.js?v=20623aea"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -135,17 +135,37 @@ or <code class="code docutils literal notranslate"><span class="pre">numpy.ndarr
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sparkx</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
-<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">rd</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># generate 300 random event multiplicities between 50 and 1500</span>
-<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="n">events_multiplicity</span> <span class="o">=</span> <span class="p">[</span><span class="n">rd</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">300</span><span class="p">)]</span>
-<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_bins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span> <span class="o">=</span> <span class="n">CentralityClasses</span><span class="p">(</span><span class="n">events_multiplicity</span><span class="o">=</span><span class="n">events_multiplicity</span><span class="p">,</span>
-<span class="linenos"> 9</span><span class="gp">... </span>                                  <span class="n">centrality_bins</span><span class="o">=</span><span class="n">centrality_bins</span><span class="p">)</span>
-<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span><span class="o">.</span><span class="n">get_centrality_class</span><span class="p">(</span><span class="mi">1490</span><span class="p">)</span>
-<span class="linenos">11</span><span class="go">0</span>
-<span class="linenos">12</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span><span class="o">.</span><span class="n">output_centrality_classes</span><span class="p">(</span><span class="s1">&#39;centrality_output.txt&#39;</span><span class="p">)</span>
+<span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ============================================================</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 1. Load and filter input particles from simulation output</span>
+<span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ============================================================</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># You can obtain a list of Particle objects using either the</span>
+<span class="linenos"> 7</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Oscar or Jetscape classes. Alternatively, you may use a</span>
+<span class="linenos"> 8</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># custom user-defined list of Particle objects.</span>
+<span class="linenos"> 9</span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#</span>
+<span class="linenos">10</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># In this example, we use the Oscar class and filter the output</span>
+<span class="linenos">11</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># to include only charged particles.</span>
+<span class="linenos">12</span><span class="gp">&gt;&gt;&gt;</span>
+<span class="linenos">13</span><span class="gp">&gt;&gt;&gt; </span><span class="n">OSCAR_FILE_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">Oscar_directory</span><span class="p">]</span><span class="o">/</span><span class="n">particle_lists</span><span class="o">.</span><span class="n">oscar</span>
+<span class="linenos">14</span><span class="gp">&gt;&gt;&gt; </span><span class="n">oscar</span> <span class="o">=</span> <span class="n">Oscar</span><span class="p">(</span><span class="n">OSCAR_FILE_PATH</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;charged_particles&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="linenos">15</span><span class="gp">&gt;&gt;&gt; </span><span class="n">number_particles_event</span> <span class="o">=</span> <span class="n">oscar</span><span class="o">.</span><span class="n">num_output_per_event</span><span class="p">()</span>
+<span class="linenos">16</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Keep multiplicities from events with non-zero multiplicity only</span>
+<span class="linenos">17</span><span class="gp">&gt;&gt;&gt; </span><span class="n">multiplicities</span> <span class="o">=</span> <span class="n">number_particles_event</span><span class="p">[</span><span class="n">number_particles_event</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># =====================================</span>
+<span class="linenos">20</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 2. Calculate centrality classes</span>
+<span class="linenos">21</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># =====================================</span>
+<span class="linenos">22</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define the centrality class boundaries (in percent)</span>
+<span class="linenos">23</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_bins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+<span class="linenos">24</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span> <span class="o">=</span> <span class="n">CentralityClasses</span><span class="p">(</span><span class="n">events_multiplicity</span><span class="o">=</span><span class="n">multiplicities</span><span class="p">,</span>
+<span class="linenos">25</span><span class="gp">... </span>                                  <span class="n">centrality_bins</span><span class="o">=</span><span class="n">centrality_bins</span><span class="p">)</span>
+<span class="linenos">26</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the centrality class for a specific event multiplicity value</span>
+<span class="linenos">27</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># (e.g. 1490)</span>
+<span class="linenos">28</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The function returns the index of the centrality bin in `centrality_bins`.</span>
+<span class="linenos">29</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span><span class="o">.</span><span class="n">get_centrality_class</span><span class="p">(</span><span class="mi">1490</span><span class="p">)</span>
+<span class="linenos">30</span><span class="go">0</span>
+<span class="linenos">31</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># This event has index 0, which corresponds to the most central bin (0-10%).</span>
+<span class="linenos">32</span><span class="gp">&gt;&gt;&gt; </span><span class="n">centrality_obj</span><span class="o">.</span><span class="n">output_centrality_classes</span><span class="p">(</span><span class="s1">&#39;centrality_output.txt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

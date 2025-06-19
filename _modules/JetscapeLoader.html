@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetscapeLoader &mdash; sparkx 2.0.2 documentation</title>
+  <title>JetscapeLoader &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../_static/documentation_options.js?v=20623aea"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -78,7 +86,7 @@
   <h1>Source code for JetscapeLoader</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2024</span>
+<span class="c1">#    Copyright (c) 2024-2025</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -119,6 +127,8 @@
 <span class="sd">        Returns the string which defines the particle type in the JETSCAPE file.</span>
 <span class="sd">    get_particle_type()</span>
 <span class="sd">        Returns the particle type of the JETSCAPE file.</span>
+<span class="sd">    get_event_header_information()</span>
+<span class="sd">        Returns the event header information of the JETSCAPE file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -156,6 +166,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="JetscapeLoader.load">
@@ -666,6 +677,9 @@
 <span class="sd">        and stores it in the ``num_output_per_event_`` attribute. It also sets</span>
 <span class="sd">        the ``num_events_`` attribute to the length of the list.</span>
 
+<span class="sd">        It also reades the event header information and stores it in the</span>
+<span class="sd">        ``event_header_information_`` attribute as a list of dictionaries.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        None</span>
@@ -680,6 +694,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jetscape_file</span><span class="p">:</span>
             <span class="n">event_output</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">event_header_information</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">jetscape_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -691,14 +706,33 @@
                     <span class="n">line_str</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="n">event</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="n">num_output</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># ignore the first &#39;#&#39;</span>
+                    <span class="n">event_header_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_str</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Event&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                            <span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span>
+                        <span class="p">):</span>
+                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="p">)</span>
+                    <span class="c1"># event number is always the first entry</span>
+                    <span class="n">event</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">])</span>
+                    <span class="c1"># num_output is given by particle_type_defining_string_</span>
+                    <span class="n">num_output</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="n">event_header_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="p">]</span>
+                    <span class="p">)</span>
                     <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event</span><span class="p">,</span> <span class="n">num_output</span><span class="p">])</span>
+                    <span class="n">event_header_information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">continue</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_output</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span> <span class="o">=</span> <span class="n">event_header_information</span></div>
 
 
 <div class="viewcode-block" id="JetscapeLoader.get_last_line">
@@ -764,6 +798,25 @@
 <span class="sd">            The particle type defining string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span></div>
+
+
+<div class="viewcode-block" id="JetscapeLoader.get_event_header_information">
+<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_event_header_information">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_header_information</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the event header information of the Jetscape file. They are read</span>
+<span class="sd">        as a list of dictionaries from event header lines of the file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list containing the event header information in a dictionary for</span>
+<span class="sd">            each event.</span>
+<span class="sd">            The keys of the dictionary are the names of the header information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span></div>
 
 
 <div class="viewcode-block" id="JetscapeLoader.get_particle_type">

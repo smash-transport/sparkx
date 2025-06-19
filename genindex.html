@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; sparkx 2.0.2 documentation</title>
+  <title>Index &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="_static/documentation_options.js?v=20623aea"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -285,14 +293,20 @@
 </li>
       <li><a href="classes/flow/GenerateFlow/index.html#GenerateFlow.GenerateFlow">GenerateFlow (class in GenerateFlow)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.get_associated_particles">get_associated_particles() (JetAnalysis.JetAnalysis method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classes/CentralityClasses/index.html#CentralityClasses.CentralityClasses.get_centrality_class">get_centrality_class() (CentralityClasses.CentralityClasses method)</a>
 </li>
       <li><a href="classes/Lattice3D/index.html#Lattice3D.Lattice3D.get_coordinates">get_coordinates() (Lattice3D.Lattice3D method)</a>
 </li>
+      <li><a href="classes/Jetscape/index.html#Jetscape.Jetscape.get_event_header_information">get_event_header_information() (Jetscape.Jetscape method)</a>
+
+      <ul>
+        <li><a href="classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_event_header_information">(JetscapeLoader.JetscapeLoader method)</a>
+</li>
+      </ul></li>
       <li><a href="classes/JetAnalysis/index.html#JetAnalysis.JetAnalysis.get_jets">get_jets() (JetAnalysis.JetAnalysis method)</a>
 </li>
       <li><a href="classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_last_line">get_last_line() (JetscapeLoader.JetscapeLoader method)</a>

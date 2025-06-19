@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jetscape &mdash; sparkx 2.0.2 documentation</title>
+  <title>Jetscape &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../_static/documentation_options.js?v=20623aea"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -78,7 +86,7 @@
   <h1>Source code for Jetscape</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#    Copyright (c) 2023-2025</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -90,7 +98,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.loader.JetscapeLoader</span><span class="w"> </span><span class="kn">import</span> <span class="n">JetscapeLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.Particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">Particle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sparkx.BaseStorer</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStorer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">cast</span>
 
 
 <div class="viewcode-block" id="Jetscape">
@@ -266,8 +274,58 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span><span class="o">.</span><span class="n">get_particle_type_defining_string</span><span class="p">()</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span><span class="o">.</span><span class="n">get_event_header_information</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_line_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span><span class="o">.</span><span class="n">get_last_line</span><span class="p">(</span><span class="n">JETSCAPE_FILE</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader_</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_event_header_information_after_filtering</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="c1"># If no events survived filtering, clear the event header info</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">return</span>
+        <span class="c1"># go through the &#39;Event&#39; key in the event header information</span>
+        <span class="c1"># if the value of the key is not in the first column of</span>
+        <span class="c1"># num_output_per_event_, remove the event header information</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">event_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">event_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">event_info</span>
+            <span class="k">for</span> <span class="n">event_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_info</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">event_numbers</span>
+        <span class="p">]</span>
+        <span class="c1"># Update also the self.particle_type_defining_string_ entry with the second column of num_output_per_event_</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">particle_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">particle_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="c1"># Update the key self.particle_type_defining_string_ in the event header information with the particle numbers</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">event_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">event_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">event_info</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">particle_numbers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="p">)</span>
 
 <div class="viewcode-block" id="Jetscape.create_loader">
 <a class="viewcode-back" href="../classes/Jetscape/index.html#Jetscape.Jetscape.create_loader">[docs]</a>
@@ -349,6 +407,23 @@
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmaGen_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">sigmaGen_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
             <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmaGen_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">sigmaGen_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span>
         <span class="p">)</span>
+        <span class="c1"># get the number of events from self and update the &#39;Event&#39; key in the</span>
+        <span class="c1"># event header information by adding the number of events to the</span>
+        <span class="c1"># &#39;Event&#39; key in the other instance</span>
+        <span class="n">num_events_self</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event_info</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Event&quot;</span> <span class="ow">in</span> <span class="n">event_info</span><span class="p">:</span>
+                <span class="n">event_value</span> <span class="o">=</span> <span class="n">event_info</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">event_info</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">event_value</span><span class="p">)</span> <span class="o">+</span> <span class="n">num_events_self</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Expected int for &#39;Event&#39;, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">event_value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+        <span class="c1"># update the event header information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">)</span>
 
     <span class="c1"># PUBLIC CLASS METHODS</span>
 <div class="viewcode-block" id="Jetscape.participants">
@@ -457,6 +532,23 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmaGen_</span></div>
 
 
+<div class="viewcode-block" id="Jetscape.get_event_header_information">
+<a class="viewcode-back" href="../classes/Jetscape/index.html#Jetscape.Jetscape.get_event_header_information">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_header_information</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the event header information for all events.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Dict[str, Union[int, float]]]</span>
+<span class="sd">            A list of dictionaries containing the event header information for all events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_event_header_information_after_filtering</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span></div>
+
+
 <div class="viewcode-block" id="Jetscape.print_particle_lists_to_file">
 <a class="viewcode-back" href="../classes/Jetscape/index.html#Jetscape.Jetscape.print_particle_lists_to_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">print_particle_lists_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -479,6 +571,12 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of output per event is empty.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_list_</span> <span class="o">==</span> <span class="p">[[]]:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The number of events is zero.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get the header from the Jetscape file, for that we call the</span>
+        <span class="c1"># _update_event_header_information_after_filtering method to ensure</span>
+        <span class="c1"># that the event header information is up to date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_event_header_information_after_filtering</span><span class="p">()</span>
+
         <span class="c1"># Open the output file with buffered writing (25 MB)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">25</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
             <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_file</span><span class="p">)</span>
@@ -491,12 +589,21 @@
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">):</span>
                     <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-                    <span class="n">num_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
                     <span class="n">particle_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">list_of_particles</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-                    <span class="c1"># Header for each event</span>
-                    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="se">\t</span><span class="s2">Event</span><span class="se">\t</span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="se">\t</span><span class="s2">weight</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">EPangle</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">num_out</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+                    <span class="n">event_header_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="c1"># Create the event header string by looping through the keys and values</span>
+                    <span class="n">event_header_string</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;#</span><span class="se">\t</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="p">[</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event_header_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                            <span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">event_header_string</span><span class="p">)</span>
 
                     <span class="c1"># Write the particle data to the file</span>
                     <span class="k">if</span> <span class="n">particle_output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -505,12 +612,21 @@
                         <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">event</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">num_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">particle_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">list_of_particles</span><span class="p">)</span>
 
-                <span class="c1"># Header for each event</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="se">\t</span><span class="s2">Event</span><span class="se">\t</span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="se">\t</span><span class="s2">weight</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">EPangle</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">num_out</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+                <span class="n">event_header_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># Create the event header string by looping through the keys and values</span>
+                <span class="n">event_header_string</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;#</span><span class="se">\t</span><span class="s2">&quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event_header_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">f_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">event_header_string</span><span class="p">)</span>
 
                 <span class="c1"># Write the particle data to the file</span>
                 <span class="k">if</span> <span class="n">particle_output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>

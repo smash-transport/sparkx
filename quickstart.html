@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart &mdash; sparkx 2.0.2 documentation</title>
+  <title>Quickstart &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,10 +16,18 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="_static/documentation_options.js?v=20623aea"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -98,9 +106,17 @@ SPARKX is designed to help users of <a class="reference external" href="https://
 and <a class="reference external" href="https://jetscape.org/">JETSCAPE/X-SCAPE</a> codes analyze output simulation data with ease.</p>
 <section id="key-components-of-sparkx">
 <h2>Key Components of SPARKX<a class="headerlink" href="#key-components-of-sparkx" title="Link to this heading"></a></h2>
-<p>The following classes will be useful for loading, filtering, and analyzing your SMASH or JETSCAPE/X-SCAPE data:</p>
+<p>This is a general overview of the main components of SPARKX.
+SPARKX is designed to be modular, allowing users to load, filter, and analyze data
+from different sources. The following diagram illustrates the main components:</p>
+<pre  class="mermaid">
+        %%{ init : { &quot;flowchart&quot;: { &quot;wrap&quot;: true } } }%%
+flowchart LR
+    A[Loading / Filtering Data&lt;/br&gt;Oscar / Jetscape&lt;/br&gt;Custom Input] --&gt;|Particle Objects List| B[Analyze Data]
+    </pre><p>The following classes will be useful for loading, filtering, and analyzing your SMASH or JETSCAPE/X-SCAPE data.</p>
 <section id="data-loading-and-filtering">
 <h3>Data Loading and Filtering<a class="headerlink" href="#data-loading-and-filtering" title="Link to this heading"></a></h3>
+<p>These classes are used to load and filter data from different sources:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="classes/Jetscape/index.html">Jetscape</a>: Reads hadron or parton output from JETSCAPE/X-SCAPE and allows particle filtering.</p></li>
 <li><p><a class="reference external" href="classes/Oscar/index.html">Oscar</a>: Reads various Oscar data formats and provides particle filtering methods.</p></li>

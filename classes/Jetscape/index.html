@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jetscape &mdash; sparkx 2.0.2 documentation</title>
+  <title>Jetscape &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../../_static/documentation_options.js?v=20623aea"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Jetscape.Jetscape"><code class="docutils literal notranslate"><span class="pre">Jetscape</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.charged_particles"><code class="docutils literal notranslate"><span class="pre">Jetscape.charged_particles()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.create_loader"><code class="docutils literal notranslate"><span class="pre">Jetscape.create_loader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.get_event_header_information"><code class="docutils literal notranslate"><span class="pre">Jetscape.get_event_header_information()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.get_sigmaGen"><code class="docutils literal notranslate"><span class="pre">Jetscape.get_sigmaGen()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.keep_baryons"><code class="docutils literal notranslate"><span class="pre">Jetscape.keep_baryons()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Jetscape.Jetscape.keep_bottom"><code class="docutils literal notranslate"><span class="pre">Jetscape.keep_bottom()</span></code></a></li>
@@ -331,6 +332,20 @@ and assigns it to the loader attribute.</p>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>TypeError</dt><dd><p>If JETSCAPE_FILE is not a string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Jetscape.Jetscape.get_event_header_information">
+<span class="sig-name descname"><span class="pre">get_event_header_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/Jetscape.html#Jetscape.get_event_header_information"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Jetscape.Jetscape.get_event_header_information" title="Link to this definition"></a></dt>
+<dd><p>Returns the event header information for all events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List[Dict[str, Union[int, float]]]</dt><dd><p>A list of dictionaries containing the event header information for all events.</p>
 </dd>
 </dl>
 </dd>

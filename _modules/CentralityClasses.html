@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CentralityClasses &mdash; sparkx 2.0.2 documentation</title>
+  <title>CentralityClasses &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../_static/documentation_options.js?v=20623aea"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -78,7 +86,7 @@
   <h1>Source code for CentralityClasses</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#    Copyright (c) 2023-2025</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -145,16 +153,37 @@
 <span class="sd">        :linenos:</span>
 
 <span class="sd">        &gt;&gt;&gt; from sparkx import *</span>
-<span class="sd">        &gt;&gt;&gt; import random as rd</span>
-<span class="sd">        &gt;&gt;&gt; rd.seed(0)</span>
+<span class="sd">        &gt;&gt;&gt; # ============================================================</span>
+<span class="sd">        &gt;&gt;&gt; # 1. Load and filter input particles from simulation output</span>
+<span class="sd">        &gt;&gt;&gt; # ============================================================</span>
 
-<span class="sd">        &gt;&gt;&gt; # generate 300 random event multiplicities between 50 and 1500</span>
-<span class="sd">        &gt;&gt;&gt; events_multiplicity = [rd.randint(50, 1500) for _ in range(300)]</span>
+<span class="sd">        &gt;&gt;&gt; # You can obtain a list of Particle objects using either the</span>
+<span class="sd">        &gt;&gt;&gt; # Oscar or Jetscape classes. Alternatively, you may use a</span>
+<span class="sd">        &gt;&gt;&gt; # custom user-defined list of Particle objects.</span>
+<span class="sd">        &gt;&gt;&gt; #</span>
+<span class="sd">        &gt;&gt;&gt; # In this example, we use the Oscar class and filter the output</span>
+<span class="sd">        &gt;&gt;&gt; # to include only charged particles.</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar</span>
+<span class="sd">        &gt;&gt;&gt; oscar = Oscar(OSCAR_FILE_PATH, filters={&#39;charged_particles&#39;: True})</span>
+<span class="sd">        &gt;&gt;&gt; number_particles_event = oscar.num_output_per_event()</span>
+<span class="sd">        &gt;&gt;&gt; # Keep multiplicities from events with non-zero multiplicity only</span>
+<span class="sd">        &gt;&gt;&gt; multiplicities = number_particles_event[number_particles_event[:, 1] != 0, 1]</span>
+
+
+<span class="sd">        &gt;&gt;&gt; # =====================================</span>
+<span class="sd">        &gt;&gt;&gt; # 2. Calculate centrality classes</span>
+<span class="sd">        &gt;&gt;&gt; # =====================================</span>
+<span class="sd">        &gt;&gt;&gt; # Define the centrality class boundaries (in percent)</span>
 <span class="sd">        &gt;&gt;&gt; centrality_bins = [0, 10, 30, 50, 70, 90, 100]</span>
-<span class="sd">        &gt;&gt;&gt; centrality_obj = CentralityClasses(events_multiplicity=events_multiplicity,</span>
+<span class="sd">        &gt;&gt;&gt; centrality_obj = CentralityClasses(events_multiplicity=multiplicities,</span>
 <span class="sd">        ...                                   centrality_bins=centrality_bins)</span>
+<span class="sd">        &gt;&gt;&gt; # Get the centrality class for a specific event multiplicity value</span>
+<span class="sd">        &gt;&gt;&gt; # (e.g. 1490)</span>
+<span class="sd">        &gt;&gt;&gt; # The function returns the index of the centrality bin in `centrality_bins`.</span>
 <span class="sd">        &gt;&gt;&gt; centrality_obj.get_centrality_class(1490)</span>
 <span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; # This event has index 0, which corresponds to the most central bin (0-10%).</span>
 <span class="sd">        &gt;&gt;&gt; centrality_obj.output_centrality_classes(&#39;centrality_output.txt&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

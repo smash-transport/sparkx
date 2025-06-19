@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Histogram &mdash; sparkx 2.0.2 documentation</title>
+  <title>Histogram &mdash; sparkx 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,9 +15,17 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../_static/documentation_options.js?v=20623aea"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+        <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -215,6 +223,14 @@
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Store the histograms in hist as numpy.ndarray</span>
 <span class="sd">        &gt;&gt;&gt; hist = histObj.histogram()</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Two `Histogram` objects can be added together. The resulting `Histogram`</span>
+<span class="sd">    object will have the same bin edges as the original objects, and the</span>
+<span class="sd">    values are added bin-wise. The errors are added in quadrature.</span>
+<span class="sd">    All relevant arrays must have the same shape, otherwise a `ValueError` is raised.</span>
+<span class="sd">    The scaling array is reset to ones.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -269,6 +285,80 @@
                 <span class="s2">&quot;Input must be a tuple (hist_min, hist_max, num_bins) &quot;</span>
                 <span class="o">+</span> <span class="s2">&quot;or a list/numpy.ndarray containing the bin edges!&quot;</span>
             <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Histogram&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Histogram</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only add Histogram to Histogram&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add histograms with undefined bin edges&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add histograms with different bin edges&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that all relevant arrays are not None and have the same shape</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">check_shape</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is None in one of the histograms&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Shape mismatch in &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;histograms_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;histograms_raw_count_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;scaling_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;systematic_error_&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">check_shape</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">number_of_histograms_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_histograms_</span>
+
+        <span class="c1"># Sum all relevant arrays</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">histograms_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot add: &#39;histograms_&#39; is None in one of the objects&quot;</span>
+            <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histograms_</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">histograms_</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot add: &#39;histograms_raw_count_&#39; is None in one of the objects&quot;</span>
+            <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histograms_raw_count_</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">histograms_raw_count_</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set scaling to ones with the same shape</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">scaling_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">histograms_</span><span class="p">)</span>
+
+        <span class="c1"># Add errors in quadrature</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot add: &#39;error_&#39; is None in one of the objects&quot;</span>
+            <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">error_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot add: &#39;systematic_error_&#39; is None in one of the objects&quot;</span>
+            <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">systematic_error_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">systematic_error_</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="Histogram.histogram">
 <a class="viewcode-back" href="../classes/Histogram/index.html#Histogram.Histogram.histogram">[docs]</a>
@@ -640,20 +730,6 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input value in add_value is NaN.&quot;</span><span class="p">)</span>
-
-            <span class="n">counter_warnings</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="p">)</span> <span class="ow">and</span> <span class="n">counter_warnings</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">warn_msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;One or more values lie outside the histogram &quot;</span>
-                    <span class="o">+</span> <span class="s2">&quot;range [&quot;</span>
-                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
-                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="o">+</span> <span class="s2">&quot;]. Exceeding values are ignored. Increase histogram range!&quot;</span>
-                <span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
 
             <span class="n">bin_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">bin_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bin_index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bins_</span><span class="p">:</span>
