@@ -136,8 +136,8 @@ class Histogram:
         >>> # Store the histograms in hist as numpy.ndarray
         >>> hist = histObj.histogram()
 
-    Note
-    ----
+    Notes
+    -----
     Two `Histogram` objects can be added together. The resulting `Histogram`
     object will have the same bin edges as the original objects, and the
     values are added bin-wise. The errors are added in quadrature.
