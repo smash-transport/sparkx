@@ -35,6 +35,7 @@ Date: 2025-06-19
 * Histogram: The class does not throw a warning anymore if a value added to a histogram is outside the bin range. Instead, it simply ignores the value.
 * Tests: Test BulkObservables rapidity distribution with massive particles in a more realistic way.
 * Requirements: Require `particle` package version 0.25.4 to support the newest PDG ids and reduce warnings.
+* Documentation: Improve the documentation for the SPARKX workflow for new users.
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.2...v2.1.0)
 
