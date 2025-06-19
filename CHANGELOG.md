@@ -18,6 +18,27 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v2.1.0-Chatelet
+Date: 2025-06-19
+
+### Fixed
+* Oscar: Replace hardcoded comment line parsing with `_extract_integer_after_keyword` to support updated output format with ensemble info.
+
+### Added
+* Tests: Unit tests for the new comment parsing logic, including a test file in the updated Oscar format.
+* Histogram: Add `+` operator for two `Histogram` instances with identical binning.
+* Jetscape: Add support for reading different header formats in JETSCAPE/X-SCAPE output files.
+* Jetscape: Event header information can be extracted as a dictionary using the `get_event_header_information` method.
+
+### Changed
+* Particle: The rapidity is now calculated with an `arcsinh` function to avoid numerical issues. If this is not possible, it falls back to the old method using the `log` function.
+* Histogram: The class does not throw a warning anymore if a value added to a histogram is outside the bin range. Instead, it simply ignores the value.
+* Tests: Test BulkObservables rapidity distribution with massive particles in a more realistic way.
+* Requirements: Require `particle` package version 0.25.4 to support the newest PDG ids and reduce warnings.
+* Documentation: Improve the documentation for the SPARKX workflow for new users.
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.0.2...v2.1.0)
+
 ## v2.0.2-Chatelet
 Date: 2025-03-12
 

@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -65,16 +65,37 @@ class CentralityClasses:
         :linenos:
 
         >>> from sparkx import *
-        >>> import random as rd
-        >>> rd.seed(0)
+        >>> # ============================================================
+        >>> # 1. Load and filter input particles from simulation output
+        >>> # ============================================================
 
-        >>> # generate 300 random event multiplicities between 50 and 1500
-        >>> events_multiplicity = [rd.randint(50, 1500) for _ in range(300)]
+        >>> # You can obtain a list of Particle objects using either the
+        >>> # Oscar or Jetscape classes. Alternatively, you may use a
+        >>> # custom user-defined list of Particle objects.
+        >>> #
+        >>> # In this example, we use the Oscar class and filter the output
+        >>> # to include only charged particles.
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>> oscar = Oscar(OSCAR_FILE_PATH, filters={'charged_particles': True})
+        >>> number_particles_event = oscar.num_output_per_event()
+        >>> # Keep multiplicities from events with non-zero multiplicity only
+        >>> multiplicities = number_particles_event[number_particles_event[:, 1] != 0, 1]
+
+
+        >>> # =====================================
+        >>> # 2. Calculate centrality classes
+        >>> # =====================================
+        >>> # Define the centrality class boundaries (in percent)
         >>> centrality_bins = [0, 10, 30, 50, 70, 90, 100]
-        >>> centrality_obj = CentralityClasses(events_multiplicity=events_multiplicity,
+        >>> centrality_obj = CentralityClasses(events_multiplicity=multiplicities,
         ...                                   centrality_bins=centrality_bins)
+        >>> # Get the centrality class for a specific event multiplicity value
+        >>> # (e.g. 1490)
+        >>> # The function returns the index of the centrality bin in `centrality_bins`.
         >>> centrality_obj.get_centrality_class(1490)
         0
+        >>> # This event has index 0, which corresponds to the most central bin (0-10%).
         >>> centrality_obj.output_centrality_classes('centrality_output.txt')
     """
 

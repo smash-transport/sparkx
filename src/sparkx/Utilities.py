@@ -49,7 +49,7 @@ def pdg_to_latex(pdg_id: Union[int, List[int]]) -> Union[str, List[str]]:
     if isinstance(pdg_id, int):
         pdg_id = [pdg_id]
 
-    path = particle.data.basepath / "particle2022.csv"
+    path = particle.data.basepath / "particle2024.csv"
     latex_names = [""] * len(pdg_id)
 
     with path.open() as csv_file:

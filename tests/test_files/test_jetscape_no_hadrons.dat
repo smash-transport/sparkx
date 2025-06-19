@@ -1,7 +1,7 @@
 #	JETSCAPE_FINAL_STATE	v2	|	N	pid	status	E	Px	Py	Pz
-#	Event	1	weight	1	EPangle	0	N_hadrons	0
-#	Event	2	weight	1	EPangle	0	N_hadrons	0
-#	Event	3	weight	1	EPangle	0	N_hadrons	0
-#	Event	4	weight	1	EPangle	0	N_hadrons	0
-#	Event	5	weight	1	EPangle	0	N_hadrons	0
+#	Event	1	weight	1.0	EPangle	0.0	N_hadrons	0
+#	Event	2	weight	1.0	EPangle	0.0	N_hadrons	0
+#	Event	3	weight	1.0	EPangle	0.0	N_hadrons	0
+#	Event	4	weight	1.0	EPangle	0.0	N_hadrons	0
+#	Event	5	weight	1.0	EPangle	0.0	N_hadrons	0
 #	sigmaGen	0.000314633	sigmaErr	6.06164e-07

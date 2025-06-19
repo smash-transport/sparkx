@@ -15,6 +15,8 @@ import os
 import numpy as np
 import pytest
 
+rng = np.random.default_rng(seed=42)
+
 
 @pytest.fixture
 def oscar_extended_file_path():
@@ -75,23 +77,25 @@ def test_dNdy_valid():
 
     particle_objects_list = []
 
+    mass = 0.14  # pion mass in GeV
     for event in y_bins_and_counts:
         particle_objects_single_event = []
 
-        for y_count_pairs in event:
-            y = y_count_pairs[0]
-            counts = y_count_pairs[1]
-
+        for y, counts in event:
             # create particles according to counts
-            for i in range(counts):
+            for _ in range(counts):
                 p = Particle()
-                # Given a p_z, the energy that will result in a
-                # rapidity y, is given E = coth(y) * p_z
-                p_z = np.random.random() * 200 - 100
-                e = (1 / np.tanh(y)) * p_z
 
-                p.E = e
-                p.pz = p_z
+                # Small random transverse momentum
+                p.px = rng.uniform(-0.3, 0.3)
+                p.py = rng.uniform(-0.3, 0.3)
+
+                pT2 = p.px**2 + p.py**2
+                mT = np.sqrt(mass**2 + pT2)
+
+                # Assign target rapidity
+                p.pz = mT * np.sinh(y)
+                p.E = mT * np.cosh(y)
 
                 particle_objects_single_event.append(p)
 
@@ -137,7 +141,7 @@ def test_dNdpT_invalid_input(oscar_extended_file_path):
     with pytest.warns(UserWarning, match=warn_msg):
         bulk_obs.dNdpT((-1.2, 2.2, 3))
 
-    with pytest.warns(UserWarning, match=warn_msg):
+    with pytest.warns(UserWarning):
         bulk_obs.dNdpT((-2.2, -1.2, 3))
 
     with pytest.warns(UserWarning, match=warn_msg):

@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -54,6 +54,16 @@ def jetscape_file_corrupted():
     # Assuming your test file is in the same directory as test_files/
     return os.path.join(
         os.path.dirname(__file__), "test_files", "test_jetscape_corrupted.dat"
+    )
+
+
+@pytest.fixture
+def jetscape_file_custom_header():
+    # Assuming your test file is in the same directory as test_files/
+    return os.path.join(
+        os.path.dirname(__file__),
+        "test_files",
+        "test_jetscape_custom_header.dat",
     )
 
 
@@ -554,3 +564,78 @@ def test_update_after_merge_warning(jetscape_file_path):
     jetscape1._update_after_merge(jetscape2)
 
     assert jetscape1.sigmaGen_ == (1.5, np.sqrt(2))
+
+
+def test_jetscape_event_headers(
+    jetscape_file_path, jetscape_file_custom_header
+):
+    jetscape = Jetscape(jetscape_file_path)
+    header_info = jetscape.get_event_header_information()
+    assert len(header_info) == 5
+    # loop through all events and check if the 'weight' is always 1
+    # and 'EPangle' is always 0
+    for event in header_info:
+        assert event["weight"] == 1
+        assert event["EPangle"] == 0
+
+    # Test with custom header
+    jetscape_custom = Jetscape(jetscape_file_custom_header)
+    header_info_custom = jetscape_custom.get_event_header_information()
+
+    # Check that the header_info_custom has a dictionary with keys
+    # 'Event', 'weight', 'EPangle', 'N_hadrons', 'centrality', and 'pt_hat'
+    assert all(
+        key in header_info_custom[0]
+        for key in [
+            "Event",
+            "weight",
+            "EPangle",
+            "N_hadrons",
+            "centrality",
+            "pt_hat",
+        ]
+    )
+    assert len(header_info_custom) == 5
+
+
+def test_jetscape_event_headers_particle_number_update(
+    jetscape_file_custom_header,
+):
+    jetscape = Jetscape(
+        jetscape_file_custom_header, filters={"rapidity_cut": 0.5}
+    )
+    header_info = jetscape.get_event_header_information()
+
+    for event in range(jetscape.num_events()):
+        # Check if the number of hadrons in the header matches the number of particles
+        assert (
+            header_info[event]["N_hadrons"]
+            == jetscape.num_output_per_event()[event][1]
+        )
+
+
+def test_jetscape_event_headers_no_hadrons(jetscape_file_custom_header):
+    jetscape = Jetscape(
+        jetscape_file_custom_header, filters={"particle_status": 200}
+    )
+    header_info = jetscape.get_event_header_information()
+
+    # Check that the number of hadrons in the header is 0 for all events
+    for event in range(jetscape.num_events()):
+        assert header_info[event]["N_hadrons"] == 0
+        assert jetscape.num_output_per_event()[event][1] == 0
+
+
+def test_jetscape_event_headers_add_instances(jetscape_file_custom_header):
+    jetscape1 = Jetscape(jetscape_file_custom_header)
+    jetscape2 = Jetscape(jetscape_file_custom_header)
+
+    # Merge the two Jetscape instances
+    jetscape3 = jetscape1 + jetscape2
+    assert jetscape3.num_events() == 2 * jetscape1.num_events()
+
+    header_info = jetscape3.get_event_header_information()
+    num_output_per_event = jetscape3.num_output_per_event()
+    for event in range(jetscape3.num_events()):
+        # Check if the number of hadrons in the header matches the number of particles
+        assert header_info[event]["N_hadrons"] == num_output_per_event[event][1]

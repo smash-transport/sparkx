@@ -1,11 +1,12 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
 #
 # ===================================================
+
 import numpy as np
 import copy
 import pytest
@@ -791,15 +792,23 @@ def test_multiplicity_cut(particle_list_multiplicity):
     ]
     assert multiplicity_cut(particle_list_multiplicity, (11, None)) == [[]]
 
-    assert multiplicity_cut(particle_list_multiplicity, (10, 5)) == [
-        particle_list_multiplicity[0]
-    ]
     # Test cases for invalid input
     with pytest.raises(TypeError):
         multiplicity_cut(particle_list_multiplicity, cut_value=(-3.5, 4))
 
     with pytest.raises(TypeError):
         multiplicity_cut(particle_list_multiplicity, cut_value=(0, "a"))
+
+    # The call with switched cut limits causes a warning which need to be caught
+    with pytest.warns(UserWarning) as record:
+        result = multiplicity_cut(particle_list_multiplicity, (10, 5))
+    assert len(record) == 1
+    assert (
+        "Lower limit 10 is greater than upper limit 5. Switched order is assumed in the following."
+        in str(record[0].message)
+    )
+    # Assert correct result
+    assert result == [particle_list_multiplicity[0]]
 
 
 @pytest.fixture

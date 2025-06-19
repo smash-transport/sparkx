@@ -1,3 +1,12 @@
+# ===================================================
+#
+#    Copyright (c) 2024-2025
+#      SPARKX Team
+#
+#    GNU General Public License (GPLv3 or later)
+#
+# ===================================================
+
 import pytest
 import numpy as np
 from typing import List, Union, Any
