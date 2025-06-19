@@ -135,6 +135,14 @@ class Histogram:
         >>>
         >>> # Store the histograms in hist as numpy.ndarray
         >>> hist = histObj.histogram()
+
+    Note
+    ----
+    Two `Histogram` objects can be added together. The resulting `Histogram`
+    object will have the same bin edges as the original objects, and the
+    values are added bin-wise. The errors are added in quadrature.
+    All relevant arrays must have the same shape, otherwise a `ValueError` is raised.
+    The scaling array is reset to ones.
     """
 
     def __init__(
@@ -189,6 +197,80 @@ class Histogram:
                 "Input must be a tuple (hist_min, hist_max, num_bins) "
                 + "or a list/numpy.ndarray containing the bin edges!"
             )
+
+    def __add__(self, other: "Histogram") -> "Histogram":
+        if not isinstance(other, Histogram):
+            raise TypeError("Can only add Histogram to Histogram")
+
+        if self.bin_edges_ is None or other.bin_edges_ is None:
+            raise ValueError("Cannot add histograms with undefined bin edges")
+        elif not np.array_equal(self.bin_edges_, other.bin_edges_):
+            raise ValueError("Cannot add histograms with different bin edges")
+
+        # Check that all relevant arrays are not None and have the same shape
+        def check_shape(name: str) -> None:
+            a = getattr(self, name)
+            b = getattr(other, name)
+
+            if a is None or b is None:
+                raise ValueError(
+                    f"Attribute '{name}' is None in one of the histograms"
+                )
+
+            if a.shape != b.shape:
+                raise ValueError(
+                    f"Shape mismatch in '{name}': {a.shape} vs {b.shape}"
+                )
+
+        for attr in [
+            "histograms_",
+            "histograms_raw_count_",
+            "error_",
+            "scaling_",
+            "systematic_error_",
+        ]:
+            check_shape(attr)
+
+        result = Histogram(self.bin_edges_)
+        result.number_of_histograms_ = self.number_of_histograms_
+
+        # Sum all relevant arrays
+        if self.histograms_ is None or other.histograms_ is None:
+            raise ValueError(
+                "Cannot add: 'histograms_' is None in one of the objects"
+            )
+        result.histograms_ = self.histograms_ + other.histograms_
+
+        if (
+            self.histograms_raw_count_ is None
+            or other.histograms_raw_count_ is None
+        ):
+            raise ValueError(
+                "Cannot add: 'histograms_raw_count_' is None in one of the objects"
+            )
+        result.histograms_raw_count_ = (
+            self.histograms_raw_count_ + other.histograms_raw_count_
+        )
+
+        # Set scaling to ones with the same shape
+        result.scaling_ = np.ones_like(result.histograms_)
+
+        # Add errors in quadrature
+        if self.error_ is None or other.error_ is None:
+            raise ValueError(
+                "Cannot add: 'error_' is None in one of the objects"
+            )
+        result.error_ = np.sqrt(self.error_**2 + other.error_**2)
+
+        if self.systematic_error_ is None or other.systematic_error_ is None:
+            raise ValueError(
+                "Cannot add: 'systematic_error_' is None in one of the objects"
+            )
+        result.systematic_error_ = np.sqrt(
+            self.systematic_error_**2 + other.systematic_error_**2
+        )
+
+        return result
 
     def histogram(self) -> np.ndarray:
         """
@@ -534,20 +616,6 @@ class Histogram:
         if isinstance(value, (int, float, np.number)):
             if np.isnan(value):
                 raise ValueError("Input value in add_value is NaN.")
-
-            counter_warnings = 0
-            if (
-                value < self.bin_edges_[0] or value > self.bin_edges_[-1]
-            ) and counter_warnings == 0:
-                warn_msg = (
-                    "One or more values lie outside the histogram "
-                    + "range ["
-                    + str(self.bin_edges_[0])
-                    + ","
-                    + str(self.bin_edges_[-1])
-                    + "]. Exceeding values are ignored. Increase histogram range!"
-                )
-                warnings.warn(warn_msg)
 
             bin_index = np.digitize(value, self.bin_edges_)
             if bin_index == 0 or bin_index > self.number_of_bins_:

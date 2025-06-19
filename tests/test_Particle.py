@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -439,19 +439,18 @@ def test_rapidity_valid_values():
     p.pz = 5.0
 
     result = p.rapidity()
-
-    expected_result = 0.5 * np.log((10.0 + 5.0) / (10.0 - 5.0))
+    expected_result = np.arcsinh(5.0 / p.mT())
 
     assert np.isclose(result, expected_result)
 
 
 def test_rapidity_zero_denominator():
     p = Particle()
-    p.E = 5.0
-    p.pz = 5.0  # E == pz, should add a small positive value
+    p.E = 5.0000001
+    p.pz = 5.0  # E ~ pz
 
     result = p.rapidity()
-    expected_result = 0.5 * np.log((5.0 + 5.0) / (1e-10))
+    expected_result = np.arcsinh(5.0 / p.mT())
 
     assert np.isclose(result, expected_result)
 
@@ -723,7 +722,7 @@ def test_compute_mass_from_energy_momentum_invalid_values():
 
     with pytest.warns(
         UserWarning,
-        match=r"|E| >= |p| not fulfilled or not within numerical precision! The mass is set to nan.",
+        match=r"|E| >= |p| not fulfilled! The mass is set to nan.",
     ):
         assert np.isnan(p.mass_from_energy_momentum())
 
@@ -765,7 +764,7 @@ def test_mT_invalid_values():
 
     with pytest.warns(
         UserWarning,
-        match=r"|E| >= |pz| not fulfilled or not within numerical precision! The transverse mass is set to nan.",
+        match=r"|E| >= |pz| not fulfilled! The transverse mass is set to nan.",
     ):
         assert np.isnan(p.mT())
 

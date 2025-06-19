@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2025
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -113,17 +113,15 @@ def test_add_value_out_of_range():
 
     hist.add_histogram()
 
-    # Testing the second layer
-    outlier_values = [-1, 21, 40, 20]
-    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
-        for value in outlier_values:
-            hist.add_value(value)
+    histogram_before_outliers = hist.histogram().copy()
 
-    # Testing the first layer
-    hist1 = Histogram((0, 20, 20))
-    with pytest.warns(UserWarning, match="Exceeding values are ignored"):
-        for value in outlier_values:
-            hist1.add_value(value)
+    # Test that the histogram does not change for out-of-range values
+    outlier_values = [-1, 21, 40, 20]
+    for value in outlier_values:
+        hist.add_value(value)
+
+    histogram_after_outliers = hist.histogram()
+    assert np.allclose(histogram_before_outliers, histogram_after_outliers)
 
 
 def test_remove_bin_out_of_range():
@@ -575,3 +573,77 @@ def test_scale_histogram_after_averaging():
 
     assert hist.histogram().shape == expected_histogram.shape
     assert np.allclose(hist.histogram(), expected_histogram)
+
+
+def test_add_histograms_errors():
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 2, 3])
+    hist.add_histogram()
+    hist.add_value([4, 5])
+    # try to add a non Histogram object
+    with pytest.raises(TypeError):
+        hist + 1
+
+    # create another histogram with different binning
+    hist2 = Histogram((0, 5, 5))
+    hist2.add_value([1, 2, 3])
+    with pytest.raises(ValueError):
+        hist + hist2
+
+    # try to add histograms with different number of histograms
+    hist3 = Histogram((0, 10, 10))
+    hist3.add_value([1, 2, 3])
+    hist3.add_histogram()
+    hist3.add_value([4, 5])
+    hist3.add_histogram()
+    with pytest.raises(ValueError):
+        hist + hist3
+
+
+def test_add_histograms():
+    hist = Histogram((0, 10, 10))
+    hist.add_value([1, 2, 3])
+    hist.add_histogram()
+    hist.add_value([4, 5])
+
+    hist2 = Histogram((0, 10, 10))
+    hist2.add_value([1, 2, 3])
+    hist2.add_histogram()
+    hist2.add_value([4, 5])
+
+    hist3 = hist + hist2
+    assert np.allclose(
+        hist3.histogram(),
+        np.array(
+            [
+                [0.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0],
+            ]
+        ),
+    )
+
+    assert hist3.number_of_bins_ == 10
+    assert hist3.number_of_histograms_ == 2
+    assert np.allclose(hist3.bin_edges_, hist.bin_edges_)
+
+    hist_err = Histogram((0, 10, 10))
+    hist_err.add_value([1, 2, 3])
+    hist_err.statistical_error()
+    own_err = np.array([0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    hist_err.set_systematic_error(own_err)
+
+    hist_copy = copy.deepcopy(hist_err)
+    hist_sum = hist_err + hist_copy
+    assert np.allclose(
+        hist_sum.histogram(),
+        np.array([[0.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]),
+    )
+    sqrt2 = np.sqrt(2)
+    assert np.allclose(
+        hist_sum.error_,
+        np.array([[0.0, sqrt2, sqrt2, sqrt2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]),
+    )
+    assert np.allclose(
+        hist_sum.systematic_error_,
+        np.array([[0.0, sqrt2, sqrt2, sqrt2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]),
+    )

@@ -989,17 +989,29 @@ class Particle:
         -----
         If one of the needed particle quantities is not given, then :code:`np.nan`
         is returned.
+        For numerical stability, we compute the rapidity as follows: :math:`\\sinh^{-1}\\left(\\frac{p_z}{m_T}\\right)`
+        This is equivalent to the above formula, but avoids numerical issues when :math:`E \\approx p_z`.
+        If the transverse mass :math:`m_T` is close to zero, we fall back to the original formula.
         """
-        if np.isnan(self.E) or np.isnan(self.pz):
+        mT = self.mT()
+        if np.isnan(self.pz):
             return np.nan
-        else:
-            if abs(self.E - self.pz) < 1e-10:
-                # Adding a small positive value
-                denominator = (self.E - self.pz) + 1e-10
-            else:
-                denominator = self.E - self.pz
+        elif not np.isnan(mT) and mT > 1e-16:
+            # If mT is positive, we can compute rapidity
+            # using the arcsinh function for numerical stability
+            return np.arcsinh(self.pz / mT)
+        elif not np.isnan(self.E):
+            # If mT is close to zero or NaN, we fall back to the original formula
+            numer = self.E + self.pz
+            denom = self.E - self.pz
 
-            return 0.5 * np.log((self.E + self.pz) / denominator)
+            if denom <= 0 or numer <= 0:
+                return np.nan
+            else:
+                return 0.5 * np.log(numer / denom)
+        else:
+            # If E is also NaN, we cannot compute rapidity
+            return np.nan
 
     def p_abs(self) -> float:
         """
@@ -1186,12 +1198,14 @@ class Particle:
         elif self.pdg in massless_pdg:
             return 0.0
         else:
-            if abs(self.E) >= abs(self.p_abs()):
-                return np.sqrt(self.E**2.0 - self.p_abs() ** 2.0)
+            mass_squared = self.E**2.0 - self.p_abs() ** 2.0
+            if mass_squared >= 0:
+                return np.sqrt(mass_squared)
+            elif abs(mass_squared) < 1e-16:
+                return 0.0  # numerical precision
             else:
                 warnings.warn(
-                    "|E| >= |p| not fulfilled or not within numerical precision! "
-                    "The mass is set to nan."
+                    "|E| >= |p| not fulfilled! The mass is set to nan."
                 )
                 return np.nan
 
@@ -1230,14 +1244,18 @@ class Particle:
         """
         if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
-        elif abs(self.E) >= abs(self.pz):
-            return np.sqrt(self.E**2.0 - self.pz**2.0)
         else:
-            warnings.warn(
-                "|E| >= |pz| not fulfilled or not within numerical precision! "
-                "The transverse mass is set to nan."
-            )
-            return np.nan
+            mT_squared = self.E**2.0 - self.pz**2.0
+            if mT_squared >= 0:
+                return np.sqrt(mT_squared)
+            elif abs(mT_squared) < 1e-16:
+                return 0.0  # numerical precision
+            else:
+                warnings.warn(
+                    "|E| >= |pz| not fulfilled! "
+                    "The transverse mass is set to nan."
+                )
+                return np.nan
 
     def is_quark(self) -> Union[bool, float]:
         """

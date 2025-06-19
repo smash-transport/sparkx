@@ -6,6 +6,7 @@
 #    GNU General Public License (GPLv3 or later)
 #
 # ===================================================
+
 import pytest
 from sparkx.loader.ParticleObjectLoader import ParticleObjectLoader
 from sparkx.Filter import *
