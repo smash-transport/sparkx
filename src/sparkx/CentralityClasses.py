@@ -70,9 +70,9 @@ class CentralityClasses:
         >>> # ============================================================
 
         >>> # You can obtain a list of Particle objects using either the
-        >>> # Oscar or Jetscape classes. Alternatively, you may use a 
+        >>> # Oscar or Jetscape classes. Alternatively, you may use a
         >>> # custom user-defined list of Particle objects.
-        >>> # 
+        >>> #
         >>> # In this example, we use the Oscar class and filter the output
         >>> # to include only charged particles.
         >>>
@@ -82,7 +82,7 @@ class CentralityClasses:
         >>> # Keep multiplicities from events with non-zero multiplicity only
         >>> multiplicities = number_particles_event[number_particles_event[:, 1] != 0, 1]
 
-        
+
         >>> # =====================================
         >>> # 2. Calculate centrality classes
         >>> # =====================================
