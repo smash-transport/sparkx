@@ -10,10 +10,22 @@ and `JETSCAPE/X-SCAPE <https://jetscape.org/>`_ codes analyze output simulation 
 Key Components of SPARKX
 ------------------------
 
-The following classes will be useful for loading, filtering, and analyzing your SMASH or JETSCAPE/X-SCAPE data:
+This is a general overview of the main components of SPARKX.
+SPARKX is designed to be modular, allowing users to load, filter, and analyze data
+from different sources. The following diagram illustrates the main components:
+
+.. mermaid::
+
+   %%{ init : { "flowchart": { "wrap": true } } }%%
+   flowchart LR
+       A[Loading / Filtering Data</br>Oscar / Jetscape</br>Custom Input] -->|Particle Objects List| B[Analyze Data]
+
+The following classes will be useful for loading, filtering, and analyzing your SMASH or JETSCAPE/X-SCAPE data.
 
 Data Loading and Filtering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These classes are used to load and filter data from different sources:
 
 * `Jetscape <classes/Jetscape/index.html>`_: Reads hadron or parton output from JETSCAPE/X-SCAPE and allows particle filtering.
 * `Oscar <classes/Oscar/index.html>`_: Reads various Oscar data formats and provides particle filtering methods.
