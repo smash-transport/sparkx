@@ -88,7 +88,26 @@ class BulkObservables:
     .. code-block:: python
         :linenos:
 
+        >>> from sparkx.Oscar import Oscar
         >>> from sparkx.BulkObservables import BulkObservables
+
+        >>> # ============================================================
+        >>> # 1. Load and filter input particles from simulation output
+        >>> # ============================================================
+
+        >>> # You can obtain a list of Particle objects using either the
+        >>> # Oscar or Jetscape classes. Alternatively, you may use a
+        >>> # custom user-defined list of Particle objects.
+        >>> #
+        >>> # In this example, we use the Oscar class and filter the output
+        >>> # to include only charged particles.
+        >>>
+        >>> OSCAR_FILE_PATH = [Oscar_directory]/particle_lists.oscar
+        >>> particle_objects_list = Oscar(OSCAR_FILE_PATH, filters={'charged_particles': True}).particle_objects_list()
+
+        >>> # =====================================
+        >>> # 2. Calculate bulk observables
+        >>> # =====================================
 
         >>> # Initialize the BulkObservables class
         >>> bulk_observables = BulkObservables(particle_objects_list)
