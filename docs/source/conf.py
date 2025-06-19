@@ -33,6 +33,7 @@ extensions = [
     'numpydoc',
     'sphinx.ext.viewcode',
     'myst_parser', # for markdown parsing (needs myst-parser package)
+    'sphinxcontrib.mermaid',
     'sphinx_rtd_theme'
 ]
 
