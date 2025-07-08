@@ -18,6 +18,14 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
+## v2.1.1-Chatelet
+Date: 2025-XX-XX
+
+### Fixed
+* BulkObservables: Fix bug in the calculation of the integrated yields, mean transverse momentum and mass at midrapidity.
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.1.0...v2.1.1)
+
 ## v2.1.0-Chatelet
 Date: 2025-06-19
 
