@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BulkObservables &mdash; sparkx 2.1.0 documentation</title>
+  <title>BulkObservables &mdash; sparkx 2.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=20623aea"></script>
+        <script src="../../_static/documentation_options.js?v=841abef3"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -292,18 +292,73 @@ transverse mass bin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="BulkObservables.BulkObservables.mid_rapidity_yield">
-<span class="sig-prename descclassname"><span class="pre">BulkObservables.</span></span><span class="sig-name descname"><span class="pre">mid_rapidity_yield</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rapidity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/BulkObservables.html#BulkObservables.mid_rapidity_yield"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#BulkObservables.BulkObservables.mid_rapidity_yield" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">BulkObservables.</span></span><span class="sig-name descname"><span class="pre">mid_rapidity_yield</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rapidity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divide_by_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/BulkObservables.html#BulkObservables.mid_rapidity_yield"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#BulkObservables.BulkObservables.mid_rapidity_yield" title="Link to this definition"></a></dt>
+<dd><p>Calculate the event-averaged particle yield at mid-rapidity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>y_width</strong><span class="classifier">float</span></dt><dd><p>The rapidity window width, centered at 0.</p>
+</dd>
+<dt><strong>quantity</strong><span class="classifier">str</span></dt><dd><p>The rapidity-related method name (rapidity, pseudorapidity, etc.).</p>
+</dd>
+<dt><strong>divide_by_width</strong><span class="classifier">bool</span></dt><dd><p>If True, return the estimated dN/dy by dividing by y_width.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>The event-averaged particle yield at mid-rapidity.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="BulkObservables.BulkObservables.mid_rapidity_mean_pT">
 <span class="sig-prename descclassname"><span class="pre">BulkObservables.</span></span><span class="sig-name descname"><span class="pre">mid_rapidity_mean_pT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rapidity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/BulkObservables.html#BulkObservables.mid_rapidity_mean_pT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#BulkObservables.BulkObservables.mid_rapidity_mean_pT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compute event-wise mean pT, then average over events that have at least
+one particle in mid-rapidity window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>y_width</strong><span class="classifier">float</span></dt><dd><p>The rapidity window width, centered at 0.</p>
+</dd>
+<dt><strong>quantity</strong><span class="classifier">str</span></dt><dd><p>The rapidity-related method name (rapidity, pseudorapidity, etc.).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>The event-averaged mean transverse momentum pT at mid-rapidity.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="BulkObservables.BulkObservables.mid_rapidity_mean_mT">
 <span class="sig-prename descclassname"><span class="pre">BulkObservables.</span></span><span class="sig-name descname"><span class="pre">mid_rapidity_mean_mT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rapidity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/BulkObservables.html#BulkObservables.mid_rapidity_mean_mT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#BulkObservables.BulkObservables.mid_rapidity_mean_mT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compute event-wise mean mT, then average over events that have at least
+one particle in mid-rapidity window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>y_width</strong><span class="classifier">float</span></dt><dd><p>The rapidity window width, centered at 0.</p>
+</dd>
+<dt><strong>quantity</strong><span class="classifier">str</span></dt><dd><p>The rapidity-related method name (rapidity, pseudorapidity, etc.).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>The event-averaged mean transverse mass mT at mid-rapidity.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
