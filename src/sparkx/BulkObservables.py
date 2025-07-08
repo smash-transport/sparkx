@@ -348,14 +348,15 @@ class BulkObservables:
         else:
             return self._differential_yield("mT", bin_properties)
 
-    def _compute_mid_rapidity(
+    def _compute_mid_rapidity_per_event(
         self,
         y_width: float,
         quantity: str,
         property_func: Callable[[Particle], float],
-    ) -> float:
+    ) -> list[float]:
         """
-        Generalized function to compute mid-rapidity yields and averages.
+        Generalized function to compute mid-rapidity averages
+        for each event.
 
         Parameters
         ----------
@@ -363,24 +364,20 @@ class BulkObservables:
             The rapidity window width, centered at 0.
         quantity : str
             The rapidity-related method name (rapidity, pseudorapidity, etc.).
-        property_func : callable, optional
+        property_func : callable
             Function to apply to each selected particle.
-            If None, counts particles instead.
 
         Returns
         -------
-        float
-            Event-averaged particle yield or mean property.
+        list
+            List of mean values for each event.
         """
         if not isinstance(y_width, (int, float)):
             raise TypeError("y_width must be of type int or float")
-
         if y_width <= 0:
             raise ValueError("y_width must be a positive number.")
-
-        num_events = len(self.particle_objects)
-        if num_events == 0:
-            return 0
+        if not self.particle_objects:
+            return []
 
         particle_method = getattr(self.particle_objects[0][0], quantity)
         if not callable(particle_method):
@@ -388,26 +385,105 @@ class BulkObservables:
                 f"'{quantity}' is not a callable method of Particle"
             )
 
-        value = 0.0
+        event_means = []
+        half_width = y_width / 2
         for event in self.particle_objects:
-            for particle in event:
-                if -y_width / 2 <= getattr(particle, quantity)() <= y_width / 2:
-                    value += property_func(particle)
-        return value / num_events
+            selected_values = [
+                property_func(particle)
+                for particle in event
+                if -half_width <= particle_method() <= half_width
+            ]
+            if selected_values:
+                mean_value = sum(selected_values) / len(selected_values)
+                event_means.append(mean_value)
+            # else: skip events without particles in the window
+
+        return event_means
 
     def mid_rapidity_yield(
-        self, y_width: float = 1.0, quantity: str = "rapidity"
+        self,
+        y_width: float = 1.0,
+        quantity: str = "rapidity",
+        divide_by_width: bool = False,
     ) -> float:
-        return self._compute_mid_rapidity(y_width, quantity, lambda p: 1.0)
+        """
+        Calculate the event-averaged particle yield at mid-rapidity.
+
+        Parameters
+        ----------
+        y_width : float
+            The rapidity window width, centered at 0.
+        quantity : str
+            The rapidity-related method name (rapidity, pseudorapidity, etc.).
+        divide_by_width : bool
+            If True, return the estimated dN/dy by dividing by y_width.
+
+        Returns
+        -------
+        float
+            The event-averaged particle yield at mid-rapidity.
+        """
+        num_events = len(self.particle_objects)
+        if num_events == 0:
+            return 0.0
+
+        half_width = y_width / 2
+        total_selected = 0
+        for event in self.particle_objects:
+            count = sum(
+                1
+                for particle in event
+                if -half_width <= getattr(particle, quantity)() <= half_width
+            )
+            total_selected += count
+
+        mean_count = total_selected / num_events
+        return mean_count / y_width if divide_by_width else mean_count
 
     def mid_rapidity_mean_pT(
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
-        return self._compute_mid_rapidity(
+        """
+        Compute event-wise mean pT, then average over events that have at least
+        one particle in mid-rapidity window.
+
+        Parameters
+        ----------
+        y_width : float
+            The rapidity window width, centered at 0.
+        quantity : str
+            The rapidity-related method name (rapidity, pseudorapidity, etc.).
+
+        Returns
+        -------
+        float
+            The event-averaged mean transverse momentum pT at mid-rapidity.
+        """
+        event_means = self._compute_mid_rapidity_per_event(
             y_width, quantity, lambda p: p.pT_abs()
         )
+        return sum(event_means) / len(event_means) if event_means else 0.0
 
     def mid_rapidity_mean_mT(
         self, y_width: float = 1.0, quantity: str = "rapidity"
     ) -> float:
-        return self._compute_mid_rapidity(y_width, quantity, lambda p: p.mT())
+        """
+        Compute event-wise mean mT, then average over events that have at least
+        one particle in mid-rapidity window.
+
+        Parameters
+        ----------
+        y_width : float
+            The rapidity window width, centered at 0.
+        quantity : str
+            The rapidity-related method name (rapidity, pseudorapidity, etc.).
+
+        Returns
+        -------
+        float
+            The event-averaged mean transverse mass mT at mid-rapidity.
+        """
+        event_means = self._compute_mid_rapidity_per_event(
+            y_width, quantity, lambda p: p.mT()
+        )
+        return sum(event_means) / len(event_means) if event_means else 0.0

@@ -255,13 +255,13 @@ def test_dNdmT():
 def test_midrapidity():
     particles_list_single_event = []
 
-    for i in range(30):
+    for _ in range(30):
         p = Particle()
         p.E = 1
         p.pz = 0.2
 
         particles_list_single_event.append(p)
-    for i in range(30):
+    for _ in range(30):
         p = Particle()
         p.E = 1
         p.pz = 1
@@ -276,3 +276,60 @@ def test_midrapidity():
 
     # Check that 30 particles are at midrapidity
     assert dNdy_0 == 30
+
+
+def test_midrapidity_yield_with_width():
+    particles_list_single_event = []
+    for _ in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 0.2
+
+        particles_list_single_event.append(p)
+
+    for _ in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 1
+
+        particles_list_single_event.append(p)
+
+    particle_objects_list = [particles_list_single_event]
+    bulk_obs = BulkObservables(particle_objects_list)
+
+    dNdy_1 = bulk_obs.mid_rapidity_yield(y_width=2.0, divide_by_width=True)
+    # Check that 30 particles are at midrapidity, divided by width for dN/dy
+    assert dNdy_1 == 30 / 2.0
+
+
+def test_midrapidity_mean_pT():
+    particles_list_single_event = []
+    for _ in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 0.2
+        p.px = 0.1
+        p.py = 0.1
+
+        particles_list_single_event.append(p)
+
+    for _ in range(30):
+        p = Particle()
+        p.E = 1
+        p.pz = 0.8
+        p.px = 0.1
+        p.py = 0.1
+
+        particles_list_single_event.append(p)
+
+    particle_objects_list = [particles_list_single_event]
+
+    # Create the BulkObservables object and call midrapidity_mean_pT
+    bulk_obs = BulkObservables(particle_objects_list)
+    mean_pT_0 = bulk_obs.mid_rapidity_mean_pT()
+
+    # expected mean pT is sqrt(0.1^2 + 0.1^2) / 1
+    expected_mean_pT = np.sqrt(0.1**2 + 0.1**2) / 1.0
+
+    # Check that the mean pT is correct
+    assert mean_pT_0 == pytest.approx(expected_mean_pT, rel=1e-6)
