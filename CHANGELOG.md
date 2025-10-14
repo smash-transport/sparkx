@@ -18,8 +18,15 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
-## v2.1.1-Chatelet
+## v2.1.2-Chatelet
 Date: 2025-XX-XX
+
+### Fixed
+* Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
+* Documentation: Fix example in ReactionPlaneFlow documentation.
+
+## v2.1.1-Chatelet
+Date: 2025-07-08
 
 ### Fixed
 * BulkObservables: Fix bug in the calculation of the integrated yields, mean transverse momentum and mass at midrapidity.
