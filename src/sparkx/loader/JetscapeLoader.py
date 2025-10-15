@@ -435,6 +435,13 @@ class JetscapeLoader(BaseLoader):
         data: List[Particle] = []
         num_read_lines = self.__get_num_read_lines()
         cut_events = 0
+        events_offset = 0
+        if "events" in self.optional_arguments_.keys():
+            ev_arg = self.optional_arguments_["events"]
+            if isinstance(ev_arg, int):
+                events_offset = ev_arg
+            elif isinstance(ev_arg, tuple):
+                events_offset = ev_arg[0]
         with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
             self._skip_lines(jetscape_file)
 
@@ -449,27 +456,27 @@ class JetscapeLoader(BaseLoader):
                             [data], kwargs["filters"]
                         )[0]
                         if len(data) != 0 or old_data_len == 0:
-                            self.num_output_per_event_[len(particle_list)] = (
-                                len(particle_list) + 1,
+                            event_idx = events_offset + len(particle_list)
+                            self.num_output_per_event_[event_idx] = (
+                                self.num_output_per_event_[event_idx][0],
                                 len(data),
                             )
                         else:
+                            event_idx = events_offset + len(particle_list)
                             self.num_output_per_event_ = np.atleast_2d(
                                 np.delete(
                                     self.num_output_per_event_,
-                                    len(particle_list),
+                                    event_idx,
                                     axis=0,
                                 )
                             )
                             if self.num_output_per_event_.shape[0] == 0:
                                 self.num_output_per_event_ = np.array([])
                             elif (
-                                len(particle_list)
-                                < self.num_output_per_event_.shape[0]
+                                event_idx < self.num_output_per_event_.shape[0]
                             ):
-                                self.num_output_per_event_[
-                                    len(particle_list) :, 0
-                                ] -= 1
+                                # Decrease subsequent event numbers by 1 to keep them consecutive
+                                self.num_output_per_event_[event_idx:, 0] -= 1
                     if len(data) != 0 or old_data_len == 0:
                         particle_list.append(data)
                     else:
@@ -505,28 +512,28 @@ class JetscapeLoader(BaseLoader):
                                 [data], kwargs["filters"]
                             )[0]
                             if len(data) != 0 or old_data_len == 0:
-                                self.num_output_per_event_[
-                                    len(particle_list)
-                                ] = (
-                                    len(particle_list) + 1,
+                                event_idx = events_offset + len(particle_list)
+                                self.num_output_per_event_[event_idx] = (
+                                    self.num_output_per_event_[event_idx][0],
                                     len(data),
                                 )
                             else:
+                                event_idx = events_offset + len(particle_list)
                                 self.num_output_per_event_ = np.atleast_2d(
                                     np.delete(
                                         self.num_output_per_event_,
-                                        len(particle_list),
+                                        event_idx,
                                         axis=0,
                                     )
                                 )
                                 if self.num_output_per_event_.shape[0] == 0:
                                     self.num_output_per_event_ = np.array([])
                                 elif (
-                                    len(particle_list)
+                                    event_idx
                                     < self.num_output_per_event_.shape[0]
                                 ):
                                     self.num_output_per_event_[
-                                        len(particle_list) :, 0
+                                        event_idx:, 0
                                     ] -= 1
                         if len(data) != 0 or old_data_len == 0:
                             particle_list.append(data)
