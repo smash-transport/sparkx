@@ -783,7 +783,8 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
         # compute Eq. (28) Ref. [2] ignoring invalid (0 denominator) events
         valid = (denominator != 0)
-        corr2_ev = np.where(valid, numerator/denominator, 0.0)
+        corr2_ev = np.zeros_like(denominator, dtype=np.complex128)
+        corr2_ev[valid] = numerator[valid] / denominator[valid]
 
         # compute Eq. (24) Ref. [2]
         w2 = np.where(valid, denominator, 0.0)
@@ -828,9 +829,10 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             Q2n = np.array(full_event_quantities[5])
             denominator4 = (mp * M - 3.0 * mq) * (M - 1) * (M - 2)
             valid4 = (denominator4 != 0)
+            corr4_ev = np.zeros_like(denominator4, dtype=np.complex128)
             # compute Eq. (32) Ref. [2]
-            corr4_ev = np.where(valid4,
-                (pn * Qn * Qn.conj() * Qn.conj()
+            corr4_ev[valid] = (
+                pn * Qn * Qn.conj() * Qn.conj()
                 - q2n * Qn.conj() * Qn.conj()
                 - pn * Qn * Q2n.conj()
                 - 2.0 * M * pn * Qn.conj()
@@ -840,8 +842,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                 + q2n * Q2n.conj()
                 + 2.0 * pn * Qn.conj()
                 + 2.0 * mq * M
-                - 6.0 * mq)/denominator4,
-                0.0)
+                - 6.0 * mq)[valid4]/denominator4[valid4],
             # compute Eq. (25) Ref. [2]
             w4 = np.where(valid4, denominator4, 0.0)
             # compute Eq. (33) Ref. [2]
