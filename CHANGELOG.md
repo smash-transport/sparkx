@@ -25,6 +25,8 @@ Date: 2025-XX-XX
 * Particle: Optional Cython acceleration for hot-path numeric methods (p_abs, pT_abs, phi, theta, mT, rapidity, pseudorapidity, spacetime_rapidity, proper_time, and speed-up in mass_from_energy_momentum). Public API and documentation remain unchanged; a pure-Python fallback is used when the extension is unavailable.
 * Development: Makefile with helper targets (build-ext, clean-ext, install-dev, test, wheel, clean) for a smoother developer experience.
 * Scripts: Benchmark script at `scripts/bench_particle.py` to measure Particle method performance before/after enabling the Cython extension.
+* Filter: Optional Cython acceleration for event-level filters with a Python fallback. Coverage includes charged/uncharged, participants/spectators, species keep/remove, status keep, multiplicity and lower-event-energy cuts, spacetime cuts (t/x/y/z), pT/mT/rapidity/pseudorapidity/spacetime-rapidity cuts, and classification filters (hadrons/leptons/quarks/mesons/baryons; up/down/strange/charm/bottom/top).
+* Scripts: Benchmark script at `scripts/bench_filter.py` to compare filter performance (reports per-filter timings and total time; detects whether the helper is compiled or Python fallback).
 * CI/CD: Multi-platform wheel build on releases using cibuildwheel (Linux manylinux, macOS x86_64 and arm64, Windows) plus sdist; wheels are tested and then published to PyPI alongside the sdist so users get the accelerated version without a local compiler.
 
 ### Changed

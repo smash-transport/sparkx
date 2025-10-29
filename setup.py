@@ -6,14 +6,21 @@ def build_extensions():
     ext_modules = []
     try:
         from Cython.Build import cythonize
-        # Use the .pyx source when Cython is available
-        sources = [os.path.join("src", "sparkx", "_particle_accel.pyx")]
-        ext = Extension(
+        # Use the .pyx sources when Cython is available
+        particle_sources = [os.path.join("src", "sparkx", "_particle_accel.pyx")]
+        filter_sources = [os.path.join("src", "sparkx", "_filter_accel.pyx")]
+
+        ext_particle = Extension(
             name="sparkx._particle_accel",
-            sources=sources,
+            sources=particle_sources,
             language="c",
         )
-        ext_modules = cythonize([ext], compiler_directives={
+        ext_filter = Extension(
+            name="sparkx._filter_accel",
+            sources=filter_sources,
+            language="c",
+        )
+        ext_modules = cythonize([ext_particle, ext_filter], compiler_directives={
             "boundscheck": False,
             "wraparound": False,
             "cdivision": True,

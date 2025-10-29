@@ -1,1 +1,2 @@
 include src/sparkx/_particle_accel.pyx
+include src/sparkx/_filter_accel.pyx
