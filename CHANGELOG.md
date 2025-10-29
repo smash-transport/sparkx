@@ -21,9 +21,21 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 ## v2.1.2-Chatelet
 Date: 2025-XX-XX
 
+### Added
+* Particle: Optional Cython acceleration for hot-path numeric methods (p_abs, pT_abs, phi, theta, mT, rapidity, pseudorapidity, spacetime_rapidity, proper_time, and speed-up in mass_from_energy_momentum). Public API and documentation remain unchanged; a pure-Python fallback is used when the extension is unavailable.
+* Development: Makefile with helper targets (build-ext, clean-ext, install-dev, test, wheel, clean) for a smoother developer experience.
+* Scripts: Benchmark script at `scripts/bench_particle.py` to measure Particle method performance before/after enabling the Cython extension.
+* CI/CD: Multi-platform wheel build on releases using cibuildwheel (Linux manylinux, macOS x86_64 and arm64, Windows) plus sdist; wheels are tested and then published to PyPI alongside the sdist so users get the accelerated version without a local compiler.
+
+### Changed
+* Build: Include `Cython` in `pyproject.toml` build-system requirements to enable source builds; added `MANIFEST.in` to ship the `.pyx`. The extension build is optional—install falls back to pure Python if compilation is not possible.
+* CI: Release workflow reworked to build wheels for all major platforms and upload them to PyPI on GitHub releases.
+
 ### Fixed
 * Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
 * Documentation: Fix example in ReactionPlaneFlow documentation.
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.1.1...v2.1.2)
 
 ## v2.1.1-Chatelet
 Date: 2025-07-08

@@ -12,6 +12,17 @@ import math
 from particle import PDGID
 import warnings
 from typing import Optional, Union, List
+from ._particle_accel import (
+    p_abs as _acc_p_abs,
+    pT_abs as _acc_pT_abs,
+    phi as _acc_phi,
+    theta as _acc_theta,
+    mT as _acc_mT,
+    rapidity as _acc_rapidity,
+    pseudorapidity as _acc_pseudorapidity,
+    spacetime_rapidity as _acc_spacetime_rapidity,
+    proper_time as _acc_proper_time,
+)
 
 
 class Particle:
@@ -996,22 +1007,7 @@ class Particle:
         mT = self.mT()
         if np.isnan(self.pz):
             return np.nan
-        elif not np.isnan(mT) and mT > 1e-16:
-            # If mT is positive, we can compute rapidity
-            # using the arcsinh function for numerical stability
-            return np.arcsinh(self.pz / mT)
-        elif not np.isnan(self.E):
-            # If mT is close to zero or NaN, we fall back to the original formula
-            numer = self.E + self.pz
-            denom = self.E - self.pz
-
-            if denom <= 0 or numer <= 0:
-                return np.nan
-            else:
-                return 0.5 * np.log(numer / denom)
-        else:
-            # If E is also NaN, we cannot compute rapidity
-            return np.nan
+        return float(_acc_rapidity(self.E, self.pz, mT))
 
     def p_abs(self) -> float:
         """
@@ -1030,7 +1026,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            return np.sqrt(self.px**2.0 + self.py**2.0 + self.pz**2.0)
+            return float(_acc_p_abs(self.px, self.py, self.pz))
 
     def pT_abs(self) -> float:
         """
@@ -1049,7 +1045,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
-            return np.sqrt(self.px**2.0 + self.py**2.0)
+            return float(_acc_pT_abs(self.px, self.py))
 
     def phi(self) -> float:
         """
@@ -1068,10 +1064,7 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py):
             return np.nan
         else:
-            if (np.abs(self.px) < 1e-6) and (np.abs(self.py) < 1e-6):
-                return 0.0
-            else:
-                return math.atan2(self.py, self.px)
+            return float(_acc_phi(self.px, self.py))
 
     def theta(self) -> float:
         """
@@ -1090,10 +1083,8 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            if self.p_abs() == 0.0:
-                return 0.0
-            else:
-                return np.arccos(self.pz / self.p_abs())
+            p_abs_val = self.p_abs()
+            return float(_acc_theta(p_abs_val, self.pz))
 
     def pseudorapidity(self) -> float:
         """
@@ -1112,14 +1103,8 @@ class Particle:
         if np.isnan(self.px) or np.isnan(self.py) or np.isnan(self.pz):
             return np.nan
         else:
-            if abs(self.p_abs() - self.pz) < 1e-10:
-                denominator = (
-                    self.p_abs() - self.pz
-                ) + 1e-10  # Adding a small positive value
-            else:
-                denominator = self.p_abs() - self.pz
-
-            return 0.5 * np.log((self.p_abs() + self.pz) / denominator)
+            p_abs_val = self.p_abs()
+            return float(_acc_pseudorapidity(p_abs_val, self.pz))
 
     def spacetime_rapidity(self) -> float:
         """
@@ -1138,10 +1123,7 @@ class Particle:
         if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
-            if self.t > np.abs(self.z):
-                return 0.5 * np.log((self.t + self.z) / (self.t - self.z))
-            else:
-                raise ValueError("|z| < t not fulfilled")
+            return float(_acc_spacetime_rapidity(self.t, self.z))
 
     def proper_time(self) -> float:
         """
@@ -1160,10 +1142,7 @@ class Particle:
         if np.isnan(self.t) or np.isnan(self.z):
             return np.nan
         else:
-            if self.t > np.abs(self.z):
-                return np.sqrt(self.t**2.0 - self.z**2.0)
-            else:
-                raise ValueError("|z| < t not fulfilled")
+            return float(_acc_proper_time(self.t, self.z))
 
     def mass_from_energy_momentum(self) -> float:
         """
@@ -1198,9 +1177,10 @@ class Particle:
         elif self.pdg in massless_pdg:
             return 0.0
         else:
-            mass_squared = self.E**2.0 - self.p_abs() ** 2.0
+            pabs = _acc_p_abs(self.px, self.py, self.pz)
+            mass_squared = self.E**2.0 - pabs * pabs
             if mass_squared >= 0:
-                return np.sqrt(mass_squared)
+                return float(math.sqrt(mass_squared))
             elif abs(mass_squared) < 1e-16:
                 return 0.0  # numerical precision
             else:
@@ -1245,17 +1225,13 @@ class Particle:
         if np.isnan(self.E) or np.isnan(self.pz):
             return np.nan
         else:
-            mT_squared = self.E**2.0 - self.pz**2.0
-            if mT_squared >= 0:
-                return np.sqrt(mT_squared)
-            elif abs(mT_squared) < 1e-16:
-                return 0.0  # numerical precision
-            else:
+            mT_val = _acc_mT(self.E, self.pz)
+            if np.isnan(mT_val):
                 warnings.warn(
                     "|E| >= |pz| not fulfilled! "
                     "The transverse mass is set to nan."
                 )
-                return np.nan
+            return float(mT_val)
 
     def is_quark(self) -> Union[bool, float]:
         """

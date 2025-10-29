@@ -1,4 +1,28 @@
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup, Extension
+import sys
+import os
+
+def build_extensions():
+    ext_modules = []
+    try:
+        from Cython.Build import cythonize
+        # Use the .pyx source when Cython is available
+        sources = [os.path.join("src", "sparkx", "_particle_accel.pyx")]
+        ext = Extension(
+            name="sparkx._particle_accel",
+            sources=sources,
+            language="c",
+        )
+        ext_modules = cythonize([ext], compiler_directives={
+            "boundscheck": False,
+            "wraparound": False,
+            "cdivision": True,
+        })
+    except Exception:
+        # No Cython at build time or cythonize failed. Fall back to no C-extension.
+        # The pure-Python module src/sparkx/_particle_accel.py will be used.
+        ext_modules = []
+    return ext_modules
 
 setup(
     name='sparkx',
@@ -20,5 +44,6 @@ setup(
     url="https://smash-transport.github.io/sparkx/",
     download_url="https://github.com/smash-transport/sparkx",
     license='GNU General Public License v3.0',
-    include_package_data = True
+    include_package_data = True,
+    ext_modules=build_extensions(),
 )

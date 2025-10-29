@@ -1,0 +1,1 @@
+include src/sparkx/_particle_accel.pyx
