@@ -24,6 +24,8 @@ Date: 2025-XX-XX
 ### Fixed
 * Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
 * Documentation: Fix example in ReactionPlaneFlow documentation.
+* BulkObservables: Update particle selection loop to handle empty events.
+* QCumulantFlow: Fix in differential flow calculation.
 
 ## v2.1.1-Chatelet
 Date: 2025-07-08
