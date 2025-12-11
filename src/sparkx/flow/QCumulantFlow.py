@@ -778,25 +778,41 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             qn = self.__Qn(phi_bin, self.n_)
             q2n = self.__Qn(phi_bin, 2 * self.n_)
 
-        # compute Eq. (28) Ref. [2]
-        corr2_ev = (pn * Qn.conj() - mq) / (mp * M - mq)
+        numerator = pn * Qn.conj() - mq
+        denominator = mp * M - mq
+
+        # compute Eq. (28) Ref. [2] ignoring invalid (0 denominator) events
+        valid = denominator != 0
+        corr2_ev = np.zeros_like(denominator, dtype=np.complex128)
+        corr2_ev[valid] = numerator[valid] / denominator[valid]
+
         # compute Eq. (24) Ref. [2]
-        w2 = mp * M - mq
-        # compute Eq. (29) Ref. [2]
-        corr2 = np.vdot(w2, corr2_ev) / np.sum(w2)
+        w2 = np.where(valid, denominator, 0.0)
+        # compute Eq. (29) Ref. [2] ignoring invalid (0 denominator) events
+        if np.sum(w2) > 0:
+            corr2 = np.vdot(w2, corr2_ev) / np.sum(w2)
+        else:
+            corr2 = 0.0
 
         vn_bin = self.__flow_from_cumulant_differential(
             full_event_quantities[2], corr2
         )
 
-        # ebe difference from mean: <2>_i - <<2>>
-        difference = corr2_ev - corr2
-        # weighted variance
-        variance = np.sum(w2 * np.square(difference)) / np.sum(w2)
-        # unbiased variance^2
-        variance_sq = variance / (1.0 - np.vdot(w2, w2) / (np.sum(w2) ** 2.0))
-        # error of <<2>>, Eq. (C38) Ref. [1]
-        corr2_err = np.sqrt(np.vdot(w2, w2) * variance_sq) / np.sum(w2)
+        if np.sum(w2) == 0:
+            variance = 0.0
+            variance_sq = 0.0
+            corr2_err = 0.0
+        else:
+            # ebe difference from mean: <2>_i - <<2>>
+            difference = corr2_ev - corr2
+            # weighted variance
+            variance = np.sum(w2 * np.square(difference)) / np.sum(w2)
+            # unbiased variance^2
+            variance_sq = variance / (
+                1.0 - np.vdot(w2, w2) / (np.sum(w2) ** 2.0)
+            )
+            # error of <<2>>, Eq. (C38) Ref. [1]
+            corr2_err = np.sqrt(np.vdot(w2, w2) * variance_sq) / np.sum(w2)
 
         avg_vn2_err_sq = (1.0 / (4.0 * full_event_quantities[2] ** 3.0)) * (
             corr2**2.0 * full_event_quantities[3] ** 2.0
@@ -813,24 +829,34 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
         if self.k_ == 4:
             Q2n = np.array(full_event_quantities[5])
+            denominator4 = (mp * M - 3.0 * mq) * (M - 1) * (M - 2)
+            valid4 = denominator4 != 0
+            corr4_ev = np.zeros_like(denominator4, dtype=np.complex128)
             # compute Eq. (32) Ref. [2]
-            corr4_ev = (
-                pn * Qn * Qn.conj() * Qn.conj()
-                - q2n * Qn.conj() * Qn.conj()
-                - pn * Qn * Q2n.conj()
-                - 2.0 * M * pn * Qn.conj()
-                - 2.0 * mq * Qn * Qn.conj()
-                + 7.0 * qn * Qn.conj()
-                - Qn * qn.conj()
-                + q2n * Q2n.conj()
-                + 2.0 * pn * Qn.conj()
-                + 2.0 * mq * M
-                - 6.0 * mq
-            ) / ((mp * M - 3.0 * mq) * (M - 1) * (M - 2))
+            corr4_ev[valid] = (
+                (
+                    pn * Qn * Qn.conj() * Qn.conj()
+                    - q2n * Qn.conj() * Qn.conj()
+                    - pn * Qn * Q2n.conj()
+                    - 2.0 * M * pn * Qn.conj()
+                    - 2.0 * mq * Qn * Qn.conj()
+                    + 7.0 * qn * Qn.conj()
+                    - Qn * qn.conj()
+                    + q2n * Q2n.conj()
+                    + 2.0 * pn * Qn.conj()
+                    + 2.0 * mq * M
+                    - 6.0 * mq
+                )[valid4]
+                / denominator4[valid4],
+            )
             # compute Eq. (25) Ref. [2]
-            w4 = (mp * M - 3.0 * mq) * (M - 1) * (M - 2)
+            w4 = np.where(valid4, denominator4, 0.0)
             # compute Eq. (33) Ref. [2]
-            corr4 = np.vdot(w4, corr4_ev) / np.sum(w4)
+            if np.sum(w4) > 0:
+                corr4 = np.vdot(w4, corr4_ev) / np.sum(w4)
+            else:
+                corr4 = 0.0
+
             # compute Eq. (34) Ref. [2]
             dn4 = corr4 - 2.0 * corr2 * full_event_quantities[2]
             # compute Eq. (12) Ref. [2]
@@ -840,16 +866,21 @@ class QCumulantFlow(FlowInterface.FlowInterface):
 
             vn_bin = self.__flow_from_cumulant_differential(cn4, dn4)
 
-            # ebe difference from mean: <4>_i - <<4>>
-            difference = corr4_ev - corr4
-            # weighted variance
-            variance = np.sum(w4 * np.square(difference)) / np.sum(w4)
-            # unbiased variance^2
-            variance_sq = variance / (
-                1.0 - np.vdot(w4, w4) / (np.sum(w4) ** 2.0)
-            )
-            # error of <<4>>, Eq. (C38) Ref. [1]
-            corr4_err = np.sqrt(np.vdot(w4, w4) * variance_sq) / np.sum(w4)
+            if np.sum(w4) == 0:
+                variance = 0.0
+                variance_sq = 0.0
+                corr4_err = 0.0
+            else:
+                # ebe difference from mean: <4>_i - <<4>>
+                difference = corr4_ev - corr4
+                # weighted variance
+                variance = np.sum(w4 * np.square(difference)) / np.sum(w4)
+                # unbiased variance^2
+                variance_sq = variance / (
+                    1.0 - np.vdot(w4, w4) / (np.sum(w4) ** 2.0)
+                )
+                # error of <<4>>, Eq. (C38) Ref. [1]
+                corr4_err = np.sqrt(np.vdot(w4, w4) * variance_sq) / np.sum(w4)
 
             minus_cn4 = -cn4
             term1 = (
@@ -964,7 +995,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             for pdg in poi_pdg:
                 if not isinstance(pdg, int):
                     raise TypeError("poi_pdg elements must be integers")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )
