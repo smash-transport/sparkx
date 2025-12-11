@@ -782,7 +782,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         denominator = mp * M - mq
 
         # compute Eq. (28) Ref. [2] ignoring invalid (0 denominator) events
-        valid = (denominator != 0)
+        valid = denominator != 0
         corr2_ev = np.zeros_like(denominator, dtype=np.complex128)
         corr2_ev[valid] = numerator[valid] / denominator[valid]
 
@@ -808,7 +808,9 @@ class QCumulantFlow(FlowInterface.FlowInterface):
             # weighted variance
             variance = np.sum(w2 * np.square(difference)) / np.sum(w2)
             # unbiased variance^2
-            variance_sq = variance / (1.0 - np.vdot(w2, w2) / (np.sum(w2) ** 2.0))
+            variance_sq = variance / (
+                1.0 - np.vdot(w2, w2) / (np.sum(w2) ** 2.0)
+            )
             # error of <<2>>, Eq. (C38) Ref. [1]
             corr2_err = np.sqrt(np.vdot(w2, w2) * variance_sq) / np.sum(w2)
 
@@ -828,21 +830,25 @@ class QCumulantFlow(FlowInterface.FlowInterface):
         if self.k_ == 4:
             Q2n = np.array(full_event_quantities[5])
             denominator4 = (mp * M - 3.0 * mq) * (M - 1) * (M - 2)
-            valid4 = (denominator4 != 0)
+            valid4 = denominator4 != 0
             corr4_ev = np.zeros_like(denominator4, dtype=np.complex128)
             # compute Eq. (32) Ref. [2]
             corr4_ev[valid] = (
-                pn * Qn * Qn.conj() * Qn.conj()
-                - q2n * Qn.conj() * Qn.conj()
-                - pn * Qn * Q2n.conj()
-                - 2.0 * M * pn * Qn.conj()
-                - 2.0 * mq * Qn * Qn.conj()
-                + 7.0 * qn * Qn.conj()
-                - Qn * qn.conj()
-                + q2n * Q2n.conj()
-                + 2.0 * pn * Qn.conj()
-                + 2.0 * mq * M
-                - 6.0 * mq)[valid4]/denominator4[valid4],
+                (
+                    pn * Qn * Qn.conj() * Qn.conj()
+                    - q2n * Qn.conj() * Qn.conj()
+                    - pn * Qn * Q2n.conj()
+                    - 2.0 * M * pn * Qn.conj()
+                    - 2.0 * mq * Qn * Qn.conj()
+                    + 7.0 * qn * Qn.conj()
+                    - Qn * qn.conj()
+                    + q2n * Q2n.conj()
+                    + 2.0 * pn * Qn.conj()
+                    + 2.0 * mq * M
+                    - 6.0 * mq
+                )[valid4]
+                / denominator4[valid4],
+            )
             # compute Eq. (25) Ref. [2]
             w4 = np.where(valid4, denominator4, 0.0)
             # compute Eq. (33) Ref. [2]
@@ -850,7 +856,7 @@ class QCumulantFlow(FlowInterface.FlowInterface):
                 corr4 = np.vdot(w4, corr4_ev) / np.sum(w4)
             else:
                 corr4 = 0.0
-            
+
             # compute Eq. (34) Ref. [2]
             dn4 = corr4 - 2.0 * corr2 * full_event_quantities[2]
             # compute Eq. (12) Ref. [2]

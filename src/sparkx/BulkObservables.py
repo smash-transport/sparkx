@@ -395,11 +395,11 @@ class BulkObservables:
                     raise AttributeError(
                         f"'{quantity}' is not a callable method of Particle"
                     )
-                
+
                 y_value = particle_method()
                 if -half_width <= y_value <= half_width:
                     selected_values.append(property_func(particle))
-                    
+
             if selected_values:
                 mean_value = sum(selected_values) / len(selected_values)
                 event_means.append(mean_value)
