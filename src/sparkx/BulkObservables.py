@@ -388,11 +388,18 @@ class BulkObservables:
         event_means = []
         half_width = y_width / 2
         for event in self.particle_objects:
-            selected_values = [
-                property_func(particle)
-                for particle in event
-                if -half_width <= particle_method() <= half_width
-            ]
+            selected_values = []
+            for particle in event:
+                particle_method = getattr(particle, quantity)
+                if not callable(particle_method):
+                    raise AttributeError(
+                        f"'{quantity}' is not a callable method of Particle"
+                    )
+                
+                y_value = particle_method()
+                if -half_width <= y_value <= half_width:
+                    selected_values.append(property_func(particle))
+                    
             if selected_values:
                 mean_value = sum(selected_values) / len(selected_values)
                 event_means.append(mean_value)
