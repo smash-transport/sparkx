@@ -27,6 +27,9 @@ Date: 2025-XX-XX
 * BulkObservables: Update particle selection loop to handle empty events.
 * QCumulantFlow: Fix in differential flow calculation.
 
+### Added
+* Documentation: Add reference to SPARKX paper to be cited when using SPARKX in publications.
+
 ## v2.1.1-Chatelet
 Date: 2025-07-08
 
