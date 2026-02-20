@@ -1342,7 +1342,7 @@ class Particle:
             return 0.0
         else:
             mass_squared = self.E**2.0 - self.p_abs() ** 2.0
-            if abs(mass_squared) < 1e-4: # use a 10 MeV threshold
+            if abs(mass_squared) < 1e-4:  # use a 10 MeV threshold
                 return 0.0
             elif mass_squared > 0:
                 return np.sqrt(mass_squared)
@@ -1392,7 +1392,7 @@ class Particle:
             return np.nan
         else:
             mT_squared = self.E**2.0 - self.pz**2.0
-            if abs(mT_squared) < 1e-4: # use a 10 MeV threshold
+            if abs(mT_squared) < 1e-4:  # use a 10 MeV threshold
                 return 0.0
             elif mT_squared > 0:
                 return np.sqrt(mT_squared)
