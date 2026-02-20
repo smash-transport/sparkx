@@ -1356,9 +1356,10 @@ class Particle:
             elif mass_squared > 0:
                 return np.sqrt(mass_squared)
             else:
+                pdg_str = str(int(self.pdg)) if not np.isnan(self.pdg) else "nan"
                 warnings.warn(
                     "|E| >= |p| not fulfilled! "
-                    f"PDG = {int(self.pdg)}, "
+                    f"PDG = {pdg_str}, "
                     f"mass_squared = {mass_squared}. "
                     "The mass is set to nan."
                 )
