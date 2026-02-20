@@ -1342,13 +1342,14 @@ class Particle:
             return 0.0
         else:
             mass_squared = self.E**2.0 - self.p_abs() ** 2.0
-            if abs(mass_squared) < 1e-16:
-                return 0.0  # numerical precision
+            if abs(mass_squared) < 1e-4: # use a 10 MeV threshold
+                return 0.0
             elif mass_squared > 0:
                 return np.sqrt(mass_squared)
             else:
                 warnings.warn(
                     "|E| >= |p| not fulfilled! "
+                    f"PDG = {int(self.pdg)}, "
                     f"mass_squared = {mass_squared}. "
                     "The mass is set to nan."
                 )
@@ -1391,10 +1392,10 @@ class Particle:
             return np.nan
         else:
             mT_squared = self.E**2.0 - self.pz**2.0
-            if mT_squared >= 0:
+            if abs(mT_squared) < 1e-4: # use a 10 MeV threshold
+                return 0.0
+            elif mT_squared > 0:
                 return np.sqrt(mT_squared)
-            elif abs(mT_squared) < 1e-16:
-                return 0.0  # numerical precision
             else:
                 warnings.warn(
                     "|E| >= |pz| not fulfilled! "
