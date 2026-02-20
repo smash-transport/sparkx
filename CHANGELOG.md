@@ -41,6 +41,8 @@ Date: 2026-XX-XX
 * JetscapeLoader: Remove unused methods `_get_num_skip_lines`, `__get_num_read_lines`, `set_particle_list`, and `set_num_output_per_event` (replaced by `_single_pass_load`).
 * BaseLoader: Remove unused methods `_get_num_skip_lines` and `_skip_lines` (no longer called by any subclass after the single-pass refactoring).
 
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.1.1...v2.2.0)
+
 ## v2.1.1-Chatelet
 Date: 2025-07-08
 

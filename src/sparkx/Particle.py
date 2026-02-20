@@ -1319,6 +1319,10 @@ class Particle:
         mu-neutrinos (14, -14), tau-neutrinos (16, -16),
         tau-prime-neutrinos (18, -18).
 
+        Electrons (11) and positrons (-11) are assigned their PDG mass
+        of 0.00051099895 GeV because their mass falls below the numerical
+        precision threshold used for the energy-momentum relation.
+
         Returns
         -------
         float
@@ -1331,6 +1335,9 @@ class Particle:
         """
         # photons and gluons are massless, consider neutrinos as massless
         massless_pdg = [22, 21, 12, -12, 14, -14, 16, -16, 18, -18]
+        # electron/positron mass in GeV (below numerical threshold)
+        electron_pdg = [11, -11]
+        electron_mass = 0.00051099895
         if (
             np.isnan(self.E)
             or np.isnan(self.px)
@@ -1340,9 +1347,11 @@ class Particle:
             return np.nan
         elif self.pdg in massless_pdg:
             return 0.0
+        elif self.pdg in electron_pdg:
+            return electron_mass
         else:
             mass_squared = self.E**2.0 - self.p_abs() ** 2.0
-            if abs(mass_squared) < 1e-4:  # use a 10 MeV threshold
+            if abs(mass_squared) < 1e-16:
                 return 0.0
             elif mass_squared > 0:
                 return np.sqrt(mass_squared)
@@ -1392,7 +1401,7 @@ class Particle:
             return np.nan
         else:
             mT_squared = self.E**2.0 - self.pz**2.0
-            if abs(mT_squared) < 1e-4:  # use a 10 MeV threshold
+            if abs(mT_squared) < 1e-16:
                 return 0.0
             elif mT_squared > 0:
                 return np.sqrt(mT_squared)
