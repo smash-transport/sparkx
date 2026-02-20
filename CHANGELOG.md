@@ -27,6 +27,9 @@ Date: 2025-XX-XX
 * BulkObservables: Update particle selection loop to handle empty events.
 * QCumulantFlow: Fix in differential flow calculation.
 
+### Added
+* Scripts: Add a script that can update the copyright statements in all source files.
+
 ## v2.1.1-Chatelet
 Date: 2025-07-08
 
