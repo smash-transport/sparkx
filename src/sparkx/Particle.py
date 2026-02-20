@@ -1342,13 +1342,15 @@ class Particle:
             return 0.0
         else:
             mass_squared = self.E**2.0 - self.p_abs() ** 2.0
-            if mass_squared >= 0:
-                return np.sqrt(mass_squared)
-            elif abs(mass_squared) < 1e-16:
+            if abs(mass_squared) < 1e-16:
                 return 0.0  # numerical precision
+            elif mass_squared > 0:
+                return np.sqrt(mass_squared)
             else:
                 warnings.warn(
-                    "|E| >= |p| not fulfilled! The mass is set to nan."
+                    "|E| >= |p| not fulfilled! "
+                    f"mass_squared = {mass_squared}. "
+                    "The mass is set to nan."
                 )
                 return np.nan
 

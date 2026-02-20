@@ -29,6 +29,7 @@ Date: 2026-XX-XX
 * Particle: Move attribute mapping and type-casting logic to class-level pre-compiled index arrays, eliminating per-particle dictionary rebuilds and string membership checks.
 
 ### Fixed
+* Particle: Fix condition ordering in `mass_from_energy_momentum` so that small negative `mass_squared` values due to numerical precision are correctly treated as zero instead of returning `nan`. The warning now also reports the `mass_squared` value.
 * Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
 * Documentation: Add note in docstring that JETSCAPE files use 1-based event numbering.
 * Documentation: Fix example in ReactionPlaneFlow documentation.
