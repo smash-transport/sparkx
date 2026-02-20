@@ -10,7 +10,6 @@
 from sparkx.loader.BaseLoader import BaseLoader
 
 import pytest
-from io import StringIO
 from typing import Dict, Any
 
 # Assuming BaseLoader is imported from the appropriate module
@@ -24,10 +23,6 @@ class ConcreteLoader(BaseLoader):
     def load(self, **kwargs: Dict[str, Any]) -> Any:
         # A dummy implementation for testing
         return {"data": "dummy data"}
-
-    def _get_num_skip_lines(self) -> int:
-        # Dummy implementation for testing
-        return 3
 
 
 # Fixtures for creating instances
@@ -56,23 +51,6 @@ def test_check_that_tuple_contains_integers_only(concrete_loader):
     # Should raise TypeError
     with pytest.raises(TypeError):
         concrete_loader._check_that_tuple_contains_integers_only((1, "a", 3))
-
-
-# Test for _skip_lines method
-def test_skip_lines(concrete_loader):
-    # Simulate a file with multiple lines
-    file_content = "header\ncomment\nparticle1\nparticle2\n"
-    fname = StringIO(file_content)
-
-    concrete_loader._skip_lines(fname)
-    # Check if the correct line is now the first line to be read
-    assert fname.readline().strip() == "particle2"
-
-
-# Test for _get_num_skip_lines method
-def test_get_num_skip_lines(concrete_loader):
-    # This will test the dummy implementation of _get_num_skip_lines
-    assert concrete_loader._get_num_skip_lines() == 3
 
 
 # Test: Correct usage → returns integer
