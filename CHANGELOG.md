@@ -25,6 +25,8 @@ Date: 2026-XX-XX
 * Loaders: Refactor `OscarLoader` and `JetscapeLoader` to use a single-pass file reading approach (`_single_pass_load`) instead of the previous multi-pass strategy, improving loading performance especially when using the `events` keyword.
 * Loaders: Both `OscarLoader` and `JetscapeLoader` now consistently renumber surviving events sequentially when constructor filters cut out events (0-based for Oscar, 1-based for Jetscape).
 * Oscar: Impact parameters are now tracked per surviving event directly, fixing incorrect lookups when constructor filters removed events.
+* Particle: Cache `PDGID` objects, validity checks, and charge lookups at the class level to avoid repeated computation for identical PDG codes during file loading.
+* Particle: Move attribute mapping and type-casting logic to class-level pre-compiled index arrays, eliminating per-particle dictionary rebuilds and string membership checks.
 
 ### Fixed
 * Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
