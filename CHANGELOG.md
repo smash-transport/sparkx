@@ -29,6 +29,7 @@ Date: 2025-XX-XX
 
 ### Added
 * Scripts: Add a script that can update the copyright statements in all source files.
+* Documentation: Add reference to SPARKX paper to be cited when using SPARKX in publications.
 
 ## v2.1.1-Chatelet
 Date: 2025-07-08
