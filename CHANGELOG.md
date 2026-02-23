@@ -21,6 +21,10 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 ## v2.2.0-Chatelet
 Date: 2026-XX-XX
 
+### Added
+* Scripts: Add a script that can update the copyright statements in all source files.
+* Documentation: Add reference to SPARKX paper to be cited when using SPARKX in publications.
+
 ### Changed
 * Loaders: Refactor `OscarLoader` and `JetscapeLoader` to use a single-pass file reading approach (`_single_pass_load`) instead of the previous multi-pass strategy, improving loading performance especially when using the `events` keyword.
 * Loaders: Both `OscarLoader` and `JetscapeLoader` now consistently renumber surviving events sequentially when constructor filters cut out events (0-based for Oscar, 1-based for Jetscape).
