@@ -19,7 +19,7 @@ The main categories for changes in this file are:
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
 ## v2.2.0-Chatelet
-Date: 2026-XX-XX
+Date: 2026-03-04
 
 ### Added
 * Scripts: Add a script that can update the copyright statements in all source files.
