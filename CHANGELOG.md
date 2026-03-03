@@ -18,18 +18,34 @@ The main categories for changes in this file are:
 
 A `Deprecated` section could be added if needed for soon-to-be removed features.
 
-## v2.1.2-Chatelet
-Date: 2025-XX-XX
-
-### Fixed
-* Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
-* Documentation: Fix example in ReactionPlaneFlow documentation.
-* BulkObservables: Update particle selection loop to handle empty events.
-* QCumulantFlow: Fix in differential flow calculation.
+## v2.2.0-Chatelet
+Date: 2026-XX-XX
 
 ### Added
 * Scripts: Add a script that can update the copyright statements in all source files.
 * Documentation: Add reference to SPARKX paper to be cited when using SPARKX in publications.
+
+### Changed
+* Loaders: Refactor `OscarLoader` and `JetscapeLoader` to use a single-pass file reading approach (`_single_pass_load`) instead of the previous multi-pass strategy, improving loading performance especially when using the `events` keyword.
+* Loaders: Both `OscarLoader` and `JetscapeLoader` now consistently renumber surviving events sequentially when constructor filters cut out events (0-based for Oscar, 1-based for Jetscape).
+* Oscar: Impact parameters are now tracked per surviving event directly, fixing incorrect lookups when constructor filters removed events.
+* Particle: Cache `PDGID` objects, validity checks, and charge lookups at the class level to avoid repeated computation for identical PDG codes during file loading.
+* Particle: Move attribute mapping and type-casting logic to class-level pre-compiled index arrays, eliminating per-particle dictionary rebuilds and string membership checks.
+
+### Fixed
+* Particle: Fix condition ordering in `mass_from_energy_momentum` so that small negative `mass_squared` values due to numerical precision are correctly treated as zero instead of returning `nan`. The warning now also reports the `mass_squared` value.
+* Jetscape: Fix indexing bug if user selects events not starting from the first event in the file.
+* Documentation: Add note in docstring that JETSCAPE files use 1-based event numbering.
+* Documentation: Fix example in ReactionPlaneFlow documentation.
+* BulkObservables: Update particle selection loop to handle empty events.
+* QCumulantFlow: Fix in differential flow calculation.
+
+### Removed
+* OscarLoader: Remove unused methods `_get_num_skip_lines`, `set_num_events`, `__get_num_read_lines`, `set_particle_list`, and `set_num_output_per_event_and_event_footers` (replaced by `_single_pass_load`).
+* JetscapeLoader: Remove unused methods `_get_num_skip_lines`, `__get_num_read_lines`, `set_particle_list`, and `set_num_output_per_event` (replaced by `_single_pass_load`).
+* BaseLoader: Remove unused methods `_get_num_skip_lines` and `_skip_lines` (no longer called by any subclass after the single-pass refactoring).
+
+[Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.1.1...v2.2.0)
 
 ## v2.1.1-Chatelet
 Date: 2025-07-08

@@ -41,10 +41,6 @@ class OscarLoader(BaseLoader):
         Initializes the OscarLoader with the provided OSCAR file path.
     load(**kwargs)
         Loads the OSCAR data with optional event ranges and filters.
-    _get_num_skip_lines()
-        Calculates the number of initial lines to skip in the OSCAR file.
-    set_num_events()
-        Sets the number of events in the OSCAR data file.
     set_oscar_format()
         Determines and sets the format of the OSCAR data file.
     oscar_format()
@@ -53,14 +49,6 @@ class OscarLoader(BaseLoader):
         Returns the impact parameter of the events in the OSCAR data file.
     event_end_lines()
         Returns the event end lines in the OSCAR data file.
-    __get_num_read_lines()
-        Calculates the number of lines to read based on the specified events.
-    __apply_kwargs_filters(event, filters_dict)
-        Applies filters to the event data based on the provided filter dictionary.
-    set_particle_list(kwargs)
-        Sets the list of particles from the OSCAR data file.
-    set_num_output_per_event_and_event_footers()
-        Determines the number of output lines per event and the event footers in the OSCAR data file.
     """
 
     PATH_OSCAR_: str
@@ -161,93 +149,223 @@ class OscarLoader(BaseLoader):
         ):
             if self.optional_arguments_["events"] < 0:
                 raise ValueError("Event number must be non-negative")
-
-        self.set_oscar_format()
-        self.set_num_events()
-        self.set_num_output_per_event_and_event_footers()
-        return (
-            self.set_particle_list(kwargs),
-            self.num_events_,
-            self.num_output_per_event_,
-            self.custom_attr_list,
-        )
-
-    def _get_num_skip_lines(self) -> int:
-        """
-        Get number of initial lines in Oscar file that are header or comment
-        lines and need to be skipped in order to read the particle output.
-
-        Returns
-        -------
-        skip_lines : int
-            Number of initial lines before data.
-
-        """
-        if (
-            not self.optional_arguments_
-            or "events" not in self.optional_arguments_.keys()
-        ):
-            skip_lines = 3
-        elif isinstance(self.optional_arguments_["events"], int):
-            if self.optional_arguments_["events"] == 0:
-                skip_lines = 3
-            else:
-                cumulate_lines = 0
-                for i in range(0, self.optional_arguments_["events"]):
-                    cumulate_lines += self.num_output_per_event_[i, 1] + 2
-                skip_lines = 3 + cumulate_lines
-        elif isinstance(self.optional_arguments_["events"], tuple):
-            line_start = self.optional_arguments_["events"][0]
-            if line_start == 0:
-                skip_lines = 3
-            else:
-                cumulate_lines = 0
-                for i in range(0, line_start):
-                    cumulate_lines += self.num_output_per_event_[i, 1] + 2
-                skip_lines = 3 + cumulate_lines
-        else:
+        elif "events" in self.optional_arguments_.keys():
             raise TypeError(
                 'Value given as flag "events" is not of type '
                 + "int or a tuple of two int values"
             )
 
-        return skip_lines
+        self.set_oscar_format()
+        return self._single_pass_load(kwargs)
 
-    def set_num_events(self) -> None:
+    def _single_pass_load(
+        self, kwargs: Dict[str, Any]
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
         """
-        Sets the number of events in the OSCAR data file.
+        Loads all data from the OSCAR file in a single pass.
 
-        This method reads the file in binary mode to search for the last line. This approach avoids the need to loop through the entire file, which can be time-consuming for large files. It then checks if the last line starts with a '#' and contains the word 'event'. If it does, it sets the number of events to the integer value in the third position of the last line. If the last line does not meet these conditions, it raises a TypeError.
+        This method reads the file once, simultaneously collecting event
+        metadata (event counts, particles-per-event, end lines, impact
+        parameters) and building Particle objects. This replaces the previous
+        This method reads the file once, simultaneously collecting event
+        metadata (event headers, particle counts, event end lines) and
+        building Particle objects.
+
+        When the ``events`` keyword is specified, events outside the
+        requested range are skipped without creating Particle objects.
+        Validation of event ranges is done on the fly.
 
         Parameters
         ----------
-        None
-
-        Raises
-        ------
-        TypeError
-            If the last line of the file does not start with a '#' and contain the word 'event'.
+        kwargs : dict
+            A dictionary of optional arguments.
 
         Returns
         -------
-        None
+        tuple
+            A tuple of (particle_list, num_events, num_output_per_event,
+            custom_attr_list).
         """
-        with open(self.PATH_OSCAR_, "rb") as file:
-            file.seek(-2, os.SEEK_END)
-            while file.read(1) != b"\n":
-                file.seek(-2, os.SEEK_CUR)
-            last_line = file.readline().decode().split(" ")
-        if last_line[0] == "#" and "event" in last_line:
-            self.num_events_ = (
-                BaseLoader._extract_integer_after_keyword(last_line, "event")
-                + 1
+        # Determine which events to keep
+        event_start: int = 0
+        event_end: Union[int, None] = None
+        if "events" in self.optional_arguments_:
+            ev_arg = self.optional_arguments_["events"]
+            if isinstance(ev_arg, int):
+                event_start = ev_arg
+                event_end = ev_arg
+            elif isinstance(ev_arg, tuple):
+                event_start = ev_arg[0]
+                event_end = ev_arg[1]
+
+        has_filters = "filters" in self.optional_arguments_
+        is_ic = self.oscar_format_ == "Oscar2013Extended_IC"
+        is_photons = self.oscar_format_ == "Oscar2013Extended_Photons"
+
+        particle_list: List[List[Particle]] = []
+        event_output: List[List[int]] = []
+        all_event_end_lines: List[str] = []
+        surviving_event_end_lines: List[str] = []
+        data: List[Particle] = []
+        cut_events: int = 0
+        current_event_idx: int = -1  # 0-based index of events in file
+        in_requested_range: bool = False
+        total_events_in_file: int = 0
+        # For Photons format: track whether we just saw an end line
+        # (to skip duplicate end lines)
+        last_was_end: bool = False
+
+        with open(self.PATH_OSCAR_, "r") as f:
+            # Skip header lines (format line + units line + version line)
+            for _ in range(3):
+                f.readline()
+
+            for line in f:
+                # Event start line: "# event N out M" or "# event N in M"
+                # or "# event N start"
+                if (
+                    "#" in line
+                    and "event" in line
+                    and (" out " in line or " in " in line or " start" in line)
+                ):
+                    current_event_idx += 1
+
+                    # Determine if we're in the requested range
+                    if current_event_idx < event_start:
+                        in_requested_range = False
+                        if is_ic or is_photons:
+                            last_was_end = False
+                        continue
+                    if event_end is not None and current_event_idx > event_end:
+                        in_requested_range = False
+                        if not is_ic and not is_photons:
+                            pass
+                        continue
+
+                    in_requested_range = True
+
+                    # Parse the "out" line for standard formats
+                    if not is_ic and not is_photons:
+                        line_str = line.replace("\n", "").split(" ")
+                        event_num = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
+                        num_output = BaseLoader._extract_integer_after_keyword(
+                            line_str, "out"
+                        )
+                        event_output.append([event_num, num_output])
+                    elif is_ic:
+                        line_str = line.replace("\n", "").split(" ")
+                        event_num = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
+                        event_output.append([event_num, 0])
+                    elif is_photons:
+                        event_output.append([0, 0])
+                        last_was_end = False
+                    continue
+
+                # Event end line: "# event N end ..."
+                if "#" in line and " end" in line:
+                    # For Photons: skip duplicate end lines
+                    if is_photons and last_was_end:
+                        continue
+                    last_was_end = True
+
+                    total_events_in_file += 1
+
+                    if is_photons and in_requested_range:
+                        line_str = line.replace("\n", "").split(" ")
+                        event_num = BaseLoader._extract_integer_after_keyword(
+                            line_str, "event"
+                        )
+                        event_output[-1][0] = event_num
+                        event_output[-1][1] = len(data)
+
+                    if is_ic and in_requested_range:
+                        event_output[-1][1] = len(data)
+
+                    # Always collect end lines for impact parameter lookup
+                    all_event_end_lines.append(line)
+
+                    if in_requested_range:
+                        old_data_len = len(data)
+                        if has_filters:
+                            data = self.__apply_kwargs_filters(
+                                [data], kwargs["filters"]
+                            )[0]
+
+                        if len(data) != 0 or old_data_len == 0:
+                            event_output[-1][1] = len(data)
+                            particle_list.append(data)
+                            surviving_event_end_lines.append(line)
+                        else:
+                            event_output.pop()
+                            cut_events += 1
+                        data = []
+                    continue
+
+                # Comment line in unexpected position
+                if "#" in line:
+                    continue
+
+                # Data line (particle)
+                if in_requested_range:
+                    last_was_end = False
+                    line_list = np.asarray(line.replace("\n", "").split(" "))
+                    if self.oscar_format_ == "ASCII":
+                        particle = Particle(
+                            self.oscar_format_, line_list, self.custom_attr_list
+                        )
+                    else:
+                        particle = Particle(self.oscar_format_, line_list)
+                    data.append(particle)
+                else:
+                    last_was_end = False
+
+        # Validate that the file ended properly
+        if total_events_in_file == 0 and current_event_idx < 0:
+            raise TypeError(
+                "Input file does not contain any events. "
+                "File might be incomplete or corrupted."
+            )
+
+        # Validate requested event range
+        if event_end is not None and current_event_idx < event_end:
+            raise IndexError(
+                f"Requested events up to {event_end} but the file only "
+                f"contains {current_event_idx + 1} events."
+            )
+
+        # When filters cut some events, renumber survivors sequentially
+        # starting from 0 (Oscar convention) so that post-constructor
+        # filters in BaseStorer continue to work correctly.
+        if cut_events > 0 and len(event_output) > 0:
+            for i in range(len(event_output)):
+                event_output[i][0] = i
+
+        # Build final arrays
+        if len(event_output) > 0:
+            self.num_output_per_event_ = np.array(
+                event_output, dtype=np.int32, ndmin=2
             )
         else:
-            raise TypeError(
-                "Input file does not end with a comment line "
-                + "including the events. File might be incomplete "
-                + "or corrupted."
-            )
+            self.num_output_per_event_ = np.array([])
+        self.num_events_ = len(event_output)
+        self.event_end_lines_ = all_event_end_lines
+        # Track end lines for only the surviving events (after filters)
+        # so impact_parameter() can return correct values directly.
+        self.surviving_event_end_lines_ = surviving_event_end_lines
+
+        if particle_list == []:
+            particle_list = [[]]
+
+        return (
+            particle_list,
+            self.num_events_,
+            self.num_output_per_event_,
+            self.custom_attr_list,
+        )
 
     def _set_custom_attr_list(self, header_line: List[str]) -> List[str]:
         self.custom_attr_list = []
@@ -364,74 +482,24 @@ class OscarLoader(BaseLoader):
         Returns the impact parameter of the events.
 
         This method extracts the impact parameter of the collision from the
-        last line of each event in the OSCAR data file.
+        end line of each surviving event in the OSCAR data file.
 
         Returns
         -------
         List[float]
             The impact parameter of the collisions.
         """
+        if self.num_output_per_event_.shape[0] == 0:
+            return []
+
         impact_parameters: List[float] = []
-        for line in self.event_end_lines_:
+        for line in self.surviving_event_end_lines_:
             line_split = line.split(" ")
             line_split = list(filter(None, line_split))
             impact_parameter = float(line_split[-3])
             impact_parameters.append(impact_parameter)
 
-        # update the list with the num_output_per_event_ for the case
-        # that only certain events are loaded from the file
-        if self.num_output_per_event_.shape[0] == 0:
-            impact_parameters = []
-        else:
-            idx_list = self.num_output_per_event_[:, 0]
-            impact_parameters = [impact_parameters[i] for i in idx_list]
-
         return impact_parameters
-
-    def __get_num_read_lines(self) -> int:
-        """
-        Calculates the number of lines to read from the OSCAR data file.
-
-        This method determines the number of lines to read based on the 'events' key in the optional arguments. If 'events' is not specified, it sums the number of output lines for all events. If 'events' is an integer, it gets the number of output lines for the specified event. If 'events' is a tuple, it sums the number of output lines for the range of events specified. If 'events' is not an integer or a tuple, it raises a TypeError.
-
-        Parameters
-        ----------
-        None
-
-        Raises
-        ------
-        TypeError
-            If the value given as flag events is not of type int or a tuple.
-
-        Returns
-        -------
-        cumulated_lines : int
-            The total number of lines to read from the OSCAR data file.
-        """
-        if (
-            not self.optional_arguments_
-            or "events" not in self.optional_arguments_.keys()
-        ):
-            cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
-            # add number of comments
-            cumulated_lines += int(2 * len(self.num_output_per_event_))
-
-        elif isinstance(self.optional_arguments_["events"], int):
-            read_event = self.optional_arguments_["events"]
-            cumulated_lines = int(self.num_output_per_event_[read_event, 1] + 2)
-
-        elif isinstance(self.optional_arguments_["events"], tuple):
-            cumulated_lines = 0
-            event_start = self.optional_arguments_["events"][0]
-            event_end = self.optional_arguments_["events"][1]
-            for i in range(event_start, event_end + 1):
-                cumulated_lines += int(self.num_output_per_event_[i, 1] + 2)
-        else:
-            raise TypeError(
-                "Value given as flag events is not of type int or a tuple"
-            )
-
-        return cumulated_lines
 
     def __apply_kwargs_filters(
         self, event: List[List[Particle]], filters_dict: Dict[str, Any]
@@ -564,229 +632,3 @@ class OscarLoader(BaseLoader):
                 raise ValueError("The cut is unknown!")
 
         return event
-
-    def set_particle_list(self, kwargs: Dict[str, Any]) -> List[List[Particle]]:
-        """
-        Sets the list of particles from the OSCAR data file.
-
-        This method reads the OSCAR data file line by line and creates a list
-        of Particle objects. It also applies any filters specified in the
-        'filters' key of the kwargs dictionary. If the 'events' key is
-        specified in the kwargs dictionary, it adjusts the number of events and
-        the number of output lines per event accordingly.
-
-        Parameters
-        ----------
-        kwargs : dict
-            A dictionary of optional arguments. The following keys are recognized:
-
-            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
-            - 'filters': A list of filters to apply to the data.
-
-        Raises
-        ------
-        IndexError
-            If the number of events in the OSCAR file does not match the number
-            of events specified by the comments in the OSCAR file, or if the
-            index is out of range of the OSCAR file.
-        ValueError
-            If the first line of the event is not a comment line or does not
-            contain "out", or if a comment line is unexpectedly found.
-
-        Returns
-        -------
-        particle_list : list
-            A list of Particle objects loaded from the OSCAR data file.
-        """
-        particle_list: List[List[Particle]] = []
-        data: List[Particle] = []
-        num_read_lines = self.__get_num_read_lines()
-        cut_events = 0
-        with open(self.PATH_OSCAR_, "r") as oscar_file:
-            self._skip_lines(oscar_file)
-            for i in range(0, num_read_lines):
-                line = oscar_file.readline()
-                if not line:
-                    raise IndexError(
-                        "Index out of range of OSCAR file. This most likely happened because "
-                        + "the particle number specified by the comments in the OSCAR "
-                        + "file differs from the actual number of particles in the event."
-                    )
-                elif i == 0 and "#" not in line and "out" not in line:
-                    raise ValueError(
-                        "First line of the event is not a comment "
-                        + 'line or does not contain "out"'
-                    )
-                elif "event" in line and (
-                    "out" in line or "in " in line or " start" in line
-                ):
-                    continue
-                elif "#" in line and "end" in line:
-                    old_data_len = len(data)
-                    if "filters" in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters(
-                            [data], kwargs["filters"]
-                        )[0]
-                        if len(data) != 0 or old_data_len == 0:
-                            self.num_output_per_event_[len(particle_list)] = (
-                                len(particle_list),
-                                len(data),
-                            )
-                        else:
-                            self.num_output_per_event_ = np.atleast_2d(
-                                np.delete(
-                                    self.num_output_per_event_,
-                                    len(particle_list),
-                                    axis=0,
-                                )
-                            )
-                            if self.num_output_per_event_.shape[0] == 0:
-                                self.num_output_per_event_ = np.array([])
-                            elif (
-                                len(particle_list)
-                                < self.num_output_per_event_.shape[0]
-                            ):
-                                self.num_output_per_event_[
-                                    len(particle_list) :, 0
-                                ] -= 1
-                    if len(data) != 0 or old_data_len == 0:
-                        particle_list.append(data)
-                    else:
-                        cut_events = cut_events + 1
-                    data = []
-                elif "#" in line:
-                    raise ValueError("Comment line unexpectedly found: " + line)
-                else:
-                    line_list = np.asarray(line.replace("\n", "").split(" "))
-                    if self.oscar_format_ == "ASCII":
-                        particle = Particle(
-                            self.oscar_format_, line_list, self.custom_attr_list
-                        )
-                    else:
-                        particle = Particle(self.oscar_format_, line_list)
-                    data.append(particle)
-        self.num_events_ = self.num_events_ - cut_events
-        # Correct num_output_per_event and num_events
-        if not kwargs or "events" not in self.optional_arguments_.keys():
-            if len(particle_list) != self.num_events_:
-                raise IndexError(
-                    "Number of events in OSCAR file does not match the "
-                    + "number of events specified by the comments in the "
-                    + "OSCAR file!"
-                )
-        elif isinstance(kwargs["events"], int):
-            update = self.num_output_per_event_[kwargs["events"]]
-            self.num_output_per_event_ = np.array([update])
-            self.num_events_ = int(1)
-        elif isinstance(kwargs["events"], tuple):
-            event_start = kwargs["events"][0]
-            event_end = kwargs["events"][1]
-            update = self.num_output_per_event_[event_start : event_end + 1]
-            self.num_output_per_event_ = update
-            self.num_events_ = int(event_end - event_start + 1)
-
-        if particle_list == []:
-            particle_list = [[]]
-
-        return particle_list
-
-    def set_num_output_per_event_and_event_footers(self) -> None:
-        """
-        Sets the number of output lines per event and the event footers in the
-        OSCAR data file.
-
-        This method reads the OSCAR data file line by line and determines the
-        number of output lines for each event and the event footers. The method
-        behaves differently depending on the OSCAR format of the data file.
-        If the format is 'Oscar2013Extended_IC' or 'Oscar2013Extended_Photons',
-        it counts the number of lines between 'in' and 'end' lines. Otherwise,
-        it counts the number of lines between 'out' and 'end' lines.
-
-        Parameters
-        ----------
-        None
-
-        Raises
-        ------
-        None
-
-        Returns
-        -------
-        None
-        """
-        event_output: List[List[Union[str, int]]] = []
-
-        with open(self.PATH_OSCAR_, "r") as oscar_file:
-            line_counter: int
-            event: Union[int, str]
-            line_str: List[str]
-            if (
-                self.oscar_format_ != "Oscar2013Extended_IC"
-                and self.oscar_format_ != "Oscar2013Extended_Photons"
-            ):
-                while True:
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif "#" in line and " end " in line:
-                        self.event_end_lines_.append(line)
-                    elif "#" in line and " out " in line:
-                        line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(
-                            line_str, "event"
-                        )
-                        num_output: int = (
-                            BaseLoader._extract_integer_after_keyword(
-                                line_str, "out"
-                            )
-                        )
-                        event_output.append([event, num_output])
-                    else:
-                        continue
-            elif self.oscar_format_ == "Oscar2013Extended_IC":
-                line_counter = 0
-                event = 0
-                while True:
-                    line_counter += 1
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif "#" in line and " end" in line:
-                        self.event_end_lines_.append(line)
-                        event_output.append([event, line_counter - 1])
-                    elif "#" in line and (" in " in line or " start" in line):
-                        line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(
-                            line_str, "event"
-                        )
-                        line_counter = 0
-                    else:
-                        continue
-
-            elif self.oscar_format_ == "Oscar2013Extended_Photons":
-                line_counter = 0
-                event = 0
-                line_memory: int = 0
-                while True:
-                    line_counter += 1
-                    line_memory += 1
-                    line = oscar_file.readline()
-                    if not line:
-                        break
-                    elif "#" in line and " end " in line:
-                        if line_memory == 1:
-                            continue
-                        self.event_end_lines_.append(line)
-                        line_str = line.replace("\n", "").split(" ")
-                        event = BaseLoader._extract_integer_after_keyword(
-                            line_str, "event"
-                        )
-                        event_output.append([event, line_counter - 1])
-                    elif "#" in line and " out " in line:
-                        line_counter = 0
-                    else:
-                        continue
-
-        self.num_output_per_event_ = np.array(
-            event_output, dtype=np.int32, ndmin=2
-        )

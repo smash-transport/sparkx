@@ -27,10 +27,6 @@ class JetscapeLoader(BaseLoader):
     -------
     load(**kwargs)
         Loads the data from the JETSCAPE file based on the specified optional arguments.
-    set_particle_list(kwargs)
-        Sets the list of particles based on the specified optional arguments.
-    set_num_output_per_event()
-        Sets the number of output lines per event in the JETSCAPE data file.
     get_last_line(file_path)
         Returns the last line of a file.
     get_sigmaGen()
@@ -45,13 +41,16 @@ class JetscapeLoader(BaseLoader):
 
     def __init__(self, JETSCAPE_FILE: str):
         """
-        Sets the number of output lines per event and the event footers in the OSCAR data file.
+        Constructor for the JetscapeLoader class.
 
-        This method reads the OSCAR data file line by line and determines the number of output lines for each event and the event footers. The method behaves differently depending on the OSCAR format of the data file. If the format is 'Oscar2013Extended_IC' or 'Oscar2013Extended_Photons', it counts the number of lines between 'in' and 'end' lines. Otherwise, it counts the number of lines between 'out' and 'end' lines.
+        This method initializes an instance of the JetscapeLoader class.
+        It checks if the provided file ends with '.dat' and that the last
+        line contains the string 'sigmaGen'.
 
         Parameters
         ----------
-        None
+        JETSCAPE_FILE : str
+            The path to the JETSCAPE data file.
 
         Raises
         ------
@@ -140,6 +139,11 @@ class JetscapeLoader(BaseLoader):
         ):
             if self.optional_arguments_["events"] < 0:
                 raise ValueError("Event number must be non-negative")
+        elif "events" in self.optional_arguments_.keys():
+            raise TypeError(
+                'Value given as flag "events" is not of type '
+                + "int or a tuple of two int values"
+            )
 
         if "particletype" in self.optional_arguments_.keys() and isinstance(
             self.optional_arguments_["particletype"], str
@@ -163,55 +167,232 @@ class JetscapeLoader(BaseLoader):
         else:
             self.particle_type_defining_string_ = "N_partons"
 
-        self.set_num_output_per_event()
+        return self._single_pass_load(kwargs)
+
+    # PRIVATE CLASS METHODS
+
+    def _single_pass_load(
+        self, kwargs: Dict[str, Any]
+    ) -> Tuple[List[List[Particle]], int, np.ndarray, List[str]]:
+        """
+        Loads all data from the JETSCAPE file in a single pass.
+
+        This method reads the file once, simultaneously collecting event
+        metadata (event headers, particle counts) and building Particle
+        objects.
+
+        When the ``events`` keyword is specified, events outside the
+        requested range are skipped without creating Particle objects.
+        Validation of event ranges is done on the fly: if the file ends
+        before the requested events are found, an IndexError is raised.
+
+        Parameters
+        ----------
+        kwargs : dict
+            A dictionary of optional arguments. The following keys are recognized:
+
+            - 'events': Either a tuple of two integers specifying the range of
+              events to load, or a single integer specifying a single event.
+            - 'filters': A dictionary of filters to apply per event.
+
+        Raises
+        ------
+        IndexError
+            If the requested event range exceeds the file contents.
+        ValueError
+            If the first event header line is malformed.
+
+        Returns
+        -------
+        tuple
+            A tuple of (particle_list, num_events, num_output_per_event, []).
+        """
+        # Determine which events to keep
+        event_start: int = 0
+        event_end: Union[int, None] = None  # None means read all
+        if "events" in self.optional_arguments_:
+            ev_arg = self.optional_arguments_["events"]
+            if isinstance(ev_arg, int):
+                event_start = ev_arg
+                event_end = ev_arg
+            elif isinstance(ev_arg, tuple):
+                event_start = ev_arg[0]
+                event_end = ev_arg[1]
+
+        has_filters = "filters" in self.optional_arguments_
+
+        particle_list: List[List[Particle]] = []
+        event_output: List[List[int]] = []
+        event_header_information: List[Dict[str, Union[int, float]]] = []
+        data: List[Particle] = []
+        cut_events: int = 0
+        current_event_idx: int = -1  # 0-based index of current event in file
+        in_requested_range: bool = False
+        first_event_line: bool = True
+
+        with open(self.PATH_JETSCAPE_, "r") as f:
+            # Skip the very first header line
+            f.readline()
+
+            for line in f:
+                # End-of-file line with sigmaGen
+                if "#" in line and "sigmaGen" in line:
+                    # Finalize the last event if we were collecting it
+                    if in_requested_range and current_event_idx >= 0:
+                        particle_list, cut_events = self._finalize_event(
+                            data,
+                            particle_list,
+                            cut_events,
+                            event_output,
+                            has_filters,
+                            kwargs,
+                        )
+                        data = []
+                    # We've reached the end of the file
+                    break
+
+                # Event header line
+                if "#" in line and self.particle_type_defining_string_ in line:
+                    # Finalize previous event if we were collecting it
+                    if in_requested_range and current_event_idx >= 0:
+                        particle_list, cut_events = self._finalize_event(
+                            data,
+                            particle_list,
+                            cut_events,
+                            event_output,
+                            has_filters,
+                            kwargs,
+                        )
+                        data = []
+
+                    current_event_idx += 1
+
+                    # Parse header
+                    line_str = (
+                        line.replace("\n", "").replace("\t", " ").split(" ")
+                    )
+                    line_str = line_str[1:]  # ignore the leading '#'
+                    event_header_data: Dict[str, Union[int, float]] = {}
+                    for i in range(0, len(line_str), 2):
+                        if (line_str[i] == "Event") or (
+                            line_str[i] == self.particle_type_defining_string_
+                        ):
+                            event_header_data[line_str[i]] = int(
+                                line_str[i + 1]
+                            )
+                        else:
+                            event_header_data[line_str[i]] = float(
+                                line_str[i + 1]
+                            )
+
+                    # Check if this event is in the requested range
+                    if current_event_idx < event_start:
+                        in_requested_range = False
+                        continue
+                    if event_end is not None and current_event_idx > event_end:
+                        in_requested_range = False
+                        # We're past the requested range; we can stop reading
+                        break
+
+                    in_requested_range = True
+                    first_event_line = True
+
+                    event_num = int(event_header_data["Event"])
+                    num_output = int(
+                        event_header_data[self.particle_type_defining_string_]
+                    )
+                    event_output.append([event_num, num_output])
+                    event_header_information.append(event_header_data)
+                    continue
+
+                # Data line (particle)
+                if in_requested_range:
+                    if first_event_line:
+                        first_event_line = False
+                    line_list = (
+                        line.replace("\n", "").replace("\t", " ").split(" ")
+                    )
+                    particle = Particle("JETSCAPE", np.asarray(line_list))
+                    data.append(particle)
+
+        # Validate that the requested events were found
+        if event_end is not None and current_event_idx < event_end:
+            raise IndexError(
+                f"Requested events up to {event_end} but the file only "
+                f"contains {current_event_idx + 1} events."
+            )
+
+        # When filters cut some events, renumber survivors sequentially
+        # starting from 1 (Jetscape convention) so that post-constructor
+        # filters in BaseStorer continue to work correctly.
+        if cut_events > 0 and len(event_output) > 0:
+            for i in range(len(event_output)):
+                event_output[i][0] = i + 1
+
+        # Build final arrays
+        if len(event_output) > 0:
+            self.num_output_per_event_ = np.array(event_output, dtype=np.int32)
+        else:
+            self.num_output_per_event_ = np.array([], dtype=np.int32)
+        self.num_events_ = len(event_output)
+        self.event_header_information_ = event_header_information
+
+        if particle_list == []:
+            particle_list = [[]]
+
         return (
-            self.set_particle_list(kwargs),
+            particle_list,
             self.num_events_,
             self.num_output_per_event_,
             [],
         )
 
-    # PRIVATE CLASS METHODS
-    def _get_num_skip_lines(self) -> int:
+    def _finalize_event(
+        self,
+        data: List[Particle],
+        particle_list: List[List[Particle]],
+        cut_events: int,
+        event_output: List[List[int]],
+        has_filters: bool,
+        kwargs: Dict[str, Any],
+    ) -> Tuple[List[List[Particle]], int]:
         """
-        Get number of initial lines in Jetscape file that are header or comment
-        lines and need to be skipped in order to read the particle output.
+        Finalize an event by applying filters and appending to particle_list.
+
+        Parameters
+        ----------
+        data : list
+            List of Particle objects for the current event.
+        particle_list : list
+            Accumulated list of events.
+        cut_events : int
+            Number of events cut so far.
+        event_output : list
+            List of [event_num, num_output] pairs.
+        has_filters : bool
+            Whether filters should be applied.
+        kwargs : dict
+            Original kwargs containing filter definitions.
 
         Returns
         -------
-        skip_lines : int
-            Number of initial lines before data.
-
+        tuple
+            Updated (particle_list, cut_events).
         """
-        if (
-            not self.optional_arguments_
-            or "events" not in self.optional_arguments_.keys()
-        ):
-            skip_lines = 1
-        elif isinstance(self.optional_arguments_["events"], int):
-            if self.optional_arguments_["events"] == 0:
-                skip_lines = 1
-            else:
-                cumulate_lines = 0
-                for i in range(0, self.optional_arguments_["events"]):
-                    cumulate_lines += self.num_output_per_event_[i, 1] + 1
-                skip_lines = 1 + cumulate_lines
-        elif isinstance(self.optional_arguments_["events"], tuple):
-            line_start = self.optional_arguments_["events"][0]
-            if line_start == 0:
-                skip_lines = 1
-            else:
-                cumulate_lines = 0
-                for i in range(0, line_start):
-                    cumulate_lines += self.num_output_per_event_[i, 1] + 1
-                skip_lines = 1 + cumulate_lines
-        else:
-            raise TypeError(
-                'Value given as flag "events" is not of type '
-                + "int or a tuple of two int values"
-            )
+        old_data_len = len(data)
+        if has_filters:
+            data = self.__apply_kwargs_filters([data], kwargs["filters"])[0]
 
-        return skip_lines
+        if len(data) != 0 or old_data_len == 0:
+            # Update the particle count for this event
+            event_output[-1][1] = len(data)
+            particle_list.append(data)
+        else:
+            # Event was entirely filtered out
+            event_output.pop()
+            cut_events += 1
+
+        return particle_list, cut_events
 
     def event_end_lines(self) -> List[str]:
         """
@@ -226,52 +407,6 @@ class JetscapeLoader(BaseLoader):
             A list of strings that mark the end of events in the Jetscape data.
         """
         return self.event_end_lines_
-
-    def __get_num_read_lines(self) -> int:
-        """
-        Gets the number of lines to read from the JETSCAPE data file.
-
-        This method calculates the number of lines to read from the JETSCAPE data file based on the 'events' key in the optional_arguments_ dictionary. If the 'events' key is not specified, it sums up the number of output lines for all events and adds the number of comment lines. If the 'events' key is an integer, it gets the number of output lines for the specified event. If the 'events' key is a tuple, it sums up the number of output lines for the range of events specified by the tuple. If the 'events' key is not an integer or a tuple, it raises a TypeError.
-
-        Parameters
-        ----------
-        None
-
-        Raises
-        ------
-        TypeError
-            If the 'events' key in the optional_arguments_ dictionary is not an integer or a tuple.
-
-        Returns
-        -------
-        cumulated_lines : int
-            The number of lines to read from the JETSCAPE data file.
-        """
-        if (
-            not self.optional_arguments_
-            or "events" not in self.optional_arguments_.keys()
-        ):
-            cumulated_lines = np.sum(self.num_output_per_event_, axis=0)[1]
-            # add number of comments
-            cumulated_lines += int(len(self.num_output_per_event_))
-
-        elif isinstance(self.optional_arguments_["events"], int):
-            read_event = self.optional_arguments_["events"]
-            cumulated_lines = int(self.num_output_per_event_[read_event][1] + 1)
-
-        elif isinstance(self.optional_arguments_["events"], tuple):
-            cumulated_lines = 0
-            event_start = self.optional_arguments_["events"][0]
-            event_end = self.optional_arguments_["events"][1]
-            for i in range(event_start, event_end + 1):
-                cumulated_lines += int(self.num_output_per_event_[i, 1] + 1)
-        else:
-            raise TypeError(
-                "Value given as flag events is not of type int or a tuple"
-            )
-
-        # +1 for the end line in Jetscape format
-        return cumulated_lines + 1
 
     def __apply_kwargs_filters(
         self, event: List[List[Particle]], filters_dict: Any
@@ -390,257 +525,6 @@ class JetscapeLoader(BaseLoader):
         return event
 
     # PUBLIC CLASS METHODS
-
-    def set_particle_list(
-        self,
-        kwargs: Dict[
-            str, Union[int, Tuple[int, int], List[Dict[str, Union[str, float]]]]
-        ],
-    ) -> List[List[Particle]]:
-        """
-        Sets the list of particles based on the specified optional arguments.
-
-        This method reads the JETSCAPE data file and creates a list of Particle
-        objects based on the data in the file. It applies any filters specified
-        in the 'filters' key of the kwargs dictionary. It also adjusts the
-        number of events and the number of output lines per event based on the
-        'events' key in the kwargs dictionary. If any other keys are specified
-        in the kwargs dictionary, it raises a ValueError.
-
-        Parameters
-        ----------
-        kwargs : dict
-            A dictionary of optional arguments. The following keys are recognized:
-
-            - 'events': Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.
-            - 'filters': A list of filters to apply to the data.
-
-        Raises
-        ------
-        IndexError
-            If the end of the JETSCAPE file is reached before the specified
-            number of lines is read, or if the number of events in the JETSCAPE
-            file does not match the number of events specified by the comments
-            in the file.
-        ValueError
-            If the first line of the event is not a comment line or does not
-            contain "weight", or if an unknown keyword argument is used.
-
-        Returns
-        -------
-        particle_list : list
-            A list of Particle objects loaded from the JETSCAPE data file.
-        """
-        particle_list: List[List[Particle]] = []
-        data: List[Particle] = []
-        num_read_lines = self.__get_num_read_lines()
-        cut_events = 0
-        events_offset = 0
-        if "events" in self.optional_arguments_.keys():
-            ev_arg = self.optional_arguments_["events"]
-            if isinstance(ev_arg, int):
-                events_offset = ev_arg
-            elif isinstance(ev_arg, tuple):
-                events_offset = ev_arg[0]
-        with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
-            self._skip_lines(jetscape_file)
-
-            for i in range(0, num_read_lines):
-                line = jetscape_file.readline()
-                if not line:
-                    raise IndexError("Index out of range of JETSCAPE file")
-                elif "#" in line and "sigmaGen" in line:
-                    old_data_len = len(data)
-                    if "filters" in self.optional_arguments_.keys():
-                        data = self.__apply_kwargs_filters(
-                            [data], kwargs["filters"]
-                        )[0]
-                        if len(data) != 0 or old_data_len == 0:
-                            event_idx = events_offset + len(particle_list)
-                            self.num_output_per_event_[event_idx] = (
-                                self.num_output_per_event_[event_idx][0],
-                                len(data),
-                            )
-                        else:
-                            event_idx = events_offset + len(particle_list)
-                            self.num_output_per_event_ = np.atleast_2d(
-                                np.delete(
-                                    self.num_output_per_event_,
-                                    event_idx,
-                                    axis=0,
-                                )
-                            )
-                            if self.num_output_per_event_.shape[0] == 0:
-                                self.num_output_per_event_ = np.array([])
-                            elif (
-                                event_idx < self.num_output_per_event_.shape[0]
-                            ):
-                                # Decrease subsequent event numbers by 1 to keep them consecutive
-                                self.num_output_per_event_[event_idx:, 0] -= 1
-                    if len(data) != 0 or old_data_len == 0:
-                        particle_list.append(data)
-                    else:
-                        cut_events = cut_events + 1
-                elif i == 0 and "#" not in line and "weight" not in line:
-                    raise ValueError(
-                        "First line of the event is not a comment "
-                        + 'line or does not contain "weight"'
-                    )
-                elif "Event" in line and "weight" in line:
-                    line_list = (
-                        line.replace("\n", "").replace("\t", " ").split(" ")
-                    )
-                    first_event_header = 1
-                    if "events" in self.optional_arguments_.keys():
-                        if isinstance(kwargs["events"], int):
-                            first_event_header += int(kwargs["events"])
-                        else:
-                            if not (
-                                isinstance(kwargs["events"], tuple)
-                                or isinstance(kwargs["events"], int)
-                            ):
-                                raise ValueError(
-                                    "Events should be an integer or tuple of two integers"
-                                )
-                            first_event_header += int(kwargs["events"][0])
-                    if int(line_list[2]) == first_event_header:
-                        continue
-                    else:
-                        old_data_len = len(data)
-                        if "filters" in self.optional_arguments_.keys():
-                            data = self.__apply_kwargs_filters(
-                                [data], kwargs["filters"]
-                            )[0]
-                            if len(data) != 0 or old_data_len == 0:
-                                event_idx = events_offset + len(particle_list)
-                                self.num_output_per_event_[event_idx] = (
-                                    self.num_output_per_event_[event_idx][0],
-                                    len(data),
-                                )
-                            else:
-                                event_idx = events_offset + len(particle_list)
-                                self.num_output_per_event_ = np.atleast_2d(
-                                    np.delete(
-                                        self.num_output_per_event_,
-                                        event_idx,
-                                        axis=0,
-                                    )
-                                )
-                                if self.num_output_per_event_.shape[0] == 0:
-                                    self.num_output_per_event_ = np.array([])
-                                elif (
-                                    event_idx
-                                    < self.num_output_per_event_.shape[0]
-                                ):
-                                    self.num_output_per_event_[
-                                        event_idx:, 0
-                                    ] -= 1
-                        if len(data) != 0 or old_data_len == 0:
-                            particle_list.append(data)
-                        else:
-                            cut_events = cut_events + 1
-                        data = []
-                else:
-                    line_list = (
-                        line.replace("\n", "").replace("\t", " ").split(" ")
-                    )
-                    particle = Particle("JETSCAPE", np.asarray(line_list))
-                    data.append(particle)
-
-        self.num_events_ = self.num_events_ - cut_events
-        # Correct num_output_per_event and num_events
-        if not kwargs or "events" not in self.optional_arguments_.keys():
-            if len(particle_list) != self.num_events_:
-                raise IndexError(
-                    "Number of events in Jetscape file does not match the "
-                    + "number of events specified by the comments in the "
-                    + "Jetscape file!"
-                )
-        elif isinstance(kwargs["events"], int):
-            update = self.num_output_per_event_[kwargs["events"]]
-            self.num_output_per_event_ = np.array(update)
-            self.num_events_ = int(1)
-        elif isinstance(kwargs["events"], tuple):
-            event_start = kwargs["events"][0]
-            event_end = kwargs["events"][1]
-            update = self.num_output_per_event_[event_start : event_end + 1]
-            self.num_output_per_event_ = update
-            self.num_events_ = int(event_end - event_start + 1)
-
-        if particle_list == []:
-            particle_list = [[]]
-
-        return particle_list
-
-    def set_num_output_per_event(self) -> None:
-        """
-        Sets the number of output lines per event in the JETSCAPE data file.
-
-        This method reads the JETSCAPE data file line by line and determines
-        the number of output lines for each event. It does this by looking for
-        lines that contain a '#' and the ``particle_type_defining_string_``.
-        For each such line, it extracts the event number and the number of
-        output lines from the line and appends them to a list.
-        After reading the entire file, it converts the list to a numpy array
-        and stores it in the ``num_output_per_event_`` attribute. It also sets
-        the ``num_events_`` attribute to the length of the list.
-
-        It also reades the event header information and stores it in the
-        ``event_header_information_`` attribute as a list of dictionaries.
-
-        Parameters
-        ----------
-        None
-
-        Raises
-        ------
-        None
-
-        Returns
-        -------
-        None
-        """
-        with open(self.PATH_JETSCAPE_, "r") as jetscape_file:
-            event_output = []
-            event_header_information: List[Dict[str, Union[int, float]]] = []
-
-            while True:
-                line = jetscape_file.readline()
-                if not line:
-                    break
-                elif (
-                    "#" in line and self.particle_type_defining_string_ in line
-                ):
-                    line_str = (
-                        line.replace("\n", "").replace("\t", " ").split(" ")
-                    )
-                    line_str = line_str[1:]  # ignore the first '#'
-                    event_header_data: Dict[str, Union[int, float]] = {}
-                    for i in range(0, len(line_str), 2):
-                        if (line_str[i] == "Event") or (
-                            line_str[i] == self.particle_type_defining_string_
-                        ):
-                            event_header_data[line_str[i]] = int(
-                                line_str[i + 1]
-                            )
-                        else:
-                            event_header_data[line_str[i]] = float(
-                                line_str[i + 1]
-                            )
-                    # event number is always the first entry
-                    event = int(event_header_data["Event"])
-                    # num_output is given by particle_type_defining_string_
-                    num_output = int(
-                        event_header_data[self.particle_type_defining_string_]
-                    )
-                    event_output.append([event, num_output])
-                    event_header_information.append(event_header_data)
-                else:
-                    continue
-
-        self.num_output_per_event_ = np.array(event_output, dtype=np.int32)
-        self.num_events_ = len(event_output)
-        self.event_header_information_ = event_header_information
 
     def get_last_line(self, file_path: str) -> str:
         """

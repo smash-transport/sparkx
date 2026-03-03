@@ -11,7 +11,7 @@ import numpy as np
 import math
 from particle import PDGID
 import warnings
-from typing import Optional, Union, List
+from typing import Dict, Optional, Tuple, Union, List
 
 
 class Particle:
@@ -22,7 +22,7 @@ class Particle:
     ASCII or JETSCAPE hadron/parton output. If they are not set,
     they stay :code:`np.nan` to throw an error if one tries to access a non existing
     quantity.
-    If a particle with an unknown PDG is provided, a warning is thrown and and
+    If a particle with an unknown PDG is provided, a warning is thrown and
     :code:`np.nan` is returned for charge, spin, and spin degeneracy.
 
     Attributes
@@ -233,9 +233,303 @@ class Particle:
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
     by 3 to make it an integer.
+
+    PDG lookups (validity, charge, spin, etc.) are cached at the class level so that
+    particles sharing the same PDG code reuse previous results. The attribute mapping
+    that converts input format columns to internal data indices is also pre-compiled
+    once per format. Both optimizations significantly reduce loading time for large
+    files.
     """
 
     __slots__ = ["data_"]
+
+    # ------------------------------------------------------------------
+    # Class-level caches for PDG lookups.
+    #
+    # During file loading, thousands of particles share a small set of
+    # unique PDG codes (e.g. pions, protons).  Caching avoids repeated
+    # PDGID object creation, is_valid checks, and charge lookups.
+    # ------------------------------------------------------------------
+    _pdgid_cache: Dict[int, PDGID] = {}
+    _pdg_valid_cache: Dict[int, bool] = {}
+    _pdg_charge_cache: Dict[int, float] = {}
+
+    # ------------------------------------------------------------------
+    # Class-level attribute mapping and pre-compiled fast index arrays.
+    #
+    # The mapping is defined once and shared by all Particle instances.
+    # For each format a list of (data_index, line_index, use_float)
+    # tuples is pre-compiled so that __initialize_from_array can iterate
+    # a flat tuple list instead of doing dict iteration + string
+    # membership checks on every particle.
+    # ------------------------------------------------------------------
+    _FLOAT_ATTRS: frozenset = frozenset(
+        [
+            "t_",
+            "x_",
+            "y_",
+            "z_",
+            "mass_",
+            "E_",
+            "px_",
+            "py_",
+            "pz_",
+            "form_time_",
+            "xsecfac_",
+            "t_last_coll_",
+            "weight_",
+        ]
+    )
+
+    _ATTRIBUTE_MAPPING: Dict[str, Dict[str, list]] = {
+        "Allfields": {
+            "t": [0, 0],
+            "x": [1, 0],
+            "y": [2, 0],
+            "z": [3, 0],
+            "mass": [4, 0],
+            "E": [5, 0],
+            "px": [6, 0],
+            "py": [7, 0],
+            "pz_": [8, 0],
+            "pdg": [9, 0],
+            "ID": [11, 0],
+            "charge": [12, 0],
+            "ncoll": [13, 0],
+            "form_time": [14, 0],
+            "xsecfac": [15, 0],
+            "proc_id_origin": [16, 0],
+            "proc_type_origin": [17, 0],
+            "t_last_coll": [18, 0],
+            "pdg_mother1": [19, 0],
+            "pdg_mother2": [20, 0],
+            "status_": [21, 0],
+            "baryon_number": [22, 0],
+            "strangeness": [23, 0],
+        },
+        "Oscar2013": {
+            "t_": [0, 0],
+            "x_": [1, 1],
+            "y_": [2, 2],
+            "z_": [3, 3],
+            "mass_": [4, 4],
+            "E_": [5, 5],
+            "px_": [6, 6],
+            "py_": [7, 7],
+            "pz_": [8, 8],
+            "pdg_": [9, 9],
+            "ID_": [11, 10],
+            "charge_": [12, 11],
+        },
+        "Oscar2013Extended": {
+            "t_": [0, 0],
+            "x_": [1, 1],
+            "y_": [2, 2],
+            "z_": [3, 3],
+            "mass_": [4, 4],
+            "E_": [5, 5],
+            "px_": [6, 6],
+            "py_": [7, 7],
+            "pz_": [8, 8],
+            "pdg_": [9, 9],
+            "ID_": [11, 10],
+            "charge_": [12, 11],
+            "ncoll_": [13, 12],
+            "form_time_": [14, 13],
+            "xsecfac_": [15, 14],
+            "proc_id_origin_": [16, 15],
+            "proc_type_origin_": [17, 16],
+            "t_last_coll_": [18, 17],
+            "pdg_mother1_": [19, 18],
+            "pdg_mother2_": [20, 19],
+            "baryon_number_": [22, 20],
+            "strangeness_": [23, 21],
+        },
+        "Oscar2013Extended_IC": {
+            "t_": [0, 0],
+            "x_": [1, 1],
+            "y_": [2, 2],
+            "z_": [3, 3],
+            "mass_": [4, 4],
+            "E_": [5, 5],
+            "px_": [6, 6],
+            "py_": [7, 7],
+            "pz_": [8, 8],
+            "pdg_": [9, 9],
+            "ID_": [11, 10],
+            "charge_": [12, 11],
+            "ncoll_": [13, 12],
+            "form_time_": [14, 13],
+            "xsecfac_": [15, 14],
+            "proc_id_origin_": [16, 15],
+            "proc_type_origin_": [17, 16],
+            "t_last_coll_": [18, 17],
+            "pdg_mother1_": [19, 18],
+            "pdg_mother2_": [20, 19],
+            "baryon_number_": [22, 20],
+            "strangeness_": [23, 21],
+        },
+        "Oscar2013Extended_Photons": {
+            "t_": [0, 0],
+            "x_": [1, 1],
+            "y_": [2, 2],
+            "z_": [3, 3],
+            "mass_": [4, 4],
+            "E_": [5, 5],
+            "px_": [6, 6],
+            "py_": [7, 7],
+            "pz_": [8, 8],
+            "pdg_": [9, 9],
+            "ID_": [11, 10],
+            "charge_": [12, 11],
+            "ncoll_": [13, 12],
+            "form_time_": [14, 13],
+            "xsecfac_": [15, 14],
+            "proc_id_origin_": [16, 15],
+            "proc_type_origin_": [17, 16],
+            "t_last_coll_": [18, 17],
+            "pdg_mother1_": [19, 18],
+            "pdg_mother2_": [20, 19],
+            "weight_": [24, 20],
+        },
+        "JETSCAPE": {
+            "ID_": [11, 0],
+            "pdg_": [9, 1],
+            "status_": [21, 2],
+            "E_": [5, 3],
+            "px_": [6, 4],
+            "py_": [7, 5],
+            "pz_": [8, 6],
+        },
+    }
+
+    # Cache of pre-compiled (data_idx, line_idx, use_float) tuples per format.
+    _fast_index_cache: Dict[
+        Union[str, Tuple[str, ...]], Tuple[Tuple[int, int, bool], ...]
+    ] = {}
+
+    @classmethod
+    def _get_fast_indices(
+        cls,
+        input_format: str,
+        attribute_list: Optional[List[str]] = None,
+    ) -> Tuple[Tuple[int, int, bool], ...]:
+        """Return pre-compiled index tuples for a given format.
+
+        Each tuple contains ``(data_index, line_index, use_float)`` so that
+        the per-particle loop can iterate directly without dictionary lookups
+        or string-membership checks.
+
+        Parameters
+        ----------
+        input_format : str
+            The particle format name.
+        attribute_list : list of str, optional
+            Required only for the ``"ASCII"`` format.
+
+        Returns
+        -------
+        tuple of (int, int, bool)
+            Pre-compiled index tuples.
+        """
+        # For ASCII the mapping depends on the attribute_list, so we include
+        # it in the cache key.
+        cache_key: Union[str, Tuple[str, ...]]
+        if input_format == "ASCII":
+            cache_key = ("ASCII",) + tuple(attribute_list or [])
+        else:
+            cache_key = input_format
+
+        try:
+            return cls._fast_index_cache[cache_key]
+        except KeyError:
+            pass
+
+        if input_format == "ASCII":
+            allfields = cls._ATTRIBUTE_MAPPING["Allfields"]
+            mapping = {}
+            if attribute_list is None:
+                raise ValueError(
+                    "'attribute_list' must be provided for ASCII format"
+                )
+            for i, attr in enumerate(attribute_list):
+                mapping[attr + "_"] = [allfields[attr][0], i]
+        else:
+            mapping = cls._ATTRIBUTE_MAPPING[input_format]
+
+        float_attrs = cls._FLOAT_ATTRS
+        indices = tuple(
+            (data_idx, line_idx, attr in float_attrs)
+            for attr, (data_idx, line_idx) in mapping.items()
+        )
+        cls._fast_index_cache[cache_key] = indices
+        return indices
+
+    @classmethod
+    def _cached_pdgid(cls, pdg_code: int) -> PDGID:
+        """Return a cached PDGID instance for the given PDG code.
+
+        Parameters
+        ----------
+        pdg_code : int
+            The PDG code.
+
+        Returns
+        -------
+        PDGID
+            The cached PDGID instance.
+        """
+        try:
+            return cls._pdgid_cache[pdg_code]
+        except KeyError:
+            pdgid = PDGID(pdg_code)
+            cls._pdgid_cache[pdg_code] = pdgid
+            return pdgid
+
+    @classmethod
+    def _is_pdg_valid(cls, pdg_code: int) -> bool:
+        """Return cached validity check for a PDG code.
+
+        Parameters
+        ----------
+        pdg_code : int
+            The PDG code.
+
+        Returns
+        -------
+        bool
+            Whether the PDG code is valid.
+        """
+        try:
+            return cls._pdg_valid_cache[pdg_code]
+        except KeyError:
+            valid = cls._cached_pdgid(pdg_code).is_valid
+            cls._pdg_valid_cache[pdg_code] = valid
+            return valid
+
+    @classmethod
+    def _get_pdg_charge(cls, pdg_code: int) -> float:
+        """Return cached charge for a PDG code.
+
+        Parameters
+        ----------
+        pdg_code : int
+            The PDG code.
+
+        Returns
+        -------
+        float
+            The electric charge, or ``np.nan`` if the PDG code is invalid.
+        """
+        try:
+            return cls._pdg_charge_cache[pdg_code]
+        except KeyError:
+            if cls._is_pdg_valid(pdg_code):
+                charge = float(cls._cached_pdgid(pdg_code).charge)
+            else:
+                charge = np.nan
+            cls._pdg_charge_cache[pdg_code] = charge
+            return charge
 
     def __init__(
         self,
@@ -307,214 +601,63 @@ class Particle:
         multiplied by 3 to make it an integer.
 
         """
-        # first entry: index in data array
-        # second entry: index in line
-        attribute_mapping = {
-            "Allfields": {
-                "t": [0, 0],
-                "x": [1, 0],
-                "y": [2, 0],
-                "z": [3, 0],
-                "mass": [4, 0],
-                "E": [5, 0],
-                "px": [6, 0],
-                "py": [7, 0],
-                "pz_": [8, 0],
-                "pdg": [9, 0],
-                "ID": [11, 0],
-                "charge": [12, 0],
-                "ncoll": [13, 0],
-                "form_time": [14, 0],
-                "xsecfac": [15, 0],
-                "proc_id_origin": [16, 0],
-                "proc_type_origin": [17, 0],
-                "t_last_coll": [18, 0],
-                "pdg_mother1": [19, 0],
-                "pdg_mother2": [20, 0],
-                "status_": [21, 0],
-                "baryon_number": [22, 0],
-                "strangeness": [23, 0],
-            },
-            "Oscar2013": {
-                "t_": [0, 0],
-                "x_": [1, 1],
-                "y_": [2, 2],
-                "z_": [3, 3],
-                "mass_": [4, 4],
-                "E_": [5, 5],
-                "px_": [6, 6],
-                "py_": [7, 7],
-                "pz_": [8, 8],
-                "pdg_": [9, 9],
-                "ID_": [11, 10],
-                "charge_": [12, 11],
-            },
-            "Oscar2013Extended": {
-                "t_": [0, 0],
-                "x_": [1, 1],
-                "y_": [2, 2],
-                "z_": [3, 3],
-                "mass_": [4, 4],
-                "E_": [5, 5],
-                "px_": [6, 6],
-                "py_": [7, 7],
-                "pz_": [8, 8],
-                "pdg_": [9, 9],
-                "ID_": [11, 10],
-                "charge_": [12, 11],
-                "ncoll_": [13, 12],
-                "form_time_": [14, 13],
-                "xsecfac_": [15, 14],
-                "proc_id_origin_": [16, 15],
-                "proc_type_origin_": [17, 16],
-                "t_last_coll_": [18, 17],
-                "pdg_mother1_": [19, 18],
-                "pdg_mother2_": [20, 19],
-                "baryon_number_": [22, 20],
-                "strangeness_": [23, 21],
-            },
-            "Oscar2013Extended_IC": {
-                "t_": [0, 0],
-                "x_": [1, 1],
-                "y_": [2, 2],
-                "z_": [3, 3],
-                "mass_": [4, 4],
-                "E_": [5, 5],
-                "px_": [6, 6],
-                "py_": [7, 7],
-                "pz_": [8, 8],
-                "pdg_": [9, 9],
-                "ID_": [11, 10],
-                "charge_": [12, 11],
-                "ncoll_": [13, 12],
-                "form_time_": [14, 13],
-                "xsecfac_": [15, 14],
-                "proc_id_origin_": [16, 15],
-                "proc_type_origin_": [17, 16],
-                "t_last_coll_": [18, 17],
-                "pdg_mother1_": [19, 18],
-                "pdg_mother2_": [20, 19],
-                "baryon_number_": [22, 20],
-                "strangeness_": [23, 21],
-            },
-            "Oscar2013Extended_Photons": {
-                "t_": [0, 0],
-                "x_": [1, 1],
-                "y_": [2, 2],
-                "z_": [3, 3],
-                "mass_": [4, 4],
-                "E_": [5, 5],
-                "px_": [6, 6],
-                "py_": [7, 7],
-                "pz_": [8, 8],
-                "pdg_": [9, 9],
-                "ID_": [11, 10],
-                "charge_": [12, 11],
-                "ncoll_": [13, 12],
-                "form_time_": [14, 13],
-                "xsecfac_": [15, 14],
-                "proc_id_origin_": [16, 15],
-                "proc_type_origin_": [17, 16],
-                "t_last_coll_": [18, 17],
-                "pdg_mother1_": [19, 18],
-                "pdg_mother2_": [20, 19],
-                "weight_": [24, 20],
-            },
-            "JETSCAPE": {
-                "ID_": [11, 0],
-                "pdg_": [9, 1],
-                "status_": [21, 2],
-                "E_": [5, 3],
-                "px_": [6, 4],
-                "py_": [7, 5],
-                "pz_": [8, 6],
-            },
-        }
         if input_format == "ASCII":
-            mapping_dict = {}
-            for attr in attribute_list:
-                mapping_dict[attr] = [
-                    attribute_mapping["Allfields"][attr][0],
-                    list(attribute_list).index(attr),
-                ]
-            attribute_mapping["ASCII"] = mapping_dict
-        if input_format in attribute_mapping or input_format == "ASCII":
-            if (
-                input_format == "ASCII"
-                or len(particle_array) == len(attribute_mapping[input_format])
+            fast_indices = Particle._get_fast_indices(
+                input_format, attribute_list
+            )
+            expected_len = None  # ASCII has no fixed length
+        elif input_format in Particle._ATTRIBUTE_MAPPING:
+            fast_indices = Particle._get_fast_indices(input_format)
+            expected_len = len(Particle._ATTRIBUTE_MAPPING[input_format])
+        else:
+            raise ValueError(f"Unsupported input format '{input_format}'")
+
+        # Validate particle array length
+        arr_len = len(particle_array)
+        if expected_len is not None and input_format != "ASCII":
+            if not (
+                arr_len == expected_len
                 or (
                     input_format
-                    in ["Oscar2013Extended", "Oscar2013Extended_IC"]
-                    and len(particle_array)
-                    <= len(attribute_mapping[input_format])
-                    and len(particle_array)
-                    >= len(attribute_mapping[input_format]) - 2
+                    in ("Oscar2013Extended", "Oscar2013Extended_IC")
+                    and expected_len - 2 <= arr_len <= expected_len
                 )
             ):
-                for attribute, index in attribute_mapping[input_format].items():
-                    if len(particle_array) <= (index[1]):
-                        continue
-                    if input_format == "ASCII":
-                        attribute = attribute + "_"
-                    # Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields
-                    # to ensure similar behaving as if we were reading in data
-                    # into ints.
-                    if attribute in [
-                        "t_",
-                        "x_",
-                        "y_",
-                        "z_",
-                        "mass_",
-                        "E_",
-                        "px_",
-                        "py_",
-                        "pz_",
-                        "form_time_",
-                        "xsecfac_",
-                        "t_last_coll_",
-                        "weight_",
-                    ]:
-                        self.data_[index[0]] = float(particle_array[index[1]])
-                    elif attribute in [
-                        "pdg_",
-                        "ID_",
-                        "ncoll_",
-                        "proc_id_origin_",
-                        "proc_type_origin_",
-                        "pdg_mother1_",
-                        "pdg_mother2_",
-                        "status_",
-                    ]:
-                        self.data_[index[0]] = int(particle_array[index[1]])
-                    else:
-                        self.data_[index[0]] = int(particle_array[index[1]])
-
-                # It is important for JETSCAPE particles to compute pdg_valid
-                # here because the charge_from_pdg function depends on
-                # it.
-                if np.isnan(self.pdg):
-                    self.pdg_valid = False
-                else:
-                    self.pdg_valid = PDGID(self.pdg).is_valid
-
-                if input_format == "JETSCAPE":
-                    self.mass = self.mass_from_energy_momentum()
-                    self.charge = self.charge_from_pdg()
-                    if self.pdg_valid == False and np.isnan(self.charge):
-                        warnings.warn(
-                            "The PDG code "
-                            + str(int(self.pdg))
-                            + " is not known by PDGID, charge could not be computed. Consider setting it by hand."
-                        )
-            else:
                 raise ValueError(
                     "The input file is corrupted! "
                     + "A line with wrong number of columns "
-                    + str(len(particle_array))
+                    + str(arr_len)
                     + " was found."
                 )
+
+        # Fill data_ array using pre-compiled index tuples.
+        # Each tuple is (data_index, line_index, use_float).
+        data = self.data_
+        for data_idx, line_idx, use_float in fast_indices:
+            if line_idx >= arr_len:
+                continue
+            val = particle_array[line_idx]
+            data[data_idx] = float(val) if use_float else int(val)
+
+        # Validate PDG code and cache the result.
+        if np.isnan(self.pdg):
+            self.pdg_valid = False
         else:
-            raise ValueError(f"Unsupported input format '{input_format}'")
+            pdg_int = int(self.pdg)
+            self.pdg_valid = Particle._is_pdg_valid(pdg_int)
+
+        if input_format == "JETSCAPE":
+            self.mass = self.mass_from_energy_momentum()
+            if self.pdg_valid:
+                self.charge = Particle._get_pdg_charge(pdg_int)
+            else:
+                self.charge = np.nan
+                if not np.isnan(self.pdg):
+                    warnings.warn(
+                        "The PDG code "
+                        + str(int(self.pdg))
+                        + " is not known by PDGID, charge could not be computed. Consider setting it by hand."
+                    )
 
         if not self.pdg_valid:
             if np.isnan(self.pdg):
@@ -671,7 +814,7 @@ class Particle:
     @pdg.setter
     def pdg(self, value: float) -> None:
         self.data_[9] = value
-        self.pdg_valid = PDGID(self.pdg).is_valid
+        self.pdg_valid = Particle._is_pdg_valid(int(self.pdg))
 
         if not self.pdg_valid:
             warnings.warn(
@@ -1176,6 +1319,10 @@ class Particle:
         mu-neutrinos (14, -14), tau-neutrinos (16, -16),
         tau-prime-neutrinos (18, -18).
 
+        Electrons (11) and positrons (-11) are assigned their PDG mass
+        of 0.00051099895 GeV because their mass falls below the numerical
+        precision threshold used for the energy-momentum relation.
+
         Returns
         -------
         float
@@ -1188,6 +1335,9 @@ class Particle:
         """
         # photons and gluons are massless, consider neutrinos as massless
         massless_pdg = [22, 21, 12, -12, 14, -14, 16, -16, 18, -18]
+        # electron/positron mass in GeV (below numerical threshold)
+        electron_pdg = [11, -11]
+        electron_mass = 0.00051099895
         if (
             np.isnan(self.E)
             or np.isnan(self.px)
@@ -1197,15 +1347,23 @@ class Particle:
             return np.nan
         elif self.pdg in massless_pdg:
             return 0.0
+        elif self.pdg in electron_pdg:
+            return electron_mass
         else:
             mass_squared = self.E**2.0 - self.p_abs() ** 2.0
-            if mass_squared >= 0:
+            if abs(mass_squared) < 1e-16:
+                return 0.0
+            elif mass_squared > 0:
                 return np.sqrt(mass_squared)
-            elif abs(mass_squared) < 1e-16:
-                return 0.0  # numerical precision
             else:
+                pdg_str = (
+                    str(int(self.pdg)) if not np.isnan(self.pdg) else "nan"
+                )
                 warnings.warn(
-                    "|E| >= |p| not fulfilled! The mass is set to nan."
+                    "|E| >= |p| not fulfilled! "
+                    f"PDG = {pdg_str}, "
+                    f"mass_squared = {mass_squared}. "
+                    "The mass is set to nan."
                 )
                 return np.nan
 
@@ -1226,7 +1384,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).charge
+        return Particle._get_pdg_charge(int(self.pdg))
 
     def mT(self) -> float:
         """
@@ -1246,10 +1404,10 @@ class Particle:
             return np.nan
         else:
             mT_squared = self.E**2.0 - self.pz**2.0
-            if mT_squared >= 0:
+            if abs(mT_squared) < 1e-16:
+                return 0.0
+            elif mT_squared > 0:
                 return np.sqrt(mT_squared)
-            elif abs(mT_squared) < 1e-16:
-                return 0.0  # numerical precision
             else:
                 warnings.warn(
                     "|E| >= |pz| not fulfilled! "
@@ -1272,7 +1430,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).is_quark
+        return Particle._cached_pdgid(int(self.pdg)).is_quark
 
     def is_lepton(self) -> Union[bool, float]:
         """
@@ -1289,7 +1447,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).is_lepton
+        return Particle._cached_pdgid(int(self.pdg)).is_lepton
 
     def is_meson(self) -> Union[bool, float]:
         """
@@ -1306,7 +1464,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).is_meson
+        return Particle._cached_pdgid(int(self.pdg)).is_meson
 
     def is_baryon(self) -> Union[bool, float]:
         """
@@ -1323,7 +1481,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).is_baryon
+        return Particle._cached_pdgid(int(self.pdg)).is_baryon
 
     def is_hadron(self) -> Union[bool, float]:
         """
@@ -1340,7 +1498,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).is_hadron
+        return Particle._cached_pdgid(int(self.pdg)).is_hadron
 
     def is_heavy_flavor(self) -> Union[bool, float]:
         """
@@ -1357,11 +1515,8 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        if (
-            PDGID(self.pdg).has_charm
-            or PDGID(self.pdg).has_bottom
-            or PDGID(self.pdg).has_top
-        ):
+        pdgid = Particle._cached_pdgid(int(self.pdg))
+        if pdgid.has_charm or pdgid.has_bottom or pdgid.has_top:
             return True
         else:
             return False
@@ -1381,7 +1536,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_down
+        return Particle._cached_pdgid(int(self.pdg)).has_down
 
     def has_up(self) -> Union[bool, float]:
         """
@@ -1398,7 +1553,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_up
+        return Particle._cached_pdgid(int(self.pdg)).has_up
 
     def has_strange(self) -> Union[bool, float]:
         """
@@ -1415,7 +1570,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_strange
+        return Particle._cached_pdgid(int(self.pdg)).has_strange
 
     def has_charm(self) -> Union[bool, float]:
         """
@@ -1432,7 +1587,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_charm
+        return Particle._cached_pdgid(int(self.pdg)).has_charm
 
     def has_bottom(self) -> Union[bool, float]:
         """
@@ -1449,7 +1604,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_bottom
+        return Particle._cached_pdgid(int(self.pdg)).has_bottom
 
     def has_top(self) -> Union[bool, float]:
         """
@@ -1466,7 +1621,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).has_top
+        return Particle._cached_pdgid(int(self.pdg)).has_top
 
     def spin(self) -> float:
         """
@@ -1483,7 +1638,7 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).J
+        return Particle._cached_pdgid(int(self.pdg)).J
 
     def spin_degeneracy(self) -> Union[int, float]:
         """
@@ -1500,4 +1655,4 @@ class Particle:
         """
         if not self.pdg_valid:
             return np.nan
-        return PDGID(self.pdg).j_spin
+        return Particle._cached_pdgid(int(self.pdg)).j_spin
