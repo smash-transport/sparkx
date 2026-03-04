@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 2.1.1 documentation</title>
+  <title>Particle &mdash; sparkx 2.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,16 +15,373 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=841abef3"></script>
+        <script src="../_static/documentation_options.js?v=b21de401"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
-        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-        <script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
-window.addEventListener("load", () => mermaid.run());
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
 </script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -86,7 +443,7 @@ window.addEventListener("load", () => mermaid.run());
   <h1>Source code for Particle</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2023-2024</span>
+<span class="c1">#    Copyright (c) 2023-2026</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -97,7 +454,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">particle</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDGID</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="Particle">
@@ -110,7 +467,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    ASCII or JETSCAPE hadron/parton output. If they are not set,</span>
 <span class="sd">    they stay :code:`np.nan` to throw an error if one tries to access a non existing</span>
 <span class="sd">    quantity.</span>
-<span class="sd">    If a particle with an unknown PDG is provided, a warning is thrown and and</span>
+<span class="sd">    If a particle with an unknown PDG is provided, a warning is thrown and</span>
 <span class="sd">    :code:`np.nan` is returned for charge, spin, and spin degeneracy.</span>
 
 <span class="sd">    Attributes</span>
@@ -321,9 +678,303 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="sd">    When JETSCAPE creates particle objects, which are partons, the charge is multiplied</span>
 <span class="sd">    by 3 to make it an integer.</span>
+
+<span class="sd">    PDG lookups (validity, charge, spin, etc.) are cached at the class level so that</span>
+<span class="sd">    particles sharing the same PDG code reuse previous results. The attribute mapping</span>
+<span class="sd">    that converts input format columns to internal data indices is also pre-compiled</span>
+<span class="sd">    once per format. Both optimizations significantly reduce loading time for large</span>
+<span class="sd">    files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data_&quot;</span><span class="p">]</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Class-level caches for PDG lookups.</span>
+    <span class="c1">#</span>
+    <span class="c1"># During file loading, thousands of particles share a small set of</span>
+    <span class="c1"># unique PDG codes (e.g. pions, protons).  Caching avoids repeated</span>
+    <span class="c1"># PDGID object creation, is_valid checks, and charge lookups.</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="n">_pdgid_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PDGID</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_pdg_valid_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_pdg_charge_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Class-level attribute mapping and pre-compiled fast index arrays.</span>
+    <span class="c1">#</span>
+    <span class="c1"># The mapping is defined once and shared by all Particle instances.</span>
+    <span class="c1"># For each format a list of (data_index, line_index, use_float)</span>
+    <span class="c1"># tuples is pre-compiled so that __initialize_from_array can iterate</span>
+    <span class="c1"># a flat tuple list instead of doing dict iteration + string</span>
+    <span class="c1"># membership checks on every particle.</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="n">_FLOAT_ATTRS</span><span class="p">:</span> <span class="nb">frozenset</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;t_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;x_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;y_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;z_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mass_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;form_time_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;xsecfac_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;weight_&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">_ATTRIBUTE_MAPPING</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Allfields&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;mass&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;px&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;py&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;pdg&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;ncoll&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;form_time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;xsecfac&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;proc_id_origin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;proc_type_origin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;t_last_coll&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;status_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;baryon_number&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;strangeness&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Oscar2013&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+            <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Oscar2013Extended&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+            <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+            <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+            <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+            <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+            <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+            <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+            <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
+            <span class="s2">&quot;baryon_number_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+            <span class="s2">&quot;strangeness_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Oscar2013Extended_IC&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+            <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+            <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+            <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+            <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+            <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+            <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+            <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
+            <span class="s2">&quot;baryon_number_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+            <span class="s2">&quot;strangeness_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Oscar2013Extended_Photons&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+            <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+            <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+            <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+            <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+            <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
+            <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+            <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
+            <span class="s2">&quot;weight_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;JETSCAPE&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;status_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+            <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Cache of pre-compiled (data_idx, line_idx, use_float) tuples per format.</span>
+    <span class="n">_fast_index_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_fast_indices</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">input_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">attribute_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return pre-compiled index tuples for a given format.</span>
+
+<span class="sd">        Each tuple contains ``(data_index, line_index, use_float)`` so that</span>
+<span class="sd">        the per-particle loop can iterate directly without dictionary lookups</span>
+<span class="sd">        or string-membership checks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_format : str</span>
+<span class="sd">            The particle format name.</span>
+<span class="sd">        attribute_list : list of str, optional</span>
+<span class="sd">            Required only for the ``&quot;ASCII&quot;`` format.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of (int, int, bool)</span>
+<span class="sd">            Pre-compiled index tuples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># For ASCII the mapping depends on the attribute_list, so we include</span>
+        <span class="c1"># it in the cache key.</span>
+        <span class="n">cache_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
+            <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ASCII&quot;</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">attribute_list</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cache_key</span> <span class="o">=</span> <span class="n">input_format</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_fast_index_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
+            <span class="n">allfields</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ATTRIBUTE_MAPPING</span><span class="p">[</span><span class="s2">&quot;Allfields&quot;</span><span class="p">]</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">attribute_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;attribute_list&#39; must be provided for ASCII format&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attribute_list</span><span class="p">):</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">allfields</span><span class="p">[</span><span class="n">attr</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ATTRIBUTE_MAPPING</span><span class="p">[</span><span class="n">input_format</span><span class="p">]</span>
+
+        <span class="n">float_attrs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_FLOAT_ATTRS</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">data_idx</span><span class="p">,</span> <span class="n">line_idx</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">float_attrs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="p">(</span><span class="n">data_idx</span><span class="p">,</span> <span class="n">line_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_fast_index_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="k">return</span> <span class="n">indices</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cached_pdgid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pdg_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PDGID</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a cached PDGID instance for the given PDG code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdg_code : int</span>
+<span class="sd">            The PDG code.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PDGID</span>
+<span class="sd">            The cached PDGID instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pdgid_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">pdgid</span> <span class="o">=</span> <span class="n">PDGID</span><span class="p">(</span><span class="n">pdg_code</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_pdgid_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdgid</span>
+            <span class="k">return</span> <span class="n">pdgid</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_pdg_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pdg_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cached validity check for a PDG code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdg_code : int</span>
+<span class="sd">            The PDG code.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            Whether the PDG code is valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pdg_valid_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="n">pdg_code</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_pdg_valid_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid</span>
+            <span class="k">return</span> <span class="n">valid</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_pdg_charge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pdg_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cached charge for a PDG code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdg_code : int</span>
+<span class="sd">            The PDG code.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The electric charge, or ``np.nan`` if the PDG code is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pdg_charge_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_pdg_valid</span><span class="p">(</span><span class="n">pdg_code</span><span class="p">):</span>
+                <span class="n">charge</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="n">pdg_code</span><span class="p">)</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">charge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_pdg_charge_cache</span><span class="p">[</span><span class="n">pdg_code</span><span class="p">]</span> <span class="o">=</span> <span class="n">charge</span>
+            <span class="k">return</span> <span class="n">charge</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -395,214 +1046,63 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        multiplied by 3 to make it an integer.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># first entry: index in data array</span>
-        <span class="c1"># second entry: index in line</span>
-        <span class="n">attribute_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;Allfields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;mass&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;px&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;py&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;pdg&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;ncoll&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;form_time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;xsecfac&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;proc_id_origin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;proc_type_origin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;t_last_coll&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;status_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;baryon_number&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;strangeness&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Oscar2013&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-                <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-                <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Oscar2013Extended&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-                <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-                <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
-                <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
-                <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
-                <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
-                <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
-                <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
-                <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
-                <span class="s2">&quot;baryon_number_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-                <span class="s2">&quot;strangeness_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Oscar2013Extended_IC&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-                <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-                <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
-                <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
-                <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
-                <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
-                <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
-                <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
-                <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
-                <span class="s2">&quot;baryon_number_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-                <span class="s2">&quot;strangeness_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Oscar2013Extended_Photons&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;t_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;x_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;y_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                <span class="s2">&quot;z_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                <span class="s2">&quot;mass_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-                <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-                <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                <span class="s2">&quot;charge_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
-                <span class="s2">&quot;ncoll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
-                <span class="s2">&quot;form_time_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
-                <span class="s2">&quot;xsecfac_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
-                <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span>
-                <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
-                <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">18</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span>
-                <span class="s2">&quot;weight_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;JETSCAPE&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;ID_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;pdg_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;status_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                <span class="s2">&quot;E_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                <span class="s2">&quot;px_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="s2">&quot;py_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-                <span class="s2">&quot;pz_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-            <span class="p">},</span>
-        <span class="p">}</span>
         <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
-            <span class="n">mapping_dict</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attribute_list</span><span class="p">:</span>
-                <span class="n">mapping_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">attribute_mapping</span><span class="p">[</span><span class="s2">&quot;Allfields&quot;</span><span class="p">][</span><span class="n">attr</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="n">attribute_list</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span>
-                <span class="p">]</span>
-            <span class="n">attribute_mapping</span><span class="p">[</span><span class="s2">&quot;ASCII&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping_dict</span>
-        <span class="k">if</span> <span class="n">input_format</span> <span class="ow">in</span> <span class="n">attribute_mapping</span> <span class="ow">or</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span>
-                <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span>
+            <span class="n">fast_indices</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_get_fast_indices</span><span class="p">(</span>
+                <span class="n">input_format</span><span class="p">,</span> <span class="n">attribute_list</span>
+            <span class="p">)</span>
+            <span class="n">expected_len</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># ASCII has no fixed length</span>
+        <span class="k">elif</span> <span class="n">input_format</span> <span class="ow">in</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_ATTRIBUTE_MAPPING</span><span class="p">:</span>
+            <span class="n">fast_indices</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_get_fast_indices</span><span class="p">(</span><span class="n">input_format</span><span class="p">)</span>
+            <span class="n">expected_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Particle</span><span class="o">.</span><span class="n">_ATTRIBUTE_MAPPING</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported input format &#39;</span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Validate particle array length</span>
+        <span class="n">arr_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">expected_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_format</span> <span class="o">!=</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="n">arr_len</span> <span class="o">==</span> <span class="n">expected_len</span>
                 <span class="ow">or</span> <span class="p">(</span>
                     <span class="n">input_format</span>
-                    <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Oscar2013Extended&quot;</span><span class="p">,</span> <span class="s2">&quot;Oscar2013Extended_IC&quot;</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span>
-                    <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span>
-                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span>
-                    <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">])</span> <span class="o">-</span> <span class="mi">2</span>
+                    <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Oscar2013Extended&quot;</span><span class="p">,</span> <span class="s2">&quot;Oscar2013Extended_IC&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">expected_len</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">arr_len</span> <span class="o">&lt;=</span> <span class="n">expected_len</span>
                 <span class="p">)</span>
             <span class="p">):</span>
-                <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">attribute_mapping</span><span class="p">[</span><span class="n">input_format</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                        <span class="k">continue</span>
-                    <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">:</span>
-                        <span class="n">attribute</span> <span class="o">=</span> <span class="n">attribute</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
-                    <span class="c1"># Type casting for specific attributes. Although everything is saved as a float, we will only read in int data for int fields</span>
-                    <span class="c1"># to ensure similar behaving as if we were reading in data</span>
-                    <span class="c1"># into ints.</span>
-                    <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span>
-                        <span class="s2">&quot;t_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;x_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;y_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;z_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;mass_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;E_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;px_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;py_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;pz_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;form_time_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;xsecfac_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;t_last_coll_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;weight_&quot;</span><span class="p">,</span>
-                    <span class="p">]:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">particle_array</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-                    <span class="k">elif</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span>
-                        <span class="s2">&quot;pdg_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;ID_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;ncoll_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;proc_id_origin_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;proc_type_origin_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;pdg_mother1_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;pdg_mother2_&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;status_&quot;</span><span class="p">,</span>
-                    <span class="p">]:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">particle_array</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">particle_array</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-
-                <span class="c1"># It is important for JETSCAPE particles to compute pdg_valid</span>
-                <span class="c1"># here because the charge_from_pdg function depends on</span>
-                <span class="c1"># it.</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span>
-
-                <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;JETSCAPE&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_from_energy_momentum</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge_from_pdg</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">):</span>
-                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                            <span class="s2">&quot;The PDG code &quot;</span>
-                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span>
-                            <span class="o">+</span> <span class="s2">&quot; is not known by PDGID, charge could not be computed. Consider setting it by hand.&quot;</span>
-                        <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;The input file is corrupted! &quot;</span>
                     <span class="o">+</span> <span class="s2">&quot;A line with wrong number of columns &quot;</span>
-                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_array</span><span class="p">))</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">arr_len</span><span class="p">)</span>
                     <span class="o">+</span> <span class="s2">&quot; was found.&quot;</span>
                 <span class="p">)</span>
+
+        <span class="c1"># Fill data_ array using pre-compiled index tuples.</span>
+        <span class="c1"># Each tuple is (data_index, line_index, use_float).</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_</span>
+        <span class="k">for</span> <span class="n">data_idx</span><span class="p">,</span> <span class="n">line_idx</span><span class="p">,</span> <span class="n">use_float</span> <span class="ow">in</span> <span class="n">fast_indices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line_idx</span> <span class="o">&gt;=</span> <span class="n">arr_len</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">particle_array</span><span class="p">[</span><span class="n">line_idx</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">data_idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_float</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="c1"># Validate PDG code and cache the result.</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported input format &#39;</span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="n">pdg_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_is_pdg_valid</span><span class="p">(</span><span class="n">pdg_int</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;JETSCAPE&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_from_energy_momentum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_get_pdg_charge</span><span class="p">(</span><span class="n">pdg_int</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;The PDG code &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span>
+                        <span class="o">+</span> <span class="s2">&quot; is not known by PDGID, charge could not be computed. Consider setting it by hand.&quot;</span>
+                    <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">):</span>
@@ -759,7 +1259,7 @@ window.addEventListener("load", () => mermaid.run());
     <span class="nd">@pdg</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pdg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_is_pdg_valid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -1296,6 +1796,10 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        mu-neutrinos (14, -14), tau-neutrinos (16, -16),</span>
 <span class="sd">        tau-prime-neutrinos (18, -18).</span>
 
+<span class="sd">        Electrons (11) and positrons (-11) are assigned their PDG mass</span>
+<span class="sd">        of 0.00051099895 GeV because their mass falls below the numerical</span>
+<span class="sd">        precision threshold used for the energy-momentum relation.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
@@ -1308,6 +1812,9 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># photons and gluons are massless, consider neutrinos as massless</span>
         <span class="n">massless_pdg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">-</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="o">-</span><span class="mi">18</span><span class="p">]</span>
+        <span class="c1"># electron/positron mass in GeV (below numerical threshold)</span>
+        <span class="n">electron_pdg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">11</span><span class="p">]</span>
+        <span class="n">electron_mass</span> <span class="o">=</span> <span class="mf">0.00051099895</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
             <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">px</span><span class="p">)</span>
@@ -1317,15 +1824,23 @@ window.addEventListener("load", () => mermaid.run());
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">massless_pdg</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg</span> <span class="ow">in</span> <span class="n">electron_pdg</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">electron_mass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mass_squared</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_abs</span><span class="p">()</span> <span class="o">**</span> <span class="mf">2.0</span>
-            <span class="k">if</span> <span class="n">mass_squared</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mass_squared</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-16</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            <span class="k">elif</span> <span class="n">mass_squared</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mass_squared</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mass_squared</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-16</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># numerical precision</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="n">pdg_str</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;nan&quot;</span>
+                <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;|E| &gt;= |p| not fulfilled! The mass is set to nan.&quot;</span>
+                    <span class="s2">&quot;|E| &gt;= |p| not fulfilled! &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;PDG = </span><span class="si">{</span><span class="n">pdg_str</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;mass_squared = </span><span class="si">{</span><span class="n">mass_squared</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="s2">&quot;The mass is set to nan.&quot;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
 
@@ -1349,7 +1864,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">charge</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_get_pdg_charge</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Particle.mT">
@@ -1372,10 +1887,10 @@ window.addEventListener("load", () => mermaid.run());
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mT_squared</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz</span><span class="o">**</span><span class="mf">2.0</span>
-            <span class="k">if</span> <span class="n">mT_squared</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mT_squared</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-16</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            <span class="k">elif</span> <span class="n">mT_squared</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mT_squared</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mT_squared</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-16</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># numerical precision</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                     <span class="s2">&quot;|E| &gt;= |pz| not fulfilled! &quot;</span>
@@ -1401,7 +1916,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_quark</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">is_quark</span></div>
 
 
 <div class="viewcode-block" id="Particle.is_lepton">
@@ -1421,7 +1936,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_lepton</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">is_lepton</span></div>
 
 
 <div class="viewcode-block" id="Particle.is_meson">
@@ -1441,7 +1956,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_meson</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">is_meson</span></div>
 
 
 <div class="viewcode-block" id="Particle.is_baryon">
@@ -1461,7 +1976,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_baryon</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">is_baryon</span></div>
 
 
 <div class="viewcode-block" id="Particle.is_hadron">
@@ -1481,7 +1996,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">is_hadron</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">is_hadron</span></div>
 
 
 <div class="viewcode-block" id="Particle.is_heavy_flavor">
@@ -1501,11 +2016,8 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_charm</span>
-            <span class="ow">or</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_bottom</span>
-            <span class="ow">or</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_top</span>
-        <span class="p">):</span>
+        <span class="n">pdgid</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">pdgid</span><span class="o">.</span><span class="n">has_charm</span> <span class="ow">or</span> <span class="n">pdgid</span><span class="o">.</span><span class="n">has_bottom</span> <span class="ow">or</span> <span class="n">pdgid</span><span class="o">.</span><span class="n">has_top</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
@@ -1528,7 +2040,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_down</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_down</span></div>
 
 
 <div class="viewcode-block" id="Particle.has_up">
@@ -1548,7 +2060,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_up</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_up</span></div>
 
 
 <div class="viewcode-block" id="Particle.has_strange">
@@ -1568,7 +2080,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_strange</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_strange</span></div>
 
 
 <div class="viewcode-block" id="Particle.has_charm">
@@ -1588,7 +2100,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_charm</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_charm</span></div>
 
 
 <div class="viewcode-block" id="Particle.has_bottom">
@@ -1608,7 +2120,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_bottom</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_bottom</span></div>
 
 
 <div class="viewcode-block" id="Particle.has_top">
@@ -1628,7 +2140,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">has_top</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">has_top</span></div>
 
 
 <div class="viewcode-block" id="Particle.spin">
@@ -1648,7 +2160,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">J</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">J</span></div>
 
 
 <div class="viewcode-block" id="Particle.spin_degeneracy">
@@ -1668,7 +2180,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdg_valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="k">return</span> <span class="n">PDGID</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">)</span><span class="o">.</span><span class="n">j_spin</span></div>
+        <span class="k">return</span> <span class="n">Particle</span><span class="o">.</span><span class="n">_cached_pdgid</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdg</span><span class="p">))</span><span class="o">.</span><span class="n">j_spin</span></div>
 </div>
 
 </pre></div>
@@ -1680,7 +2192,7 @@ window.addEventListener("load", () => mermaid.run());
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2026, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

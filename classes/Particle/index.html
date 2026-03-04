@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Particle &mdash; sparkx 2.1.1 documentation</title>
+  <title>Particle &mdash; sparkx 2.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=841abef3"></script>
+        <script src="../../_static/documentation_options.js?v=b21de401"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -140,7 +140,7 @@ Oscar2013/Oscar2013Extended/Oscar2013Extended_IC/Oscar2013Extended_Photons/
 ASCII or JETSCAPE hadron/parton output. If they are not set,
 they stay <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> to throw an error if one tries to access a non existing
 quantity.
-If a particle with an unknown PDG is provided, a warning is thrown and and
+If a particle with an unknown PDG is provided, a warning is thrown and
 <code class="code docutils literal notranslate"><span class="pre">np.nan</span></code> is returned for charge, spin, and spin degeneracy.</p>
 <p class="rubric">Notes</p>
 <p>If a member of the Particle class is not set or a quantity should be computed
@@ -150,6 +150,11 @@ of this array is float, therefore casting is required when int or bool values ar
 required.</p>
 <p>When JETSCAPE creates particle objects, which are partons, the charge is multiplied
 by 3 to make it an integer.</p>
+<p>PDG lookups (validity, charge, spin, etc.) are cached at the class level so that
+particles sharing the same PDG code reuse previous results. The attribute mapping
+that converts input format columns to internal data indices is also pre-compiled
+once per format. Both optimizations significantly reduce loading time for large
+files.</p>
 <p class="rubric">Examples</p>
 <p>To use the particle class a particle has to be created and the attributes
 can be set or obtained with the corresponding functions.</p>
@@ -566,6 +571,9 @@ is returned.</p>
 photons (22), gluons (21), e-neutrinos (12, -12),
 mu-neutrinos (14, -14), tau-neutrinos (16, -16),
 tau-prime-neutrinos (18, -18).</p>
+<p>Electrons (11) and positrons (-11) are assigned their PDG mass
+of 0.00051099895 GeV because their mass falls below the numerical
+precision threshold used for the energy-momentum relation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -850,7 +858,7 @@ is returned.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2026, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

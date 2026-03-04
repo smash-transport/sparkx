@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jetscape &mdash; sparkx 2.1.1 documentation</title>
+  <title>Jetscape &mdash; sparkx 2.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=841abef3"></script>
+        <script src="../../_static/documentation_options.js?v=b21de401"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -155,6 +155,16 @@ complying with the input format.</p>
 <p class="admonition-title">Note</p>
 <p>If filters are applied, be aware that not all cuts commute.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>JETSCAPE files use 1-based event numbering. This means that
+<code class="docutils literal notranslate"><span class="pre">num_output_per_event</span></code> will contain event numbers starting at 1,
+unlike Oscar files which start at 0. The <code class="docutils literal notranslate"><span class="pre">events</span></code> keyword argument
+uses 0-based positional indexing (i.e., <code class="docutils literal notranslate"><span class="pre">events=0</span></code> loads the first
+event in the file, <code class="docutils literal notranslate"><span class="pre">events=1</span></code> the second, etc.), but the returned
+event numbers in <code class="docutils literal notranslate"><span class="pre">num_output_per_event</span></code> reflect the 1-based
+numbering from the JETSCAPE file headers.</p>
+</div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -270,9 +280,9 @@ multiplicity &gt; 500:</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>PATH_JETSCAPE_</strong><span class="classifier">str</span></dt><dd><p>Path to the Jetscape file</p>
 </dd>
-<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.array</span></dt><dd><p>Array containing the event number and the number of particles in this
-event as num_output_per_event_[event i][num_output in event i] (updated
-when filters are applied)</p>
+<dt><strong>num_output_per_event_</strong><span class="classifier">numpy.array</span></dt><dd><p>Array containing the event number (1-based) and the number of particles
+in this event as num_output_per_event_[event i][num_output in event i]
+(updated when filters are applied)</p>
 </dd>
 <dt><strong>num_events_</strong><span class="classifier">int</span></dt><dd><p>Number of events contained in the Jetscape object (updated when filters
 are applied)</p>
@@ -972,7 +982,7 @@ events.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2026, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

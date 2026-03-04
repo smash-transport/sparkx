@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetscapeLoader &mdash; sparkx 2.1.1 documentation</title>
+  <title>JetscapeLoader &mdash; sparkx 2.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,16 +15,373 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=841abef3"></script>
+        <script src="../_static/documentation_options.js?v=b21de401"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
-        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-        <script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
-window.addEventListener("load", () => mermaid.run());
+        <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
 </script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -86,7 +443,7 @@ window.addEventListener("load", () => mermaid.run());
   <h1>Source code for JetscapeLoader</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ===================================================</span>
 <span class="c1">#</span>
-<span class="c1">#    Copyright (c) 2024-2025</span>
+<span class="c1">#    Copyright (c) 2024-2026</span>
 <span class="c1">#      SPARKX Team</span>
 <span class="c1">#</span>
 <span class="c1">#    GNU General Public License (GPLv3 or later)</span>
@@ -115,10 +472,6 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    -------</span>
 <span class="sd">    load(**kwargs)</span>
 <span class="sd">        Loads the data from the JETSCAPE file based on the specified optional arguments.</span>
-<span class="sd">    set_particle_list(kwargs)</span>
-<span class="sd">        Sets the list of particles based on the specified optional arguments.</span>
-<span class="sd">    set_num_output_per_event()</span>
-<span class="sd">        Sets the number of output lines per event in the JETSCAPE data file.</span>
 <span class="sd">    get_last_line(file_path)</span>
 <span class="sd">        Returns the last line of a file.</span>
 <span class="sd">    get_sigmaGen()</span>
@@ -133,13 +486,16 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">JETSCAPE_FILE</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the number of output lines per event and the event footers in the OSCAR data file.</span>
+<span class="sd">        Constructor for the JetscapeLoader class.</span>
 
-<span class="sd">        This method reads the OSCAR data file line by line and determines the number of output lines for each event and the event footers. The method behaves differently depending on the OSCAR format of the data file. If the format is &#39;Oscar2013Extended_IC&#39; or &#39;Oscar2013Extended_Photons&#39;, it counts the number of lines between &#39;in&#39; and &#39;end&#39; lines. Otherwise, it counts the number of lines between &#39;out&#39; and &#39;end&#39; lines.</span>
+<span class="sd">        This method initializes an instance of the JetscapeLoader class.</span>
+<span class="sd">        It checks if the provided file ends with &#39;.dat&#39; and that the last</span>
+<span class="sd">        line contains the string &#39;sigmaGen&#39;.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        None</span>
+<span class="sd">        JETSCAPE_FILE : str</span>
+<span class="sd">            The path to the JETSCAPE data file.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -230,6 +586,11 @@ window.addEventListener("load", () => mermaid.run());
         <span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Event number must be non-negative&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Value given as flag &quot;events&quot; is not of type &#39;</span>
+                <span class="o">+</span> <span class="s2">&quot;int or a tuple of two int values&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;particletype&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;particletype&quot;</span><span class="p">],</span> <span class="nb">str</span>
@@ -253,56 +614,233 @@ window.addEventListener("load", () => mermaid.run());
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="o">=</span> <span class="s2">&quot;N_partons&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_output_per_event</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_particle_list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
-            <span class="p">[],</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_pass_load</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
     <span class="c1"># PRIVATE CLASS METHODS</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_num_skip_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_pass_load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get number of initial lines in Jetscape file that are header or comment</span>
-<span class="sd">        lines and need to be skipped in order to read the particle output.</span>
+<span class="sd">        Loads all data from the JETSCAPE file in a single pass.</span>
+
+<span class="sd">        This method reads the file once, simultaneously collecting event</span>
+<span class="sd">        metadata (event headers, particle counts) and building Particle</span>
+<span class="sd">        objects.</span>
+
+<span class="sd">        When the ``events`` keyword is specified, events outside the</span>
+<span class="sd">        requested range are skipped without creating Particle objects.</span>
+<span class="sd">        Validation of event ranges is done on the fly: if the file ends</span>
+<span class="sd">        before the requested events are found, an IndexError is raised.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            A dictionary of optional arguments. The following keys are recognized:</span>
+
+<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of</span>
+<span class="sd">              events to load, or a single integer specifying a single event.</span>
+<span class="sd">            - &#39;filters&#39;: A dictionary of filters to apply per event.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        IndexError</span>
+<span class="sd">            If the requested event range exceeds the file contents.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the first event header line is malformed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        skip_lines : int</span>
-<span class="sd">            Number of initial lines before data.</span>
-
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple of (particle_list, num_events, num_output_per_event, []).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span>
-            <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="p">):</span>
-            <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]):</span>
-                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">line_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">line_start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cumulate_lines</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">line_start</span><span class="p">):</span>
-                    <span class="n">cumulate_lines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">skip_lines</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cumulate_lines</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s1">&#39;Value given as flag &quot;events&quot; is not of type &#39;</span>
-                <span class="o">+</span> <span class="s2">&quot;int or a tuple of two int values&quot;</span>
+        <span class="c1"># Determine which events to keep</span>
+        <span class="n">event_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">event_end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None means read all</span>
+        <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">:</span>
+            <span class="n">ev_arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ev_arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">event_start</span> <span class="o">=</span> <span class="n">ev_arg</span>
+                <span class="n">event_end</span> <span class="o">=</span> <span class="n">ev_arg</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ev_arg</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">event_start</span> <span class="o">=</span> <span class="n">ev_arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">event_end</span> <span class="o">=</span> <span class="n">ev_arg</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">has_filters</span> <span class="o">=</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span>
+
+        <span class="n">particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">event_output</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">event_header_information</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cut_events</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_event_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># 0-based index of current event in file</span>
+        <span class="n">in_requested_range</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">first_event_line</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Skip the very first header line</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># End-of-file line with sigmaGen</span>
+                <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;sigmaGen&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="c1"># Finalize the last event if we were collecting it</span>
+                    <span class="k">if</span> <span class="n">in_requested_range</span> <span class="ow">and</span> <span class="n">current_event_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">particle_list</span><span class="p">,</span> <span class="n">cut_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalize_event</span><span class="p">(</span>
+                            <span class="n">data</span><span class="p">,</span>
+                            <span class="n">particle_list</span><span class="p">,</span>
+                            <span class="n">cut_events</span><span class="p">,</span>
+                            <span class="n">event_output</span><span class="p">,</span>
+                            <span class="n">has_filters</span><span class="p">,</span>
+                            <span class="n">kwargs</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="c1"># We&#39;ve reached the end of the file</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># Event header line</span>
+                <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="c1"># Finalize previous event if we were collecting it</span>
+                    <span class="k">if</span> <span class="n">in_requested_range</span> <span class="ow">and</span> <span class="n">current_event_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">particle_list</span><span class="p">,</span> <span class="n">cut_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalize_event</span><span class="p">(</span>
+                            <span class="n">data</span><span class="p">,</span>
+                            <span class="n">particle_list</span><span class="p">,</span>
+                            <span class="n">cut_events</span><span class="p">,</span>
+                            <span class="n">event_output</span><span class="p">,</span>
+                            <span class="n">has_filters</span><span class="p">,</span>
+                            <span class="n">kwargs</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="n">current_event_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="c1"># Parse header</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">line_str</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># ignore the leading &#39;#&#39;</span>
+                    <span class="n">event_header_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_str</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Event&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                            <span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span>
+                        <span class="p">):</span>
+                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                            <span class="p">)</span>
+
+                    <span class="c1"># Check if this event is in the requested range</span>
+                    <span class="k">if</span> <span class="n">current_event_idx</span> <span class="o">&lt;</span> <span class="n">event_start</span><span class="p">:</span>
+                        <span class="n">in_requested_range</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">event_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">current_event_idx</span> <span class="o">&gt;</span> <span class="n">event_end</span><span class="p">:</span>
+                        <span class="n">in_requested_range</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="c1"># We&#39;re past the requested range; we can stop reading</span>
+                        <span class="k">break</span>
+
+                    <span class="n">in_requested_range</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">first_event_line</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="n">event_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">])</span>
+                    <span class="n">num_output</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="n">event_header_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event_num</span><span class="p">,</span> <span class="n">num_output</span><span class="p">])</span>
+                    <span class="n">event_header_information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Data line (particle)</span>
+                <span class="k">if</span> <span class="n">in_requested_range</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">first_event_line</span><span class="p">:</span>
+                        <span class="n">first_event_line</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">line_list</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="s2">&quot;JETSCAPE&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">line_list</span><span class="p">))</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+
+        <span class="c1"># Validate that the requested events were found</span>
+        <span class="k">if</span> <span class="n">event_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">current_event_idx</span> <span class="o">&lt;</span> <span class="n">event_end</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Requested events up to </span><span class="si">{</span><span class="n">event_end</span><span class="si">}</span><span class="s2"> but the file only &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;contains </span><span class="si">{</span><span class="n">current_event_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> events.&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">skip_lines</span>
+        <span class="c1"># When filters cut some events, renumber survivors sequentially</span>
+        <span class="c1"># starting from 1 (Jetscape convention) so that post-constructor</span>
+        <span class="c1"># filters in BaseStorer continue to work correctly.</span>
+        <span class="k">if</span> <span class="n">cut_events</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)):</span>
+                <span class="n">event_output</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Build final arrays</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_output</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span> <span class="o">=</span> <span class="n">event_header_information</span>
+
+        <span class="k">if</span> <span class="n">particle_list</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">particle_list</span> <span class="o">=</span> <span class="p">[[]]</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">particle_list</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
+            <span class="p">[],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finalize_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">],</span>
+        <span class="n">particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span>
+        <span class="n">cut_events</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">event_output</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+        <span class="n">has_filters</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finalize an event by applying filters and appending to particle_list.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : list</span>
+<span class="sd">            List of Particle objects for the current event.</span>
+<span class="sd">        particle_list : list</span>
+<span class="sd">            Accumulated list of events.</span>
+<span class="sd">        cut_events : int</span>
+<span class="sd">            Number of events cut so far.</span>
+<span class="sd">        event_output : list</span>
+<span class="sd">            List of [event_num, num_output] pairs.</span>
+<span class="sd">        has_filters : bool</span>
+<span class="sd">            Whether filters should be applied.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Original kwargs containing filter definitions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            Updated (particle_list, cut_events).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_filters</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">([</span><span class="n">data</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Update the particle count for this event</span>
+            <span class="n">event_output</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Event was entirely filtered out</span>
+            <span class="n">event_output</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">cut_events</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">particle_list</span><span class="p">,</span> <span class="n">cut_events</span>
 
 <div class="viewcode-block" id="JetscapeLoader.event_end_lines">
 <a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.event_end_lines">[docs]</a>
@@ -320,52 +858,6 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_end_lines_</span></div>
 
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__get_num_read_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the number of lines to read from the JETSCAPE data file.</span>
-
-<span class="sd">        This method calculates the number of lines to read from the JETSCAPE data file based on the &#39;events&#39; key in the optional_arguments_ dictionary. If the &#39;events&#39; key is not specified, it sums up the number of output lines for all events and adds the number of comment lines. If the &#39;events&#39; key is an integer, it gets the number of output lines for the specified event. If the &#39;events&#39; key is a tuple, it sums up the number of output lines for the range of events specified by the tuple. If the &#39;events&#39; key is not an integer or a tuple, it raises a TypeError.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TypeError</span>
-<span class="sd">            If the &#39;events&#39; key in the optional_arguments_ dictionary is not an integer or a tuple.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        cumulated_lines : int</span>
-<span class="sd">            The number of lines to read from the JETSCAPE data file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span>
-            <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="p">):</span>
-            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="c1"># add number of comments</span>
-            <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">))</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">read_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span>
-            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">read_event</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">cumulated_lines</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">event_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">event_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">event_start</span><span class="p">,</span> <span class="n">event_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">cumulated_lines</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Value given as flag events is not of type int or a tuple&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># +1 for the end line in Jetscape format</span>
-        <span class="k">return</span> <span class="n">cumulated_lines</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__apply_kwargs_filters</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]],</span> <span class="n">filters_dict</span><span class="p">:</span> <span class="n">Any</span>
@@ -485,256 +977,6 @@ window.addEventListener("load", () => mermaid.run());
 
     <span class="c1"># PUBLIC CLASS METHODS</span>
 
-<div class="viewcode-block" id="JetscapeLoader.set_particle_list">
-<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.set_particle_list">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_particle_list</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]]</span>
-        <span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the list of particles based on the specified optional arguments.</span>
-
-<span class="sd">        This method reads the JETSCAPE data file and creates a list of Particle</span>
-<span class="sd">        objects based on the data in the file. It applies any filters specified</span>
-<span class="sd">        in the &#39;filters&#39; key of the kwargs dictionary. It also adjusts the</span>
-<span class="sd">        number of events and the number of output lines per event based on the</span>
-<span class="sd">        &#39;events&#39; key in the kwargs dictionary. If any other keys are specified</span>
-<span class="sd">        in the kwargs dictionary, it raises a ValueError.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        kwargs : dict</span>
-<span class="sd">            A dictionary of optional arguments. The following keys are recognized:</span>
-
-<span class="sd">            - &#39;events&#39;: Either a tuple of two integers specifying the range of events to load, or a single integer specifying a single event to load.</span>
-<span class="sd">            - &#39;filters&#39;: A list of filters to apply to the data.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        IndexError</span>
-<span class="sd">            If the end of the JETSCAPE file is reached before the specified</span>
-<span class="sd">            number of lines is read, or if the number of events in the JETSCAPE</span>
-<span class="sd">            file does not match the number of events specified by the comments</span>
-<span class="sd">            in the file.</span>
-<span class="sd">        ValueError</span>
-<span class="sd">            If the first line of the event is not a comment line or does not</span>
-<span class="sd">            contain &quot;weight&quot;, or if an unknown keyword argument is used.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        particle_list : list</span>
-<span class="sd">            A list of Particle objects loaded from the JETSCAPE data file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">particle_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">num_read_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_num_read_lines</span><span class="p">()</span>
-        <span class="n">cut_events</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jetscape_file</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_lines</span><span class="p">(</span><span class="n">jetscape_file</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_read_lines</span><span class="p">):</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">jetscape_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index out of range of JETSCAPE file&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;sigmaGen&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">old_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">(</span>
-                            <span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
-                        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
-                            <span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
-                                <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">),</span>
-                                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                <span class="p">)</span>
-                            <span class="p">)</span>
-                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-                            <span class="k">elif</span> <span class="p">(</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
-                                <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="p">):</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="p">:,</span> <span class="mi">0</span>
-                                <span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">cut_events</span> <span class="o">=</span> <span class="n">cut_events</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;#&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;First line of the event is not a comment &quot;</span>
-                        <span class="o">+</span> <span class="s1">&#39;line or does not contain &quot;weight&quot;&#39;</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="s2">&quot;Event&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">line_list</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="n">first_event_header</span> <span class="o">=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="s2">&quot;events&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-                            <span class="n">first_event_header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">])</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-                                <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span>
-                                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
-                            <span class="p">):</span>
-                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                    <span class="s2">&quot;Events should be an integer or tuple of two integers&quot;</span>
-                                <span class="p">)</span>
-                            <span class="n">first_event_header</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">line_list</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">first_event_header</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">old_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="s2">&quot;filters&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_kwargs_filters</span><span class="p">(</span>
-                                <span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
-                            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
-                                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
-                                <span class="p">)</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
-                                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">,</span>
-                                        <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">),</span>
-                                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                    <span class="p">)</span>
-                                <span class="p">)</span>
-                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-                                <span class="k">elif</span> <span class="p">(</span>
-                                    <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span>
-                                    <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                                <span class="p">):</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span>
-                                        <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="p">:,</span> <span class="mi">0</span>
-                                    <span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">old_data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">particle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">cut_events</span> <span class="o">=</span> <span class="n">cut_events</span> <span class="o">+</span> <span class="mi">1</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">line_list</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="n">particle</span> <span class="o">=</span> <span class="n">Particle</span><span class="p">(</span><span class="s2">&quot;JETSCAPE&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">line_list</span><span class="p">))</span>
-                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">-</span> <span class="n">cut_events</span>
-        <span class="c1"># Correct num_output_per_event and num_events</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s2">&quot;events&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_arguments_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particle_list</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
-                    <span class="s2">&quot;Number of events in Jetscape file does not match the &quot;</span>
-                    <span class="o">+</span> <span class="s2">&quot;number of events specified by the comments in the &quot;</span>
-                    <span class="o">+</span> <span class="s2">&quot;Jetscape file!&quot;</span>
-                <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">event_start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">event_end</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span><span class="p">[</span><span class="n">event_start</span> <span class="p">:</span> <span class="n">event_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">update</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_end</span> <span class="o">-</span> <span class="n">event_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">particle_list</span> <span class="o">==</span> <span class="p">[]:</span>
-            <span class="n">particle_list</span> <span class="o">=</span> <span class="p">[[]]</span>
-
-        <span class="k">return</span> <span class="n">particle_list</span></div>
-
-
-<div class="viewcode-block" id="JetscapeLoader.set_num_output_per_event">
-<a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.set_num_output_per_event">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_num_output_per_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the number of output lines per event in the JETSCAPE data file.</span>
-
-<span class="sd">        This method reads the JETSCAPE data file line by line and determines</span>
-<span class="sd">        the number of output lines for each event. It does this by looking for</span>
-<span class="sd">        lines that contain a &#39;#&#39; and the ``particle_type_defining_string_``.</span>
-<span class="sd">        For each such line, it extracts the event number and the number of</span>
-<span class="sd">        output lines from the line and appends them to a list.</span>
-<span class="sd">        After reading the entire file, it converts the list to a numpy array</span>
-<span class="sd">        and stores it in the ``num_output_per_event_`` attribute. It also sets</span>
-<span class="sd">        the ``num_events_`` attribute to the length of the list.</span>
-
-<span class="sd">        It also reades the event header information and stores it in the</span>
-<span class="sd">        ``event_header_information_`` attribute as a list of dictionaries.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_JETSCAPE_</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jetscape_file</span><span class="p">:</span>
-            <span class="n">event_output</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">event_header_information</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">jetscape_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="k">elif</span> <span class="p">(</span>
-                    <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span> <span class="ow">in</span> <span class="n">line</span>
-                <span class="p">):</span>
-                    <span class="n">line_str</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="n">line_str</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># ignore the first &#39;#&#39;</span>
-                    <span class="n">event_header_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_str</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Event&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                            <span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span>
-                        <span class="p">):</span>
-                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-                            <span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">event_header_data</span><span class="p">[</span><span class="n">line_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
-                                <span class="n">line_str</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-                            <span class="p">)</span>
-                    <span class="c1"># event number is always the first entry</span>
-                    <span class="n">event</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">])</span>
-                    <span class="c1"># num_output is given by particle_type_defining_string_</span>
-                    <span class="n">num_output</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-                        <span class="n">event_header_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_type_defining_string_</span><span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="n">event_output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">event</span><span class="p">,</span> <span class="n">num_output</span><span class="p">])</span>
-                    <span class="n">event_header_information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_header_data</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">continue</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_output_per_event_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_output</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_events_</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_output</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_header_information_</span> <span class="o">=</span> <span class="n">event_header_information</span></div>
-
-
 <div class="viewcode-block" id="JetscapeLoader.get_last_line">
 <a class="viewcode-back" href="../classes/loader/JetscapeLoader/index.html#JetscapeLoader.JetscapeLoader.get_last_line">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_last_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -842,7 +1084,7 @@ window.addEventListener("load", () => mermaid.run());
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SPARKX Collaboration.</p>
+    <p>&#169; Copyright 2026, SPARKX Collaboration.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
