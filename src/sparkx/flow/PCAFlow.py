@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -635,7 +635,7 @@ class PCAFlow(FlowInterface.FlowInterface):
             raise TypeError("bins has to be list or np.ndarray")
         if not isinstance(flow_as_function_of, str):
             raise TypeError("flow_as_function_of is not a string")
-        if flow_as_function_of not in ["pt", "rapidity", "pseudorapidity"]:
+        if flow_as_function_of not in ["pT", "rapidity", "pseudorapidity"]:
             raise ValueError(
                 "flow_as_function_of must be either 'pT', 'rapidity', 'pseudorapidity'"
             )

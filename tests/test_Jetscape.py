@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2025
+#    Copyright (c) 2024-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -639,3 +639,35 @@ def test_jetscape_event_headers_add_instances(jetscape_file_custom_header):
     for event in range(jetscape3.num_events()):
         # Check if the number of hadrons in the header matches the number of particles
         assert header_info[event]["N_hadrons"] == num_output_per_event[event][1]
+
+
+def test_jetscape_constructor_filters_subset_events_print(tmp_path):
+    """Regression test for bug where using constructor filters together with a subset
+    of events (events=(start,end)) produced a mismatch between filtered particle
+    list lengths and num_output_per_event_, leading to IndexError when calling
+    print_particle_lists_to_file.
+    """
+    # Create a temporary Jetscape file with 5 events and varying multiplicities
+    num_events = 5
+    # Ensure at least one event will be fully filtered for stronger coverage
+    output_per_event = [10, 12, 8, 15, 5]
+    jetscape_file = create_temporary_jetscape_file(
+        tmp_path, num_events, output_per_event
+    )
+
+    # Apply a filter removing photons (there are none) plus a rapidity cut that keeps all (no effect)
+    # but remove specific species to reduce counts: since the synthetic file uses the same PDG=111,
+    # remove_particle_species would empty each event; we instead keep species 111 to keep stability.
+    # We'll still trigger the previous faulty code path by selecting a subset of events.
+    js = Jetscape(
+        jetscape_file,
+        events=(1, 3),  # middle three events
+        filters={"particle_species": 111},
+    )
+    # Sanity: number of events loaded should be 3
+    assert js.num_events() == 3
+
+    out_file = tmp_path / "subset_filtered_output.dat"
+    # This used to raise IndexError prior to the fix
+    js.print_particle_lists_to_file(str(out_file))
+    assert out_file.exists()

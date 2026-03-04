@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2025
+#    Copyright (c) 2023-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -31,6 +31,15 @@ class Jetscape(BaseStorer):
 
     .. note::
         If filters are applied, be aware that not all cuts commute.
+
+    .. note::
+        JETSCAPE files use 1-based event numbering. This means that
+        ``num_output_per_event`` will contain event numbers starting at 1,
+        unlike Oscar files which start at 0. The ``events`` keyword argument
+        uses 0-based positional indexing (i.e., ``events=0`` loads the first
+        event in the file, ``events=1`` the second, etc.), but the returned
+        event numbers in ``num_output_per_event`` reflect the 1-based
+        numbering from the JETSCAPE file headers.
 
     Parameters
     ----------
@@ -79,9 +88,9 @@ class Jetscape(BaseStorer):
     PATH_JETSCAPE_ : str
         Path to the Jetscape file
     num_output_per_event_ : numpy.array
-        Array containing the event number and the number of particles in this
-        event as num_output_per_event_[event i][num_output in event i] (updated
-        when filters are applied)
+        Array containing the event number (1-based) and the number of particles
+        in this event as num_output_per_event_[event i][num_output in event i]
+        (updated when filters are applied)
     num_events_ : int
         Number of events contained in the Jetscape object (updated when filters
         are applied)

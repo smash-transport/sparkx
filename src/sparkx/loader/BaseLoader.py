@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2024-2025
+#    Copyright (c) 2024-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -8,7 +8,7 @@
 # ===================================================
 
 from abc import ABC, abstractmethod
-from typing import Dict, Tuple, Any, TextIO, List
+from typing import Dict, Tuple, Any, List
 
 
 class BaseLoader(ABC):
@@ -33,8 +33,9 @@ class BaseLoader(ABC):
     _check_that_tuple_contains_integers_only(self, events_tuple):
         Checks if all elements inside the event tuple are integers.
 
-    _skip_lines(self, fname):
-        Skips the initial header and comment lines in a file.
+    _extract_integer_after_keyword(tokens, keyword):
+        Extracts the integer that follows the given keyword in a tokenized
+        comment line.
     """
 
     @abstractmethod
@@ -82,35 +83,6 @@ class BaseLoader(ABC):
             raise TypeError(
                 "All elements inside the event tuple must be integers."
             )
-
-    def _get_num_skip_lines(self) -> int:
-        """
-        Returns the number of lines to skip in the file.
-
-        Returns
-        -------
-        int
-            The number of lines to skip in the file.
-        """
-        raise NotImplementedError("Method is not implemented")
-
-    def _skip_lines(self, fname: TextIO) -> None:
-        """
-        Skips the initial header and comment lines in a file.
-
-        Once a file is opened with :code:`open()`, this method skips the
-        initial header and comment lines such that the first line called with
-        :code:`fname.readline()` is the first particle in the first event.
-
-        Parameters
-        ----------
-        fname : variable name
-            Name of the variable for the file opened with the :code:`open()`
-            command.
-        """
-        num_skip = self._get_num_skip_lines()
-        for i in range(0, num_skip):
-            fname.readline()
 
     @staticmethod
     def _extract_integer_after_keyword(tokens: List[str], keyword: str) -> int:

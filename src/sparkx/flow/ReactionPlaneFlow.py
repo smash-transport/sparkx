@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2024
+#    Copyright (c) 2023-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -70,7 +70,7 @@ class ReactionPlaneFlow(FlowInterface.FlowInterface):
         >>>
         >>> # Calculate the differential flow with error
         >>> pT_bins = [0.0,0.5,1.0,2.0,3.0,4.0]
-        >>> v2_differential = flow2.integrated_flow(jetscape_flow,pT_bins,'pT')
+        >>> v2_differential = flow2.differential_flow(jetscape_flow,pT_bins,'pT')
 
     """
 
