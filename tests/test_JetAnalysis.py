@@ -8,8 +8,10 @@
 # ===================================================
 
 from sparkx.Jetscape import Jetscape
+
 try:
     from sparkx.JetAnalysis import JetAnalysis
+
     _FASTJET_AVAILABLE = True
 except Exception:
     _FASTJET_AVAILABLE = False

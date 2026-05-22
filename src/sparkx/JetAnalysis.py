@@ -8,8 +8,10 @@
 # ===================================================
 
 import numpy as np
+
 try:
     import fastjet as fj  # type: ignore
+
     _FASTJET_AVAILABLE = True
 except Exception:
     _FASTJET_AVAILABLE = False

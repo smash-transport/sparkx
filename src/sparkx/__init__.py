@@ -18,6 +18,7 @@ from sparkx.flow.PCAFlow import PCAFlow
 from sparkx.flow.GenerateFlow import GenerateFlow
 from sparkx.Histogram import Histogram
 from sparkx.Jackknife import Jackknife
+
 try:
     from sparkx.JetAnalysis import JetAnalysis
 except Exception:
