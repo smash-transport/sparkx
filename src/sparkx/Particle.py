@@ -7,12 +7,17 @@
 #
 # ===================================================
 
-import array as _array
+import struct as _struct
 import numpy as np
 import math
 from particle import PDGID
 import warnings
 from typing import Dict, Optional, Tuple, Union, List
+
+# Module-level aliases to avoid repeated attribute lookups in hot paths.
+_PACK = _struct.pack
+_PACK_INTO = _struct.pack_into
+_UNPACK_FROM = _struct.unpack_from
 
 
 class Particle:
@@ -228,15 +233,20 @@ class Particle:
     -----
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then :code:`np.nan` is returned by default.
-    Internally, values are stored in a compact :py:class:`array.array` named
-    :code:`data_` (typecode ``'d'``, i.e. C double) that **grows by one element
-    each time a new field is first written**.  A companion byte array
-    :code:`_idx_map` (25 entries, one per canonical slot) maps each canonical
-    slot index to the actual position inside :code:`data_`.  The sentinel value
-    255 means the slot has never been written; reading such a slot returns
-    :code:`np.nan`.  Writing NaN to an unallocated slot is treated as a no-op
+    Internally, each particle stores a single :py:class:`bytearray` named :code:`data_`
+    with the following layout:
+
+    * **Bytes [0 : 25]** — index map: ``data_[i]`` is the float-slot position (0–254)
+      for canonical field *i*, or ``255`` when that field has never been written.
+    * **Bytes [25 :]** — packed IEEE-754 float64 values (8 bytes each), accessed via
+      :py:mod:`struct`.
+
+    The sentinel value 255 means the slot has never been written; reading such a slot
+    returns :code:`np.nan`.  Writing NaN to an unallocated slot is treated as a no-op
     because the slot already reads back as NaN.  Integer and bool values are
     still encoded as ``float`` so that NaN can act as the "not set" sentinel.
+    Because the entire state lives in a single Python object, per-particle overhead is
+    minimal and independent of the number of allocated fields.
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
     by 3 to make it an integer.
@@ -248,7 +258,13 @@ class Particle:
     files.
     """
 
-    __slots__ = ["data_", "_idx_map"]
+    __slots__ = ["data_"]
+
+    # data_ layout (bytearray)
+    # ─────────────────────────────────────────────────────────────────────
+    # Bytes [ 0 : 25]  index map: data_[i] = float position, or 255 = unset
+    # Bytes [25 :   ]  packed float64 values, 8 bytes each (struct 'd')
+    # ─────────────────────────────────────────────────────────────────────
 
     # ------------------------------------------------------------------
     # Class-level caches for PDG lookups.
@@ -551,8 +567,10 @@ class Particle:
 
     def _get(self, idx: int) -> float:
         """Return the value at canonical slot *idx*, or NaN if unset."""
-        pos = self._idx_map[idx]
-        return self.data_[pos] if pos != 255 else float('nan')
+        pos = self.data_[idx]
+        if pos == 255:
+            return float('nan')
+        return _UNPACK_FROM('d', self.data_, 25 + pos * 8)[0]
 
     def _set(self, idx: int, val: float) -> None:
         """Write *val* to canonical slot *idx*, growing *data_* if needed.
@@ -562,14 +580,15 @@ class Particle:
         memory without any observable effect.  Writing NaN to an
         **already-allocated** slot is allowed and stores NaN in place.
         """
-        pos = self._idx_map[idx]
+        pos = self.data_[idx]
         if pos == 255:
-            # Only allocate a new element for non-NaN values.
+            # Only allocate a new slot for non-NaN values.
             if not math.isnan(val):
-                self._idx_map[idx] = len(self.data_)
-                self.data_.append(val)
+                n = (len(self.data_) - 25) >> 3  # current float count
+                self.data_[idx] = n
+                self.data_ += _PACK('d', val)
         else:
-            self.data_[pos] = val
+            _PACK_INTO('d', self.data_, 25 + pos * 8, val)
 
     def __init__(
         self,
@@ -577,12 +596,10 @@ class Particle:
         particle_array: Optional[np.ndarray] = None,
         attribute_list: Optional[List[str]] = None,
     ) -> None:
-        # Start with an empty value array and a fully-unset index map.
-        # data_   : compact float64 storage; grows by one per new field written.
-        # _idx_map: 25-byte map from canonical slot index to position in data_;
-        #           255 means "slot not yet written".
-        self.data_: _array.array = _array.array('d')
-        self._idx_map: _array.array = _array.array('B', [255] * 25)
+        # data_ is a single bytearray:
+        #   bytes [0:25]  = index map, all 0xFF (= 255, unset)
+        #   bytes [25:]   = float64 data, grows by 8 bytes per new field
+        self.data_: bytearray = bytearray(b'\xff' * 25)
         # pdg_valid (canonical slot 10) must be set before __initialize_from_array
         # so that its slot is pre-allocated and the setter is always safe to call.
         self.pdg_valid: bool = False
@@ -680,21 +697,32 @@ class Particle:
                     + " was found."
                 )
 
-        # Fill data_ using pre-compiled index tuples (data_idx, line_idx, use_float).
-        # The _set logic is inlined here to avoid per-element method-call overhead
-        # on the hot loading path (potentially millions of particles).
-        idx_map = self._idx_map
-        data = self.data_
+        # Pre-count fields that will actually be read so we can build data_ at
+        # exactly the right size in one shot — bytearray += bytes_of_8 appends
+        # without internal over-allocation only when we pre-build the full buffer.
+        n_new = sum(1 for _, li, _ in fast_indices if li < arr_len)
+        # JETSCAPE also computes two derived fields (mass, charge) after the loop;
+        # reserve their slots now so those writes are also in-place.
+        jetscape_extra = 2 if input_format == "JETSCAPE" else 0
+        n_total = 1 + n_new + jetscape_extra  # 1 = pdg_valid already at pos 0
+
+        # Build data_ at the exact final size: 25-byte index map + n_total floats.
+        # Position 0 carries pdg_valid (0.0 = False); the zero-fill initialises it.
+        new_data = bytearray(b'\xff' * 25 + b'\x00' * (n_total * 8))
+        new_data[10] = 0   # pdg_valid is at float position 0 (value = 0.0 = False)
+        self.data_ = new_data
+
+        idx_map = self.data_
+        next_pos = 1          # float positions 1..n_new are for format data
         for data_idx, line_idx, use_float in fast_indices:
             if line_idx >= arr_len:
                 continue
             val = float(particle_array[line_idx]) if use_float else float(int(particle_array[line_idx]))
-            pos = idx_map[data_idx]
-            if pos == 255:
-                idx_map[data_idx] = len(data)
-                data.append(val)
-            else:
-                data[pos] = val
+            # All format slots are distinct and never overlap with pdg_valid (slot 10),
+            # so idx_map[data_idx] is guaranteed to be 255 here — assign directly.
+            idx_map[data_idx] = next_pos
+            _PACK_INTO('d', self.data_, 25 + next_pos * 8, val)
+            next_pos += 1
 
         # Validate PDG code and cache the result.
         if np.isnan(self.pdg):
@@ -704,11 +732,21 @@ class Particle:
             self.pdg_valid = Particle._is_pdg_valid(pdg_int)
 
         if input_format == "JETSCAPE":
+            # Pre-reserved slots: register in idx_map so property setters write
+            # in-place (pos != 255 path) instead of triggering a new append.
+            mass_pos = next_pos
+            charge_pos = next_pos + 1
+            idx_map[4] = mass_pos    # slot 4 = mass
+            idx_map[12] = charge_pos # slot 12 = charge
+            # Slots are already zero-filled; overwrite with correct values.
+            # NaN mass stays as the zero-fill placeholder until overwritten.
             self.mass = self.mass_from_energy_momentum()
             if self.pdg_valid:
+                # Use the property setter so fractional quark charges are scaled.
                 self.charge = Particle._get_pdg_charge(pdg_int)
             else:
-                self.charge = np.nan
+                # Write NaN explicitly so the charge slot reads back as NaN.
+                _PACK_INTO('d', self.data_, 25 + charge_pos * 8, float('nan'))
                 if not np.isnan(self.pdg):
                     warnings.warn(
                         "The PDG code "
@@ -732,14 +770,12 @@ class Particle:
 
     def __copy__(self) -> "Particle":
         new = object.__new__(Particle)
-        new.data_ = _array.array('d', self.data_)
-        new._idx_map = _array.array('B', self._idx_map)
+        new.data_ = bytearray(self.data_)
         return new
 
     def __deepcopy__(self, memo: dict) -> "Particle":
         new = object.__new__(Particle)
-        new.data_ = _array.array('d', self.data_)
-        new._idx_map = _array.array('B', self._idx_map)
+        new.data_ = bytearray(self.data_)
         memo[id(self)] = new
         return new
 
