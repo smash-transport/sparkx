@@ -569,8 +569,8 @@ class Particle:
         """Return the value at canonical slot *idx*, or NaN if unset."""
         pos = self.data_[idx]
         if pos == 255:
-            return float('nan')
-        return _UNPACK_FROM('d', self.data_, 25 + pos * 8)[0]
+            return float("nan")
+        return _UNPACK_FROM("d", self.data_, 25 + pos * 8)[0]
 
     def _set(self, idx: int, val: float) -> None:
         """Write *val* to canonical slot *idx*, growing *data_* if needed.
@@ -586,9 +586,9 @@ class Particle:
             if not math.isnan(val):
                 n = (len(self.data_) - 25) >> 3  # current float count
                 self.data_[idx] = n
-                self.data_ += _PACK('d', val)
+                self.data_ += _PACK("d", val)
         else:
-            _PACK_INTO('d', self.data_, 25 + pos * 8, val)
+            _PACK_INTO("d", self.data_, 25 + pos * 8, val)
 
     def __init__(
         self,
@@ -599,7 +599,7 @@ class Particle:
         # data_ is a single bytearray:
         #   bytes [0:25]  = index map, all 0xFF (= 255, unset)
         #   bytes [25:]   = float64 data, grows by 8 bytes per new field
-        self.data_: bytearray = bytearray(b'\xff' * 25)
+        self.data_: bytearray = bytearray(b"\xff" * 25)
         # pdg_valid (canonical slot 10) must be set before __initialize_from_array
         # so that its slot is pre-allocated and the setter is always safe to call.
         self.pdg_valid: bool = False
@@ -708,20 +708,26 @@ class Particle:
 
         # Build data_ at the exact final size: 25-byte index map + n_total floats.
         # Position 0 carries pdg_valid (0.0 = False); the zero-fill initialises it.
-        new_data = bytearray(b'\xff' * 25 + b'\x00' * (n_total * 8))
-        new_data[10] = 0   # pdg_valid is at float position 0 (value = 0.0 = False)
+        new_data = bytearray(b"\xff" * 25 + b"\x00" * (n_total * 8))
+        new_data[10] = (
+            0  # pdg_valid is at float position 0 (value = 0.0 = False)
+        )
         self.data_ = new_data
 
         idx_map = self.data_
-        next_pos = 1          # float positions 1..n_new are for format data
+        next_pos = 1  # float positions 1..n_new are for format data
         for data_idx, line_idx, use_float in fast_indices:
             if line_idx >= arr_len:
                 continue
-            val = float(particle_array[line_idx]) if use_float else float(int(particle_array[line_idx]))
+            val = (
+                float(particle_array[line_idx])
+                if use_float
+                else float(int(particle_array[line_idx]))
+            )
             # All format slots are distinct and never overlap with pdg_valid (slot 10),
             # so idx_map[data_idx] is guaranteed to be 255 here — assign directly.
             idx_map[data_idx] = next_pos
-            _PACK_INTO('d', self.data_, 25 + next_pos * 8, val)
+            _PACK_INTO("d", self.data_, 25 + next_pos * 8, val)
             next_pos += 1
 
         # Validate PDG code and cache the result.
@@ -736,8 +742,8 @@ class Particle:
             # in-place (pos != 255 path) instead of triggering a new append.
             mass_pos = next_pos
             charge_pos = next_pos + 1
-            idx_map[4] = mass_pos    # slot 4 = mass
-            idx_map[12] = charge_pos # slot 12 = charge
+            idx_map[4] = mass_pos  # slot 4 = mass
+            idx_map[12] = charge_pos  # slot 12 = charge
             # Slots are already zero-filled; overwrite with correct values.
             # NaN mass stays as the zero-fill placeholder until overwritten.
             self.mass = self.mass_from_energy_momentum()
@@ -746,7 +752,7 @@ class Particle:
                 self.charge = Particle._get_pdg_charge(pdg_int)
             else:
                 # Write NaN explicitly so the charge slot reads back as NaN.
-                _PACK_INTO('d', self.data_, 25 + charge_pos * 8, float('nan'))
+                _PACK_INTO("d", self.data_, 25 + charge_pos * 8, float("nan"))
                 if not np.isnan(self.pdg):
                     warnings.warn(
                         "The PDG code "
