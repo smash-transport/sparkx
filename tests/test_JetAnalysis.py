@@ -8,11 +8,19 @@
 # ===================================================
 
 from sparkx.Jetscape import Jetscape
-from sparkx.JetAnalysis import JetAnalysis
+try:
+    from sparkx.JetAnalysis import JetAnalysis
+    _FASTJET_AVAILABLE = True
+except Exception:
+    _FASTJET_AVAILABLE = False
 import HelperFunctions as hf
 import pytest
 import os
 import csv
+
+pytestmark = pytest.mark.skipif(
+    not _FASTJET_AVAILABLE, reason="fastjet not available"
+)
 
 TEST_FILES_DIR = os.path.join(os.path.dirname(__file__), "test_files")
 TEST_JETSCAPE_DAT = os.path.join(TEST_FILES_DIR, "test_jetscape.dat")
