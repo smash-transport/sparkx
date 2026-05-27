@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -33,6 +33,18 @@ dependencies = [
     "matplotlib>=3.7.1"
 ]
 
+[dependency-groups]
+test = ["pytest>=7.4.3", "black>=24.8.0", "mypy>=1.10.1"]
+docs = [
+    "sphinx>=7.2.6",
+    "numpydoc>=1.6.0",
+    "myst-parser>=2.0.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "sphinxcontrib-mermaid>=1.0.0",
+    "setuptools>=68.0.0"
+]
+dev = [{ include-group = "test" }, { include-group = "docs" }]
+
 [tool.black]
 line-length = 80
 
@@ -41,3 +53,34 @@ line-length = 80
 "Repository" = "https://github.com/smash-transport/sparkx"
 "Bug Tracker" = "https://github.com/smash-transport/sparkx/issues"
 "Documentation" = "https://smash-transport.github.io/sparkx/"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+minversion = "7.4.3"
+log_level = "DEBUG"
+xfail_strict = true
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning:sparkx",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+disallow_untyped_calls = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "UP"]
+
+[tool.tox]
+envlist = ["py39", "py310", "py311", "py312"]
+
+[tool.tox.env_run_base]
+deps = ["pytest>=7.4.3"]
+commands = [["pytest", "{posargs}"]]
