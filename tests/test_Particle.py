@@ -1,6 +1,6 @@
 # ===================================================
 #
-#    Copyright (c) 2023-2025
+#    Copyright (c) 2023-2026
 #      SPARKX Team
 #
 #    GNU General Public License (GPLv3 or later)
@@ -1137,3 +1137,87 @@ def test_create_gluon_from_pdg_valid_values():
     )
 
     assert particle.charge == 0
+
+
+def test_pdg_setter_nan_does_not_raise():
+    """Setting pdg to nan must not raise and must mark the code invalid."""
+    p = Particle()
+    p.pdg = np.nan
+    assert np.isnan(p.pdg)
+    assert p.pdg_valid is False
+
+
+def test_pdg_setter_nan_after_valid_pdg():
+    """Resetting pdg to nan after a valid code clears validity."""
+    p = Particle()
+    p.pdg = 211
+    assert p.pdg_valid is True
+    p.pdg = np.nan
+    assert np.isnan(p.pdg)
+    assert p.pdg_valid is False
+
+
+def test_copy_is_independent():
+    """copy.copy produces an independent particle; mutating copy leaves original intact."""
+    import copy
+
+    p = Particle()
+    p.pdg = 211
+    p.E = 5.0
+    p.px = 1.0
+    p.py = 2.0
+    p.pz = 3.0
+
+    p2 = copy.copy(p)
+
+    # Values are equal after copy.
+    assert p2.pdg == p.pdg
+    assert p2.E == p.E
+    assert p2.px == p.px
+
+    # Mutating the copy does not affect the original.
+    p2.E = 99.0
+    p2.px = 0.0
+    assert p.E == 5.0
+    assert p.px == 1.0
+
+    # Mutating the original does not affect the copy.
+    p.py = 42.0
+    assert p2.py == 2.0
+
+
+def test_deepcopy_is_independent():
+    """copy.deepcopy produces an independent particle."""
+    import copy
+
+    p = Particle()
+    p.pdg = 2212
+    p.E = 3.0
+    p.px = 0.5
+    p.py = 0.5
+    p.pz = 2.9
+
+    p2 = copy.deepcopy(p)
+
+    assert p2.pdg == p.pdg
+    assert p2.E == p.E
+
+    p2.E = 0.0
+    assert p.E == 3.0
+
+
+def test_copy_of_format_particle():
+    """copy.copy works on a particle created from a format array."""
+    import copy
+
+    array = np.array([1, 211, 27, 4.36557, 3.56147, 0.562961, 2.45727])
+    p = Particle(input_format="JETSCAPE", particle_array=array)
+    p2 = copy.copy(p)
+
+    assert p2.pdg == p.pdg
+    assert p2.E == p.E
+    assert p2.pdg_valid == p.pdg_valid
+    assert p2.charge == p.charge
+
+    # Ensure the underlying arrays are distinct objects.
+    assert p2.data_ is not p.data_

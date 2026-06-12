@@ -8,7 +8,13 @@
 # ===================================================
 
 import numpy as np
-import fastjet as fj  # type: ignore
+
+try:
+    import fastjet as fj  # type: ignore
+
+    _FASTJET_AVAILABLE = True
+except Exception:
+    _FASTJET_AVAILABLE = False
 import csv
 import warnings
 from sparkx.Particle import Particle

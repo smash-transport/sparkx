@@ -18,7 +18,11 @@ from sparkx.flow.PCAFlow import PCAFlow
 from sparkx.flow.GenerateFlow import GenerateFlow
 from sparkx.Histogram import Histogram
 from sparkx.Jackknife import Jackknife
-from sparkx.JetAnalysis import JetAnalysis
+
+try:
+    from sparkx.JetAnalysis import JetAnalysis
+except Exception:
+    pass
 from sparkx.Jetscape import Jetscape
 from sparkx.Lattice3D import Lattice3D
 from sparkx.loader.BaseLoader import BaseLoader

@@ -30,6 +30,10 @@ Date: 2026-XX-XX
 * Configuration: Add `[tool.mypy]` section to `pyproject.toml`, consolidating mypy settings previously only specified in the CI workflow.
 * Configuration: Add `[tool.ruff]` section with linting rules for bugbear, isort, and pyupgrade targeting Python 3.9+.
 * Configuration: Add `[tool.tox]` task runner configuration for testing across Python 3.9–3.12.
+* Particle: Refactor class to use more efficient internal data structures to save memory.
+
+### Fixed
+* Failing import of `JetAnalysis` if `fastjet` is not installed or not compatible with the current numpy/python version. Now if the import fails, the user can still use all other features of SPARKX, but the `JetAnalysis` class will not be available.
 
 [Link to diff from previous version](https://github.com/smash-transport/sparkx/compare/v2.2.0...v2.3.0)
 

@@ -7,11 +7,17 @@
 #
 # ===================================================
 
+import struct as _struct
 import numpy as np
 import math
 from particle import PDGID
 import warnings
 from typing import Dict, Optional, Tuple, Union, List
+
+# Module-level aliases to avoid repeated attribute lookups in hot paths.
+_PACK = _struct.pack
+_PACK_INTO = _struct.pack_into
+_UNPACK_FROM = _struct.unpack_from
 
 
 class Particle:
@@ -227,9 +233,20 @@ class Particle:
     -----
     If a member of the Particle class is not set or a quantity should be computed
     and the needed member variables are not set, then :code:`np.nan` is returned by default.
-    All quantities are saved in a numpy array member variable :code:`data_`. The datatype
-    of this array is float, therefore casting is required when int or bool values are
-    required.
+    Internally, each particle stores a single :py:class:`bytearray` named :code:`data_`
+    with the following layout:
+
+    * **Bytes [0 : 25]** — index map: ``data_[i]`` is the float-slot position (0–254)
+      for canonical field *i*, or ``255`` when that field has never been written.
+    * **Bytes [25 :]** — packed IEEE-754 float64 values (8 bytes each), accessed via
+      :py:mod:`struct`.
+
+    The sentinel value 255 means the slot has never been written; reading such a slot
+    returns :code:`np.nan`.  Writing NaN to an unallocated slot is treated as a no-op
+    because the slot already reads back as NaN.  Integer and bool values are
+    still encoded as ``float`` so that NaN can act as the "not set" sentinel.
+    Because the entire state lives in a single Python object, per-particle overhead is
+    minimal and independent of the number of allocated fields.
 
     When JETSCAPE creates particle objects, which are partons, the charge is multiplied
     by 3 to make it an integer.
@@ -242,6 +259,12 @@ class Particle:
     """
 
     __slots__ = ["data_"]
+
+    # data_ layout (bytearray)
+    # ─────────────────────────────────────────────────────────────────────
+    # Bytes [ 0 : 25]  index map: data_[i] = float position, or 255 = unset
+    # Bytes [25 :   ]  packed float64 values, 8 bytes each (struct 'd')
+    # ─────────────────────────────────────────────────────────────────────
 
     # ------------------------------------------------------------------
     # Class-level caches for PDG lookups.
@@ -306,6 +329,7 @@ class Particle:
             "status_": [21, 0],
             "baryon_number": [22, 0],
             "strangeness": [23, 0],
+            "weight": [24, 0],
         },
         "Oscar2013": {
             "t_": [0, 0],
@@ -531,13 +555,53 @@ class Particle:
             cls._pdg_charge_cache[pdg_code] = charge
             return charge
 
+    # ------------------------------------------------------------------
+    # Per-instance helpers for the grow-by-one storage layout.
+    #
+    # These are called by every property getter/setter.  Keeping them as
+    # thin instance methods (rather than inlining the logic everywhere)
+    # makes the code readable while still being fast enough for
+    # interactive use.  The hot loading path in __initialize_from_array
+    # inlines the same logic to avoid per-element call overhead.
+    # ------------------------------------------------------------------
+
+    def _get(self, idx: int) -> float:
+        """Return the value at canonical slot *idx*, or NaN if unset."""
+        pos = self.data_[idx]
+        if pos == 255:
+            return float("nan")
+        return _UNPACK_FROM("d", self.data_, 25 + pos * 8)[0]
+
+    def _set(self, idx: int, val: float) -> None:
+        """Write *val* to canonical slot *idx*, growing *data_* if needed.
+
+        Writing NaN to an **unallocated** slot is a no-op: the slot already
+        reads back as NaN via _get, so allocating a new element would waste
+        memory without any observable effect.  Writing NaN to an
+        **already-allocated** slot is allowed and stores NaN in place.
+        """
+        pos = self.data_[idx]
+        if pos == 255:
+            # Only allocate a new slot for non-NaN values.
+            if not math.isnan(val):
+                n = (len(self.data_) - 25) >> 3  # current float count
+                self.data_[idx] = n
+                self.data_ += _PACK("d", val)
+        else:
+            _PACK_INTO("d", self.data_, 25 + pos * 8, val)
+
     def __init__(
         self,
         input_format: Optional[str] = None,
         particle_array: Optional[np.ndarray] = None,
-        attribute_list: List[str] = [],
+        attribute_list: Optional[List[str]] = None,
     ) -> None:
-        self.data_: np.ndarray = np.array(25 * [np.nan], dtype=float)
+        # data_ is a single bytearray:
+        #   bytes [0:25]  = index map, all 0xFF (= 255, unset)
+        #   bytes [25:]   = float64 data, grows by 8 bytes per new field
+        self.data_: bytearray = bytearray(b"\xff" * 25)
+        # pdg_valid (canonical slot 10) must be set before __initialize_from_array
+        # so that its slot is pre-allocated and the setter is always safe to call.
         self.pdg_valid: bool = False
 
         if ((input_format is not None) and (particle_array is None)) or (
@@ -548,10 +612,13 @@ class Particle:
         if attribute_list is None and input_format == "ASCII":
             raise ValueError("'attribute_list' not given")
 
-        if attribute_list != [] and input_format != "ASCII":
+        if attribute_list is not None and input_format != "ASCII":
             raise ValueError(
                 "'ASCII' format requires 'attribute_list' to be given."
             )
+
+        if attribute_list is None:
+            attribute_list = []
 
         if (input_format is not None) and (particle_array is not None):
             self.__initialize_from_array(
@@ -630,14 +697,38 @@ class Particle:
                     + " was found."
                 )
 
-        # Fill data_ array using pre-compiled index tuples.
-        # Each tuple is (data_index, line_index, use_float).
-        data = self.data_
+        # Pre-count fields that will actually be read so we can build data_ at
+        # exactly the right size in one shot — bytearray += bytes_of_8 appends
+        # without internal over-allocation only when we pre-build the full buffer.
+        n_new = sum(1 for _, li, _ in fast_indices if li < arr_len)
+        # JETSCAPE also computes two derived fields (mass, charge) after the loop;
+        # reserve their slots now so those writes are also in-place.
+        jetscape_extra = 2 if input_format == "JETSCAPE" else 0
+        n_total = 1 + n_new + jetscape_extra  # 1 = pdg_valid already at pos 0
+
+        # Build data_ at the exact final size: 25-byte index map + n_total floats.
+        # Position 0 carries pdg_valid (0.0 = False); the zero-fill initialises it.
+        new_data = bytearray(b"\xff" * 25 + b"\x00" * (n_total * 8))
+        new_data[10] = (
+            0  # pdg_valid is at float position 0 (value = 0.0 = False)
+        )
+        self.data_ = new_data
+
+        idx_map = self.data_
+        next_pos = 1  # float positions 1..n_new are for format data
         for data_idx, line_idx, use_float in fast_indices:
             if line_idx >= arr_len:
                 continue
-            val = particle_array[line_idx]
-            data[data_idx] = float(val) if use_float else int(val)
+            val = (
+                float(particle_array[line_idx])
+                if use_float
+                else float(int(particle_array[line_idx]))
+            )
+            # All format slots are distinct and never overlap with pdg_valid (slot 10),
+            # so idx_map[data_idx] is guaranteed to be 255 here — assign directly.
+            idx_map[data_idx] = next_pos
+            _PACK_INTO("d", self.data_, 25 + next_pos * 8, val)
+            next_pos += 1
 
         # Validate PDG code and cache the result.
         if np.isnan(self.pdg):
@@ -647,11 +738,21 @@ class Particle:
             self.pdg_valid = Particle._is_pdg_valid(pdg_int)
 
         if input_format == "JETSCAPE":
+            # Pre-reserved slots: register in idx_map so property setters write
+            # in-place (pos != 255 path) instead of triggering a new append.
+            mass_pos = next_pos
+            charge_pos = next_pos + 1
+            idx_map[4] = mass_pos  # slot 4 = mass
+            idx_map[12] = charge_pos  # slot 12 = charge
+            # Slots are already zero-filled; overwrite with correct values.
+            # NaN mass stays as the zero-fill placeholder until overwritten.
             self.mass = self.mass_from_energy_momentum()
             if self.pdg_valid:
+                # Use the property setter so fractional quark charges are scaled.
                 self.charge = Particle._get_pdg_charge(pdg_int)
             else:
-                self.charge = np.nan
+                # Write NaN explicitly so the charge slot reads back as NaN.
+                _PACK_INTO("d", self.data_, 25 + charge_pos * 8, float("nan"))
                 if not np.isnan(self.pdg):
                     warnings.warn(
                         "The PDG code "
@@ -673,6 +774,17 @@ class Particle:
                     + "All properties extracted from the PDG are set to default values."
                 )
 
+    def __copy__(self) -> "Particle":
+        new = object.__new__(Particle)
+        new.data_ = bytearray(self.data_)
+        return new
+
+    def __deepcopy__(self, memo: dict) -> "Particle":
+        new = object.__new__(Particle)
+        new.data_ = bytearray(self.data_)
+        memo[id(self)] = new
+        return new
+
     @property
     def t(self) -> float:
         """Get or set the time of the particle.
@@ -681,11 +793,11 @@ class Particle:
         -------
         t : float
         """
-        return self.data_[0]
+        return self._get(0)
 
     @t.setter
     def t(self, value: float) -> None:
-        self.data_[0] = value
+        self._set(0, value)
 
     @property
     def x(self) -> float:
@@ -695,11 +807,11 @@ class Particle:
         -------
         x : float
         """
-        return self.data_[1]
+        return self._get(1)
 
     @x.setter
     def x(self, value: float) -> None:
-        self.data_[1] = value
+        self._set(1, value)
 
     @property
     def y(self) -> float:
@@ -709,11 +821,11 @@ class Particle:
         -------
         y : float
         """
-        return self.data_[2]
+        return self._get(2)
 
     @y.setter
     def y(self, value: float) -> None:
-        self.data_[2] = value
+        self._set(2, value)
 
     @property
     def z(self) -> float:
@@ -723,11 +835,11 @@ class Particle:
         -------
         z : float
         """
-        return self.data_[3]
+        return self._get(3)
 
     @z.setter
     def z(self, value: float) -> None:
-        self.data_[3] = value
+        self._set(3, value)
 
     @property
     def mass(self) -> float:
@@ -737,11 +849,11 @@ class Particle:
         -------
         mass : float
         """
-        return self.data_[4]
+        return self._get(4)
 
     @mass.setter
     def mass(self, value: float) -> None:
-        self.data_[4] = value
+        self._set(4, value)
 
     @property
     def E(self) -> float:
@@ -751,11 +863,11 @@ class Particle:
         -------
         E : float
         """
-        return self.data_[5]
+        return self._get(5)
 
     @E.setter
     def E(self, value: float) -> None:
-        self.data_[5] = value
+        self._set(5, value)
 
     @property
     def px(self) -> float:
@@ -765,11 +877,11 @@ class Particle:
         -------
         px : float
         """
-        return self.data_[6]
+        return self._get(6)
 
     @px.setter
     def px(self, value: float) -> None:
-        self.data_[6] = value
+        self._set(6, value)
 
     @property
     def py(self) -> float:
@@ -779,11 +891,11 @@ class Particle:
         -------
         py : float
         """
-        return self.data_[7]
+        return self._get(7)
 
     @py.setter
     def py(self, value: float) -> None:
-        self.data_[7] = value
+        self._set(7, value)
 
     @property
     def pz(self) -> float:
@@ -793,11 +905,11 @@ class Particle:
         -------
         pz : float
         """
-        return self.data_[8]
+        return self._get(8)
 
     @pz.setter
     def pz(self, value: float) -> None:
-        self.data_[8] = value
+        self._set(8, value)
 
     @property
     def pdg(self) -> Union[int, float]:
@@ -807,13 +919,17 @@ class Particle:
         -------
         pdg : int
         """
-        if np.isnan(self.data_[9]):
+        val = self._get(9)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[9])
+        return int(val)
 
     @pdg.setter
     def pdg(self, value: float) -> None:
-        self.data_[9] = value
+        self._set(9, value)
+        if np.isnan(self.pdg):
+            self.pdg_valid = False
+            return
         self.pdg_valid = Particle._is_pdg_valid(int(self.pdg))
 
         if not self.pdg_valid:
@@ -834,13 +950,14 @@ class Particle:
         -------
         ID : int
         """
-        if np.isnan(self.data_[11]):
+        val = self._get(11)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[11])
+        return int(val)
 
     @ID.setter
     def ID(self, value: float) -> None:
-        self.data_[11] = value
+        self._set(11, value)
 
     @property
     def charge(self) -> Union[int, float]:
@@ -850,9 +967,10 @@ class Particle:
         -------
         charge : int
         """
-        if np.isnan(self.data_[12]):
+        val = self._get(12)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[12])
+        return int(val)
 
     @charge.setter
     def charge(self, value: float) -> None:
@@ -860,7 +978,7 @@ class Particle:
         # handle quarks with 3 times the charge to make it integer
         if np.abs(value) < 1:
             value *= 3
-        self.data_[12] = value
+        self._set(12, value)
 
     @property
     def ncoll(self) -> Union[int, float]:
@@ -870,13 +988,14 @@ class Particle:
         -------
         ncoll : int
         """
-        if np.isnan(self.data_[13]):
+        val = self._get(13)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[13])
+        return int(val)
 
     @ncoll.setter
     def ncoll(self, value: float) -> None:
-        self.data_[13] = value
+        self._set(13, value)
 
     @property
     def form_time(self) -> float:
@@ -886,11 +1005,11 @@ class Particle:
         -------
         form_time : float
         """
-        return self.data_[14]
+        return self._get(14)
 
     @form_time.setter
     def form_time(self, value: float) -> None:
-        self.data_[14] = value
+        self._set(14, value)
 
     @property
     def xsecfac(self) -> float:
@@ -900,11 +1019,11 @@ class Particle:
         -------
         xsecfac : float
         """
-        return self.data_[15]
+        return self._get(15)
 
     @xsecfac.setter
     def xsecfac(self, value: float) -> None:
-        self.data_[15] = value
+        self._set(15, value)
 
     @property
     def proc_id_origin(self) -> Union[int, float]:
@@ -914,13 +1033,14 @@ class Particle:
         -------
         proc_id_origin : int
         """
-        if np.isnan(self.data_[16]):
+        val = self._get(16)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[16])
+        return int(val)
 
     @proc_id_origin.setter
     def proc_id_origin(self, value: float) -> None:
-        self.data_[16] = value
+        self._set(16, value)
 
     @property
     def proc_type_origin(self) -> Union[int, float]:
@@ -930,13 +1050,14 @@ class Particle:
         -------
         proc_type_origin : int
         """
-        if np.isnan(self.data_[17]):
+        val = self._get(17)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[17])
+        return int(val)
 
     @proc_type_origin.setter
     def proc_type_origin(self, value: float) -> None:
-        self.data_[17] = value
+        self._set(17, value)
 
     @property
     def t_last_coll(self) -> float:
@@ -946,11 +1067,11 @@ class Particle:
         -------
         t_last_coll : float
         """
-        return self.data_[18]
+        return self._get(18)
 
     @t_last_coll.setter
     def t_last_coll(self, value: float) -> None:
-        self.data_[18] = value
+        self._set(18, value)
 
     @property
     def pdg_mother1(self) -> Union[int, float]:
@@ -960,13 +1081,14 @@ class Particle:
         -------
         pdg_mother1 : int
         """
-        if np.isnan(self.data_[19]):
+        val = self._get(19)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[19])
+        return int(val)
 
     @pdg_mother1.setter
     def pdg_mother1(self, value: float) -> None:
-        self.data_[19] = value
+        self._set(19, value)
 
     @property
     def pdg_mother2(self) -> Union[int, float]:
@@ -976,13 +1098,14 @@ class Particle:
         -------
         pdg_mother2 : int
         """
-        if np.isnan(self.data_[20]):
+        val = self._get(20)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[20])
+        return int(val)
 
     @pdg_mother2.setter
     def pdg_mother2(self, value: float) -> None:
-        self.data_[20] = value
+        self._set(20, value)
 
     @property
     def status(self) -> Union[int, float]:
@@ -994,13 +1117,14 @@ class Particle:
         -------
         status : int
         """
-        if np.isnan(self.data_[21]):
+        val = self._get(21)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[21])
+        return int(val)
 
     @status.setter
     def status(self, value: float) -> None:
-        self.data_[21] = value
+        self._set(21, value)
 
     @property
     def baryon_number(self) -> Union[int, float]:
@@ -1010,13 +1134,14 @@ class Particle:
         -------
         baryon_number : int
         """
-        if np.isnan(self.data_[22]):
+        val = self._get(22)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[22])
+        return int(val)
 
     @baryon_number.setter
     def baryon_number(self, value: float) -> None:
-        self.data_[22] = value
+        self._set(22, value)
 
     @property
     def strangeness(self) -> Union[int, float]:
@@ -1026,13 +1151,14 @@ class Particle:
         -------
         strangeness : int
         """
-        if np.isnan(self.data_[23]):
+        val = self._get(23)
+        if np.isnan(val):
             return np.nan
-        return int(self.data_[23])
+        return int(val)
 
     @strangeness.setter
     def strangeness(self, value: float) -> None:
-        self.data_[23] = value
+        self._set(23, value)
 
     @property
     def weight(self) -> float:
@@ -1042,11 +1168,11 @@ class Particle:
         -------
         weight : float
         """
-        return self.data_[24]
+        return self._get(24)
 
     @weight.setter
     def weight(self, value: float) -> None:
-        self.data_[24] = value
+        self._set(24, value)
 
     @property
     def pdg_valid(self) -> bool:
@@ -1056,11 +1182,13 @@ class Particle:
         -------
         pdg_valid : bool
         """
-        return bool(self.data_[10])
+        # bool(float('nan')) would be True, but slot 10 is always explicitly
+        # initialised to 0.0 (False) in __init__, so this never returns nan.
+        return bool(self._get(10))
 
     @pdg_valid.setter
     def pdg_valid(self, value: bool) -> None:
-        self.data_[10] = 1 if value else 0
+        self._set(10, 1.0 if value else 0.0)
 
     def print_particle(self) -> None:
         """Print the whole particle information as csv string.
