@@ -1,6 +1,7 @@
 name: Run Tests
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - opened
@@ -9,6 +10,10 @@ on:
     branches:
       - main
       - sparkx_devel
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:

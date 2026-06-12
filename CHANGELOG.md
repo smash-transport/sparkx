@@ -22,6 +22,14 @@ A `Deprecated` section could be added if needed for soon-to-be removed features.
 Date: 2026-XX-XX
 
 ### Changed
+* Packaging: Remove `wheel` from `build-system.requires` as setuptools handles this via PEP 517.
+* Packaging: Add `[dependency-groups]` for `test`, `docs`, and `dev` dependencies, replacing `requirements.txt` for development installs.
+* CI: Add `concurrency` block to the test workflow to auto-cancel runs superseded by newer pushes to the same branch.
+* CI: Add `workflow_dispatch` trigger to the test workflow to allow manual runs from the GitHub UI.
+* Configuration: Add `[tool.pytest.ini_options]` with testpaths, minimum version, strict markers/config, xfail enforcement, and warning filters.
+* Configuration: Add `[tool.mypy]` section to `pyproject.toml`, consolidating mypy settings previously only specified in the CI workflow.
+* Configuration: Add `[tool.ruff]` section with linting rules for bugbear, isort, and pyupgrade targeting Python 3.9+.
+* Configuration: Add `[tool.tox]` task runner configuration for testing across Python 3.9–3.12.
 * Particle: Refactor class to use more efficient internal data structures to save memory.
 
 ### Fixed
