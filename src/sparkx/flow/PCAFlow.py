@@ -441,7 +441,7 @@ class PCAFlow(FlowInterface.FlowInterface):
             for bin in range(number_bins):
                 for alpha in range(self.alpha_):
                     eval = sorted_eigenvalues[alpha]
-                    evec = sorted_eigenvectors[alpha]
+                    evec = sorted_eigenvectors[:, alpha]
                     if (eval >= 0.0) and (
                         self.sigma_multiplicity_total_[sub][bin] > 0.0
                     ):
@@ -472,7 +472,7 @@ class PCAFlow(FlowInterface.FlowInterface):
         for bin in range(number_bins):
             for alpha in range(self.alpha_):
                 eval = sorted_eigenvalues[alpha]
-                evec = sorted_eigenvectors[alpha]
+                evec = sorted_eigenvectors[:, alpha]
                 if (eval >= 0.0) and (self.bin_multiplicity_total_[bin] > 0.0):
                     self.Flow_[bin][alpha] = (
                         np.sqrt(eval)
